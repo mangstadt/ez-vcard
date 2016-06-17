@@ -64,8 +64,10 @@ public class StructuredNameScribeTest {
 	@Test
 	public void writeText() {
 		sensei.assertWriteText(withAllValues).run("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III");
-		sensei.assertWriteText(withEmptyValues).run(";Jonathan;Joh\\;nny\\,,John;;");
-		sensei.assertWriteText(empty).run(";;;;");
+		sensei.assertWriteText(withEmptyValues).run(";Jonathan;Joh\\;nny\\,,John");
+		sensei.assertWriteText(withEmptyValues).includeTrailingSemicolons(true).run(";Jonathan;Joh\\;nny\\,,John;;");
+		sensei.assertWriteText(empty).run("");
+		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";;;;");
 	}
 
 	@Test

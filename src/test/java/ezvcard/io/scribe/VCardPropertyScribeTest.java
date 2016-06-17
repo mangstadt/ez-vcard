@@ -24,6 +24,7 @@ import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
 import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.DefaultTimezoneRule;
@@ -311,6 +312,15 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
+	public void structured_write_trailing_semicolons() {
+		String actual = VCardPropertyScribe.structured(false, new Object[] { "one", "two", Arrays.asList(), "", null, "three", Arrays.asList(), "", null });
+		assertEquals("one;two;;;;three", actual);
+
+		actual = VCardPropertyScribe.structured(true, new Object[] { "one", "two", Arrays.asList(), "", null, "three", Arrays.asList(), "", null });
+		assertEquals("one;two;;;;three;;;", actual);
+	}
+
+	@Test
 	public void dataType_default() {
 		TestProperty property = new TestProperty("value");
 		sensei.assertDataType(property).run(VCardDataType.TEXT);
@@ -506,7 +516,7 @@ public class VCardPropertyScribeTest {
 		}
 
 		@Override
-		protected String _writeText(TestProperty property, VCardVersion version) {
+		protected String _writeText(TestProperty property, WriteContext context) {
 			return property.value;
 		}
 

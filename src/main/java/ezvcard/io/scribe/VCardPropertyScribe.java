@@ -24,6 +24,7 @@ import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.json.JsonValue;
 import ezvcard.io.text.VCardRawWriter;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
@@ -166,13 +167,13 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * Marshals a property's value to a string.
 	 * @param property the property
-	 * @param version the version of the vCard that is being generated
-	 * @return the marshalled value
+	 * @param context contains information about the vCard being written, such
+	 * as the target version
 	 * @throws SkipMeException if the property should not be written to the data
 	 * stream
 	 */
-	public final String writeText(T property, VCardVersion version) {
-		return _writeText(property, version);
+	public final String writeText(T property, WriteContext context) {
+		return _writeText(property, context);
 	}
 
 	/**
@@ -333,12 +334,13 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * Marshals a property's value to a string.
 	 * @param property the property
-	 * @param version the version of the vCard that is being generated
+	 * @param context contains information about the vCard being written, such
+	 * as the target version
 	 * @return the marshalled value
 	 * @throws SkipMeException if the property should not be written to the data
 	 * stream
 	 */
-	protected abstract String _writeText(T property, VCardVersion version);
+	protected abstract String _writeText(T property, WriteContext context);
 
 	/**
 	 * <p>
@@ -359,7 +361,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * stream
 	 */
 	protected void _writeXml(T property, XCardElement element) {
-		String value = writeText(property, VCardVersion.V4_0);
+		String value = writeText(property, new WriteContext(VCardVersion.V4_0, null, false));
 		VCardDataType dataType = dataType(property, VCardVersion.V4_0);
 		element.append(dataType, value);
 	}
@@ -380,7 +382,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * stream
 	 */
 	protected JCardValue _writeJson(T property) {
-		String value = writeText(property, VCardVersion.V4_0);
+		String value = writeText(property, new WriteContext(VCardVersion.V4_0, null, false));
 		return JCardValue.single(value);
 	}
 
@@ -874,25 +876,90 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * have their {@code toString()} method invoked to generate the string
 	 * value.
 	 * </p>
+	 * <p>
+	 * The semicolon delimiters for empty or null values at the end of the
+	 * values list will not be included in the final string.
+	 * </p>
 	 * @param values the values to write
 	 * @return the structured value string
 	 */
 	protected static String structured(Object... values) {
-		return join(Arrays.asList(values), ";", new JoinCallback<Object>() {
-			public void handle(StringBuilder sb, Object value) {
-				if (value == null) {
-					return;
-				}
+		return structured(false, values);
+	}
 
-				if (value instanceof Collection) {
-					Collection<?> list = (Collection<?>) value;
-					sb.append(list(list));
-					return;
+	/**
+	 * <p>
+	 * Writes a "structured" property value. This is used in plain-text vCards
+	 * to marshal properties such as {@link StructuredName}.
+	 * </p>
+	 * <p>
+	 * This method accepts a list of {@link Object} instances.
+	 * {@link Collection} objects will be treated as multi-valued components.
+	 * Null objects will be treated as empty components. All other objects will
+	 * have their {@code toString()} method invoked to generate the string
+	 * value.
+	 * </p>
+	 * @param includeTrailingSemicolons true to include the semicolon delimiters
+	 * for empty or null values at the end of the values list, false to trim
+	 * them
+	 * @param values the values to write
+	 * @return the structured value string
+	 */
+	protected static String structured(boolean includeTrailingSemicolons, Object... values) {
+		StringBuilder sb = new StringBuilder();
+		int skippedSemicolons = 0;
+		boolean first = true;
+		for (Object value : values) {
+			if (value == null) {
+				if (first) {
+					first = false;
+				} else {
+					if (includeTrailingSemicolons) {
+						sb.append(';');
+					} else {
+						skippedSemicolons++;
+					}
 				}
-
-				sb.append(escape(value.toString()));
+				continue;
 			}
-		});
+
+			String strValue;
+			if (value instanceof Collection) {
+				Collection<?> list = (Collection<?>) value;
+				strValue = list(list);
+			} else {
+				strValue = escape(value.toString());
+			}
+
+			if (strValue.length() == 0) {
+				if (first) {
+					first = false;
+				} else {
+					if (includeTrailingSemicolons) {
+						sb.append(';');
+					} else {
+						skippedSemicolons++;
+					}
+				}
+				continue;
+			}
+
+			if (!includeTrailingSemicolons) {
+				for (int i = 0; i < skippedSemicolons; i++) {
+					sb.append(';');
+				}
+				skippedSemicolons = 0;
+			}
+
+			if (first) {
+				first = false;
+			} else {
+				sb.append(';');
+			}
+			sb.append(strValue);
+		}
+
+		return sb.toString();
 	}
 
 	/**

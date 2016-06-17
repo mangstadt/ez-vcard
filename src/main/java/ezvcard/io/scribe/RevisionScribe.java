@@ -8,6 +8,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Revision;
@@ -52,7 +53,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected String _writeText(Revision property, VCardVersion version) {
+	protected String _writeText(Revision property, WriteContext context) {
 		return write(property, false);
 	}
 

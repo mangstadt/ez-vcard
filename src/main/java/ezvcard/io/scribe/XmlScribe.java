@@ -14,6 +14,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Xml;
@@ -59,7 +60,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	}
 
 	@Override
-	protected String _writeText(Xml property, VCardVersion version) {
+	protected String _writeText(Xml property, WriteContext context) {
 		Document value = property.getValue();
 		if (value == null) {
 			return "";

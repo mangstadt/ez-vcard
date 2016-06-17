@@ -10,6 +10,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Agent;
 import ezvcard.property.VCardProperty;
@@ -62,7 +63,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 	}
 
 	@Override
-	protected String _writeText(Agent property, VCardVersion version) {
+	protected String _writeText(Agent property, WriteContext context) {
 		String url = property.getUrl();
 		if (url != null) {
 			return url;

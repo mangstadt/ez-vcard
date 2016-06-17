@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.PlaceProperty;
@@ -64,7 +65,7 @@ public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCard
 	}
 
 	@Override
-	protected String _writeText(T property, VCardVersion version) {
+	protected String _writeText(T property, WriteContext context) {
 		String text = property.getText();
 		if (text != null) {
 			return escape(text);

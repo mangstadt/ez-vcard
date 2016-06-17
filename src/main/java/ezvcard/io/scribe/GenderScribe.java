@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Gender;
@@ -49,7 +50,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	}
 
 	@Override
-	protected String _writeText(Gender property, VCardVersion version) {
+	protected String _writeText(Gender property, WriteContext context) {
 		String gender = property.getGender();
 		String text = property.getText();
 

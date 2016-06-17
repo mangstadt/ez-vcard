@@ -361,7 +361,7 @@ public class VCardWriterTest {
 			}
 
 			@Override
-			protected String _writeText(T property, VCardVersion version) {
+			protected String _writeText(T property, WriteContext context) {
 				return "value";
 			}
 
@@ -416,7 +416,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setTargetApplication_iCloud() throws Throwable {
+	public void setIncludeTrailingSemicolons() throws Throwable {
 		VCard vcard = new VCard();
 		StructuredName n = new StructuredName();
 		n.setFamily("Family");
@@ -425,14 +425,9 @@ public class VCardWriterTest {
 		StringWriter sw = new StringWriter();
 		VCardWriter writer = new VCardWriter(sw, VCardVersion.V2_1);
 		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.setTargetApplication(TargetApplication.ICLOUD);
-		writer.write(vcard);
 
-		n.setFamily(null);
-		writer.setTargetApplication(null);
 		writer.write(vcard);
-		writer.setTargetApplication(TargetApplication.ICLOUD);
+		writer.setIncludeTrailingSemicolons(true);
 		writer.write(vcard);
 
 		String actual = sw.toString();
@@ -441,23 +436,15 @@ public class VCardWriterTest {
 		String expected =
 		"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"N:Family;;;;\r\n" +
-		"END:VCARD\r\n" +
-		"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
 			"N:Family\r\n" +
 		"END:VCARD\r\n" +
 		"BEGIN:VCARD\r\n" +
 			"VERSION:2.1\r\n" +
-			"N:;;;;\r\n" +
-		"END:VCARD\r\n" +
-		"BEGIN:VCARD\r\n" +
-			"VERSION:2.1\r\n" +
-			"N:\r\n" +
+			"N:Family;;;;\r\n" +
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -499,7 +486,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			assertEquals(actual, expected);
+			assertEquals(expected, actual);
 		}
 
 		{
@@ -532,7 +519,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			assertEquals(actual, expected);
+			assertEquals(expected, actual);
 		}
 
 		{
@@ -563,7 +550,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			assertEquals(actual, expected);
+			assertEquals(expected, actual);
 		}
 	}
 
@@ -597,7 +584,7 @@ public class VCardWriterTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test

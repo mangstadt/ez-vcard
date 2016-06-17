@@ -11,6 +11,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -67,7 +68,7 @@ public class LuckyNumProperty extends VCardProperty {
 		}
 
 		@Override
-		protected String _writeText(LuckyNumProperty property, VCardVersion version) {
+		protected String _writeText(LuckyNumProperty property, WriteContext context) {
 			return property.luckyNum + "";
 		}
 

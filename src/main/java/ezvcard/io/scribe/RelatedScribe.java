@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Related;
@@ -60,7 +61,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected String _writeText(Related property, VCardVersion version) {
+	protected String _writeText(Related property, WriteContext context) {
 		String uri = property.getUri();
 		if (uri != null) {
 			return uri;

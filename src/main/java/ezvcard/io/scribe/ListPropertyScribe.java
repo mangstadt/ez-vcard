@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.TextListProperty;
@@ -50,7 +51,7 @@ public abstract class ListPropertyScribe<T extends TextListProperty> extends VCa
 	}
 
 	@Override
-	protected String _writeText(T property, VCardVersion version) {
+	protected String _writeText(T property, WriteContext context) {
 		return list(property.getValues());
 	}
 

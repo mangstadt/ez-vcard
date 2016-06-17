@@ -14,6 +14,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.text.WriteContext;
 import ezvcard.property.Agent;
 
 /*
@@ -73,7 +74,7 @@ public class AgentScribeTest {
 
 		for (VCardVersion version : values()) {
 			try {
-				scribe.writeText(withVCard, version);
+				scribe.writeText(withVCard, new WriteContext(version, null, false));
 				fail();
 			} catch (EmbeddedVCardException e) {
 				assertEquals(vcard, e.getVCard());

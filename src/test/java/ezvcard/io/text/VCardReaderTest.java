@@ -588,7 +588,7 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected String _writeText(Nested property, VCardVersion version) {
+		protected String _writeText(Nested property, WriteContext context) {
 			return "";
 		}
 
@@ -870,7 +870,7 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected String _writeText(WarningsProperty property, VCardVersion version) {
+		protected String _writeText(WarningsProperty property, WriteContext context) {
 			return null;
 		}
 
@@ -1011,7 +1011,7 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected String _writeText(ValueProp property, VCardVersion version) {
+		protected String _writeText(ValueProp property, WriteContext context) {
 			return null;
 		}
 

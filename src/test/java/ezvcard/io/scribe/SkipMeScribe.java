@@ -7,6 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.SkipMeProperty;
@@ -55,7 +56,7 @@ public class SkipMeScribe extends VCardPropertyScribe<SkipMeProperty> {
 	}
 
 	@Override
-	protected String _writeText(SkipMeProperty property, VCardVersion version) {
+	protected String _writeText(SkipMeProperty property, WriteContext context) {
 		throw new SkipMeException();
 	}
 

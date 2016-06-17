@@ -13,6 +13,8 @@ import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.TargetApplication;
 import ezvcard.io.text.VCardWriter;
+import ezvcard.property.Address;
+import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 
 /*
@@ -48,7 +50,7 @@ import ezvcard.property.VCardProperty;
  */
 public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	private VCardVersion version;
-	private boolean caretEncoding = false;
+	private boolean caretEncoding = false, includeTrailingSemicolons = false;
 	private TargetApplication targetApplication;
 
 	/**
@@ -87,6 +89,27 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 */
 	public ChainingTextWriter caretEncoding(boolean enable) {
 		this.caretEncoding = enable;
+		return this;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether to include trailing semicolon delimiters for structured
+	 * property values whose list of values end with null or empty values.
+	 * Examples of properties that use structured values are
+	 * {@link StructuredName} and {@link Address}.
+	 * </p>
+	 * <p>
+	 * This setting exists for compatibility reasons and should not make a
+	 * difference to consumers that correctly implement the vCard grammar.
+	 * </p>
+	 * @param include true to include the trailing semicolons, false not to
+	 * (defaults to false)
+	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
+	 * 57</a>
+	 */
+	public ChainingTextWriter includeTrailingSemicolons(boolean include) {
+		this.includeTrailingSemicolons = include;
 		return this;
 	}
 
@@ -185,6 +208,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 		writer.setAddProdId(prodId);
 		writer.setCaretEncodingEnabled(caretEncoding);
 		writer.setVersionStrict(versionStrict);
+		writer.setIncludeTrailingSemicolons(includeTrailingSemicolons);
 		writer.setTargetApplication(targetApplication);
 		if (index != null) {
 			writer.setScribeIndex(index);

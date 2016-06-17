@@ -35,6 +35,7 @@ import ezvcard.io.SalaryProperty;
 import ezvcard.io.SalaryProperty.SalaryScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.ImageType;
@@ -792,7 +793,7 @@ public class XCardWriterTest {
 		}
 
 		@Override
-		protected String _writeText(EmbeddedProperty property, VCardVersion version) {
+		protected String _writeText(EmbeddedProperty property, WriteContext context) {
 			return null;
 		}
 

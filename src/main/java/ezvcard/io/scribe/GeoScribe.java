@@ -7,6 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Geo;
@@ -60,8 +61,8 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected String _writeText(Geo property, VCardVersion version) {
-		return write(property, version);
+	protected String _writeText(Geo property, WriteContext context) {
+		return write(property, context.getVersion());
 	}
 
 	@Override

@@ -53,7 +53,8 @@ public class ClientPidMapScribeTest {
 	@Test
 	public void writeText() {
 		sensei.assertWriteText(withValue).run(pid + ";" + uri);
-		sensei.assertWriteText(empty).run(";");
+		sensei.assertWriteText(empty).run("");
+		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";");
 	}
 
 	@Test

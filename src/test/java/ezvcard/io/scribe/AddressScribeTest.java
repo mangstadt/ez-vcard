@@ -174,8 +174,10 @@ public class AddressScribeTest {
 	public void writeText() {
 		sensei.assertWriteText(withAllFields).run("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA");
 		sensei.assertWriteText(withMultipleValuesFields).run("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA");
-		sensei.assertWriteText(withSomeFields).run("P.O. Box 1234\\;;;;Austin;TX;12345;");
-		sensei.assertWriteText(empty).run(";;;;;;");
+		sensei.assertWriteText(withSomeFields).run("P.O. Box 1234\\;;;;Austin;TX;12345");
+		sensei.assertWriteText(withSomeFields).includeTrailingSemicolons(true).run("P.O. Box 1234\\;;;;Austin;TX;12345;");
+		sensei.assertWriteText(empty).run("");
+		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";;;;;;");
 	}
 
 	@Test

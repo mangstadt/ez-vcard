@@ -18,6 +18,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -452,7 +453,7 @@ public class JCardWriterTest {
 		}
 
 		@Override
-		protected String _writeText(TestProperty property, VCardVersion version) {
+		protected String _writeText(TestProperty property, WriteContext context) {
 			return null;
 		}
 

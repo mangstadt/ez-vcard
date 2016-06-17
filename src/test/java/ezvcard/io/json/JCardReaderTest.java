@@ -23,6 +23,7 @@ import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
@@ -404,7 +405,7 @@ public class JCardReaderTest {
 		}
 
 		@Override
-		protected String _writeText(TypeForTesting property, VCardVersion version) {
+		protected String _writeText(TypeForTesting property, WriteContext context) {
 			return "";
 		}
 

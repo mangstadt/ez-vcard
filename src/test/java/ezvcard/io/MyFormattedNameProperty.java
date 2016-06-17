@@ -7,6 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -61,7 +62,7 @@ public class MyFormattedNameProperty extends VCardProperty {
 		}
 
 		@Override
-		protected String _writeText(MyFormattedNameProperty property, VCardVersion version) {
+		protected String _writeText(MyFormattedNameProperty property, WriteContext context) {
 			return property.value.toUpperCase();
 		}
 

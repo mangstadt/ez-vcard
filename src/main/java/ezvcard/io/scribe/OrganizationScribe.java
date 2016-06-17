@@ -6,6 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Organization;
@@ -50,7 +51,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected String _writeText(Organization property, VCardVersion version) {
+	protected String _writeText(Organization property, WriteContext context) {
 		return structured(property.getValues().toArray());
 	}
 

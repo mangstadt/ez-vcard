@@ -6,6 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.ClientPidMap;
@@ -50,8 +51,13 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected String _writeText(ClientPidMap property, VCardVersion version) {
-		return structured(property.getPid(), property.getUri());
+	protected String _writeText(ClientPidMap property, WriteContext context) {
+		//@formatter:off
+		return structured(context.isIncludeTrailingSemicolons(), new Object[] {
+			property.getPid(),
+			property.getUri()
+		});
+		//@formatter:on
 	}
 
 	@Override

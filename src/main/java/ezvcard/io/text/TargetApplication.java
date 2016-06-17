@@ -1,7 +1,6 @@
 package ezvcard.io.text;
 
 import ezvcard.parameter.Encoding;
-import ezvcard.property.StructuredName;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -38,18 +37,6 @@ import ezvcard.property.StructuredName;
  * @author Michael Angstadt
  */
 public enum TargetApplication {
-	/**
-	 * <p>
-	 * iCloud
-	 * </p>
-	 * <ul>
-	 * <li>{@link StructuredName} property values must not contain trailing
-	 * semi-colons when used to define a group name (<a
-	 * href="https://github.com/mangstadt/ez-vcard/issues/57">Issue 57</a>).</li>
-	 * </ul>
-	 */
-	ICLOUD,
-
 	/**
 	 * <p>
 	 * Microsoft Outlook

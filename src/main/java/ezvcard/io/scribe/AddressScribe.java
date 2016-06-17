@@ -7,6 +7,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
@@ -65,9 +66,9 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected String _writeText(Address property, VCardVersion version) {
+	protected String _writeText(Address property, WriteContext context) {
 		//@formatter:off
-		return structured(
+		return structured(context.isIncludeTrailingSemicolons(), new Object[]{
 			property.getPoBoxes(),
 			property.getExtendedAddresses(),
 			property.getStreetAddresses(),
@@ -75,7 +76,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 			property.getRegions(),
 			property.getPostalCodes(),
 			property.getCountries()
-		);
+		});
 		//@formatter:on
 	}
 

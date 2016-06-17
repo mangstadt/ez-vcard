@@ -11,6 +11,7 @@ import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 
@@ -106,7 +107,7 @@ public class FavoriteColors extends VCardProperty {
 		//required
 		//writes the property's value to a plain-text vCard
 		@Override
-		protected String _writeText(FavoriteColors property, VCardVersion version) {
+		protected String _writeText(FavoriteColors property, WriteContext context) {
 			return list(property.getColors());
 		}
 

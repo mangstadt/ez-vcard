@@ -5,6 +5,7 @@ import java.util.List;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 
@@ -60,7 +61,7 @@ public class AgeProperty extends VCardProperty {
 		}
 
 		@Override
-		protected String _writeText(AgeProperty property, VCardVersion version) {
+		protected String _writeText(AgeProperty property, WriteContext context) {
 			return property.age + "";
 		}
 

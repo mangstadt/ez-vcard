@@ -7,6 +7,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.json.JsonValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
@@ -68,7 +69,7 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
-	protected String _writeText(RawProperty property, VCardVersion version) {
+	protected String _writeText(RawProperty property, WriteContext context) {
 		String value = property.getValue();
 		return (value == null) ? "" : value;
 	}

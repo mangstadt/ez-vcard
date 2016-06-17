@@ -21,6 +21,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.Address;
 import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
@@ -104,6 +105,7 @@ import ezvcard.util.IOUtils;
 public class VCardWriter extends StreamWriter implements Flushable {
 	private final VCardRawWriter writer;
 	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
+	private boolean includeTrailingSemicolons = false;
 
 	/**
 	 * @param out the output stream to write to
@@ -203,6 +205,46 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 	/**
 	 * <p>
+	 * Gets whether this writer will include trailing semicolon delimiters for
+	 * structured property values whose list of values end with null or empty
+	 * values. Examples of properties that use structured values are
+	 * {@link StructuredName} and {@link Address}.
+	 * </p>
+	 * <p>
+	 * This setting exists for compatibility reasons and should not make a
+	 * difference to consumers that correctly implement the vCard grammar.
+	 * </p>
+	 * @return true to include the trailing semicolons, false not to (defaults
+	 * to false)
+	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
+	 * 57</a>
+	 */
+	public boolean isIncludeTrailingSemicolons() {
+		return includeTrailingSemicolons;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether to include trailing semicolon delimiters for structured
+	 * property values whose list of values end with null or empty values.
+	 * Examples of properties that use structured values are
+	 * {@link StructuredName} and {@link Address}.
+	 * </p>
+	 * <p>
+	 * This setting exists for compatibility reasons and should not make a
+	 * difference to consumers that correctly implement the vCard grammar.
+	 * </p>
+	 * @param include true to include the trailing semicolons, false not to
+	 * (defaults to false)
+	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
+	 * 57</a>
+	 */
+	public void setIncludeTrailingSemicolons(boolean include) {
+		includeTrailingSemicolons = include;
+	}
+
+	/**
+	 * <p>
 	 * Gets whether the writer will apply circumflex accent encoding on
 	 * parameter values (disabled by default, only applies to 3.0 and 4.0
 	 * vCards). This escaping mechanism allows for newlines and double quotes to
@@ -243,6 +285,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> propertiesToAdd) throws IOException {
 		VCardVersion targetVersion = getTargetVersion();
+		WriteContext context = new WriteContext(targetVersion, getTargetApplication(), includeTrailingSemicolons);
+
 		writer.writeBeginComponent("VCARD");
 		writer.writeVersion();
 
@@ -253,8 +297,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			String value = null;
 			VCard nestedVCard = null;
 			try {
-				value = scribe.writeText(property, targetVersion);
-				value = fixStructuredNamePropertyForICloud(property, value);
+				value = scribe.writeText(property, context);
 			} catch (SkipMeException e) {
 				continue;
 			} catch (EmbeddedVCardException e) {
@@ -280,6 +323,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 					agentWriter.getRawWriter().getFoldedLineWriter().setLineLength(null);
 					agentWriter.getRawWriter().getFoldedLineWriter().setNewline("\n");
 					agentWriter.setAddProdId(false);
+					agentWriter.setIncludeTrailingSemicolons(includeTrailingSemicolons);
+					agentWriter.setTargetApplication(getTargetApplication());
 					agentWriter.setVersionStrict(versionStrict);
 					try {
 						agentWriter.write(nestedVCard);
@@ -318,27 +363,6 @@ public class VCardWriter extends StreamWriter implements Flushable {
 		}
 
 		writer.writeEndComponent("VCARD");
-	}
-
-	/**
-	 * @see TargetApplication#ICLOUD
-	 */
-	private String fixStructuredNamePropertyForICloud(VCardProperty property, String value) {
-		if (writer.getTargetApplication() != TargetApplication.ICLOUD) {
-			return value;
-		}
-
-		if (!(property instanceof StructuredName)) {
-			return value;
-		}
-
-		for (int i = value.length() - 1; i >= 0; i--) {
-			char c = value.charAt(i);
-			if (c != ';') {
-				return value.substring(0, i + 1);
-			}
-		}
-		return "";
 	}
 
 	/**

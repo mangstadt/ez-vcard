@@ -6,6 +6,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.StructuredName;
@@ -50,8 +51,16 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected String _writeText(StructuredName property, VCardVersion version) {
-		return structured(property.getFamily(), property.getGiven(), property.getAdditionalNames(), property.getPrefixes(), property.getSuffixes());
+	protected String _writeText(StructuredName property, WriteContext context) {
+		//@formatter:off
+		return structured(context.isIncludeTrailingSemicolons(), new Object[] {
+			property.getFamily(),
+			property.getGiven(),
+			property.getAdditionalNames(),
+			property.getPrefixes(),
+			property.getSuffixes()
+		});
+		//@formatter:on
 	}
 
 	@Override

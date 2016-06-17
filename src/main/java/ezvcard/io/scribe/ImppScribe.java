@@ -14,6 +14,7 @@ import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Impp;
@@ -72,7 +73,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	@Override
-	protected String _writeText(Impp property, VCardVersion version) {
+	protected String _writeText(Impp property, WriteContext context) {
 		return write(property);
 	}
 

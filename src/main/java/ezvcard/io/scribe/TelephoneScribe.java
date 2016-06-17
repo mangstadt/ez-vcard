@@ -8,6 +8,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
+import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Telephone;
@@ -72,7 +73,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected String _writeText(Telephone property, VCardVersion version) {
+	protected String _writeText(Telephone property, WriteContext context) {
 		String text = property.getText();
 		if (text != null) {
 			return escape(text);
@@ -80,7 +81,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 		TelUri uri = property.getUri();
 		if (uri != null) {
-			if (version == VCardVersion.V4_0) {
+			if (context.getVersion() == VCardVersion.V4_0) {
 				return uri.toString();
 			}
 

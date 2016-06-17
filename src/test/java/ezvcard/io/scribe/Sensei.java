@@ -23,6 +23,7 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
+import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.HtmlUtils;
@@ -278,6 +279,7 @@ public class Sensei<T extends VCardProperty> {
 	public class WriteTextTest {
 		protected final T property;
 		private VCardVersion versions[] = VCardVersion.values();
+		private boolean includeTrailingSemicolons = false;
 
 		public WriteTextTest(T property) {
 			this.property = property;
@@ -294,6 +296,17 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		/**
+		 * Sets whether to include trailing semicolons for structured property
+		 * values whose list of values end with null or empty values
+		 * @param include true to include them, false not to (defaults to false)
+		 * @return this
+		 */
+		public WriteTextTest includeTrailingSemicolons(boolean include) {
+			includeTrailingSemicolons = include;
+			return this;
+		}
+
+		/**
 		 * Runs the test, expecting a {@link SkipMeException} to be thrown.
 		 */
 		public void skipMe() {
@@ -306,7 +319,7 @@ public class Sensei<T extends VCardProperty> {
 		 */
 		public void run(String expected) {
 			for (VCardVersion version : versions) {
-				String actual = scribe.writeText(property, version);
+				String actual = scribe.writeText(property, new WriteContext(version, null, includeTrailingSemicolons));
 				assertEquals("Version " + version, expected, actual);
 			}
 		}
@@ -314,7 +327,7 @@ public class Sensei<T extends VCardProperty> {
 		public void run(Class<? extends RuntimeException> expected) {
 			for (VCardVersion version : versions) {
 				try {
-					scribe.writeText(property, version);
+					scribe.writeText(property, new WriteContext(version, null, false));
 					fail("Expected " + expected.getSimpleName());
 				} catch (RuntimeException t) {
 					assertEquals("Expected " + expected.getSimpleName() + ", but was " + t.getClass().getSimpleName(), expected, t.getClass());
