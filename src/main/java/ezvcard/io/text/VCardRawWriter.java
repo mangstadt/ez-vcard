@@ -130,7 +130,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 	private final FoldedLineWriter writer;
 	private boolean caretEncodingEnabled = false;
 	private VCardVersion version;
-	private TargetApplication targetApplication;
 
 	/**
 	 * @param writer the writer to wrap
@@ -262,38 +261,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 	}
 
 	/**
-	 * <p>
-	 * Gets the application that the vCards will be targeted for.
-	 * </p>
-	 * <p>
-	 * Some vCard consumers do not completely adhere to the vCard specifications
-	 * and require their vCards to be formatted in a specific way. See the
-	 * {@link TargetApplication} class for a list of these applications.
-	 * </p>
-	 * @return the target application or null if the vCards do not be given any
-	 * special processing (defaults to null)
-	 */
-	public TargetApplication getTargetApplication() {
-		return targetApplication;
-	}
-
-	/**
-	 * <p>
-	 * Sets the application that the vCards will be targeted for.
-	 * </p>
-	 * <p>
-	 * Some vCard consumers do not completely adhere to the vCard specifications
-	 * and require their vCards to be formatted in a specific way. See the
-	 * {@link TargetApplication} class for a list of these applications.
-	 * </p>
-	 * @param targetApplication the target application or null if the vCards do
-	 * not require any special processing (defaults to null)
-	 */
-	public void setTargetApplication(TargetApplication targetApplication) {
-		this.targetApplication = targetApplication;
-	}
-
-	/**
 	 * Writes a property marking the beginning of a component.
 	 * @param componentName the component name (e.g. "VCARD")
 	 * @throws IOException if there's a problem writing to the data stream
@@ -365,7 +332,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 		}
 
 		value = sanitizePropertyValue(value, parameters);
-		fixEncodingParameterForWindows10Contacts(parameters);
 
 		/*
 		 * Determine if the property value must be encoded in quoted printable
@@ -446,24 +412,6 @@ public class VCardRawWriter implements Closeable, Flushable {
 		writer.append(':');
 		writer.append(value, useQuotedPrintable, quotedPrintableCharset);
 		writer.append(writer.getNewline());
-	}
-
-	/**
-	 * @see TargetApplication#WINDOWS_10_CONTACTS
-	 */
-	private void fixEncodingParameterForWindows10Contacts(VCardParameters parameters) {
-		/*
-		 * Note: This code cannot be located in the VCardWriter class because
-		 * VCardRawWriter applies quoted-printable encoding to property values
-		 * if they have newlines and the target version is 2.1.
-		 */
-		if (targetApplication != TargetApplication.WINDOWS_10_CONTACTS) {
-			return;
-		}
-
-		if (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE) {
-			parameters.replace(VCardParameters.ENCODING, Encoding.QUOTED_PRINTABLE.getValue().toUpperCase());
-		}
 	}
 
 	/**

@@ -1,7 +1,5 @@
 package ezvcard.io.text;
 
-import ezvcard.parameter.Encoding;
-
 /*
  Copyright (c) 2012-2016, Michael Angstadt
  All rights reserved.
@@ -47,17 +45,5 @@ public enum TargetApplication {
 	 * href="https://github.com/mangstadt/ez-vcard/issues/21">Issue 21</a>).</li>
 	 * </ul>
 	 */
-	OUTLOOK,
-
-	/**
-	 * <p>
-	 * Windows 10 Contacts
-	 * </p>
-	 * <ul>
-	 * <li>The {@link Encoding#QUOTED_PRINTABLE} parameter value must be in all
-	 * caps (<a href="https://github.com/mangstadt/ez-vcard/issues/56">Issue
-	 * 56</a>).</li>
-	 * </ul>
-	 */
-	WINDOWS_10_CONTACTS
+	OUTLOOK
 }

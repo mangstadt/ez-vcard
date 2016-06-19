@@ -105,6 +105,7 @@ import ezvcard.util.IOUtils;
 public class VCardWriter extends StreamWriter implements Flushable {
 	private final VCardRawWriter writer;
 	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
+	private TargetApplication targetApplication;
 	private Boolean includeTrailingSemicolons;
 
 	/**
@@ -184,7 +185,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * special processing (defaults to null)
 	 */
 	public TargetApplication getTargetApplication() {
-		return writer.getTargetApplication();
+		return targetApplication;
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * not require any special processing (defaults to null)
 	 */
 	public void setTargetApplication(TargetApplication targetApplication) {
-		writer.setTargetApplication(targetApplication);
+		this.targetApplication = targetApplication;
 	}
 
 	/**
@@ -377,7 +378,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @see TargetApplication#OUTLOOK
 	 */
 	private void fixBinaryPropertyForOutlook(VCardProperty property) throws IOException {
-		if (writer.getTargetApplication() != TargetApplication.OUTLOOK) {
+		if (targetApplication != TargetApplication.OUTLOOK) {
 			return;
 		}
 
