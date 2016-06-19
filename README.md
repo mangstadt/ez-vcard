@@ -123,7 +123,7 @@ amarnathr ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/16)
 [bgorven](https://github.com/bgorven) (jackson-databind integration, jackson pretty printing, [round-trip testing](https://github.com/mangstadt/ez-vcard/pull/49))  
 Moritz Bechler (Geo URI bug fix)  
 Kiran Kumar Bhushan (quoted-printable bug)  
-[seanboylan](https://github.com/seanboylan) ([XXE vulnerability](https://github.com/mangstadt/ez-vcard/issues/55))  
+[Sean Boylan](https://github.com/seanboylan) ([XXE vulnerability](https://github.com/mangstadt/ez-vcard/issues/55))  
 Florian Brunner ([OSGi metadata](https://github.com/mangstadt/ez-vcard/issues/11))  
 Pratyush Chandra ([ez-vcard-android](http://github.com/mangstadt/ez-vcard-android))  
 Lívio Cipriano ([Issue 35](https://github.com/mangstadt/ez-vcard/issues/35))  
@@ -133,8 +133,9 @@ Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 [isindir](https://github.com/isindir) ([Javadoc fix](https://github.com/mangstadt/ez-vcard/pull/53))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
+[Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
-[rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32))  
+[rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32), [trailing semicolons issue](https://github.com/mangstadt/ez-vcard/issues/57))  
 [Steven Ruppert](https://github.com/blendmaster) ([folding surrogate character pairs](https://github.com/mangstadt/ez-vcard/pull/36), [parsing tel URIs](https://github.com/mangstadt/ez-vcard/pull/38))  
 Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
 David Spieler ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/19))  
@@ -144,6 +145,7 @@ Eike Weyl (Wiki fix, Javadoc fix)
 
 **Caffeine Suppliers**  
 'feine  
+Starbucks  
 Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
