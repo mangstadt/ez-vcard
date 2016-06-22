@@ -54,7 +54,8 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 
 	@Override
 	protected String _writeText(Revision property, WriteContext context) {
-		return write(property, false);
+		boolean extended = (context.getVersion() == VCardVersion.V3_0);
+		return write(property, extended);
 	}
 
 	@Override

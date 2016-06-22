@@ -1,5 +1,8 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.date;
 
 import java.util.Date;
@@ -58,7 +61,8 @@ public class RevisionScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withValue).run(datetimeStr);
+		sensei.assertWriteText(withValue).versions(V2_1, V4_0).run(datetimeStr);
+		sensei.assertWriteText(withValue).versions(V3_0).run(datetimeStrExt);
 		sensei.assertWriteText(empty).run("");
 	}
 
