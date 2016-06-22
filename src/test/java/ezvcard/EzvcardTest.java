@@ -482,7 +482,7 @@ public class EzvcardTest {
 			String expected =
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
+				"PHOTO;ENCODING=BASE64;JPEG:ZGF0YQ==\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
@@ -497,7 +497,7 @@ public class EzvcardTest {
 			String expected =
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"PHOTO;ENCODING=base64;JPEG:ZGF0YQ==\r\n" +
+				"PHOTO;ENCODING=BASE64;JPEG:ZGF0YQ==\r\n" +
 				"\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on

@@ -55,22 +55,26 @@ public class Encoding extends VCardParameter {
 	 * 56</a>
 	 */
 	@SupportedVersions({ V2_1 })
-	public static final Encoding QUOTED_PRINTABLE = new Encoding("QUOTED-PRINTABLE");
+	public static final Encoding QUOTED_PRINTABLE = new Encoding("QUOTED-PRINTABLE", true);
 
 	@SupportedVersions({ V2_1 })
-	public static final Encoding BASE64 = new Encoding("BASE64");
+	public static final Encoding BASE64 = new Encoding("BASE64", true);
 
 	@SupportedVersions({ V2_1 })
-	public static final Encoding _8BIT = new Encoding("8BIT");
+	public static final Encoding _8BIT = new Encoding("8BIT", true);
 
 	@SupportedVersions({ V2_1 })
-	public static final Encoding _7BIT = new Encoding("7BIT");
+	public static final Encoding _7BIT = new Encoding("7BIT", true);
 
 	@SupportedVersions({ V3_0 })
 	public static final Encoding B = new Encoding("b");
 
 	private Encoding(String value) {
 		super(value);
+	}
+
+	private Encoding(String value, boolean preserveCase) {
+		super(value, preserveCase);
 	}
 
 	/**

@@ -540,16 +540,16 @@ public class VCardWriterTest {
 			String expected =
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
-				"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
+				"KEY;ENCODING=BASE64;X509:Zm9vYmFy\r\n" +
+				"PHOTO;ENCODING=BASE64;JPEG:Zm9vYmFy\r\n" +
 				"LOGO;PNG;VALUE=url:http://www.company.com/logo.png\r\n" +
 				"NOTE:note\r\n" +
 			"END:VCARD\r\n" +
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"KEY;ENCODING=base64;X509:Zm9vYmFy\r\n" +
+				"KEY;ENCODING=BASE64;X509:Zm9vYmFy\r\n" +
 				"\r\n" +
-				"PHOTO;ENCODING=base64;JPEG:Zm9vYmFy\r\n" +
+				"PHOTO;ENCODING=BASE64;JPEG:Zm9vYmFy\r\n" +
 				"\r\n" +
 				"LOGO;PNG;VALUE=url:http://www.company.com/logo.png\r\n" +
 				"NOTE:note\r\n" +

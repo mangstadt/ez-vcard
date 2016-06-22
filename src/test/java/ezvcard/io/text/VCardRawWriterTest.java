@@ -474,7 +474,7 @@ public class VCardRawWriterTest {
 	 */
 	@Test
 	public void newlines_in_property_values() throws Throwable {
-		assertNewlinesInPropertyValues(VCardVersion.V2_1, "PROP;ENCODING=quoted-printable;CHARSET=UTF-8:one=0D=0Atwo\r\n");
+		assertNewlinesInPropertyValues(VCardVersion.V2_1, "PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:one=0D=0Atwo\r\n");
 		assertNewlinesInPropertyValues(VCardVersion.V3_0, "PROP:one\\ntwo\r\n");
 		assertNewlinesInPropertyValues(VCardVersion.V4_0, "PROP:one\\ntwo\r\n");
 	}
@@ -507,12 +507,12 @@ public class VCardRawWriterTest {
 		writer.close();
 
 		//must construct the first line differently, since the length of the CHARSET parameter will vary depending on the local machine
-		String firstLine = "PROP;ENCODING=quoted-printable;CHARSET=UTF-8:quoted-printable =0D=0Aline";
+		String firstLine = "PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:quoted-printable =0D=0Aline";
 		firstLine = firstLine.substring(0, 59) + "=\r\n " + firstLine.substring(59);
 
 		//@formatter:off
 		String expected = firstLine + "\r\n" +
-		"PROP;ENCODING=quoted-printable;CHARSET=UTF-8:short\r\n";
+		"PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:short\r\n";
 		//@formatter:on
 
 		String actual = sw.toString();
@@ -537,7 +537,7 @@ public class VCardRawWriterTest {
 
 			//@formatter:off
 			String expected =
-			"PROP;ENCODING=quoted-printable;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n";
+			"PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=A4=C3=B6=C3=BC=C3=9F\r\n";
 			//@formatter:on
 
 			String actual = sw.toString();
@@ -558,7 +558,7 @@ public class VCardRawWriterTest {
 
 			//@formatter:off
 			String expected =
-			"PROP;ENCODING=quoted-printable;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n";
+			"PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=ISO-8859-1:=E4=F6=FC=DF\r\n";
 			//@formatter:on
 
 			String actual = sw.toString();
@@ -582,7 +582,7 @@ public class VCardRawWriterTest {
 
 			//@formatter:off
 			String expected =
-			"PROP;ENCODING=quoted-printable;CHARSET=UTF-8:" + encoded + "\r\n";
+			"PROP;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:" + encoded + "\r\n";
 			//@formatter:on
 
 			String actual = sw.toString();

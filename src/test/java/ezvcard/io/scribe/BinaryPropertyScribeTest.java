@@ -101,11 +101,11 @@ public class BinaryPropertyScribeTest {
 		sensei.assertPrepareParams(withUrl).versions(V2_1, V3_0).expected("TYPE", "jpeg").run();
 		sensei.assertPrepareParams(withUrl).versions(V4_0).expected("MEDIATYPE", "image/jpeg").run();
 
-		sensei.assertPrepareParams(withData).versions(V2_1).expected("TYPE", "jpeg").expected("ENCODING", "base64").run();
+		sensei.assertPrepareParams(withData).versions(V2_1).expected("TYPE", "jpeg").expected("ENCODING", "BASE64").run();
 		sensei.assertPrepareParams(withData).versions(V3_0).expected("TYPE", "jpeg").expected("ENCODING", "b").run();
 		sensei.assertPrepareParams(withData).versions(V4_0).expected("TYPE", "work").run();
 
-		sensei.assertPrepareParams(withDataNoContentType).versions(V2_1).expected("ENCODING", "base64").run();
+		sensei.assertPrepareParams(withDataNoContentType).versions(V2_1).expected("ENCODING", "BASE64").run();
 		sensei.assertPrepareParams(withDataNoContentType).versions(V3_0).expected("ENCODING", "b").run();
 		sensei.assertPrepareParams(withDataNoContentType).versions(V4_0).run();
 	}

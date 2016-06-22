@@ -50,7 +50,17 @@ public class VCardParameter {
 	 * @param value the value
 	 */
 	public VCardParameter(String value) {
-		this.value = (value == null) ? null : value.toLowerCase();
+		this(value, false);
+	}
+
+	/**
+	 * Creates a new parameter.
+	 * @param value the value
+	 * @param preserveCase true to preserve the case of the value, false convert
+	 * it to lower-case
+	 */
+	protected VCardParameter(String value, boolean preserveCase) {
+		this.value = (value == null || preserveCase) ? value : value.toLowerCase();
 	}
 
 	/**
