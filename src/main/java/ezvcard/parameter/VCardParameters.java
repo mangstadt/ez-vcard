@@ -1520,7 +1520,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 			}
 
 			int entryHash = 1;
-			entryHash += prime * entryHash + key.toLowerCase().hashCode();
+			entryHash += prime * entryHash + ((key == null) ? 0 : key.toLowerCase().hashCode());
 			entryHash += prime * entryHash + valueHash;
 
 			result += entryHash;
