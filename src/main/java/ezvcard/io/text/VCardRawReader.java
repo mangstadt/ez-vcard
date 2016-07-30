@@ -153,7 +153,12 @@ public class VCardRawReader implements Closeable {
 		 * Does the line use quoted-printable encoding, and does it end all of
 		 * its folded lines with a "=" character?
 		 */
-		boolean quotedPrintableLine = false;
+		boolean foldedQuotedPrintableLine = false;
+
+		/*
+		 * Are we currently inside the whitespace that prepends a folded line?
+		 */
+		boolean inFoldedLineWhitespace = false;
 
 		/*
 		 * The current character.
@@ -185,8 +190,8 @@ public class VCardRawReader implements Closeable {
 			}
 
 			if (isNewline(ch)) {
-				quotedPrintableLine = (inValue && prevChar == '=' && isQuotedPrintable(parameters));
-				if (quotedPrintableLine) {
+				foldedQuotedPrintableLine = (inValue && prevChar == '=' && isQuotedPrintable(parameters));
+				if (foldedQuotedPrintableLine) {
 					/*
 					 * Remove the "=" character that some vCards put at the end
 					 * of quoted-printable lines that are followed by a folded
@@ -208,15 +213,16 @@ public class VCardRawReader implements Closeable {
 					 * This line is a continuation of the previous line (the
 					 * line is folded).
 					 */
+					inFoldedLineWhitespace = true;
 					continue;
 				}
 
-				if (quotedPrintableLine) {
+				if (foldedQuotedPrintableLine) {
 					/*
 					 * The property's parameters indicate that the property
 					 * value is quoted-printable. And the previous line ended
 					 * with an equals sign. This means that folding whitespace
-					 * may not be prepended to folded lines like it should...
+					 * may not be prepended to folded lines like it should.
 					 */
 				} else {
 					/*
@@ -225,6 +231,17 @@ public class VCardRawReader implements Closeable {
 					this.prevChar = ch;
 					break;
 				}
+			}
+
+			if (inFoldedLineWhitespace) {
+				if (isWhitespace(ch) && version == VCardVersion.V2_1) {
+					/*
+					 * 2.1 allows multiple whitespace characters to be used for
+					 * folding (section 2.1.3).
+					 */
+					continue;
+				}
+				inFoldedLineWhitespace = false;
 			}
 
 			unfoldedLine.append(ch);

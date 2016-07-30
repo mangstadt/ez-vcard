@@ -225,10 +225,6 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			if (value.startsWith("http")) {
 				return _newInstance(value, contentType);
 			}
-
-			//remove the folding whitespace left over from improperly-folded lines
-			value = removeWhitespace(value);
-
 			return _newInstance(Base64.decodeBase64(value), contentType);
 		case V4_0:
 			return _newInstance(value, contentType);
@@ -301,9 +297,6 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			//parse as binary
 			Encoding encodingSubType = parameters.getEncoding();
 			if (encodingSubType == Encoding.BASE64 || encodingSubType == Encoding.B) {
-				//remove the folding whitespace left over from improperly-folded lines
-				value = removeWhitespace(value);
-
 				return _newInstance(Base64.decodeBase64(value), contentType);
 			}
 
@@ -321,10 +314,6 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		}
 
 		return cannotUnmarshalValue(value, version, warnings, contentType);
-	}
-
-	private String removeWhitespace(String base64) {
-		return base64.replaceAll("[ \\t]", "");
 	}
 
 	private String write(T property, VCardVersion version) {

@@ -6,6 +6,8 @@ import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.utc;
 
+import java.io.FileOutputStream;
+
 import org.junit.Test;
 
 import ezvcard.VCard;
@@ -758,7 +760,7 @@ public class SampleVCardsTest {
 	public void gmailSingle2() throws Throwable {
 		VCardAsserter asserter = read("gmail-single2.vcf");
 		asserter.next(V3_0);
-		
+
 		//@formatter:off
 		asserter.simpleProperty(FormattedName.class)
 			.value("VCard Test")
@@ -1701,6 +1703,10 @@ public class SampleVCardsTest {
 		asserter.dateProperty(Birthday.class)
 			.date("2012-06-06")
 		.noMore();
+		
+		FileOutputStream out = new FileOutputStream("temp.jpg");
+		out.write(asserter.getVCard().getPhotos().get(0).getData());
+		out.close();
 		
 		asserter.binaryProperty(Photo.class)
 			.param("ENCODING", "BASE64")

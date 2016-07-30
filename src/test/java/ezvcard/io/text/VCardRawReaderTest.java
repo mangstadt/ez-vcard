@@ -1,8 +1,10 @@
 package ezvcard.io.text;
 
 import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -472,21 +474,53 @@ public class VCardRawReaderTest {
 		"\t \tfour\r\n";
 		//@formatter:on
 
-		VCardRawReader reader = create(vcard);
+		//2.1 allows multiple whitespace folding characters
+		{
+			VCardVersion version = V2_1;
 
-		VCardRawLine expected = line("FN").value("Michael Angstadt").build();
-		VCardRawLine actual = reader.readLine();
-		assertEquals(expected, actual);
+			VCardRawReader reader = create("VERSION:" + version.getVersion() + "\r\n" + vcard);
 
-		expected = line("NOTE").value("folded line").build();
-		actual = reader.readLine();
-		assertEquals(expected, actual);
+			VCardRawLine expected = line("VERSION").value(version.getVersion()).build();
+			VCardRawLine actual = reader.readLine();
+			assertEquals(expected, actual);
 
-		expected = line("NOTE").value("one two  three  \tfour").build();
-		actual = reader.readLine();
-		assertEquals(expected, actual);
+			expected = line("FN").value("Michael Angstadt").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
 
-		assertNull(reader.readLine());
+			expected = line("NOTE").value("folded line").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			expected = line("NOTE").value("one two three four").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			assertNull(reader.readLine());
+		}
+
+		//3.0 and 4.0 only allow a single whitespace character
+		for (VCardVersion version : each(V3_0, V4_0)) {
+			VCardRawReader reader = create("VERSION:" + version.getVersion() + "\r\n" + vcard);
+
+			VCardRawLine expected = line("VERSION").value(version.getVersion()).build();
+			VCardRawLine actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			expected = line("FN").value("Michael Angstadt").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			expected = line("NOTE").value("folded line").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			expected = line("NOTE").value("one two  three  \tfour").build();
+			actual = reader.readLine();
+			assertEquals(expected, actual);
+
+			assertNull(reader.readLine());
+		}
 	}
 
 	@Test
@@ -681,14 +715,14 @@ public class VCardRawReaderTest {
 		assertEquals(line("LABEL")
 			.param(null, "HOME")
 			.param("ENCODING", "QUOTED-PRINTABLE")
-			.value("Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0A USA")
+			.value("Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA")
 			.build(),
 		reader.readLine());
 		
 		assertEquals(line("LABEL")
 			.param(null, "HOME")
 			.param("ENCODING", "QUOTED-PRINTABLE")
-			.value("Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0A USA")
+			.value("Silicon Alley 5,=0D=0ANew York, New York  12345=0D=0AUSA")
 			.build(),
 		reader.readLine());
 

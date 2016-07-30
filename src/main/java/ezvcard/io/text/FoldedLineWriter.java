@@ -199,9 +199,15 @@ public class FoldedLineWriter extends Writer {
 				/*
 				 * If the last characters on the line are whitespace, then
 				 * exceed the max line length in order to include the whitespace
-				 * on the same line. Otherwise, the whitespace will be lost
-				 * because it will merge with the padding on the next, folded
-				 * line.
+				 * on the same line.
+				 * 
+				 * This is to prevent the whitespace from merging with the
+				 * padding whitespace of the following folded line and
+				 * potentially being lost. 2.1 allows multiple whitespace
+				 * characters to be used for folding, so it could get lost here.
+				 * 3.0 and 4.0 only allow one character to be used, so it
+				 * shouldn't be lost for these versions, but better safe than
+				 * sorry.
 				 */
 				if (Character.isWhitespace(c)) {
 					while (Character.isWhitespace(c) && i < end - 1) {
