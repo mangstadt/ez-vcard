@@ -12,7 +12,7 @@ ez-vcard is a vCard library written in Java.  It can read and write vCards in ma
 
 <p align="center"><strong><a href="https://github.com/mangstadt/ez-vcard/wiki/Downloads">Downloads</a> |
 <a href="http://mangstadt.github.io/ez-vcard/javadocs/latest/index.html">Javadocs</a> |
-<a href="#maven">Maven</a> | <a href="https://github.com/mangstadt/ez-vcard/wiki">Documentation</a></strong></p>
+<a href="#mavengradle">Maven/Gradle</a> | <a href="https://github.com/mangstadt/ez-vcard/wiki">Documentation</a></strong></p>
 
 ```java
 String str =
@@ -67,7 +67,9 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
-# Maven
+# Maven/Gradle
+
+**Maven**
 
 ```xml
 <dependency>
@@ -75,6 +77,12 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
    <artifactId>ez-vcard</artifactId>
    <version>0.9.10</version>
 </dependency>
+```
+
+**Gradle**
+
+```
+compile 'com.googlecode.ez-vcard:ez-vcard:0.9.10'
 ```
 
 # Build Instructions
