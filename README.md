@@ -6,6 +6,7 @@
 | Code Coverage: | [![codecov.io](http://codecov.io/github/mangstadt/ez-vcard/coverage.svg?branch=master)](http://codecov.io/github/mangstadt/ez-vcard?branch=master) |
 | Maven Central: | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard) |
 | Chat Room: | [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mangstadt/ez-vcard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) |
+| Q & A: | [![Codewake](https://www.codewake.com/badges/ask_question.svg)](https://www.codewake.com/p/ez-vcard) |
 | License: | [![FreeBSD License](https://img.shields.io/badge/License-FreeBSD-red.svg)](https://github.com/mangstadt/ez-vcard/blob/master/LICENSE) |
 
 ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
@@ -99,8 +100,8 @@ To build a JAR: `mvn package`
 
 You have some options:
 
- * [Google Groups discussion forum](http://groups.google.com/group/ez-vcard-discuss)
  * [Gitter chat room](https://gitter.im/mangstadt/ez-vcard)
+ * [codewake Q&A forum](https://www.codewake.com/p/ez-vcard)
  * [Post a question to StackOverflow](http://stackoverflow.com/questions/ask) with `vcard` as a tag.
  * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
