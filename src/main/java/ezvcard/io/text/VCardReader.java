@@ -295,7 +295,8 @@ public class VCardReader extends StreamReader {
 				}
 
 				//get the data type (VALUE parameter)
-				VCardDataType dataType = parameters.getValue();
+				VCardDataType valueParameter = parameters.getValue();
+				VCardDataType dataType = valueParameter;
 				if (dataType == null) {
 					//use the default data type if there is no VALUE parameter
 					dataType = scribe.defaultDataType(version);
@@ -330,8 +331,9 @@ public class VCardReader extends StreamReader {
 					warnings.add(reader.getLineNumber(), name, 22, e.getMessage());
 				} catch (CannotParseException e) {
 					warnings.add(reader.getLineNumber(), name, 25, value, e.getMessage());
-					property = new RawProperty(name, value);
+					property = new RawProperty(name, value, valueParameter);
 					property.setGroup(group);
+					property.setParameters(parameters);
 					curVCard.addProperty(property);
 				} catch (EmbeddedVCardException e) {
 					//parse an embedded vCard (i.e. the AGENT type)

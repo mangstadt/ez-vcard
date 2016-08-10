@@ -793,8 +793,7 @@ public class VCardReaderTest {
 		String str =
 		"BEGIN:VCARD\r\n" +
 			"VERSION:3.0\r\n" +
-			"CANNOTPARSE:value\r\n" +
-			"group.CANNOTPARSE:value\r\n" +
+			"group.CANNOTPARSE;PARAM=value;VALUE=text:value\r\n" +
 			"X-FOO:value\r\n" +
 		"END:VCARD\r\n";
 
@@ -809,13 +808,13 @@ public class VCardReaderTest {
 		.noMore();
 		
 		asserter.rawProperty("CANNOTPARSE")
-			.value("value")
-		.next()
 			.group("group")
+			.param("PARAM", "value")
+			.dataType(VCardDataType.TEXT)
 			.value("value")
 		.noMore();
 
-		asserter.warnings(2);
+		asserter.warnings(1);
 		asserter.done();
 		//@formatter:on
 	}
