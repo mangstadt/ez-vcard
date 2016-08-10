@@ -115,7 +115,7 @@ import ezvcard.util.StringUtils;
  */
 public class VCard implements Iterable<VCardProperty> {
 	private VCardVersion version;
-	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();;
+	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
 
 	/**
 	 * Creates a new vCard set to version 3.0.
