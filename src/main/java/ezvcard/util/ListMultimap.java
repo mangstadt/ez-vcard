@@ -72,7 +72,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * Creates an empty multimap.
 	 */
 	public ListMultimap() {
-		map = new LinkedHashMap<K, List<V>>();
+		this(new LinkedHashMap<K, List<V>>());
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @param initialCapacity the initial capacity of the underlying map.
 	 */
 	public ListMultimap(int initialCapacity) {
-		map = new LinkedHashMap<K, List<V>>(initialCapacity);
+		this(new LinkedHashMap<K, List<V>>(initialCapacity));
 	}
 
 	/**
@@ -88,19 +88,32 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @param orig the multimap to copy from
 	 */
 	public ListMultimap(ListMultimap<K, V> orig) {
-		this(orig.map);
+		this(copy(orig.map));
 	}
 
-	/**
-	 * Creates a copy of an existing map.
-	 * @param orig the map to copy from
-	 */
-	public ListMultimap(Map<K, List<V>> orig) {
-		map = new LinkedHashMap<K, List<V>>(orig.size());
+	private static <K, V> Map<K, List<V>> copy(Map<K, List<V>> orig) {
+		Map<K, List<V>> map = new LinkedHashMap<K, List<V>>(orig.size());
 		for (Map.Entry<K, List<V>> entry : orig.entrySet()) {
 			List<V> values = new ArrayList<V>(entry.getValue());
 			map.put(entry.getKey(), values);
 		}
+		return map;
+	}
+
+	/**
+	 * <p>
+	 * Creates a new multimap backed by the given map. Changes made to the given
+	 * map will effect the multimap and vice versa.
+	 * </p>
+	 * <p>
+	 * To avoid problems, it is highly recommended that the given map NOT be
+	 * modified by anything other than this {@link ListMultimap} class after
+	 * being passed into this constructor.
+	 * </p>
+	 * @param map the backing map
+	 */
+	public ListMultimap(Map<K, List<V>> map) {
+		this.map = map;
 	}
 
 	/**

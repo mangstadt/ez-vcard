@@ -383,6 +383,22 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	/**
 	 * <p>
+	 * Creates a parameter list that is backed by the given map. Any changes
+	 * made to the given map will effect the parameter list and vice versa.
+	 * </p>
+	 * <p>
+	 * To avoid problems, it is highly recommended that the given map NOT be
+	 * modified by anything other than this {@link VCardParameters} class after
+	 * being passed into this constructor.
+	 * </p>
+	 * @param map the map
+	 */
+	public VCardParameters(Map<String, List<String>> map) {
+		super(map);
+	}
+
+	/**
+	 * <p>
 	 * Gets the ALTID parameter value.
 	 * </p>
 	 * <p>
