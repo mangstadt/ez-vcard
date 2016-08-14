@@ -13,7 +13,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import ezvcard.VCard;
@@ -29,7 +28,6 @@ import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Label;
-import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.org.apache.commons.codec.DecoderException;
@@ -95,6 +93,7 @@ public class VCardReader extends StreamReader {
 	private Charset defaultQuotedPrintableCharset;
 
 	/**
+	 * Creates a new vCard reader.
 	 * @param str the string to read from
 	 */
 	public VCardReader(String str) {
@@ -102,6 +101,7 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
+	 * Creates a new vCard reader.
 	 * @param in the input stream to read from
 	 */
 	public VCardReader(InputStream in) {
@@ -109,6 +109,7 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
+	 * Creates a new vCard reader.
 	 * @param file the file to read from
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
@@ -117,6 +118,7 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
+	 * Creates a new vCard reader.
 	 * @param reader the reader to read from
 	 */
 	public VCardReader(Reader reader) {
@@ -197,17 +199,21 @@ public class VCardReader extends StreamReader {
 
 	@Override
 	protected VCard _readNext() throws IOException {
+		/*
+		 * Although this almost never happens, vCards can be nested inside of
+		 * each other (see: AGENT property).
+		 */
 		VCard root = null;
-		LinkedList<VCard> vcardStack = new LinkedList<VCard>();
-		LinkedList<List<Label>> labelStack = new LinkedList<List<Label>>();
+		VCardStack stack = new VCardStack();
 		EmbeddedVCardException embeddedVCardException = null;
+
 		while (true) {
 			//read next line
 			VCardRawLine line;
 			try {
 				line = reader.readLine();
 			} catch (VCardParseException e) {
-				if (!vcardStack.isEmpty()) {
+				if (!stack.isEmpty()) {
 					warnings.add(e.getLineNumber(), null, 27, e.getMessage(), e.getLine());
 				}
 				continue;
@@ -222,8 +228,7 @@ public class VCardReader extends StreamReader {
 			if ("BEGIN".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
 				VCard vcard = new VCard();
 				vcard.setVersion(reader.getVersion());
-				vcardStack.add(vcard);
-				labelStack.add(new ArrayList<Label>());
+				stack.push(vcard);
 
 				if (root == null) {
 					root = vcard;
@@ -237,24 +242,23 @@ public class VCardReader extends StreamReader {
 				continue;
 			}
 
-			if (vcardStack.isEmpty()) {
+			if (stack.isEmpty()) {
 				//BEGIN component hasn't been encountered yet, so skip this line
 				continue;
 			}
 
 			//handle VERSION property
 			if ("VERSION".equalsIgnoreCase(line.getName())) {
-				vcardStack.getLast().setVersion(reader.getVersion());
+				stack.peek().vcard.setVersion(reader.getVersion());
 				continue;
 			}
 
 			//handle END:VCARD
 			if ("END".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
-				VCard curVCard = vcardStack.removeLast();
-				List<Label> labels = labelStack.removeLast();
-				assignLabels(curVCard, labels);
+				VCardStack.Item item = stack.pop();
+				assignLabels(item.vcard, item.labels);
 
-				if (vcardStack.isEmpty()) {
+				if (stack.isEmpty()) {
 					//done reading the vCard
 					break;
 				}
@@ -274,7 +278,7 @@ public class VCardReader extends StreamReader {
 					embeddedVCardException = null;
 				}
 
-				VCard curVCard = vcardStack.getLast();
+				VCard curVCard = stack.peek().vcard;
 				VCardVersion version = curVCard.getVersion();
 
 				//sanitize the parameters
@@ -295,14 +299,11 @@ public class VCardReader extends StreamReader {
 				}
 
 				//get the data type (VALUE parameter)
-				VCardDataType valueParameter = parameters.getValue();
-				VCardDataType dataType = valueParameter;
+				VCardDataType dataType = parameters.getValue();
+				parameters.setValue(null);
 				if (dataType == null) {
-					//use the default data type if there is no VALUE parameter
+					//use the property's default data type if there is no VALUE parameter
 					dataType = scribe.defaultDataType(version);
-				} else {
-					//remove VALUE parameter if it is set
-					parameters.setValue(null);
 				}
 
 				VCardProperty property;
@@ -323,7 +324,7 @@ public class VCardReader extends StreamReader {
 						 * belong to.
 						 */
 						Label label = (Label) property;
-						labelStack.getLast().add(label);
+						stack.peek().labels.add(label);
 					} else {
 						curVCard.addProperty(property);
 					}
@@ -331,9 +332,8 @@ public class VCardReader extends StreamReader {
 					warnings.add(reader.getLineNumber(), name, 22, e.getMessage());
 				} catch (CannotParseException e) {
 					warnings.add(reader.getLineNumber(), name, 25, value, e.getMessage());
-					property = new RawProperty(name, value, valueParameter);
+					property = new RawPropertyScribe(name).parseText(value, dataType, version, parameters).getProperty();
 					property.setGroup(group);
-					property.setParameters(parameters);
 					curVCard.addProperty(property);
 				} catch (EmbeddedVCardException e) {
 					//parse an embedded vCard (i.e. the AGENT type)
@@ -481,6 +481,55 @@ public class VCardReader extends StreamReader {
 
 		QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());
 		return codec.decode(value);
+	}
+
+	/**
+	 * Keeps track of the hierarchy of nested vCards.
+	 */
+	private static class VCardStack {
+		private final List<Item> stack = new ArrayList<Item>();
+
+		/**
+		 * Adds a vCard to the stack.
+		 * @param vcard the vcard to add
+		 */
+		public void push(VCard vcard) {
+			stack.add(new Item(vcard, new ArrayList<Label>()));
+		}
+
+		/**
+		 * Removes the top item from the stack and returns it.
+		 * @return the last item or null if the stack is empty
+		 */
+		public Item pop() {
+			return isEmpty() ? null : stack.remove(stack.size() - 1);
+		}
+
+		/**
+		 * Gets the top item of the stack.
+		 * @return the top item
+		 */
+		public Item peek() {
+			return isEmpty() ? null : stack.get(stack.size() - 1);
+		}
+
+		/**
+		 * Determines if the stack is empty.
+		 * @return true if it's empty, false if not
+		 */
+		public boolean isEmpty() {
+			return stack.isEmpty();
+		}
+
+		private static class Item {
+			public final VCard vcard;
+			public final List<Label> labels;
+
+			public Item(VCard vcard, List<Label> labels) {
+				this.vcard = vcard;
+				this.labels = labels;
+			}
+		}
 	}
 
 	/**
