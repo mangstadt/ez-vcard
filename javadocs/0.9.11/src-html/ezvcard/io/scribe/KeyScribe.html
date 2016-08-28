@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../syntaxhighlighter.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.io.scribe;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import ezvcard.parameter.KeyType;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import ezvcard.property.Key;<a name="line.4"></a>
+<span class="sourceLineNo">005</span><a name="line.5"></a>
+<span class="sourceLineNo">006</span>/*<a name="line.6"></a>
+<span class="sourceLineNo">007</span> Copyright (c) 2012-2016, Michael Angstadt<a name="line.7"></a>
+<span class="sourceLineNo">008</span> All rights reserved.<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span> Redistribution and use in source and binary forms, with or without<a name="line.10"></a>
+<span class="sourceLineNo">011</span> modification, are permitted provided that the following conditions are met: <a name="line.11"></a>
+<span class="sourceLineNo">012</span><a name="line.12"></a>
+<span class="sourceLineNo">013</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.13"></a>
+<span class="sourceLineNo">014</span> list of conditions and the following disclaimer. <a name="line.14"></a>
+<span class="sourceLineNo">015</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.15"></a>
+<span class="sourceLineNo">016</span> this list of conditions and the following disclaimer in the documentation<a name="line.16"></a>
+<span class="sourceLineNo">017</span> and/or other materials provided with the distribution. <a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.19"></a>
+<span class="sourceLineNo">020</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.20"></a>
+<span class="sourceLineNo">021</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.21"></a>
+<span class="sourceLineNo">022</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.22"></a>
+<span class="sourceLineNo">023</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.23"></a>
+<span class="sourceLineNo">024</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.24"></a>
+<span class="sourceLineNo">025</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.25"></a>
+<span class="sourceLineNo">026</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.26"></a>
+<span class="sourceLineNo">027</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.27"></a>
+<span class="sourceLineNo">028</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.28"></a>
+<span class="sourceLineNo">029</span> */<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>/**<a name="line.31"></a>
+<span class="sourceLineNo">032</span> * Marshals {@link Key} properties.<a name="line.32"></a>
+<span class="sourceLineNo">033</span> * @author Michael Angstadt<a name="line.33"></a>
+<span class="sourceLineNo">034</span> */<a name="line.34"></a>
+<span class="sourceLineNo">035</span>public class KeyScribe extends BinaryPropertyScribe&lt;Key, KeyType&gt; {<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        public KeyScribe() {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                super(Key.class, "KEY");<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        }<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>        @Override<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        protected KeyType _mediaTypeFromTypeParameter(String type) {<a name="line.41"></a>
+<span class="sourceLineNo">042</span>                return KeyType.get(type, null, null);<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>        @Override<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        protected KeyType _mediaTypeFromMediaTypeParameter(String mediaType) {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>                return KeyType.get(null, mediaType, null);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>        @Override<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        protected KeyType _mediaTypeFromFileExtension(String extension) {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                return KeyType.find(null, null, extension);<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        }<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>        @Override<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        protected Key _newInstance(String uri, KeyType contentType) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                return new Key(uri, contentType);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        @Override<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        protected Key _newInstance(byte[] data, KeyType contentType) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                return new Key(data, contentType);<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
+<span class="sourceLineNo">064</span>}<a name="line.64"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
