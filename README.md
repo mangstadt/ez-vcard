@@ -54,6 +54,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**August 28, 2016**
+
+[Version 0.9.11](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **May 17, 2016**
 
 [Version 0.9.10](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -76,14 +80,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.9.10</version>
+   <version>0.9.11</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.9.10'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.9.11'
 ```
 
 # Build Instructions
@@ -154,13 +158,14 @@ Tom Vogel ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/iss
 Eike Weyl (Wiki fix, Javadoc fix)  
 沈健 (plain-text vCard formatting issue)
 
+**Donators**  
+[DAVDroid](https://davdroid.bitfire.at/)
+
 **Caffeine Suppliers**  
 'feine  
 Starbucks  
 Volo Coffeehouse
 
 _No animals were harmed in the making of this library._
-
-Thank you to [DAVDroid](https://davdroid.bitfire.at/) for their generous donation.
 
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=8CEN7MPKRBKU6&lc=US&item_name=Michael%20Angstadt&item_number=ez%2dvcard&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
