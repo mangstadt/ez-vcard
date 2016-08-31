@@ -2,6 +2,10 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -67,8 +71,40 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 
 	@Override
 	protected Geo _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
-		return parse(value, version);
+		if (value.length() == 0) {
+			return new Geo((GeoUri) null);
+		}
+
+		switch (version) {
+		case V2_1:
+		case V3_0:
+			SemiStructuredValueIterator it = new SemiStructuredValueIterator(value);
+			String latitudeStr = it.next();
+			String longitudeStr = it.next();
+			if (latitudeStr == null || longitudeStr == null) {
+				throw new CannotParseException(11);
+			}
+
+			Double latitude;
+			try {
+				latitude = Double.valueOf(latitudeStr);
+			} catch (NumberFormatException e) {
+				throw new CannotParseException(8, latitudeStr);
+			}
+
+			Double longitude;
+			try {
+				longitude = Double.valueOf(longitudeStr);
+			} catch (NumberFormatException e) {
+				throw new CannotParseException(10, longitudeStr);
+			}
+
+			return new Geo(latitude, longitude);
+		case V4_0:
+			value = VObjectPropertyValues.unescape(value);
+			return parseGeoUri(value);
+		}
+		return null;
 	}
 
 	@Override
@@ -80,7 +116,10 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	protected Geo _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
-			return parse(value, element.version());
+			if (value.length() == 0) {
+				return new Geo((GeoUri) null);
+			}
+			return parseGeoUri(value);
 		}
 
 		throw missingXmlElements(VCardDataType.URI);
@@ -122,47 +161,19 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 
 	@Override
 	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		return parse(value.asSingle(), VCardVersion.V4_0);
-	}
-
-	private Geo parse(String value, VCardVersion version) {
-		if (value == null || value.length() == 0) {
+		String valueStr = value.asSingle();
+		if (valueStr.length() == 0) {
 			return new Geo((GeoUri) null);
 		}
+		return parseGeoUri(valueStr);
+	}
 
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			SemiStructuredIterator it = semistructured(value);
-			String latitudeStr = it.next();
-			String longitudeStr = it.next();
-			if (latitudeStr == null || longitudeStr == null) {
-				throw new CannotParseException(11);
-			}
-
-			Double latitude;
-			try {
-				latitude = Double.valueOf(latitudeStr);
-			} catch (NumberFormatException e) {
-				throw new CannotParseException(8, latitudeStr);
-			}
-
-			Double longitude;
-			try {
-				longitude = Double.valueOf(longitudeStr);
-			} catch (NumberFormatException e) {
-				throw new CannotParseException(10, longitudeStr);
-			}
-
-			return new Geo(latitude, longitude);
-		case V4_0:
-			try {
-				return new Geo(GeoUri.parse(value));
-			} catch (IllegalArgumentException e) {
-				throw new CannotParseException(12);
-			}
+	private Geo parseGeoUri(String value) {
+		try {
+			return new Geo(GeoUri.parse(value));
+		} catch (IllegalArgumentException e) {
+			throw new CannotParseException(12);
 		}
-		return null;
 	}
 
 	private String write(Geo property, VCardVersion version) {
@@ -174,7 +185,10 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 		case V2_1:
 		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
-			return structured(formatter.format(property.getLatitude()), formatter.format(property.getLongitude()));
+			StructuredValueBuilder builder = new StructuredValueBuilder();
+			builder.append(formatter.format(property.getLatitude()));
+			builder.append(formatter.format(property.getLongitude()));
+			return builder.build();
 		case V4_0:
 			return property.getGeoUri().toString(6);
 		}

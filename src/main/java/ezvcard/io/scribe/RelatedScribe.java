@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
@@ -69,7 +71,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 
 		String text = property.getText();
 		if (text != null) {
-			return escape(text);
+			return VObjectPropertyValues.escape(text);
 		}
 
 		return "";
@@ -77,7 +79,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 
 	@Override
 	protected Related _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 
 		Related property = new Related();
 		if (dataType == VCardDataType.TEXT) {

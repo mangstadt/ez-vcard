@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -76,7 +78,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	protected String _writeText(Telephone property, WriteContext context) {
 		String text = property.getText();
 		if (text != null) {
-			return escape(text);
+			return VObjectPropertyValues.escape(text);
 		}
 
 		TelUri uri = property.getUri();
@@ -86,10 +88,8 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 			}
 
 			String ext = uri.getExtension();
-			if (ext == null) {
-				return escape(uri.getNumber());
-			}
-			return escape(uri.getNumber() + " x" + ext);
+			String value = (ext == null) ? uri.getNumber() : uri.getNumber() + " x" + ext;
+			return VObjectPropertyValues.escape(value);
 		}
 
 		return "";
@@ -97,7 +97,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 	@Override
 	protected Telephone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		return parse(value, dataType, warnings);
 	}
 

@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
@@ -58,12 +60,12 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	@Override
 	protected String _writeText(T property, WriteContext context) {
 		String value = _writeValue(property);
-		return (value == null) ? "" : escape(value);
+		return (value == null) ? "" : VObjectPropertyValues.escape(value);
 	}
 
 	@Override
 	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		return _parseValue(value);
 	}
 

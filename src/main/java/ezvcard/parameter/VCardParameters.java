@@ -6,13 +6,16 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.github.mangstadt.vinnie.SyntaxStyle;
+import com.github.mangstadt.vinnie.validate.AllowedCharacters;
+import com.github.mangstadt.vinnie.validate.VObjectValidator;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
@@ -27,7 +30,6 @@ import ezvcard.property.Photo;
 import ezvcard.property.SortString;
 import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
-import ezvcard.util.CharacterBitSet;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
@@ -385,6 +387,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <p>
 	 * Creates a parameter list that is backed by the given map. Any changes
 	 * made to the given map will effect the parameter list and vice versa.
+	 * </p>
+	 * <p>
+	 * Care must be taken to ensure that the given map's keys are all in
+	 * uppercase.
 	 * </p>
 	 * <p>
 	 * To avoid problems, it is highly recommended that the given map NOT be
@@ -1310,10 +1316,22 @@ public class VCardParameters extends ListMultimap<String, String> {
 	}
 
 	/**
-	 * Checks this parameters list for data consistency problems or deviations
-	 * from the spec. These problems will not prevent the vCard from being
-	 * written to a data stream, but may prevent it from being parsed correctly
-	 * by the consuming application.
+	 * <p>
+	 * Checks the parameters for data consistency problems or deviations from
+	 * the specification.
+	 * </p>
+	 * <p>
+	 * These problems will not prevent the vCard from being written to a data
+	 * stream*, but may prevent it from being parsed correctly by the consuming
+	 * application.
+	 * </p>
+	 * <p>
+	 * *With a few exceptions: One thing this method does is check for illegal
+	 * characters. There are certain characters that will break the vCard syntax
+	 * if written (such as a newline character in a parameter name). If one of
+	 * these characters is present, it WILL prevent the vCard from being
+	 * written.
+	 * </p>
 	 * @param version the vCard version to validate against
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
@@ -1323,52 +1341,43 @@ public class VCardParameters extends ListMultimap<String, String> {
 		/*
 		 * Check for invalid characters in names and values.
 		 */
-		{
-			final int invalidCharsInParamValueCode = 25;
-			final int invalidCharsInParamNameCode = 26;
+		SyntaxStyle syntax = version.getSyntaxStyle();
+		for (Map.Entry<String, List<String>> entry : this) {
+			String name = entry.getKey();
 
-			BitSet invalidValueChars = new BitSet(128);
-			invalidValueChars.set(0, 31);
-			invalidValueChars.set(127);
-			invalidValueChars.set('\t', false); //allow
-			invalidValueChars.set('\n', false); //allow
-			invalidValueChars.set('\r', false); //allow
-			if (version == VCardVersion.V2_1) {
-				invalidValueChars.set(',');
-				invalidValueChars.set('.');
-				invalidValueChars.set(':');
-				invalidValueChars.set('=');
-				invalidValueChars.set('[');
-				invalidValueChars.set(']');
+			/*
+			 * Don't check LABEL parameter for 2.1 and 3.0 because this
+			 * parameter is converted to a property in those versions.
+			 */
+			if (version != VCardVersion.V4_0 && LABEL.equalsIgnoreCase(name)) {
+				continue;
 			}
 
-			CharacterBitSet validNameChars = new CharacterBitSet("-a-zA-Z0-9");
-			for (Map.Entry<String, List<String>> entry : this) {
-				String name = entry.getKey();
+			//check the parameter name
+			if (!VObjectValidator.validateParameterName(name, syntax, true)) {
+				if (syntax == SyntaxStyle.OLD) {
+					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterName(syntax, true).flip();
+					warnings.add(new Warning(30, name, notAllowed.toString(true)));
+				} else {
+					warnings.add(new Warning(26, name));
+				}
+			}
 
+			//check the parameter value(s)
+			List<String> values = entry.getValue();
+			for (String value : values) {
 				/*
-				 * Don't check LABEL for 2.1 and 3.0 because this is converted
-				 * to a property in those versions.
+				 * Newlines are allowed in LABEL parameters, but are not allowed
+				 * by vobject, so remove them from the value before validating.
 				 */
-				if (version != VCardVersion.V4_0 && LABEL.equalsIgnoreCase(name)) {
-					continue;
+				if (LABEL.equalsIgnoreCase(name)) {
+					value = value.replaceAll("\r\n|\r|\n", "");
 				}
 
-				//check the parameter name
-				if (!validNameChars.containsOnly(name)) {
-					warnings.add(new Warning(invalidCharsInParamNameCode, name));
-				}
-
-				//check the parameter value(s)
-				List<String> values = entry.getValue();
-				for (String value : values) {
-					for (int i = 0; i < value.length(); i++) {
-						char c = value.charAt(i);
-						if (invalidValueChars.get(c)) {
-							warnings.add(new Warning(invalidCharsInParamValueCode, name, value, (int) c, i));
-							break;
-						}
-					}
+				if (!VObjectValidator.validateParameterValue(value, syntax, false, true)) {
+					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterValue(syntax, false, true).flip();
+					int code = (syntax == SyntaxStyle.OLD) ? 31 : 25;
+					warnings.add(new Warning(code, name, value, notAllowed.toString(true)));
 				}
 			}
 		}

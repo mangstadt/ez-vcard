@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -79,7 +81,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 
 	@Override
 	protected Impp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		return parse(value);
 	}
 

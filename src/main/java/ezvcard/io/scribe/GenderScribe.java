@@ -2,6 +2,10 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
@@ -51,29 +55,19 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 	@Override
 	protected String _writeText(Gender property, WriteContext context) {
-		String gender = property.getGender();
-		String text = property.getText();
-
-		if (text != null) {
-			return structured(gender, text);
-		}
-		if (gender != null) {
-			return structured(new Object[] { gender });
-		}
-		return "";
+		StructuredValueBuilder builder = new StructuredValueBuilder();
+		builder.append(property.getGender());
+		builder.append(property.getText());
+		return builder.build(false);
 	}
 
 	@Override
 	protected Gender _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		SemiStructuredIterator it = semistructured(value, 2);
+		SemiStructuredValueIterator it = new SemiStructuredValueIterator(value, 2);
 
 		String sex = it.next();
 		if (sex != null) {
-			if (sex.length() == 0) {
-				sex = null;
-			} else {
-				sex = sex.toUpperCase();
-			}
+			sex = sex.toUpperCase();
 		}
 		String text = it.next();
 
@@ -117,13 +111,13 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 	@Override
 	protected Gender _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 
-		String sex = it.nextString();
+		String sex = it.nextValue();
 		if (sex != null) {
 			sex = sex.toUpperCase();
 		}
-		String text = it.nextString();
+		String text = it.nextValue();
 
 		Gender property = new Gender(sex);
 		property.setText(text);

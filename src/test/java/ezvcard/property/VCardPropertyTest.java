@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
@@ -67,16 +70,15 @@ public class VCardPropertyTest {
 	@Test
 	public void validate_overrideable_method_called() {
 		VCardPropertyImpl property = spy(new VCardPropertyImpl());
-		assertValidate(property).versions(VCardVersion.V2_1).run();
-		verify(property)._validate(anyList(), eq(VCardVersion.V2_1), any(VCard.class));
+		assertValidate(property).versions(V2_1).run();
+		verify(property)._validate(anyList(), eq(V2_1), any(VCard.class));
 	}
 
 	@Test
 	public void validate_unsupported_version() {
 		Version3Property property = new Version3Property();
-		assertValidate(property).versions(VCardVersion.V2_1).run(2);
-		assertValidate(property).versions(VCardVersion.V3_0).run();
-		assertValidate(property).versions(VCardVersion.V4_0).run(2);
+		assertValidate(property).versions(V2_1, V4_0).run(2);
+		assertValidate(property).versions(V3_0).run();
 	}
 
 	@Test
@@ -90,16 +92,16 @@ public class VCardPropertyTest {
 	public void validate_invalid_group() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		property.setGroup("mr.smith");
-		assertValidate(property).run(23);
+		assertValidate(property).versions(V2_1).run(32);
+		assertValidate(property).versions(V3_0, V4_0).run(23);
 	}
 
 	@Test
 	public void validate_parameters() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		property.setParameter("ALTID", "1");
-		assertValidate(property).versions(VCardVersion.V2_1).run(6);
-		assertValidate(property).versions(VCardVersion.V3_0).run(6);
-		assertValidate(property).versions(VCardVersion.V4_0).run();
+		assertValidate(property).versions(V2_1, V3_0).run(6);
+		assertValidate(property).versions(V4_0).run();
 	}
 
 	@Test
@@ -108,7 +110,7 @@ public class VCardPropertyTest {
 		assertArrayEquals(VCardVersion.values(), withoutSupportedVersions.getSupportedVersions());
 
 		Version3Property withSupportedVersions = new Version3Property();
-		assertArrayEquals(new VCardVersion[] { VCardVersion.V3_0 }, withSupportedVersions.getSupportedVersions());
+		assertArrayEquals(new VCardVersion[] { V3_0 }, withSupportedVersions.getSupportedVersions());
 	}
 
 	@Test
@@ -119,9 +121,9 @@ public class VCardPropertyTest {
 		}
 
 		Version3Property withSupportedVersions = new Version3Property();
-		assertFalse(withSupportedVersions.isSupportedBy(VCardVersion.V2_1));
-		assertTrue(withSupportedVersions.isSupportedBy(VCardVersion.V3_0));
-		assertFalse(withSupportedVersions.isSupportedBy(VCardVersion.V4_0));
+		assertFalse(withSupportedVersions.isSupportedBy(V2_1));
+		assertTrue(withSupportedVersions.isSupportedBy(V3_0));
+		assertFalse(withSupportedVersions.isSupportedBy(V4_0));
 	}
 
 	@Test
@@ -304,7 +306,7 @@ public class VCardPropertyTest {
 		//empty
 	}
 
-	@SupportedVersions(VCardVersion.V3_0)
+	@SupportedVersions(V3_0)
 	private class Version3Property extends VCardProperty {
 		//empty
 	}

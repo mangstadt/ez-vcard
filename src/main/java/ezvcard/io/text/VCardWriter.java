@@ -1,5 +1,6 @@
 package ezvcard.io.text;
 
+import static com.github.mangstadt.vinnie.Utils.escapeNewlines;
 import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.File;
@@ -10,8 +11,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.github.mangstadt.vinnie.VObjectParameters;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+import com.github.mangstadt.vinnie.io.VObjectWriter;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -86,16 +91,14 @@ import ezvcard.util.IOUtils;
  * VCardWriter writer = new VCardWriter(...);
  * 
  * //disable line folding
- * writer.getRawWriter().getFoldedLineWriter().setLineLength(null);
+ * writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
  * 
  * //change line length
- * writer.getRawWriter().getFoldedLineWriter().setLineLength(50);
+ * writer.getVObjectWriter().getFoldedLineWriter().setLineLength(50);
  * 
  * //change folded line indent string
- * writer.getRawWriter().getFoldedLineWriter().setIndent("\t");
+ * writer.getVObjectWriter().getFoldedLineWriter().setIndent("\t");
  * 
- * //change newline character
- * writer.getRawWriter().getFoldedLineWriter().setNewline("**");
  * </pre>
  * @author Michael Angstadt
  * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">vCard 2.1</a>
@@ -103,8 +106,9 @@ import ezvcard.util.IOUtils;
  * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardWriter extends StreamWriter implements Flushable {
-	private final VCardRawWriter writer;
-	private final LinkedList<Boolean> prodIdStack = new LinkedList<Boolean>();
+	private final VObjectWriter writer;
+	private final List<Boolean> prodIdStack = new ArrayList<Boolean>();
+	private VCardVersion targetVersion;
 	private TargetApplication targetApplication;
 	private Boolean includeTrailingSemicolons;
 
@@ -144,14 +148,15 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion) {
-		this.writer = new VCardRawWriter(writer, targetVersion);
+		this.writer = new VObjectWriter(writer, targetVersion.getSyntaxStyle());
+		this.targetVersion = targetVersion;
 	}
 
 	/**
-	 * Gets the writer that this object wraps.
-	 * @return the raw writer
+	 * Gets the writer that this object uses to write data to the output stream.
+	 * @return the writer
 	 */
-	public VCardRawWriter getRawWriter() {
+	public VObjectWriter getVObjectWriter() {
 		return writer;
 	}
 
@@ -161,7 +166,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 */
 	@Override
 	public VCardVersion getTargetVersion() {
-		return writer.getVersion();
+		return targetVersion;
 	}
 
 	/**
@@ -169,7 +174,8 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param targetVersion the vCard version
 	 */
 	public void setTargetVersion(VCardVersion targetVersion) {
-		writer.setVersion(targetVersion);
+		writer.setSyntaxStyle(targetVersion.getSyntaxStyle());
+		this.targetVersion = targetVersion;
 	}
 
 	/**
@@ -249,14 +255,14 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	/**
 	 * <p>
 	 * Gets whether the writer will apply circumflex accent encoding on
-	 * parameter values (disabled by default, only applies to 3.0 and 4.0
-	 * vCards). This escaping mechanism allows for newlines and double quotes to
-	 * be included in parameter values.
+	 * parameter values (disabled by default). This escaping mechanism allows
+	 * for newlines and double quotes to be included in parameter values. It is
+	 * only supported by vCard versions 3.0 and 4.0.
 	 * </p>
 	 * 
 	 * <p>
-	 * Note that this encoding mechanism is defined separately from the
-	 * iCalendar specification and may not be supported by the vCard consumer.
+	 * Note that this encoding mechanism is defined separately from the vCard
+	 * specification and may not be supported by the consumer of the vCard.
 	 * </p>
 	 * @return true if circumflex accent encoding is enabled, false if not
 	 * @see VCardRawWriter#isCaretEncodingEnabled()
@@ -268,14 +274,14 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	/**
 	 * <p>
 	 * Sets whether the writer will apply circumflex accent encoding on
-	 * parameter values (disabled by default, only applies to 3.0 and 4.0
-	 * vCards). This escaping mechanism allows for newlines and double quotes to
-	 * be included in parameter values.
+	 * parameter values (disabled by default). This escaping mechanism allows
+	 * for newlines and double quotes to be included in parameter values. It is
+	 * only supported by vCard versions 3.0 and 4.0.
 	 * </p>
 	 * 
 	 * <p>
-	 * Note that this encoding mechanism is defined separately from the
-	 * iCalendar specification and may not be supported by the vCard consumer.
+	 * Note that this encoding mechanism is defined separately from the vCard
+	 * specification and may not be supported by the consumer of the vCard.
 	 * </p>
 	 * @param enable true to use circumflex accent encoding, false not to
 	 * @see VCardRawWriter#setCaretEncodingEnabled(boolean)
@@ -288,21 +294,21 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void _write(VCard vcard, List<VCardProperty> propertiesToAdd) throws IOException {
 		VCardVersion targetVersion = getTargetVersion();
+		TargetApplication targetApplication = getTargetApplication();
 
 		Boolean includeTrailingSemicolons = this.includeTrailingSemicolons;
 		if (includeTrailingSemicolons == null) {
 			includeTrailingSemicolons = (targetVersion == VCardVersion.V4_0);
 		}
 
-		WriteContext context = new WriteContext(targetVersion, getTargetApplication(), includeTrailingSemicolons);
+		WriteContext context = new WriteContext(targetVersion, targetApplication, includeTrailingSemicolons);
 
 		writer.writeBeginComponent("VCARD");
-		writer.writeVersion();
+		writer.writeVersion(targetVersion.getVersion());
 
 		for (VCardProperty property : propertiesToAdd) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(property);
 
-			//marshal the value
 			String value = null;
 			VCard nestedVCard = null;
 			try {
@@ -313,65 +319,116 @@ public class VCardWriter extends StreamWriter implements Flushable {
 				nestedVCard = e.getVCard();
 			}
 
-			//marshal the parameters
 			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 
-			//is the value a nested vCard?
 			if (nestedVCard != null) {
-				if (targetVersion == VCardVersion.V2_1) {
-					//write a nested vCard (2.1 style)
-					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
-					prodIdStack.add(addProdId);
-					addProdId = false;
-					write(nestedVCard);
-					addProdId = prodIdStack.removeLast();
-				} else {
-					//write an embedded vCard (3.0 style)
-					StringWriter sw = new StringWriter();
-					VCardWriter agentWriter = new VCardWriter(sw, targetVersion);
-					agentWriter.getRawWriter().getFoldedLineWriter().setLineLength(null);
-					agentWriter.getRawWriter().getFoldedLineWriter().setNewline("\n");
-					agentWriter.setAddProdId(false);
-					agentWriter.setIncludeTrailingSemicolons(includeTrailingSemicolons);
-					agentWriter.setTargetApplication(getTargetApplication());
-					agentWriter.setVersionStrict(versionStrict);
-					try {
-						agentWriter.write(nestedVCard);
-					} catch (IOException e) {
-						//should never be thrown because we're writing to a string
-					} finally {
-						IOUtils.closeQuietly(agentWriter);
-					}
-
-					String vcardStr = sw.toString();
-					vcardStr = VCardPropertyScribe.escape(vcardStr);
-					writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, vcardStr);
-				}
+				writeNestedVCard(nestedVCard, property, scribe, parameters, value);
 				continue;
 			}
 
-			/*
-			 * Set the property's data type.
-			 * 
-			 * Only add a VALUE parameter if the data type is: (1) not "unknown"
-			 * (2) different from the property's default data type (3) not the
-			 * date/time special case (see code)
-			 */
-			VCardDataType dataType = scribe.dataType(property, targetVersion);
-			if (dataType != null) {
-				VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
-				if (dataType != defaultDataType && !isDateTimeValueParameterSpecialCase(defaultDataType, dataType)) {
-					parameters.setValue(dataType);
-				}
-			}
+			handleValueParameter(property, scribe, parameters);
+			handleLabelParameter(property, parameters);
 
-			//write the property
-			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), parameters, value);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), value);
 
 			fixBinaryPropertyForOutlook(property);
 		}
 
 		writer.writeEndComponent("VCARD");
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void writeNestedVCard(VCard nestedVCard, VCardProperty property, VCardPropertyScribe scribe, VCardParameters parameters, String value) throws IOException {
+		if (targetVersion == VCardVersion.V2_1) {
+			//write a nested vCard (2.1 style)
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), value);
+			prodIdStack.add(addProdId);
+			addProdId = false;
+			write(nestedVCard);
+			addProdId = prodIdStack.remove(prodIdStack.size() - 1);
+		} else {
+			//write an embedded vCard (3.0 style)
+			StringWriter sw = new StringWriter();
+			VCardWriter agentWriter = new VCardWriter(sw, targetVersion);
+			agentWriter.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+			agentWriter.setAddProdId(false);
+			agentWriter.setCaretEncodingEnabled(isCaretEncodingEnabled());
+			agentWriter.setIncludeTrailingSemicolons(this.includeTrailingSemicolons);
+			agentWriter.setScribeIndex(index);
+			agentWriter.setTargetApplication(targetApplication);
+			agentWriter.setVersionStrict(versionStrict);
+			try {
+				agentWriter.write(nestedVCard);
+			} catch (IOException e) {
+				//should never be thrown because we're writing to a string
+			} finally {
+				IOUtils.closeQuietly(agentWriter);
+			}
+
+			String vcardStr = sw.toString();
+			vcardStr = VObjectPropertyValues.escape(vcardStr);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), vcardStr);
+		}
+	}
+
+	/**
+	 * <p>
+	 * Sets the property's VALUE parameter. This method only adds a VALUE
+	 * parameter if all the following conditions are met:
+	 * </p>
+	 * <ol>
+	 * <li>The data type is NOT "unknown"</li>
+	 * <li>The data type is different from the property's default data type</li>
+	 * <li>The data type does not fall under the "date/time special case" (see
+	 * {@link #isDateTimeValueParameterSpecialCase()})</li>
+	 * </ol>
+	 * @param property the property
+	 * @param scribe the property scribe
+	 * @param parameters the property parameters
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void handleValueParameter(VCardProperty property, VCardPropertyScribe scribe, VCardParameters parameters) {
+		VCardDataType dataType = scribe.dataType(property, targetVersion);
+		if (dataType == null) {
+			return;
+		}
+
+		VCardDataType defaultDataType = scribe.defaultDataType(targetVersion);
+		if (dataType == defaultDataType) {
+			return;
+		}
+
+		if (isDateTimeValueParameterSpecialCase(defaultDataType, dataType)) {
+			return;
+		}
+
+		parameters.setValue(dataType);
+	}
+
+	/**
+	 * <p>
+	 * Escapes newline sequences in the LABEL parameter of {@link Address}
+	 * properties. Newlines cannot normally be escaped in parameter values.
+	 * </p>
+	 * <p>
+	 * Only version 4.0 allows this (and only version 4.0 defines a LABEL
+	 * parameter), but do this for all versions for compatibility.
+	 * </p>
+	 * @param property the property
+	 * @param parameters the property parameters
+	 */
+	private void handleLabelParameter(VCardProperty property, VCardParameters parameters) {
+		if (!(property instanceof Address)) {
+			return;
+		}
+
+		String label = parameters.getLabel();
+		if (label == null) {
+			return;
+		}
+
+		label = escapeNewlines(label);
+		parameters.setLabel(label);
 	}
 
 	/**
@@ -398,7 +455,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			return;
 		}
 
-		writer.getFoldedLineWriter().writeln("");
+		writer.getFoldedLineWriter().writeln();
 	}
 
 	/**
@@ -423,16 +480,16 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * Flushes the underlying {@link Writer} object.
-	 * @throws IOException if there's a problem flushing the writer
+	 * Flushes the output stream.
+	 * @throws IOException if there's a problem flushing the output stream
 	 */
 	public void flush() throws IOException {
 		writer.flush();
 	}
 
 	/**
-	 * Closes the underlying {@link Writer} object.
-	 * @throws IOException if there's a problem closing the writer
+	 * Closes the output stream.
+	 * @throws IOException if there's a problem closing the output stream
 	 */
 	public void close() throws IOException {
 		writer.close();

@@ -1,18 +1,15 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.StringUtils.NEWLINE;
-import static ezvcard.util.StringUtils.join;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
+
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -23,16 +20,11 @@ import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.json.JsonValue;
-import ezvcard.io.text.VCardRawWriter;
 import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.Categories;
-import ezvcard.property.Organization;
-import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.StringUtils.JoinCallback;
 import ezvcard.util.VCardDateFormat;
 
 /*
@@ -442,7 +434,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
 		XCardValue firstValue = element.firstValue();
 		VCardDataType dataType = firstValue.getDataType();
-		String value = escape(firstValue.getValue());
+		String value = VObjectPropertyValues.escape(firstValue.getValue());
 		return _parseText(value, dataType, element.version(), parameters, warnings);
 	}
 
@@ -468,7 +460,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * embedded vCard (i.e. the AGENT property)
 	 */
 	protected T _parseHtml(HCardElement element, List<String> warnings) {
-		String value = escape(element.value());
+		String value = VObjectPropertyValues.escape(element.value());
 		VCardParameters parameters = new VCardParameters();
 		T property = _parseText(value, null, VCardVersion.V3_0, parameters, warnings);
 		property.setParameters(parameters);
@@ -558,491 +550,18 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		if (values.size() > 1) {
 			List<String> multi = value.asMulti();
 			if (!multi.isEmpty()) {
-				return list(multi);
+				return VObjectPropertyValues.writeList(multi);
 			}
 		}
 
 		if (!values.isEmpty() && values.get(0).getArray() != null) {
 			List<List<String>> structured = value.asStructured();
 			if (!structured.isEmpty()) {
-				return structured(structured.toArray());
+				return VObjectPropertyValues.writeStructured(structured, true);
 			}
 		}
 
-		return escape(value.asSingle());
-	}
-
-	/**
-	 * Unescapes all special characters that are escaped with a backslash, as
-	 * well as escaped newlines.
-	 * @param text the text to unescape
-	 * @return the unescaped text
-	 */
-	public static String unescape(String text) {
-		if (text == null) {
-			return null;
-		}
-
-		StringBuilder sb = null; //only instantiate the StringBuilder if the string needs to be modified
-		boolean escaped = false;
-		for (int i = 0; i < text.length(); i++) {
-			char ch = text.charAt(i);
-
-			if (escaped) {
-				if (sb == null) {
-					sb = new StringBuilder(text.length());
-					sb.append(text.substring(0, i - 1));
-				}
-
-				escaped = false;
-
-				if (ch == 'n' || ch == 'N') {
-					//newlines appear as "\n" or "\N" (see RFC 5545 p.46)
-					sb.append(NEWLINE);
-					continue;
-				}
-
-				sb.append(ch);
-				continue;
-			}
-
-			if (ch == '\\') {
-				escaped = true;
-				continue;
-			}
-
-			if (sb != null) {
-				sb.append(ch);
-			}
-		}
-		return (sb == null) ? text : sb.toString();
-	}
-
-	/**
-	 * <p>
-	 * Escapes all special characters within a vCard value. These characters
-	 * are:
-	 * </p>
-	 * <ul>
-	 * <li>backslashes ({@code \})</li>
-	 * <li>commas ({@code ,})</li>
-	 * <li>semi-colons ({@code ;})</li>
-	 * </ul>
-	 * <p>
-	 * Newlines are not escaped by this method. They are escaped when the vCard
-	 * is serialized (in the {@link VCardRawWriter} class).
-	 * </p>
-	 * @param text the text to escape
-	 * @return the escaped text
-	 */
-	public static String escape(String text) {
-		if (text == null) {
-			return null;
-		}
-
-		String chars = "\\,;";
-		StringBuilder sb = null; //only instantiate the StringBuilder if the string needs to be modified
-		for (int i = 0; i < text.length(); i++) {
-			char ch = text.charAt(i);
-			if (chars.indexOf(ch) >= 0) {
-				if (sb == null) {
-					sb = new StringBuilder(text.length());
-					sb.append(text.substring(0, i));
-				}
-				sb.append('\\');
-			}
-
-			if (sb != null) {
-				sb.append(ch);
-			}
-		}
-		return (sb == null) ? text : sb.toString();
-	}
-
-	/**
-	 * Creates a string splitter (takes escaped characters into account).
-	 * @param delimiter the delimiter character (e.g. ',')
-	 * @return the splitter object
-	 */
-	protected static Splitter splitter(char delimiter) {
-		return new Splitter(delimiter);
-	}
-
-	/**
-	 * A helper class for splitting strings.
-	 */
-	protected static class Splitter {
-		private char delimiter;
-		private boolean unescape = false;
-		private boolean nullEmpties = false;
-		private int limit = -1;
-
-		/**
-		 * Creates a new splitter object.
-		 * @param delimiter the delimiter character (e.g. ',')
-		 */
-		public Splitter(char delimiter) {
-			this.delimiter = delimiter;
-		}
-
-		/**
-		 * Sets whether to unescape each split string.
-		 * @param unescape true to unescape, false not to (default is false)
-		 * @return this
-		 */
-		public Splitter unescape(boolean unescape) {
-			this.unescape = unescape;
-			return this;
-		}
-
-		/**
-		 * Sets whether to treat empty elements as null elements.
-		 * @param nullEmpties true to treat them as null elements, false to
-		 * treat them as empty strings (default is false)
-		 * @return this
-		 */
-		public Splitter nullEmpties(boolean nullEmpties) {
-			this.nullEmpties = nullEmpties;
-			return this;
-		}
-
-		/**
-		 * Sets the max number of split strings it should parse.
-		 * @param limit the max number of split strings
-		 * @return this
-		 */
-		public Splitter limit(int limit) {
-			this.limit = limit;
-			return this;
-		}
-
-		/**
-		 * Performs the split operation.
-		 * @param string the string to split (e.g. "one,two,three")
-		 * @return the split string
-		 */
-		public List<String> split(String string) {
-			//doing it this way is 10x faster than a regex
-
-			List<String> list = new ArrayList<String>();
-			boolean escaped = false;
-			int start = 0;
-			for (int i = 0; i < string.length(); i++) {
-				char ch = string.charAt(i);
-
-				if (escaped) {
-					escaped = false;
-					continue;
-				}
-
-				if (ch == delimiter) {
-					add(string.substring(start, i), list);
-					start = i + 1;
-					if (limit > 0 && list.size() == limit - 1) {
-						break;
-					}
-
-					continue;
-				}
-
-				if (ch == '\\') {
-					escaped = true;
-					continue;
-				}
-			}
-
-			add(string.substring(start), list);
-
-			return list;
-		}
-
-		private void add(String str, List<String> list) {
-			str = str.trim();
-
-			if (nullEmpties && str.length() == 0) {
-				str = null;
-			} else if (unescape) {
-				str = VCardPropertyScribe.unescape(str);
-			}
-
-			list.add(str);
-		}
-	}
-
-	/**
-	 * Parses a "list" property value. This is used in plain-text vCards to
-	 * parse properties such as {@link Categories}.
-	 * @param value the string to parse (e.g. "one,two,three\,four")
-	 * @return the parsed list (e.g. ["one", "two", "three,four"])
-	 */
-	protected static List<String> list(String value) {
-		if (value.length() == 0) {
-			return new ArrayList<String>(0);
-		}
-		return splitter(',').unescape(true).split(value);
-	}
-
-	/**
-	 * Generates a "list" property value. This is used in plain-text vCards to
-	 * parse properties such as {@link Categories}.
-	 * @param values the values to write (the {@code toString()} method is
-	 * invoked on each object, null objects are ignored, e.g. ["one", "two",
-	 * "three,four"])
-	 * @return the property value (e.g. "one,two,three\,four")
-	 */
-	protected static String list(Object... values) {
-		return list(Arrays.asList(values));
-	}
-
-	/**
-	 * Generates a "list" property value. This is used in plain-text vCards to
-	 * parse properties such as {@link Categories}).
-	 * @param values the values to write (the {@code toString()} method is
-	 * invoked on each object, null objects are ignored, e.g. ["one", "two",
-	 * "three,four"])
-	 * @param <T> the property value class
-	 * @return the property value (e.g. "one,two,three\,four")
-	 */
-	protected static <T> String list(Collection<T> values) {
-		return join(values, ",", new JoinCallback<T>() {
-			public void handle(StringBuilder sb, T value) {
-				if (value == null) {
-					return;
-				}
-				sb.append(escape(value.toString()));
-			}
-		});
-	}
-
-	/**
-	 * Parses a "semi-structured" property value (a "structured" property value
-	 * whose items cannot be multi-valued). This is used in plain-text vCards to
-	 * parse properties such as {@link Organization}.
-	 * @param value the string to parse (e.g. "one;two;three\;four,five")
-	 * @return the parsed values (e.g. ["one", "two", "three;four,five"]
-	 */
-	protected static SemiStructuredIterator semistructured(String value) {
-		return semistructured(value, -1);
-	}
-
-	/**
-	 * Parses a "semi-structured" property value (a "structured" property value
-	 * whose items cannot be multi-valued). This is used in plain-text vCards to
-	 * parse properties such as {@link Organization}.
-	 * @param value the string to parse (e.g. "one;two;three\;four,five")
-	 * @param limit the max number of items to parse (see
-	 * {@link String#split(String, int)})
-	 * @return the parsed values (e.g. ["one", "two", "three;four,five"]
-	 */
-	protected static SemiStructuredIterator semistructured(String value, int limit) {
-		List<String> split = splitter(';').unescape(true).limit(limit).split(value);
-		return new SemiStructuredIterator(split.iterator());
-	}
-
-	/**
-	 * Parses a "structured" property value. This is used in plain-text vCards
-	 * to parse properties such as {@link StructuredName}.
-	 * @param value the string to parse (e.g. "one;two,three;four\,five\;six")
-	 * @return an iterator for accessing the parsed values (e.g. ["one", ["two",
-	 * "three"], "four,five;six"])
-	 */
-	protected static StructuredIterator structured(String value) {
-		List<String> split = splitter(';').split(value);
-		List<List<String>> components = new ArrayList<List<String>>(split.size());
-		for (String s : split) {
-			components.add(list(s));
-		}
-		return new StructuredIterator(components.iterator());
-	}
-
-	/**
-	 * Provides a "structured" property value iterator for a jCard value.
-	 * @param value the jCard value
-	 * @return the iterator
-	 */
-	protected static StructuredIterator structured(JCardValue value) {
-		return new StructuredIterator(value.asStructured().iterator());
-	}
-
-	/**
-	 * <p>
-	 * Writes a "structured" property value. This is used in plain-text vCards
-	 * to marshal properties such as {@link StructuredName}.
-	 * </p>
-	 * <p>
-	 * This method accepts a list of {@link Object} instances.
-	 * {@link Collection} objects will be treated as multi-valued components.
-	 * Null objects will be treated as empty components. All other objects will
-	 * have their {@code toString()} method invoked to generate the string
-	 * value.
-	 * </p>
-	 * <p>
-	 * The semicolon delimiters for empty or null values at the end of the
-	 * values list will not be included in the final string.
-	 * </p>
-	 * @param values the values to write
-	 * @return the structured value string
-	 */
-	protected static String structured(Object... values) {
-		return structured(false, values);
-	}
-
-	/**
-	 * <p>
-	 * Writes a "structured" property value. This is used in plain-text vCards
-	 * to marshal properties such as {@link StructuredName}.
-	 * </p>
-	 * <p>
-	 * This method accepts a list of {@link Object} instances.
-	 * {@link Collection} objects will be treated as multi-valued components.
-	 * Null objects will be treated as empty components. All other objects will
-	 * have their {@code toString()} method invoked to generate the string
-	 * value.
-	 * </p>
-	 * @param includeTrailingSemicolons true to include the semicolon delimiters
-	 * for empty or null values at the end of the values list, false to trim
-	 * them
-	 * @param values the values to write
-	 * @return the structured value string
-	 */
-	protected static String structured(boolean includeTrailingSemicolons, Object... values) {
-		StringBuilder sb = new StringBuilder();
-		int skippedSemicolons = 0;
-		boolean first = true;
-		for (Object value : values) {
-			if (value == null) {
-				if (first) {
-					first = false;
-				} else {
-					if (includeTrailingSemicolons) {
-						sb.append(';');
-					} else {
-						skippedSemicolons++;
-					}
-				}
-				continue;
-			}
-
-			String strValue;
-			if (value instanceof Collection) {
-				Collection<?> list = (Collection<?>) value;
-				strValue = list(list);
-			} else {
-				strValue = escape(value.toString());
-			}
-
-			if (strValue.length() == 0) {
-				if (first) {
-					first = false;
-				} else {
-					if (includeTrailingSemicolons) {
-						sb.append(';');
-					} else {
-						skippedSemicolons++;
-					}
-				}
-				continue;
-			}
-
-			if (!includeTrailingSemicolons) {
-				for (int i = 0; i < skippedSemicolons; i++) {
-					sb.append(';');
-				}
-				skippedSemicolons = 0;
-			}
-
-			if (first) {
-				first = false;
-			} else {
-				sb.append(';');
-			}
-			sb.append(strValue);
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * Iterates over the items in a "structured" property value.
-	 */
-	protected static class StructuredIterator {
-		private final Iterator<List<String>> it;
-
-		/**
-		 * Constructs a new structured iterator.
-		 * @param it the iterator to wrap
-		 */
-		public StructuredIterator(Iterator<List<String>> it) {
-			this.it = it;
-		}
-
-		/**
-		 * Gets the first value of the next component.
-		 * @return the first value, null if the value is an empty string, or
-		 * null if there are no more components
-		 */
-		public String nextString() {
-			if (!hasNext()) {
-				return null;
-			}
-
-			List<String> list = it.next();
-			if (list.isEmpty()) {
-				return null;
-			}
-
-			String value = list.get(0);
-			return (value.length() == 0) ? null : value;
-		}
-
-		/**
-		 * Gets the next component.
-		 * @return the next component, an empty list if the component is empty,
-		 * or an empty list of there are no more components
-		 */
-		public List<String> nextComponent() {
-			if (!hasNext()) {
-				return new ArrayList<String>(0); //the lists should be mutable so they can be directly assigned to the property object's fields
-			}
-
-			List<String> list = it.next();
-			if (list.size() == 1 && list.get(0).length() == 0) {
-				return new ArrayList<String>(0);
-			}
-
-			return list;
-		}
-
-		public boolean hasNext() {
-			return it.hasNext();
-		}
-	}
-
-	/**
-	 * Iterates over the items in a "semi-structured" property value.
-	 */
-	protected static class SemiStructuredIterator {
-		private final Iterator<String> it;
-
-		/**
-		 * Constructs a new structured iterator.
-		 * @param it the iterator to wrap
-		 */
-		public SemiStructuredIterator(Iterator<String> it) {
-			this.it = it;
-		}
-
-		/**
-		 * Gets the next value.
-		 * @return the next value or null if there are no more values
-		 */
-		public String next() {
-			return hasNext() ? it.next() : null;
-		}
-
-		public boolean hasNext() {
-			return it.hasNext();
-		}
+		return VObjectPropertyValues.escape(value.asSingle());
 	}
 
 	/**

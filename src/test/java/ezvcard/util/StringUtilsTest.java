@@ -1,19 +1,13 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import ezvcard.util.StringUtils.JoinCallback;
-import ezvcard.util.StringUtils.JoinMapCallback;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -49,121 +43,37 @@ import ezvcard.util.StringUtils.JoinMapCallback;
  */
 public class StringUtilsTest {
 	@Test
-	public void ltrim() {
-		String actual, expected;
-
-		actual = StringUtils.ltrim("One two three");
-		expected = "One two three";
-		assertSame(actual, expected); //a new string instance shouldn't be created
-
-		actual = StringUtils.ltrim("\n \t One two three \t \n ");
-		expected = "One two three \t \n ";
-		assertEquals(actual, expected);
-
-		actual = StringUtils.ltrim("\n \t \t \n ");
-		expected = "";
-		assertEquals(actual, expected);
-
-		actual = StringUtils.ltrim("");
-		expected = "";
-		assertSame(actual, expected);
-
-		assertNull(StringUtils.ltrim(null));
-	}
-
-	@Test
-	public void rtrim() {
-		String actual, expected;
-
-		actual = StringUtils.rtrim("One two three");
-		expected = "One two three";
-		assertSame(actual, expected); //a new string instance shouldn't be created
-
-		actual = StringUtils.rtrim("\n \t One two three \t \n ");
-		expected = "\n \t One two three";
-		assertEquals(actual, expected);
-
-		actual = StringUtils.rtrim("\n \t \t \n ");
-		expected = "";
-		assertEquals(actual, expected);
-
-		actual = StringUtils.rtrim("");
-		expected = "";
-		assertSame(actual, expected);
-
-		assertNull(StringUtils.rtrim(null));
-	}
-
-	@Test
-	public void repeat() {
-		assertRepeat('*', -1, "");
-		assertRepeat("abc", -1, "");
-		assertRepeat('*', 0, "");
-		assertRepeat("abc", 0, "");
-		assertRepeat('*', 5, "*****");
-		assertRepeat("abc", 5, "abcabcabcabcabc");
-	}
-
-	private static void assertRepeat(char c, int times, String expected) {
-		String actual = StringUtils.repeat(c, times);
+	public void join() {
+		Collection<Object> values = Arrays.<Object> asList("one", "two", 3);
+		String expected = "one,two,3";
+		String actual = StringUtils.join(values, ",");
 		assertEquals(expected, actual);
-	}
 
-	private static void assertRepeat(String str, int times, String expected) {
-		String actual = StringUtils.repeat(str, times);
+		values = Arrays.<Object> asList("one");
+		expected = "one";
+		actual = StringUtils.join(values, ",");
+		assertEquals(expected, actual);
+
+		values = Arrays.asList();
+		expected = "";
+		actual = StringUtils.join(values, ",");
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void join_multiple() {
-		Collection<String> values = Arrays.asList("one", "two", "three");
-		assertEquals("ONE,TWO,THREE", StringUtils.join(values, ",", new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String str) {
-				sb.append(str.toUpperCase());
-			}
-		}));
-	}
+	public void toLowerCase() {
+		Map<String, String> input = new HashMap<String, String>();
+		input.put("ONE", "TWO");
+		input.put(null, "THREE");
+		input.put("FOUR", null);
 
-	@Test
-	public void join_single() {
-		Collection<String> values = Arrays.asList("one");
-		assertEquals("ONE", StringUtils.join(values, ",", new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String str) {
-				sb.append(str.toUpperCase());
-			}
-		}));
-	}
+		Map<String, String> expected = new HashMap<String, String>();
+		expected.put("one", "two");
+		expected.put(null, "three");
+		expected.put("four", null);
 
-	@Test
-	public void join_empty() {
-		Collection<String> values = Arrays.asList();
-		assertEquals("", StringUtils.join(values, ",", new JoinCallback<String>() {
-			public void handle(StringBuilder sb, String str) {
-				sb.append(str.toUpperCase());
-			}
-		}));
-	}
+		Map<String, String> actual = StringUtils.toLowerCase(input);
 
-	@Test
-	public void join_objects() {
-		Collection<Object> values = new ArrayList<Object>();
-		values.add(false);
-		values.add(1);
-		values.add("two");
-		values.add(null);
-		assertEquals("false,1,two,null", StringUtils.join(values, ","));
-	}
-
-	@Test
-	public void join_map() {
-		Map<Integer, String> map = new LinkedHashMap<Integer, String>();
-		map.put(1, "one");
-		map.put(2, "two");
-		map.put(3, "three");
-		assertEquals("1 - one,2 - two,3 - three", StringUtils.join(map, ",", new JoinMapCallback<Integer, String>() {
-			public void handle(StringBuilder sb, Integer key, String value) {
-				sb.append(key).append(" - ").append(value);
-			}
-		}));
+		assertEquals(expected, actual);
 	}
 }

@@ -3,6 +3,8 @@ package ezvcard.io.scribe;
 import java.util.List;
 import java.util.Set;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -86,7 +88,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 			throw new EmbeddedVCardException(new Injector(property));
 		}
 
-		property.setUrl(unescape(value));
+		property.setUrl(VObjectPropertyValues.unescape(value));
 		return property;
 	}
 

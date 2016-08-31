@@ -2,6 +2,9 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
@@ -52,17 +55,15 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 	@Override
 	protected String _writeText(Organization property, WriteContext context) {
-		return structured(property.getValues().toArray());
+		return VObjectPropertyValues.writeSemiStructured(property.getValues(), context.isIncludeTrailingSemicolons());
 	}
 
 	@Override
 	protected Organization _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		Organization property = new Organization();
 
-		SemiStructuredIterator it = semistructured(value);
-		while (it.hasNext()) {
-			property.getValues().add(it.next());
-		}
+		List<String> values = VObjectPropertyValues.parseSemiStructured(value);
+		property.getValues().addAll(values);
 
 		return property;
 	}
@@ -123,9 +124,9 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		Organization property = new Organization();
 
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 		while (it.hasNext()) {
-			property.getValues().add(it.nextString());
+			property.getValues().add(it.nextValue());
 		}
 
 		return property;

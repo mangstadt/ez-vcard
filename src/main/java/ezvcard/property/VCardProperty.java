@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.github.mangstadt.vinnie.SyntaxStyle;
+import com.github.mangstadt.vinnie.validate.AllowedCharacters;
+import com.github.mangstadt.vinnie.validate.VObjectValidator;
+
 import ezvcard.Messages;
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -14,7 +18,6 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.util.CharacterBitSet;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -140,9 +143,15 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 		//check group
 		if (group != null) {
-			CharacterBitSet validCharacters = new CharacterBitSet("-a-zA-Z0-9");
-			if (!validCharacters.containsOnly(group)) {
-				warnings.add(new Warning(23, group));
+			SyntaxStyle syntax = version.getSyntaxStyle();
+			AllowedCharacters allowed = VObjectValidator.allowedCharactersGroup(syntax, true);
+			if (!allowed.check(group)) {
+				if (syntax == SyntaxStyle.OLD) {
+					AllowedCharacters notAllowed = allowed.flip();
+					warnings.add(new Warning(32, group, notAllowed.toString(true)));
+				} else {
+					warnings.add(new Warning(23, group));
+				}
 			}
 		}
 

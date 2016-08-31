@@ -2,6 +2,9 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.html.HCardElement;
@@ -52,24 +55,22 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 
 	@Override
 	protected String _writeText(StructuredName property, WriteContext context) {
-		//@formatter:off
-		return structured(context.isIncludeTrailingSemicolons(), new Object[] {
-			property.getFamily(),
-			property.getGiven(),
-			property.getAdditionalNames(),
-			property.getPrefixes(),
-			property.getSuffixes()
-		});
-		//@formatter:on
+		StructuredValueBuilder builder = new StructuredValueBuilder();
+		builder.append(property.getFamily());
+		builder.append(property.getGiven());
+		builder.append(property.getAdditionalNames());
+		builder.append(property.getPrefixes());
+		builder.append(property.getSuffixes());
+		return builder.build(context.isIncludeTrailingSemicolons());
 	}
 
 	@Override
 	protected StructuredName _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value);
 
-		property.setFamily(it.nextString());
-		property.setGiven(it.nextString());
+		property.setFamily(it.nextValue());
+		property.setGiven(it.nextValue());
 		property.getAdditionalNames().addAll(it.nextComponent());
 		property.getPrefixes().addAll(it.nextComponent());
 		property.getSuffixes().addAll(it.nextComponent());
@@ -124,10 +125,10 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	@Override
 	protected StructuredName _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 
-		property.setFamily(it.nextString());
-		property.setGiven(it.nextString());
+		property.setFamily(it.nextValue());
+		property.setGiven(it.nextValue());
 		property.getAdditionalNames().addAll(it.nextComponent());
 		property.getPrefixes().addAll(it.nextComponent());
 		property.getSuffixes().addAll(it.nextComponent());

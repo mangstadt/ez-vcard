@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
-import ezvcard.VCardVersion;
 import ezvcard.util.GeoUri;
 
 /*
@@ -119,12 +118,12 @@ public class VCardParametersTest {
 		assertValidate(parameters.validate(V4_0), 27);
 
 		parameters.replace(PID, ".1");
-		assertValidate(parameters.validate(V2_1), 25, 27, 6);
+		assertValidate(parameters.validate(V2_1), 31, 27, 6);
 		assertValidate(parameters.validate(V3_0), 27, 6);
 		assertValidate(parameters.validate(V4_0), 27);
 
 		parameters.replace(PID, "1.");
-		assertValidate(parameters.validate(V2_1), 25, 27, 6);
+		assertValidate(parameters.validate(V2_1), 31, 27, 6);
 		assertValidate(parameters.validate(V3_0), 27, 6);
 		assertValidate(parameters.validate(V4_0), 27);
 
@@ -134,12 +133,12 @@ public class VCardParametersTest {
 		assertValidate(parameters.validate(V4_0));
 
 		parameters.replace(PID, "1.1");
-		assertValidate(parameters.validate(V2_1), 25, 6);
+		assertValidate(parameters.validate(V2_1), 31, 6);
 		assertValidate(parameters.validate(V3_0), 6);
 		assertValidate(parameters.validate(V4_0));
 
 		parameters.replace(PID, "1.1.1");
-		assertValidate(parameters.validate(V2_1), 25, 27, 6);
+		assertValidate(parameters.validate(V2_1), 31, 27, 6);
 		assertValidate(parameters.validate(V3_0), 27, 6);
 		assertValidate(parameters.validate(V4_0), 27);
 	}
@@ -188,7 +187,7 @@ public class VCardParametersTest {
 		parameters.setSortAs("value");
 		parameters.setTimezone("value");
 
-		assertValidate(parameters.validate(V2_1), 25, 6, 6, 6, 6, 6, 6, 6, 6);
+		assertValidate(parameters.validate(V2_1), 31, 6, 6, 6, 6, 6, 6, 6, 6);
 		assertValidate(parameters.validate(V3_0), 6, 6, 6, 6, 6, 6, 6, 6, 6);
 		assertValidate(parameters.validate(V4_0), 6);
 	}
@@ -230,23 +229,35 @@ public class VCardParametersTest {
 	@Test
 	public void validate_parameter_name() {
 		parameters.replace("YES/NO", "value");
-		for (VCardVersion version : VCardVersion.values()) {
-			assertValidate(parameters.validate(version), 26);
-		}
+		assertValidate(parameters.validate(V2_1));
+		assertValidate(parameters.validate(V3_0), 26);
+		assertValidate(parameters.validate(V4_0), 26);
+
+		parameters.clear();
+		parameters.replace("NAME[]", "value");
+		assertValidate(parameters.validate(V2_1), 30);
+		assertValidate(parameters.validate(V3_0), 26);
+		assertValidate(parameters.validate(V4_0), 26);
+
+		parameters.clear();
+		parameters.replace("NAME", "value");
+		assertValidate(parameters.validate(V2_1));
+		assertValidate(parameters.validate(V3_0));
+		assertValidate(parameters.validate(V4_0));
 	}
 
 	@Test
 	public void validate_parameter_value_characters() {
 		for (char c : ",.:=[]".toCharArray()) {
 			parameters.replace("NAME", "value" + c);
-			assertValidate(parameters.validate(V2_1), 25);
+			assertValidate(parameters.validate(V2_1), 31);
 		}
 
 		char c = (char) 7;
 		parameters.replace("NAME", "value" + c);
-		for (VCardVersion version : VCardVersion.values()) {
-			assertValidate(parameters.validate(version), 25);
-		}
+		assertValidate(parameters.validate(V2_1), 31);
+		assertValidate(parameters.validate(V3_0), 25);
+		assertValidate(parameters.validate(V4_0), 25);
 	}
 
 	/**
@@ -256,12 +267,32 @@ public class VCardParametersTest {
 	 */
 	@Test
 	public void validate_label_parameter_value_characters() {
-		parameters.replace(LABEL, "value.");
+		parameters.replace(LABEL, "value.\"");
 		assertValidate(parameters.validate(V2_1));
+		assertValidate(parameters.validate(V3_0));
+		assertValidate(parameters.validate(V4_0), 25);
 
 		char c = (char) 7;
 		parameters.replace(LABEL, "value" + c);
+		assertValidate(parameters.validate(V2_1));
 		assertValidate(parameters.validate(V3_0));
+		assertValidate(parameters.validate(V4_0), 25);
+	}
+
+	/**
+	 * Newlines in LABEL parameter values are ignored for version 4.0.
+	 */
+	@Test
+	public void validate_label_parameter_newlines() {
+		parameters.replace(LABEL, "value\n");
+		assertValidate(parameters.validate(V2_1));
+		assertValidate(parameters.validate(V3_0));
+		assertValidate(parameters.validate(V4_0));
+
+		parameters.clear();
+		parameters.replace("NAME", "value\n");
+		assertValidate(parameters.validate(V2_1), 31);
+		assertValidate(parameters.validate(V3_0), 25);
 		assertValidate(parameters.validate(V4_0), 25);
 	}
 

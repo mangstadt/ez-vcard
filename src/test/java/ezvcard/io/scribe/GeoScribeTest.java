@@ -98,6 +98,7 @@ public class GeoScribeTest {
 		sensei.assertParseText(";56.78").cannotParse();
 		sensei.assertParseText("-12.34;").cannotParse();
 		sensei.assertParseText("-12.34").cannotParse();
+		sensei.assertParseText(";").cannotParse();
 
 		sensei.assertParseText("geo:invalid,56.78").cannotParse();
 		sensei.assertParseText("geo:-12.34,invalid").cannotParse();

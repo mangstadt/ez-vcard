@@ -322,6 +322,16 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	/**
+	 * Gets the {@link Map} that backs this multimap. This method is here for
+	 * performances reasons. The returned map should NOT be modified by anything
+	 * other than the {@link ListMultimap} object that owns it.
+	 * @return the map
+	 */
+	public Map<K, List<V>> getMap() {
+		return map;
+	}
+
+	/**
 	 * Modifies a given key before it is used to interact with the internal map.
 	 * This method is meant to be overridden by child classes if necessary.
 	 * @param key the key
@@ -390,7 +400,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	/**
 	 * Note: This class is a modified version of the
 	 * "AbstractMapBasedMultimap.WrappedList" class from the <a
-	 * href="https://github.com/google/guava">Guava</a>.
+	 * href="https://github.com/google/guava">Guava</a> library.
 	 * 
 	 * <p>
 	 * Collection decorator that stays in sync with the multimap values for a

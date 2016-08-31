@@ -3,6 +3,8 @@ package ezvcard.io.scribe;
 import java.util.Date;
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -92,7 +94,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 		if (version == VCardVersion.V4_0) {
 			String text = property.getText();
 			if (text != null) {
-				return escape(text);
+				return VObjectPropertyValues.escape(text);
 			}
 
 			PartialDate partialDate = property.getPartialDate();
@@ -106,7 +108,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	@Override
 	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		if (version == VCardVersion.V4_0 && dataType == VCardDataType.TEXT) {
 			return newInstance(value);
 		}

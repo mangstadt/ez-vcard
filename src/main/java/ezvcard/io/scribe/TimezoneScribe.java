@@ -3,6 +3,8 @@ package ezvcard.io.scribe;
 import java.util.List;
 import java.util.TimeZone;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -166,12 +168,12 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			}
 
 			if (text != null) {
-				return escape(text);
+				return VObjectPropertyValues.escape(text);
 			}
 			break;
 		case V4_0:
 			if (text != null) {
-				return escape(text);
+				return VObjectPropertyValues.escape(text);
 			}
 
 			if (offset != null) {
@@ -185,7 +187,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 
 	@Override
 	protected Timezone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		return parse(value, dataType, version, warnings);
 	}
 

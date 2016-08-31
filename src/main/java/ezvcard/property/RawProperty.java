@@ -4,11 +4,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.mangstadt.vinnie.SyntaxStyle;
+import com.github.mangstadt.vinnie.validate.AllowedCharacters;
+import com.github.mangstadt.vinnie.validate.VObjectValidator;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.Warning;
-import ezvcard.util.CharacterBitSet;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -113,9 +116,15 @@ public class RawProperty extends TextProperty {
 
 	@Override
 	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
-		CharacterBitSet validCharacters = new CharacterBitSet("-a-zA-Z0-9");
-		if (!validCharacters.containsOnly(propertyName)) {
-			warnings.add(new Warning(24, propertyName));
+		SyntaxStyle syntax = version.getSyntaxStyle();
+		AllowedCharacters allowed = VObjectValidator.allowedCharactersParameterName(syntax, true);
+		if (!allowed.check(propertyName)) {
+			if (syntax == SyntaxStyle.OLD) {
+				AllowedCharacters notAllowed = allowed.flip();
+				warnings.add(new Warning(31, propertyName, notAllowed.toString(true)));
+			} else {
+				warnings.add(new Warning(24, propertyName));
+			}
 		}
 	}
 

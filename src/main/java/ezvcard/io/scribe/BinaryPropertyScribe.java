@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -146,7 +148,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 	@Override
 	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		return parse(value, dataType, parameters, version, warnings);
 	}
 
@@ -327,7 +329,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			switch (version) {
 			case V2_1:
 			case V3_0:
-				return new String(Base64.encodeBase64(data));
+				return Base64.encodeBase64String(data);
 			case V4_0:
 				U contentType = property.getContentType();
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();

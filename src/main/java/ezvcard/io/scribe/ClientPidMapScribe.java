@@ -2,6 +2,10 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -52,17 +56,15 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 
 	@Override
 	protected String _writeText(ClientPidMap property, WriteContext context) {
-		//@formatter:off
-		return structured(context.isIncludeTrailingSemicolons(), new Object[] {
-			property.getPid(),
-			property.getUri()
-		});
-		//@formatter:on
+		SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
+		builder.append(property.getPid());
+		builder.append(property.getUri());
+		return builder.build(context.isIncludeTrailingSemicolons());
 	}
 
 	@Override
 	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		SemiStructuredIterator it = semistructured(value, 2);
+		SemiStructuredValueIterator it = new SemiStructuredValueIterator(value, 2);
 		String pid = it.next();
 		String uri = it.next();
 		if (pid == null || uri == null) {
@@ -105,9 +107,9 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 
 	@Override
 	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		StructuredIterator it = structured(value);
-		String pid = it.nextString();
-		String uri = it.nextString();
+		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
+		String pid = it.nextValue();
+		String uri = it.nextValue();
 		return parse(pid, uri);
 	}
 

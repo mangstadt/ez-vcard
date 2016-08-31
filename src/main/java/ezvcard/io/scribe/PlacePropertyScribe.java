@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
@@ -68,7 +70,7 @@ public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCard
 	protected String _writeText(T property, WriteContext context) {
 		String text = property.getText();
 		if (text != null) {
-			return escape(text);
+			return VObjectPropertyValues.escape(text);
 		}
 
 		String uri = property.getUri();
@@ -87,7 +89,7 @@ public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCard
 	@Override
 	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		T property = newInstance();
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 
 		if (dataType == VCardDataType.TEXT) {
 			property.setText(value);

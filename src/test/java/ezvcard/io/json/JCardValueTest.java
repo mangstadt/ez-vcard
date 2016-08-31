@@ -158,7 +158,7 @@ public class JCardValueTest {
 	@Test
 	public void asStructured() {
 		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
-		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList((String) "")), value.asStructured());
+		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList()), value.asStructured());
 	}
 
 	@SuppressWarnings("unchecked")

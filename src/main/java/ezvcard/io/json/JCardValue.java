@@ -189,8 +189,7 @@ public class JCardValue {
 	}
 
 	/**
-	 * Gets the value of a structured property (such as
-	 * {@link StructuredName}).
+	 * Gets the value of a structured property (such as {@link StructuredName}).
 	 * @return the values or empty list if not found
 	 */
 	public List<List<String>> asStructured() {
@@ -203,62 +202,69 @@ public class JCardValue {
 		//["gender", {}, "text", ["M", "text"] ]
 		List<JsonValue> array = first.getArray();
 		if (array != null) {
-			List<List<String>> valuesStr = new ArrayList<List<String>>(array.size());
+			List<List<String>> components = new ArrayList<List<String>>(array.size());
 			for (JsonValue value : array) {
 				if (value.isNull()) {
-					valuesStr.add(Arrays.asList(""));
+					components.add(Arrays.<String> asList());
 					continue;
 				}
 
 				Object obj = value.getValue();
 				if (obj != null) {
-					valuesStr.add(Arrays.asList(obj.toString()));
+					String s = obj.toString();
+					List<String> component = (s.length() == 0) ? Arrays.<String> asList() : Arrays.asList(s);
+					components.add(component);
 					continue;
 				}
 
 				List<JsonValue> subArray = value.getArray();
 				if (subArray != null) {
-					List<String> subValuesStr = new ArrayList<String>(subArray.size());
+					List<String> component = new ArrayList<String>(subArray.size());
 					for (JsonValue subArrayValue : subArray) {
 						if (subArrayValue.isNull()) {
-							subValuesStr.add("");
+							component.add("");
 							continue;
 						}
 
 						obj = subArrayValue.getValue();
 						if (obj != null) {
-							subValuesStr.add(obj.toString());
+							component.add(obj.toString());
 							continue;
 						}
 					}
-					valuesStr.add(subValuesStr);
+
+					if (component.size() == 1 && component.get(0).length() == 0) {
+						component.clear();
+					}
+					components.add(component);
 				}
 			}
-			return valuesStr;
+			return components;
 		}
 
 		//get the first value if it's not enclosed in an array
 		//["gender", {}, "text", "M"]
 		Object obj = first.getValue();
 		if (obj != null) {
-			List<List<String>> values = new ArrayList<List<String>>(1);
-			values.add(Arrays.asList(obj.toString()));
-			return values;
+			List<List<String>> components = new ArrayList<List<String>>(1);
+			String s = obj.toString();
+			List<String> component = (s.length() == 0) ? Arrays.<String> asList() : Arrays.asList(s);
+			components.add(component);
+			return components;
 		}
 
 		//["gender", {}, "text", null]
 		if (first.isNull()) {
-			List<List<String>> values = new ArrayList<List<String>>(1);
-			values.add(Arrays.asList(""));
-			return values;
+			List<List<String>> components = new ArrayList<List<String>>(1);
+			components.add(Arrays.<String> asList());
+			return components;
 		}
 
 		return Collections.emptyList();
 	}
 
 	/**
-	 * Gets the value of a multi-valued property (such as {@link Categories}
-	 * ).
+	 * Gets the value of a multi-valued property (such as {@link Categories} ).
 	 * @return the values or empty list if not found
 	 */
 	public List<String> asMulti() {

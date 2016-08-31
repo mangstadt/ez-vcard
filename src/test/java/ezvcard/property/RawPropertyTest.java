@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
@@ -81,7 +84,8 @@ public class RawPropertyTest {
 	@Test
 	public void validate() {
 		RawProperty property = new RawProperty("foo.bar", "value");
-		assertValidate(property).run(24);
+		assertValidate(property).versions(V2_1).run(31);
+		assertValidate(property).versions(V3_0, V4_0).run(24);
 
 		property = new RawProperty("foobar", "value");
 		assertValidate(property).run();

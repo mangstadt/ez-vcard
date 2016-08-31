@@ -1,5 +1,7 @@
 package ezvcard;
 
+import com.github.mangstadt.vinnie.SyntaxStyle;
+
 /**
  * Copyright 2011 George El-Haddad. All rights reserved.
  * 
@@ -67,28 +69,31 @@ public enum VCardVersion {
 	 * The original vCard specification.
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">2.1 specs</a>
 	 */
-	V2_1("2.1", null),
+	V2_1("2.1", SyntaxStyle.OLD, null),
 
 	/**
 	 * Version 3.0.
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
 	 */
-	V3_0("3.0", null),
+	V3_0("3.0", SyntaxStyle.NEW, null),
 
 	/**
 	 * The lastest specification.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
-	V4_0("4.0", "urn:ietf:params:xml:ns:vcard-4.0");
+	V4_0("4.0", SyntaxStyle.NEW, "urn:ietf:params:xml:ns:vcard-4.0");
 
 	private final String version;
+	private final SyntaxStyle syntaxStyle;
 	private final String xmlNamespace;
 
 	/**
 	 * @param version the text representation
+	 * @param xmlNamespace the xCard namespace or null if not defined
 	 */
-	private VCardVersion(String version, String xmlNamespace) {
+	private VCardVersion(String version, SyntaxStyle syntaxStyle, String xmlNamespace) {
 		this.version = version;
+		this.syntaxStyle = syntaxStyle;
 		this.xmlNamespace = xmlNamespace;
 	}
 
@@ -101,7 +106,16 @@ public enum VCardVersion {
 	}
 
 	/**
-	 * Gets the XML namespace of this version.
+	 * Gets the syntax style used by this version when writing to a plain-text
+	 * data stream.
+	 * @return the syntax style
+	 */
+	public SyntaxStyle getSyntaxStyle() {
+		return syntaxStyle;
+	}
+
+	/**
+	 * Gets the XML namespace used by this version when writing to an xCard.
 	 * @return the XML namespace or null if this version does not support xCard
 	 */
 	public String getXmlNamespace() {

@@ -129,11 +129,13 @@ public class SampleVCardsTest {
 
 			//@formatter:off
 			asserter.structuredName()
-				.param("CHARSET", "UTF-8") //TODO remove CHARSET parameter on quoted-printable properties
-				.family("\u00d1 \u00d1 \u00d1 \u00d1")
+				.param("ENCODING", "QUOTED-PRINTABLE")
+				.param("CHARSET", "UTF-8")
+				.family("\u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 
 			asserter.simpleProperty(FormattedName.class)
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.param("CHARSET", "UTF-8")
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
@@ -160,11 +162,13 @@ public class SampleVCardsTest {
 			//@formatter:off
 			asserter.structuredName()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.family("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1")
 			.noMore();
 
 			asserter.simpleProperty(FormattedName.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1")
 			.noMore();
 			
@@ -188,9 +192,11 @@ public class SampleVCardsTest {
 
 			asserter.simpleProperty(Note.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.next()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1 \u00d1\u00d1 \u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 			
@@ -207,12 +213,14 @@ public class SampleVCardsTest {
 			//@formatter:off
 			asserter.structuredName()
 				.param("CHARSET", "UTF-8")
-				.family("\u00d1 \u00d1")
-				.given("\u00d1 \u00d1 \u00d1")
+				.param("ENCODING", "QUOTED-PRINTABLE")
+				.family("\u00d1 \u00d1 ")
+				.given("\u00d1 \u00d1 \u00d1 ")
 			.noMore();
 
 			asserter.simpleProperty(FormattedName.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1 \u00d1 \u00d1 \u00d1 ")
 			.noMore();
 			
@@ -233,14 +241,17 @@ public class SampleVCardsTest {
 			.next()
 				.types(EmailType.PREF)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 			
 			asserter.listProperty(Organization.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.next()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 
@@ -270,11 +281,13 @@ public class SampleVCardsTest {
 			//@formatter:off
 			asserter.structuredName()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.family("\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 
 			asserter.simpleProperty(FormattedName.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.value("\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 			
@@ -290,12 +303,15 @@ public class SampleVCardsTest {
 			
 			asserter.listProperty(Organization.class)
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.next()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1" + (char) 65533)
 			.next()
 				.param("CHARSET", "UTF-8")
+				.param("ENCODING", "QUOTED-PRINTABLE")
 				.values("\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1\u00d1")
 			.noMore();
 
@@ -1497,6 +1513,7 @@ public class SampleVCardsTest {
 
 		asserter.simpleProperty(Note.class)
 			.value("This is the NOTE field	\r\nI assume it encodes this text inside a NOTE vCard type.\r\nBut I'm not sure because there's text formatting going on here.\r\nIt does not preserve the formatting")
+			.param("ENCODING", "QUOTED-PRINTABLE")
 			.param("CHARSET", "us-ascii")
 		.noMore();
 		
@@ -1785,6 +1802,7 @@ public class SampleVCardsTest {
 
 		asserter.simpleProperty(Note.class)
 			.value("This is the note field!!\r\nSecond line\r\n\r\nThird line is empty\r\n")
+			.param("ENCODING", "QUOTED-PRINTABLE")
 		.noMore();
 		
 		asserter.telephone()
@@ -1843,6 +1861,7 @@ public class SampleVCardsTest {
 		 */
 		asserter.simpleProperty(FreeBusyUrl.class)
 			.value("????????????????s????????????" + (char) 12)
+			.param("ENCODING", "QUOTED-PRINTABLE")
 		.noMore();
 		
 		asserter.simpleProperty(Revision.class)
@@ -2156,7 +2175,7 @@ public class SampleVCardsTest {
 				.streetAddress("501 E. Middlefield Rd.")
 				.locality("Mountain View")
 				.region("CA")
-				.postalCode("94043")
+				.postalCode(" 94043")
 				.country("U.S.A.")
 				.types(AddressType.WORK)
 			.noMore();

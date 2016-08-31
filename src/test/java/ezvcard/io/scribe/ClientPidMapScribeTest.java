@@ -73,6 +73,7 @@ public class ClientPidMapScribeTest {
 	public void parseText() {
 		sensei.assertParseText(pid + ";" + uri).run(withValue);
 		sensei.assertParseText(pid + ";" + uri + ";foo").run(has(pid, uri + ";foo"));
+		sensei.assertParseText(";").cannotParse();
 		sensei.assertParseText("no semicolon").cannotParse();
 		sensei.assertParseText("not-a-number;bar").cannotParse();
 	}

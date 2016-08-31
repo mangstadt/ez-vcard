@@ -177,7 +177,7 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.getRawWriter().getFoldedLineWriter().setLineLength(null);
+		vcw.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -300,7 +300,6 @@ public class VCardWriterTest {
 		//should be written as UTF-8
 		{
 			VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0);
-			assertEquals(Charset.forName("UTF-8"), writer.getRawWriter().getFoldedLineWriter().getEncoding());
 			writer.setAddProdId(false);
 			writer.write(vcard);
 			writer.close();
@@ -320,7 +319,6 @@ public class VCardWriterTest {
 		//should be written using default encoding
 		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
 			VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0);
-			assertEquals(Charset.defaultCharset(), writer.getRawWriter().getFoldedLineWriter().getEncoding());
 			writer.setAddProdId(false);
 			writer.write(vcard);
 			writer.close();
@@ -540,18 +538,18 @@ public class VCardWriterTest {
 			String expected =
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"KEY;ENCODING=BASE64;X509:Zm9vYmFy\r\n" +
-				"PHOTO;ENCODING=BASE64;JPEG:Zm9vYmFy\r\n" +
-				"LOGO;PNG;VALUE=url:http://www.company.com/logo.png\r\n" +
+				"KEY;ENCODING=BASE64;TYPE=x509:Zm9vYmFy\r\n" +
+				"PHOTO;ENCODING=BASE64;TYPE=jpeg:Zm9vYmFy\r\n" +
+				"LOGO;TYPE=png;VALUE=url:http://www.company.com/logo.png\r\n" +
 				"NOTE:note\r\n" +
 			"END:VCARD\r\n" +
 			"BEGIN:VCARD\r\n" +
 				"VERSION:2.1\r\n" +
-				"KEY;ENCODING=BASE64;X509:Zm9vYmFy\r\n" +
+				"KEY;ENCODING=BASE64;TYPE=x509:Zm9vYmFy\r\n" +
 				"\r\n" +
-				"PHOTO;ENCODING=BASE64;JPEG:Zm9vYmFy\r\n" +
+				"PHOTO;ENCODING=BASE64;TYPE=jpeg:Zm9vYmFy\r\n" +
 				"\r\n" +
-				"LOGO;PNG;VALUE=url:http://www.company.com/logo.png\r\n" +
+				"LOGO;TYPE=png;VALUE=url:http://www.company.com/logo.png\r\n" +
 				"NOTE:note\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
@@ -729,7 +727,7 @@ public class VCardWriterTest {
 	public void rfc2426_example() throws Throwable {
 		StringWriter sw = new StringWriter();
 		VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0);
-		writer.getRawWriter().getFoldedLineWriter().setLineLength(null);
+		writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
 		writer.setAddProdId(false);
 
 		{

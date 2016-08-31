@@ -10,10 +10,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.github.mangstadt.vinnie.VObjectProperty;
+import com.github.mangstadt.vinnie.io.Context;
+import com.github.mangstadt.vinnie.io.SyntaxRules;
+import com.github.mangstadt.vinnie.io.VObjectDataListener;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+import com.github.mangstadt.vinnie.io.VObjectReader;
+import com.github.mangstadt.vinnie.io.Warning;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -27,11 +33,11 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.property.Address;
 import ezvcard.property.Label;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
-import ezvcard.util.org.apache.commons.codec.DecoderException;
-import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -89,15 +95,25 @@ import ezvcard.util.org.apache.commons.codec.net.QuotedPrintableCodec;
  * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
  */
 public class VCardReader extends StreamReader {
-	private final VCardRawReader reader;
-	private Charset defaultQuotedPrintableCharset;
+	private final VObjectReader reader;
+	private final VCardVersion defaultVersion;
 
 	/**
 	 * Creates a new vCard reader.
 	 * @param str the string to read from
 	 */
 	public VCardReader(String str) {
-		this(new StringReader(str));
+		this(str, VCardVersion.V2_1);
+	}
+
+	/**
+	 * Creates a new vCard reader.
+	 * @param str the string to read from
+	 * @param defaultVersion the version to assume the vCard is in until a
+	 * VERSION property is encountered (defaults to 2.1)
+	 */
+	public VCardReader(String str, VCardVersion defaultVersion) {
+		this(new StringReader(str), defaultVersion);
 	}
 
 	/**
@@ -105,7 +121,17 @@ public class VCardReader extends StreamReader {
 	 * @param in the input stream to read from
 	 */
 	public VCardReader(InputStream in) {
-		this(new InputStreamReader(in));
+		this(in, VCardVersion.V2_1);
+	}
+
+	/**
+	 * Creates a new vCard reader.
+	 * @param in the input stream to read from
+	 * @param defaultVersion the version to assume the vCard is in until a
+	 * VERSION property is encountered (defaults to 2.1)
+	 */
+	public VCardReader(InputStream in, VCardVersion defaultVersion) {
+		this(new InputStreamReader(in), defaultVersion);
 	}
 
 	/**
@@ -114,7 +140,18 @@ public class VCardReader extends StreamReader {
 	 * @throws FileNotFoundException if the file doesn't exist
 	 */
 	public VCardReader(File file) throws FileNotFoundException {
-		this(new BufferedReader(new FileReader(file)));
+		this(file, VCardVersion.V2_1);
+	}
+
+	/**
+	 * Creates a new vCard reader.
+	 * @param file the file to read from
+	 * @param defaultVersion the version to assume the vCard is in until a
+	 * VERSION property is encountered (defaults to 2.1)
+	 * @throws FileNotFoundException if the file doesn't exist
+	 */
+	public VCardReader(File file, VCardVersion defaultVersion) throws FileNotFoundException {
+		this(new BufferedReader(new FileReader(file)), defaultVersion);
 	}
 
 	/**
@@ -122,11 +159,20 @@ public class VCardReader extends StreamReader {
 	 * @param reader the reader to read from
 	 */
 	public VCardReader(Reader reader) {
-		this.reader = new VCardRawReader(reader);
-		defaultQuotedPrintableCharset = this.reader.getEncoding();
-		if (defaultQuotedPrintableCharset == null) {
-			defaultQuotedPrintableCharset = Charset.defaultCharset();
-		}
+		this(reader, VCardVersion.V2_1);
+	}
+
+	/**
+	 * Creates a new vCard reader.
+	 * @param reader the reader to read from
+	 * @param defaultVersion the version to assume the vCard is in until a
+	 * VERSION property is encountered (defaults to 2.1)
+	 */
+	public VCardReader(Reader reader, VCardVersion defaultVersion) {
+		SyntaxRules rules = SyntaxRules.vcard();
+		rules.setDefaultSyntaxStyle(defaultVersion.getSyntaxStyle());
+		this.reader = new VObjectReader(reader, rules);
+		this.defaultVersion = defaultVersion;
 	}
 
 	/**
@@ -134,7 +180,7 @@ public class VCardReader extends StreamReader {
 	 * accent encoding (enabled by default). This escaping mechanism allows
 	 * newlines and double quotes to be included in parameter values.
 	 * @return true if circumflex accent decoding is enabled, false if not
-	 * @see VCardRawReader#isCaretDecodingEnabled()
+	 * @see VObjectReader#isCaretDecodingEnabled()
 	 */
 	public boolean isCaretDecodingEnabled() {
 		return reader.isCaretDecodingEnabled();
@@ -145,342 +191,332 @@ public class VCardReader extends StreamReader {
 	 * accent encoding (enabled by default). This escaping mechanism allows
 	 * newlines and double quotes to be included in parameter values.
 	 * @param enable true to use circumflex accent decoding, false not to
-	 * @see VCardRawReader#setCaretDecodingEnabled(boolean)
+	 * @see VObjectReader#setCaretDecodingEnabled(boolean)
 	 */
 	public void setCaretDecodingEnabled(boolean enable) {
 		reader.setCaretDecodingEnabled(enable);
 	}
 
 	/**
-	 * <p>
-	 * Gets the character set to use when decoding quoted-printable values if
-	 * the property has no CHARSET parameter, or if the CHARSET parameter is not
-	 * a valid character set.
-	 * </p>
-	 * <p>
-	 * By default, the Reader's character encoding will be used. If the Reader
-	 * has no character encoding, then the system's default character encoding
-	 * will be used.
-	 * </p>
+	 * Gets the character set to use when the parser cannot determine what
+	 * character set to use to decode a quoted-printable property value.
 	 * @return the character set
+	 * @see VObjectReader#getDefaultQuotedPrintableCharset()
 	 */
 	public Charset getDefaultQuotedPrintableCharset() {
-		return defaultQuotedPrintableCharset;
+		return reader.getDefaultQuotedPrintableCharset();
 	}
 
 	/**
-	 * <p>
-	 * Sets the character set to use when decoding quoted-printable values if
-	 * the property has no CHARSET parameter, or if the CHARSET parameter is not
-	 * a valid character set.
-	 * </p>
-	 * <p>
-	 * By default, the Reader's character encoding will be used. If the Reader
-	 * has no character encoding, then the system's default character encoding
-	 * will be used.
-	 * </p>
-	 * @param charset the character set
+	 * Sets the character set to use when the parser cannot determine what
+	 * character set to use to decode a quoted-printable property value.
+	 * @param charset the character set (cannot be null)
+	 * @see VObjectReader#setDefaultQuotedPrintableCharset
 	 */
 	public void setDefaultQuotedPrintableCharset(Charset charset) {
-		defaultQuotedPrintableCharset = charset;
-	}
-
-	/**
-	 * Defines how the reader should parse a vCard when it encounters a
-	 * non-standard version number. By default, a warning is logged and the
-	 * version property is ignored.
-	 * @param version the version number
-	 * @param parseAccordingTo the parsing rules the reader should use when a
-	 * vCard with the given version number is encountered
-	 */
-	public void setVersionAlias(String version, VCardVersion parseAccordingTo) {
-		reader.setVersionAlias(version, parseAccordingTo);
+		reader.setDefaultQuotedPrintableCharset(charset);
 	}
 
 	@Override
 	protected VCard _readNext() throws IOException {
-		/*
-		 * Although this almost never happens, vCards can be nested inside of
-		 * each other (see: AGENT property).
-		 */
-		VCard root = null;
-		VCardStack stack = new VCardStack();
-		EmbeddedVCardException embeddedVCardException = null;
+		VObjectDataListenerImpl listener = new VObjectDataListenerImpl();
+		reader.parse(listener);
+		return listener.root;
+	}
 
-		while (true) {
-			//read next line
-			VCardRawLine line;
-			try {
-				line = reader.readLine();
-			} catch (VCardParseException e) {
-				if (!stack.isEmpty()) {
-					warnings.add(e.getLineNumber(), null, 27, e.getMessage(), e.getLine());
-				}
-				continue;
+	private class VObjectDataListenerImpl implements VObjectDataListener {
+		private VCard root;
+		private final VCardStack stack = new VCardStack();
+		private EmbeddedVCardException embeddedVCardException;
+
+		public void onComponentBegin(String name, Context context) {
+			if (!isVCardComponent(name)) {
+				//ignore non-VCARD components
+				return;
 			}
 
-			//EOF
-			if (line == null) {
-				break;
+			VCard vcard = new VCard(defaultVersion);
+			if (stack.isEmpty()) {
+				root = vcard;
+			}
+			stack.push(vcard);
+
+			if (embeddedVCardException != null) {
+				embeddedVCardException.injectVCard(vcard);
+				embeddedVCardException = null;
+			}
+		}
+
+		public void onComponentEnd(String name, Context context) {
+			if (!isVCardComponent(name)) {
+				//ignore non-VCARD components
+				return;
 			}
 
-			//handle BEGIN:VCARD
-			if ("BEGIN".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
-				VCard vcard = new VCard();
-				vcard.setVersion(reader.getVersion());
-				stack.push(vcard);
-
-				if (root == null) {
-					root = vcard;
-				}
-
-				if (embeddedVCardException != null) {
-					embeddedVCardException.injectVCard(vcard);
-					embeddedVCardException = null;
-				}
-
-				continue;
-			}
+			VCardStack.Item item = stack.pop();
+			assignLabels(item.vcard, item.labels);
 
 			if (stack.isEmpty()) {
-				//BEGIN component hasn't been encountered yet, so skip this line
-				continue;
+				context.stop();
+			}
+		}
+
+		public void onProperty(VObjectProperty vobjectProperty, Context context) {
+			if (!inVCardComponent(context.getParentComponents())) {
+				//ignore properties that are not directly inside a VCARD component
+				return;
 			}
 
-			//handle VERSION property
-			if ("VERSION".equalsIgnoreCase(line.getName())) {
-				stack.peek().vcard.setVersion(reader.getVersion());
-				continue;
+			if (embeddedVCardException != null) {
+				//the next property was supposed to be the start of a nested vCard, but it wasn't
+				embeddedVCardException.injectVCard(null);
+				embeddedVCardException = null;
 			}
 
-			//handle END:VCARD
-			if ("END".equalsIgnoreCase(line.getName()) && "VCARD".equalsIgnoreCase(line.getValue())) {
-				VCardStack.Item item = stack.pop();
-				assignLabels(item.vcard, item.labels);
+			VCard curVCard = stack.peek().vcard;
+			VCardVersion version = curVCard.getVersion();
 
-				if (stack.isEmpty()) {
-					//done reading the vCard
+			VCardProperty property = parseProperty(vobjectProperty, version, context.getLineNumber());
+			if (property != null) {
+				curVCard.addProperty(property);
+			}
+		}
+
+		private VCardProperty parseProperty(VObjectProperty vobjectProperty, VCardVersion version, int lineNumber) {
+			String group = vobjectProperty.getGroup();
+			String name = vobjectProperty.getName();
+			VCardParameters parameters = new VCardParameters(vobjectProperty.getParameters().getMap());
+			String value = vobjectProperty.getValue();
+
+			//sanitize the parameters
+			processNamelessParameters(parameters);
+			processQuotedMultivaluedTypeParams(parameters, version);
+
+			//get the scribe
+			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
+			if (scribe == null) {
+				scribe = new RawPropertyScribe(name);
+			}
+
+			//get the data type (VALUE parameter)
+			VCardDataType dataType = parameters.getValue();
+			parameters.setValue(null);
+			if (dataType == null) {
+				//use the default data type if there is no VALUE parameter
+				dataType = scribe.defaultDataType(version);
+			}
+
+			VCardProperty property;
+			try {
+				Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
+				for (String warning : result.getWarnings()) {
+					warnings.add(lineNumber, name, warning);
+				}
+				property = result.getProperty();
+			} catch (SkipMeException e) {
+				handleSkippedProperty(name, lineNumber, e);
+				return null;
+			} catch (CannotParseException e) {
+				property = handleUnparseableProperty(name, parameters, value, dataType, lineNumber, version, e);
+			} catch (EmbeddedVCardException e) {
+				handledEmbeddedVCard(name, value, lineNumber, e);
+				property = e.getProperty();
+			}
+
+			property.setGroup(group);
+
+			/*
+			 * LABEL properties must be treated specially so they can be matched
+			 * up with the ADR properties that they belong to. LABELs are not
+			 * added to the vCard as properties, they are added to the ADR
+			 * properties they belong to (unless they cannot be matched up with
+			 * an ADR).
+			 */
+			if (property instanceof Label) {
+				Label label = (Label) property;
+				stack.peek().labels.add(label);
+				return null;
+			}
+
+			handleLabelParameter(property);
+
+			return property;
+		}
+
+		private void handleSkippedProperty(String propertyName, int lineNumber, SkipMeException e) {
+			warnings.add(lineNumber, propertyName, 22, e.getMessage());
+		}
+
+		private VCardProperty handleUnparseableProperty(String name, VCardParameters parameters, String value, VCardDataType dataType, int lineNumber, VCardVersion version, CannotParseException e) {
+			warnings.add(lineNumber, name, 25, value, e.getMessage());
+			RawPropertyScribe scribe = new RawPropertyScribe(name);
+			return scribe.parseText(value, dataType, version, parameters).getProperty();
+		}
+
+		private void handledEmbeddedVCard(String name, String value, int lineNumber, EmbeddedVCardException exception) {
+			/*
+			 * If the property does not have a value, a nested vCard is expected
+			 * to be next (2.1 style).
+			 */
+			if (value.trim().length() == 0) {
+				embeddedVCardException = exception;
+				return;
+			}
+
+			/*
+			 * If the property does have a value, the property value should be
+			 * an embedded vCard (3.0 style).
+			 */
+			value = VObjectPropertyValues.unescape(value);
+
+			VCardReader agentReader = new VCardReader(value);
+			agentReader.setCaretDecodingEnabled(isCaretDecodingEnabled());
+			agentReader.setDefaultQuotedPrintableCharset(getDefaultQuotedPrintableCharset());
+			agentReader.setScribeIndex(index);
+
+			try {
+				VCard nestedVCard = agentReader.readNext();
+				if (nestedVCard != null) {
+					exception.injectVCard(nestedVCard);
+				}
+			} catch (IOException e) {
+				//shouldn't be thrown because we're reading from a string
+			} finally {
+				for (String warning : agentReader.getWarnings()) {
+					warnings.add(lineNumber, name, 26, warning);
+				}
+				IOUtils.closeQuietly(agentReader);
+			}
+		}
+
+		/**
+		 * <p>
+		 * Unescapes newline sequences in the LABEL parameter of {@link Address}
+		 * properties. Newlines cannot normally be escaped in parameter values.
+		 * </p>
+		 * <p>
+		 * Only version 4.0 allows this (and only version 4.0 defines a LABEL
+		 * parameter), but do this for all versions for compatibility.
+		 * </p>
+		 * @param property the property
+		 */
+		private void handleLabelParameter(VCardProperty property) {
+			if (!(property instanceof Address)) {
+				return;
+			}
+
+			Address adr = (Address) property;
+			String label = adr.getLabel();
+			if (label == null) {
+				return;
+			}
+
+			label = label.replace("\\n", StringUtils.NEWLINE);
+			adr.setLabel(label);
+		}
+
+		public void onVersion(String value, Context context) {
+			VCardVersion version = VCardVersion.valueOfByStr(value);
+			stack.peek().vcard.setVersion(version);
+		}
+
+		public void onWarning(Warning warning, VObjectProperty property, Exception thrown, Context context) {
+			if (!inVCardComponent(context.getParentComponents())) {
+				//ignore warnings that are not directly inside a VCARD component
+				return;
+			}
+
+			String name = (property == null) ? null : property.getName();
+			warnings.add(context.getLineNumber(), name, 27, warning.getMessage(), context.getUnfoldedLine());
+		}
+
+		private boolean inVCardComponent(List<String> parentComponents) {
+			if (parentComponents.isEmpty()) {
+				return false;
+			}
+			String last = parentComponents.get(parentComponents.size() - 1);
+			return isVCardComponent(last);
+		}
+
+		private boolean isVCardComponent(String componentName) {
+			return "VCARD".equals(componentName);
+		}
+
+		/**
+		 * Assigns names to all nameless parameters. v3.0 and v4.0 require all
+		 * parameters to have names, but v2.1 does not.
+		 * @param parameters the parameters
+		 */
+		private void processNamelessParameters(VCardParameters parameters) {
+			List<String> namelessValues = parameters.removeAll(null);
+			for (String value : namelessValues) {
+				String name = guessParameterName(value);
+				parameters.put(name, value);
+			}
+		}
+
+		/**
+		 * Makes a guess as to what a parameter value's name should be.
+		 * @param value the parameter value (e.g. "HOME")
+		 * @return the guessed name (e.g. "TYPE")
+		 */
+		private String guessParameterName(String value) {
+			if (VCardDataType.find(value) != null) {
+				return VCardParameters.VALUE;
+			}
+
+			if (Encoding.find(value) != null) {
+				return VCardParameters.ENCODING;
+			}
+
+			//otherwise, assume it's a TYPE
+			return VCardParameters.TYPE;
+		}
+
+		/**
+		 * <p>
+		 * Accounts for multi-valued TYPE parameters being enclosed entirely in
+		 * double quotes (for example: ADR;TYPE="home,work").
+		 * </p>
+		 * <p>
+		 * Many examples throughout the 4.0 specs show TYPE parameters being
+		 * encoded in this way. This conflicts with the ABNF and is noted in the
+		 * errata. This method will parse these incorrectly-formatted TYPE
+		 * parameters as if they were multi-valued, even though, technically,
+		 * they are not.
+		 * </p>
+		 * @param parameters the parameters
+		 * @param version the version
+		 */
+		private void processQuotedMultivaluedTypeParams(VCardParameters parameters, VCardVersion version) {
+			if (version == VCardVersion.V2_1) {
+				return;
+			}
+
+			List<String> types = parameters.getTypes();
+			if (types.isEmpty()) {
+				return;
+			}
+
+			String valueWithComma = null;
+			for (String value : types) {
+				if (value.indexOf(',') >= 0) {
+					valueWithComma = value;
 					break;
 				}
-				continue;
+			}
+			if (valueWithComma == null) {
+				return;
 			}
 
-			//handle property
-			{
-				String group = line.getGroup();
-				VCardParameters parameters = line.getParameters();
-				String name = line.getName();
-				String value = line.getValue();
-
-				if (embeddedVCardException != null) {
-					//the next property was supposed to be the start of a nested vCard, but it wasn't
-					embeddedVCardException.injectVCard(null);
-					embeddedVCardException = null;
-				}
-
-				VCard curVCard = stack.peek().vcard;
-				VCardVersion version = curVCard.getVersion();
-
-				//sanitize the parameters
-				processNamelessParameters(parameters);
-				processQuotedMultivaluedTypeParams(parameters);
-
-				//decode property value from quoted-printable
-				try {
-					value = decodeQuotedPrintableValue(name, parameters, value);
-				} catch (DecoderException e) {
-					warnings.add(reader.getLineNumber(), name, 38, e.getMessage());
-				}
-
-				//get the scribe
-				VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(name);
-				if (scribe == null) {
-					scribe = new RawPropertyScribe(name);
-				}
-
-				//get the data type (VALUE parameter)
-				VCardDataType dataType = parameters.getValue();
-				parameters.setValue(null);
-				if (dataType == null) {
-					//use the property's default data type if there is no VALUE parameter
-					dataType = scribe.defaultDataType(version);
-				}
-
-				VCardProperty property;
-				try {
-					Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
-
-					for (String warning : result.getWarnings()) {
-						warnings.add(reader.getLineNumber(), name, warning);
-					}
-
-					property = result.getProperty();
-					property.setGroup(group);
-
-					if (property instanceof Label) {
-						/*
-						 * LABEL properties must be treated specially so they
-						 * can be matched up with the ADR properties that they
-						 * belong to.
-						 */
-						Label label = (Label) property;
-						stack.peek().labels.add(label);
-					} else {
-						curVCard.addProperty(property);
-					}
-				} catch (SkipMeException e) {
-					warnings.add(reader.getLineNumber(), name, 22, e.getMessage());
-				} catch (CannotParseException e) {
-					warnings.add(reader.getLineNumber(), name, 25, value, e.getMessage());
-					property = new RawPropertyScribe(name).parseText(value, dataType, version, parameters).getProperty();
-					property.setGroup(group);
-					curVCard.addProperty(property);
-				} catch (EmbeddedVCardException e) {
-					//parse an embedded vCard (i.e. the AGENT type)
-					property = e.getProperty();
-
-					if (value.length() == 0 || version == VCardVersion.V2_1) {
-						//a nested vCard is expected to be next (2.1 style)
-						embeddedVCardException = e;
-					} else {
-						//the property value should be an embedded vCard (3.0 style)
-						value = VCardPropertyScribe.unescape(value);
-
-						VCardReader agentReader = new VCardReader(value);
-						agentReader.setScribeIndex(index);
-						try {
-							VCard nestedVCard = agentReader.readNext();
-							if (nestedVCard != null) {
-								e.injectVCard(nestedVCard);
-							}
-						} catch (IOException e2) {
-							//shouldn't be thrown because we're reading from a string
-						} finally {
-							for (String w : agentReader.getWarnings()) {
-								warnings.add(reader.getLineNumber(), name, 26, w);
-							}
-							IOUtils.closeQuietly(agentReader);
-						}
-					}
-
-					curVCard.addProperty(property);
-				}
+			types.clear();
+			int prev = -1, cur;
+			while ((cur = valueWithComma.indexOf(',', prev + 1)) >= 0) {
+				types.add(valueWithComma.substring(prev + 1, cur));
+				prev = cur;
 			}
+			types.add(valueWithComma.substring(prev + 1));
 		}
-
-		return root;
-	}
-
-	/**
-	 * Assigns names to all nameless parameters. v3.0 and v4.0 requires all
-	 * parameters to have names, but v2.1 does not.
-	 * @param parameters the parameters
-	 */
-	private void processNamelessParameters(VCardParameters parameters) {
-		List<String> namelessParamValues = parameters.removeAll(null);
-		for (String paramValue : namelessParamValues) {
-			String paramName = guessParameterName(paramValue);
-			parameters.put(paramName, paramValue);
-		}
-	}
-
-	/**
-	 * Makes a guess as to what a parameter value's name should be.
-	 * @param value the parameter value
-	 * @return the guessed name
-	 */
-	private String guessParameterName(String value) {
-		if (VCardDataType.find(value) != null) {
-			return VCardParameters.VALUE;
-		}
-
-		if (Encoding.find(value) != null) {
-			return VCardParameters.ENCODING;
-		}
-
-		//otherwise, assume it's a TYPE
-		return VCardParameters.TYPE;
-	}
-
-	/**
-	 * <p>
-	 * Accounts for multi-valued TYPE parameters being enclosed entirely in
-	 * double quotes (for example: ADR;TYPE="home,work").
-	 * </p>
-	 * <p>
-	 * Many examples throughout the 4.0 specs show TYPE parameters being encoded
-	 * in this way. This conflicts with the ABNF and is noted in the errata.
-	 * This method will parse these incorrectly-formatted TYPE parameters as if
-	 * they were multi-valued, even though, technically, they are not.
-	 * </p>
-	 * @param parameters the parameters
-	 */
-	private void processQuotedMultivaluedTypeParams(VCardParameters parameters) {
-		List<String> types = parameters.getTypes();
-		String valueWithComma = null;
-		for (String value : types) {
-			if (value.indexOf(',') >= 0) {
-				valueWithComma = value;
-				break;
-			}
-		}
-		if (valueWithComma == null) {
-			return;
-		}
-
-		types.clear();
-		int prev = -1, cur;
-		while ((cur = valueWithComma.indexOf(',', prev + 1)) >= 0) {
-			types.add(valueWithComma.substring(prev + 1, cur));
-			prev = cur;
-		}
-		types.add(valueWithComma.substring(prev + 1));
-	}
-
-	/**
-	 * Checks to see if a property's value is encoded in quoted-printable
-	 * encoding and decodes it if it is.
-	 * @param name the property name
-	 * @param parameters the property parameters
-	 * @param value the property value (may or may not be encoded in
-	 * quoted-printable
-	 * @return the decoded property value or the untouched property value if it
-	 * is not encoded in quoted-printable encoding
-	 * @throws DecoderException if the value couldn't be decoded
-	 */
-	private String decodeQuotedPrintableValue(String name, VCardParameters parameters, String value) throws DecoderException {
-		if (parameters.getEncoding() != Encoding.QUOTED_PRINTABLE) {
-			//the property value is not encoded in quoted-printable encoding
-			return value;
-		}
-
-		//remove the encoding parameter
-		parameters.setEncoding(null);
-
-		//determine the character set
-		Charset charset = null;
-		String charsetStr = parameters.getCharset();
-		if (charsetStr == null) {
-			charset = defaultQuotedPrintableCharset;
-		} else {
-			try {
-				charset = Charset.forName(charsetStr);
-			} catch (IllegalCharsetNameException e) {
-				//bad charset name
-			} catch (UnsupportedCharsetException e) {
-				//bad charset name
-			}
-
-			if (charset == null) {
-				charset = defaultQuotedPrintableCharset;
-
-				//the given charset was invalid, so add a warning
-				warnings.add(reader.getLineNumber(), name, 23, charsetStr, charset.name());
-			}
-		}
-
-		QuotedPrintableCodec codec = new QuotedPrintableCodec(charset.name());
-		return codec.decode(value);
 	}
 
 	/**
@@ -533,7 +569,8 @@ public class VCardReader extends StreamReader {
 	}
 
 	/**
-	 * Closes the underlying {@link Reader} object.
+	 * Closes the input stream.
+	 * @throws IOException if there's a problem closing the input stream
 	 */
 	public void close() throws IOException {
 		reader.close();

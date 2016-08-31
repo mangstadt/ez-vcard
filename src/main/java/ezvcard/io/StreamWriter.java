@@ -189,8 +189,8 @@ public abstract class StreamWriter implements Closeable {
 
 			propertiesToAdd.add(property);
 
-			//add LABEL types for each ADR type if the target version is 2.1 or 3.0
-			if (property instanceof Address && (targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0)) {
+			//add LABEL properties for each ADR property if the target version is 2.1 or 3.0
+			if ((targetVersion == VCardVersion.V2_1 || targetVersion == VCardVersion.V3_0) && property instanceof Address) {
 				Address adr = (Address) property;
 				String labelStr = adr.getLabel();
 				if (labelStr == null) {

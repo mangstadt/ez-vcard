@@ -3,6 +3,8 @@ package ezvcard.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -108,7 +110,7 @@ public class FavoriteColors extends VCardProperty {
 		//writes the property's value to a plain-text vCard
 		@Override
 		protected String _writeText(FavoriteColors property, WriteContext context) {
-			return list(property.getColors());
+			return VObjectPropertyValues.writeList(property.getColors());
 		}
 
 		//required
@@ -116,7 +118,7 @@ public class FavoriteColors extends VCardProperty {
 		@Override
 		protected FavoriteColors _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 			FavoriteColors prop = new FavoriteColors();
-			for (String color : list(value)) {
+			for (String color : VObjectPropertyValues.parseList(value)) {
 				prop.addColor(color);
 			}
 			return prop;

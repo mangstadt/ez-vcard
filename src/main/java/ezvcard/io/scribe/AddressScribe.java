@@ -2,6 +2,9 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -67,22 +70,20 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 
 	@Override
 	protected String _writeText(Address property, WriteContext context) {
-		//@formatter:off
-		return structured(context.isIncludeTrailingSemicolons(), new Object[]{
-			property.getPoBoxes(),
-			property.getExtendedAddresses(),
-			property.getStreetAddresses(),
-			property.getLocalities(),
-			property.getRegions(),
-			property.getPostalCodes(),
-			property.getCountries()
-		});
-		//@formatter:on
+		StructuredValueBuilder builder = new StructuredValueBuilder();
+		builder.append(property.getPoBoxes());
+		builder.append(property.getExtendedAddresses());
+		builder.append(property.getStreetAddresses());
+		builder.append(property.getLocalities());
+		builder.append(property.getRegions());
+		builder.append(property.getPostalCodes());
+		builder.append(property.getCountries());
+		return builder.build(context.isIncludeTrailingSemicolons());
 	}
 
 	@Override
 	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value);
 		return parseStructuredValue(it);
 	}
 
@@ -148,11 +149,11 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 
 	@Override
 	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
-		StructuredIterator it = structured(value);
+		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 		return parseStructuredValue(it);
 	}
 
-	private Address parseStructuredValue(StructuredIterator it) {
+	private Address parseStructuredValue(StructuredValueIterator it) {
 		Address property = new Address();
 
 		property.getPoBoxes().addAll(it.nextComponent());

@@ -85,6 +85,7 @@ public class GenderScribeTest {
 		sensei.assertParseText(gender + ";" + textEscaped).run(withGenderAndText);
 		sensei.assertParseText(gender).run(withGender);
 		sensei.assertParseText(";" + textEscaped).run(withText);
+		sensei.assertParseText(";").run(empty);
 		sensei.assertParseText("").run(empty);
 	}
 

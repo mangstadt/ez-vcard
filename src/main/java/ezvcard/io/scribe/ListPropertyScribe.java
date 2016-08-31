@@ -2,6 +2,8 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
@@ -52,12 +54,12 @@ public abstract class ListPropertyScribe<T extends TextListProperty> extends VCa
 
 	@Override
 	protected String _writeText(T property, WriteContext context) {
-		return list(property.getValues());
+		return VObjectPropertyValues.writeList(property.getValues());
 	}
 
 	@Override
 	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		List<String> values = list(value);
+		List<String> values = VObjectPropertyValues.parseList(value);
 		return parse(values);
 	}
 

@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -67,12 +69,12 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 		}
 
 		String xml = valueToString(value);
-		return escape(xml);
+		return VObjectPropertyValues.escape(xml);
 	}
 
 	@Override
 	protected Xml _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		value = unescape(value);
+		value = VObjectPropertyValues.unescape(value);
 		try {
 			return new Xml(value);
 		} catch (SAXException e) {

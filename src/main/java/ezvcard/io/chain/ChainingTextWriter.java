@@ -169,7 +169,16 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void go(OutputStream out) throws IOException {
-		go(new VCardWriter(out, version));
+		/*
+		 * The VCardWriter constructor does not allow a null version, so if the
+		 * user hasn't chosen a version, pass one in to avoid a NPE.
+		 * 
+		 * The version that is passed in doesn't matter because, when the vCards
+		 * are written, the writer's target version is set to the version
+		 * assigned to each vCard being written.
+		 */
+		VCardVersion v = (version == null) ? VCardVersion.V3_0 : version;
+		go(new VCardWriter(out, v));
 	}
 
 	/**
@@ -203,7 +212,16 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the writer
 	 */
 	public void go(Writer writer) throws IOException {
-		go(new VCardWriter(writer, version));
+		/*
+		 * The VCardWriter constructor does not allow a null version, so if the
+		 * user hasn't chosen a version, pass one in to avoid a NPE.
+		 * 
+		 * The version that is passed in doesn't matter because, when the vCards
+		 * are written, the writer's target version is set to the version
+		 * assigned to each vCard being written.
+		 */
+		VCardVersion v = (version == null) ? VCardVersion.V3_0 : version;
+		go(new VCardWriter(writer, v));
 	}
 
 	private void go(VCardWriter writer) throws IOException {

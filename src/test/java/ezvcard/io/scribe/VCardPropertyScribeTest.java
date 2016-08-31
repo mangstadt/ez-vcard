@@ -1,7 +1,6 @@
 package ezvcard.io.scribe;
 
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -22,8 +21,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
-import ezvcard.io.scribe.VCardPropertyScribe.SemiStructuredIterator;
-import ezvcard.io.scribe.VCardPropertyScribe.StructuredIterator;
 import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -67,110 +64,6 @@ public class VCardPropertyScribeTest {
 	private final Date datetime = date("2013-06-11 14:43:02");
 
 	@Test
-	public void unescape() {
-		String expected, actual;
-
-		actual = VCardPropertyScribe.unescape("\\\\ \\, \\; \\n\\N \\\\\\,");
-		expected = "\\ , ; " + NEWLINE + NEWLINE + " \\,";
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.unescape(null);
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void escape() {
-		String actual, expected;
-
-		actual = VCardPropertyScribe.escape("One; Two, Three\\ Four\n Five\r\n Six\r");
-		expected = "One\\; Two\\, Three\\\\ Four\n Five\r\n Six\r";
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.escape(null);
-		expected = null;
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_limit() {
-		String str = "one,two,three,four";
-		List<String> actual, expected;
-
-		actual = VCardPropertyScribe.splitter(',').split(str);
-		expected = Arrays.asList("one", "two", "three", "four");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').limit(2).split(str);
-		expected = Arrays.asList("one", "two,three,four");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').limit(4).split(str);
-		expected = Arrays.asList("one", "two", "three", "four");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').limit(10).split(str);
-		expected = Arrays.asList("one", "two", "three", "four");
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_unescape() {
-		String str = "one,two\\,\\;three";
-		List<String> actual, expected;
-
-		actual = VCardPropertyScribe.splitter(',').split(str);
-		expected = Arrays.asList("one", "two\\,\\;three");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').unescape(true).split(str);
-		expected = Arrays.asList("one", "two,;three");
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_nullEmpties() {
-		String str = ",one,,two,";
-		List<String> actual, expected;
-
-		actual = VCardPropertyScribe.splitter(',').split(str);
-		expected = Arrays.asList("", "one", "", "two", "");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').nullEmpties(true).split(str);
-		expected = Arrays.asList(null, "one", null, "two", null);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_trim() {
-		List<String> actual = VCardPropertyScribe.splitter(',').split("one , two");
-		List<String> expected = Arrays.asList("one", "two");
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_empty() {
-		List<String> actual = VCardPropertyScribe.splitter(',').split("");
-		List<String> expected = Arrays.asList("");
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void splitter_all_settings() {
-		String str = "one ,two\\,three,,four,five";
-		List<String> actual, expected;
-
-		actual = VCardPropertyScribe.splitter(',').split(str);
-		expected = Arrays.asList("one", "two\\,three", "", "four", "five");
-		assertEquals(expected, actual);
-
-		actual = VCardPropertyScribe.splitter(',').unescape(true).limit(4).nullEmpties(true).split(str);
-		expected = Arrays.asList("one", "two,three", null, "four,five");
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void date_parse_utc() {
 		String value = "20130611T134302Z";
 
@@ -210,114 +103,6 @@ public class VCardPropertyScribeTest {
 	private void assert_date_write_datetime(String expected, boolean time, boolean extended, boolean utc) {
 		String actual = VCardPropertyScribe.date(datetime).time(time).extended(extended).utc(utc).write();
 		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void list_parse() {
-		List<String> actual = VCardPropertyScribe.list("one ,, two,three\\,four");
-		List<String> expected = Arrays.asList("one", "", "two", "three,four");
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void list_parse_empty() {
-		List<String> actual = VCardPropertyScribe.list("");
-		List<String> expected = Arrays.asList();
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void list_write() {
-		String actual = VCardPropertyScribe.list("one", null, "two", "three,four");
-		String expected = "one,,two,three\\,four";
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void semistructured_parse() {
-		String input = "one;two,three\\,four;;;five\\;six";
-
-		SemiStructuredIterator it = VCardPropertyScribe.semistructured(input);
-		assertEquals("one", it.next());
-		assertEquals("two,three,four", it.next());
-		assertEquals("", it.next());
-		assertEquals("", it.next());
-		assertEquals("five;six", it.next());
-		assertEquals(null, it.next());
-	}
-
-	@Test
-	public void semistructured_parse_limit() {
-		String input = "one;two,three\\,four;;;five\\;six";
-
-		SemiStructuredIterator it = VCardPropertyScribe.semistructured(input, 2);
-		assertEquals("one", it.next());
-		assertEquals("two,three,four;;;five;six", it.next());
-		assertEquals(null, it.next());
-		assertEquals(null, it.next());
-		assertEquals(null, it.next());
-		assertEquals(null, it.next());
-	}
-
-	@Test
-	public void structured_parse_string() {
-		String input = "one;two,three\\,four;;;five\\;six";
-
-		//using "nextComponent()"
-		StructuredIterator it = VCardPropertyScribe.structured(input);
-		assertEquals(Arrays.asList("one"), it.nextComponent());
-		assertEquals(Arrays.asList("two", "three,four"), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-		assertEquals(Arrays.asList("five;six"), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-
-		//using "nextString()"
-		it = VCardPropertyScribe.structured(input);
-		assertEquals("one", it.nextString());
-		assertEquals("two", it.nextString());
-		assertEquals(null, it.nextString());
-		assertEquals(null, it.nextString());
-		assertEquals("five;six", it.nextString());
-		assertEquals(null, it.nextString());
-	}
-
-	@Test
-	public void structured_parse_jcard_value() {
-		JCardValue input = JCardValue.structured("one", Arrays.asList("two", "three,four"), null, "", "five;six");
-
-		//using "nextComponent()"
-		StructuredIterator it = VCardPropertyScribe.structured(input);
-		assertEquals(Arrays.asList("one"), it.nextComponent());
-		assertEquals(Arrays.asList("two", "three,four"), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-		assertEquals(Arrays.asList("five;six"), it.nextComponent());
-		assertEquals(Arrays.asList(), it.nextComponent());
-
-		//using "nextString()"
-		it = VCardPropertyScribe.structured(input);
-		assertEquals("one", it.nextString());
-		assertEquals("two", it.nextString());
-		assertEquals(null, it.nextString());
-		assertEquals(null, it.nextString());
-		assertEquals("five;six", it.nextString());
-		assertEquals(null, it.nextString());
-	}
-
-	@Test
-	public void structured_write() {
-		String actual = VCardPropertyScribe.structured("one", 2, null, "four;five,six\\seven", Arrays.asList("eight"), Arrays.asList("nine", null, "ten;eleven,twelve\\thirteen"));
-		assertEquals("one;2;;four\\;five\\,six\\\\seven;eight;nine,,ten\\;eleven\\,twelve\\\\thirteen", actual);
-	}
-
-	@Test
-	public void structured_write_trailing_semicolons() {
-		String actual = VCardPropertyScribe.structured(false, new Object[] { "one", "two", Arrays.asList(), "", null, "three", Arrays.asList(), "", null });
-		assertEquals("one;two;;;;three", actual);
-
-		actual = VCardPropertyScribe.structured(true, new Object[] { "one", "two", Arrays.asList(), "", null, "three", Arrays.asList(), "", null });
-		assertEquals("one;two;;;;three;;;", actual);
 	}
 
 	@Test
