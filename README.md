@@ -104,14 +104,13 @@ To build a JAR: `mvn package`
 
 You have some options:
 
+ * [Issue tracker](https://github.com/mangstadt/ez-vcard/issues)
  * [Gitter chat room](https://gitter.im/mangstadt/ez-vcard)
  * [codewake Q&A forum](https://www.codewake.com/p/ez-vcard)
  * [Post a question to StackOverflow](http://stackoverflow.com/questions/ask) with `vcard` as a tag.
  * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
-
-If you'd like to help improve the accuracy of ez-vcard's parsing engine, please submit vCard samples using [this form](https://docs.google.com/forms/d/1SQDjDtPvEWmp-2Sl-R-iaCUbvxOdg8MmlJGdRZlWBtk/viewform?usp=send_form).  All contributions are greatly appreciated.
 
 # Credits
 
