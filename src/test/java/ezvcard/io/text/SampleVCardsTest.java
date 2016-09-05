@@ -488,6 +488,278 @@ public class SampleVCardsTest {
 	}
 
 	@Test
+	public void fullcontact() throws Throwable {
+		VCardAsserter asserter = read("fullcontact.vcf");
+		asserter.next(V4_0);
+
+		//@formatter:off
+		asserter.structuredName()
+			.family("LastName")
+			.given("FirstName")
+			.additional("MiddleName")
+			.prefixes("Prefix")
+			.suffixes("Suffix")
+		.noMore();
+		
+		asserter.simpleProperty(FormattedName.class)
+			.value("Prefix FirstName MiddleName LastName Suffix")
+		.noMore();
+		
+		asserter.telephone()
+			.types(TelephoneType.HOME, TelephoneType.VOICE)
+			.text("555-555-1111")
+		.next()
+			.types(TelephoneType.WORK, TelephoneType.VOICE)
+			.text("555-555-1112")
+		.next()
+			.types(TelephoneType.CELL, TelephoneType.VOICE)
+			.text("555-555-1113")
+		.next()
+			.types(TelephoneType.CELL, TelephoneType.VOICE)
+			.text("555-555-1114")
+		.next()
+			.types(TelephoneType.VOICE)
+			.text("555-555-1115")
+		.next()
+			.types(TelephoneType.HOME, TelephoneType.FAX)
+			.text("555-555-1116")
+		.next()
+			.types(TelephoneType.WORK, TelephoneType.FAX)
+			.text("555-555-1117")
+		.next()
+			.types(TelephoneType.VOICE)
+			.text("555-555-1118")
+		.next()
+			.types(TelephoneType.VOICE)
+			.text("555-555-1119")
+		.noMore();
+
+		asserter.email()
+			.types(EmailType.HOME)
+			.value("home@example.com")
+		.next()
+			.types(EmailType.WORK)
+			.value("work@example.com")
+		.next()
+			.types(EmailType.get("SCHOOL"))
+			.value("school@example.com")
+		.next()
+			.types(EmailType.get("OTHER"))
+			.value("other@example.com")
+		.next()
+			.types(EmailType.get("CUSTOMTYPE"))
+			.value("custom@example.com")
+		.noMore();
+		
+		asserter.binaryProperty(Photo.class)
+			.url("https://d3m0kzytmr41b1.cloudfront.net/c335e945d1b60edd9d75eb4837c432f637e95c8a")
+		.next()
+			.url("https://d3m0kzytmr41b1.cloudfront.net/c335e945d1b60edd9d75eb4837c432f637e95c8a")
+		.next()
+			.url("https://d2ojpxxtu63wzl.cloudfront.net/static/aa915d1f29f19baf560e5491decdd30a_67c95da9133249fde8b0da7ceebc298bf680117e6f52054f7f5f7a95e8377238")
+		.noMore();
+		
+		asserter.listProperty(Organization.class)
+			.values("Organization1", "Department1")
+		.next()
+			.values("Organization2", "Department2")
+		.noMore();
+		
+		asserter.simpleProperty(Title.class)
+			.value("Title1")
+		.next()
+			.value("Title2")
+		.noMore();
+		
+		asserter.dateProperty(Birthday.class)
+			.param("ALTID", "1")
+			.date("2016-08-01")
+		.next()
+			.param("ALTID", "1")
+			.text("2016-08-01")
+		.noMore();
+		
+		asserter.property(Gender.class)
+			.expected(Gender.male())
+		.noMore();
+		
+		asserter.rawProperty("X-GENDER")
+			.value("male")
+		.noMore();
+		
+		asserter.rawProperty("X-ID")
+			.value("14f9aba0c9422da9ae376fe28bd89c2a.0")
+		.noMore();
+		
+		asserter.rawProperty("X-ETAG")
+			.value("fffffea9056d8166e2b7a427977e570c87dd51279d11d9b137c593eb")
+		.noMore();
+		
+		asserter.rawProperty("X-FC-TAGS")
+			.value("579c773f-736d-11e6-8dff-0ac8448704fb")
+		.noMore();
+		
+		asserter.rawProperty("X-FC-LIST-ID")
+			.value("8ad23200aa3e1984736b11e688dc0add41994b95")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A4D6F74686572")
+			.value("Mother")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A466174686572")
+			.value("Father")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A506172656E74")
+			.value("Parent")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A42726F74686572")
+			.value("Brother")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A536973746572")
+			.value("Sister")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A4368696C64")
+			.value("Child")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A467269656E64")
+			.value("Friend")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A53706F757365")
+			.value("Spouse")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A4669616E63C3A9")
+			.value("Fiance")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A506172746E6572")
+			.value("Partner")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A417373697374616E74")
+			.value("Assistant")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A4D616E61676572")
+			.value("Manager")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A4F74686572")
+			.value("Other")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D52656C617465644E616D65733A437573746F6D54595045")
+			.value("Custom")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D4F7468657244617465733A416E6E6976657273617279")
+			.value("2016-08-02")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D4F7468657244617465733A4F74686572")
+			.value("2016-08-03")
+		.noMore();
+		
+		asserter.rawProperty("X-FCENCODED-582D46432D4F7468657244617465733A437573746F6D54595045")
+			.value("2016-08-04")
+		.noMore();
+		
+		asserter.simpleProperty(Note.class)
+			.value("Notes line 1" + NEWLINE + "Notes line 2")
+		.noMore();
+		
+		asserter.simpleProperty(Url.class)
+			.value("http://www.homepage.com")
+		.next()
+			.value("http://www.blog.com")
+		.next()
+			.value("http://www.other.com")
+		.next()
+			.value("http://www.custom.com")
+		.noMore();
+		
+		asserter.address()
+			.types(AddressType.HOME)
+			.extendedAddress("HomeExtended")
+			.streetAddress("HomeStreet")
+			.locality("HomeCity")
+			.region("HomeState")
+			.postalCode("HomePostal")
+			.country("HomeCountry")
+		.next()
+			.types(AddressType.WORK)
+			.extendedAddress("WorkExtended")
+			.streetAddress("WorkStreet")
+			.locality("WorkCity")
+			.region("WorkState")
+			.postalCode("WorkPostal")
+			.country("WorkCountry")
+		.next()
+			.types(AddressType.get("OTHER"))
+			.extendedAddress("OtherExtended")
+			.streetAddress("OtherStreet")
+			.locality("OtherCity")
+			.region("OtherState")
+			.postalCode("OtherPostal")
+			.country("OtherCountry")
+		.next()
+			.types(AddressType.get("CUSTOMTYPE"))
+			.extendedAddress("CustomExtended")
+			.streetAddress("CustomStreet")
+			.locality("CustomCity")
+			.region("CustomState")
+			.postalCode("CustomPostal")
+			.country("CustomCountry")
+		.noMore();
+
+		asserter.listProperty(Nickname.class)
+			.values("NickName")
+		.noMore();
+		
+		asserter.impp()
+			.param("X-SERVICE-TYPE", "GTalk")
+			.uri("xmpp:gtalk")
+		.next()
+			.param("X-SERVICE-TYPE", "Skype")
+			.uri("skype:skype")
+		.next()
+			.param("X-SERVICE-TYPE", "Yahoo")
+			.uri("ymsgr:yahoo")
+		.next()
+			.param("X-SERVICE-TYPE", "AIM")
+			.uri("aim:aim")
+		.next()
+			.param("X-SERVICE-TYPE", "Jabber")
+			.uri("xmpp:jabber")
+		.next()
+			.param("X-SERVICE-TYPE", "Other")
+			.uri("other:other")
+		.next()
+			.param("X-SERVICE-TYPE", "CustomTYPE")
+			.uri("customtype:custom")
+		.noMore();
+		
+		asserter.listProperty(Categories.class)
+			.values("Tag")
+		.noMore();
+		
+		asserter.simpleProperty(ProductId.class)
+			.value("ez-vcard 0.9.14-fc")
+		.noMore();
+		//@formatter:on
+
+		asserter.validate().run();
+		asserter.done();
+	}
+
+	@Test
 	public void gmailVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_GMAIL.vcf");
 		asserter.next(V3_0);
@@ -1844,7 +2116,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.binaryProperty(Key.class)
-			.param("ENCODING", "BASE64") //TODO remove these properties when parsing
+			.param("ENCODING", "BASE64")
 			.param("TYPE", "X509")
 			.contentType(KeyType.X509)
 			.dataLength(805)

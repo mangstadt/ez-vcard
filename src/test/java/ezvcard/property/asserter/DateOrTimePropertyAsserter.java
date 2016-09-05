@@ -44,6 +44,7 @@ import ezvcard.util.TestUtils;
 public class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends PropertyAsserter<DateOrTimePropertyAsserter<T>, T> {
 	private Date date;
 	private PartialDate partialDate;
+	private String text;
 
 	public DateOrTimePropertyAsserter(List<T> properties, VCardAsserter asserter) {
 		super(properties, asserter);
@@ -59,15 +60,22 @@ public class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends Pr
 		return this_;
 	}
 
+	public DateOrTimePropertyAsserter<T> text(String text) {
+		this.text = text;
+		return this_;
+	}
+
 	@Override
 	protected void _run(T property) {
 		assertEquals(date, property.getDate());
 		assertEquals(partialDate, property.getPartialDate());
+		assertEquals(text, property.getText());
 	}
 
 	@Override
 	protected void _reset() {
 		date = null;
 		partialDate = null;
+		text = null;
 	}
 }
