@@ -1174,7 +1174,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.simpleProperty(Note.class)
-			.value("note line 1\nnote line 2\nCustomField: field value")
+			.value("note line 1" + NEWLINE + "note line 2" + NEWLINE + "CustomField: field value")
 		.noMore();
 		
 		asserter.rawProperty("X-PHONETIC-FIRST-NAME")
