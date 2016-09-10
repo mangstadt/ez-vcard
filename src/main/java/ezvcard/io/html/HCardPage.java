@@ -76,8 +76,13 @@ import freemarker.template.TemplateException;
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
 public class HCardPage {
-	private static final Template template;
-	static {
+	private final Template template;
+	private final List<VCard> vcards = new ArrayList<VCard>();
+
+	/**
+	 * Creates a new hCard page that uses the default template.
+	 */
+	public HCardPage() {
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 		cfg.setClassForTemplateLoading(HCardPage.class, "");
 		cfg.setWhitespaceStripping(true);
@@ -89,7 +94,15 @@ public class HCardPage {
 		}
 	}
 
-	private final List<VCard> vcards = new ArrayList<VCard>();
+	/**
+	 * Creates a new hCard page using a custom template. See the <a href=
+	 * "https://github.com/mangstadt/ez-vcard/blob/master/src/main/resources/ezvcard/io/html/hcard-template.html"
+	 * >default template</a> for an example.
+	 * @param template the template to use
+	 */
+	public HCardPage(Template template) {
+		this.template = template;
+	}
 
 	/**
 	 * Adds a vCard to the HTML page.
@@ -154,7 +167,6 @@ public class HCardPage {
 		try {
 			template.process(map, writer);
 		} catch (TemplateException e) {
-			//this should never be thrown because we're always using the same template (it is hard-coded and cannot be changed by the user)
 			throw new RuntimeException(e);
 		}
 		writer.flush();

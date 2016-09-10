@@ -9,6 +9,7 @@ import java.util.Collection;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.html.HCardPage;
+import freemarker.template.Template;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -42,11 +43,23 @@ import ezvcard.io.html.HCardPage;
  * @author Michael Angstadt
  */
 public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
+	private Template template;
+
 	/**
 	 * @param vcards the vCards to write
 	 */
 	public ChainingHtmlWriter(Collection<VCard> vcards) {
 		super(vcards);
+	}
+
+	/**
+	 * Sets the freemarker template to use.
+	 * @param template the template (defaults to an embedded template)
+	 * @return this
+	 */
+	public ChainingHtmlWriter template(Template template) {
+		this.template = template;
+		return this;
 	}
 
 	/**
@@ -85,7 +98,7 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	}
 
 	private HCardPage buildPage() {
-		HCardPage page = new HCardPage();
+		HCardPage page = (template == null) ? new HCardPage() : new HCardPage(template);
 		for (VCard vcard : vcards) {
 			page.add(vcard);
 		}
