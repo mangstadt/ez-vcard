@@ -57,9 +57,9 @@ public class VCardDataType {
 	};
 
 	/**
-	 * A uniform resource locator (e.g. "http://www.example.com/image.jpg").
-	 * This data type is only used in 2.1 vCards. All other vCard versions use
-	 * {@link #URI}.
+	 * A uniform resource locator (for example,
+	 * "http://www.example.com/image.jpg"). This data type is only used in 2.1
+	 * vCards. All other vCard versions use {@link #URI}.
 	 */
 	@SupportedVersions(V2_1)
 	public static final VCardDataType URL = new VCardDataType("url");
@@ -77,8 +77,8 @@ public class VCardDataType {
 	public static final VCardDataType BINARY = new VCardDataType("binary");
 
 	/**
-	 * A uniform resource identifier (e.g. "http://www.example.com/image.jpg").
-	 * 2.1 vCards use {@link #URL} instead.
+	 * A uniform resource identifier (for example,
+	 * "http://www.example.com/image.jpg"). 2.1 vCards use {@link #URL} instead.
 	 */
 	@SupportedVersions({ V3_0, V4_0 })
 	public static final VCardDataType URI = new VCardDataType("uri");
@@ -89,19 +89,19 @@ public class VCardDataType {
 	public static final VCardDataType TEXT = new VCardDataType("text");
 
 	/**
-	 * A date that does not have a time component (e.g. "2015-02-16").
+	 * A date that does not have a time component (for example, "2015-02-16").
 	 */
 	@SupportedVersions({ V3_0, V4_0 })
 	public static final VCardDataType DATE = new VCardDataType("date");
 
 	/**
-	 * A time that does not have a date component (e.g. "08:34:00").
+	 * A time that does not have a date component (for example, "08:34:00").
 	 */
 	@SupportedVersions({ V3_0, V4_0 })
 	public static final VCardDataType TIME = new VCardDataType("time");
 
 	/**
-	 * A date with a time component (e.g. "2015-02-16 08:34:00").
+	 * A date with a time component (for example, "2015-02-16 08:34:00").
 	 */
 	@SupportedVersions({ V3_0, V4_0 })
 	public static final VCardDataType DATE_TIME = new VCardDataType("date-time");
@@ -127,26 +127,26 @@ public class VCardDataType {
 	public static final VCardDataType BOOLEAN = new VCardDataType("boolean");
 
 	/**
-	 * An integer value (e.g. "42").
+	 * An integer value (for example, "42").
 	 */
 	@SupportedVersions(V4_0)
 	public static final VCardDataType INTEGER = new VCardDataType("integer");
 
 	/**
-	 * A floating-point value (e.g. "3.14").
+	 * A floating-point value (for example, "3.14").
 	 */
 	@SupportedVersions(V4_0)
 	public static final VCardDataType FLOAT = new VCardDataType("float");
 
 	/**
-	 * An offset from UTC time, in hours and minutes (e.g. "-0500").
+	 * An offset from UTC time, in hours and minutes (for example, "-0500").
 	 */
 	@SupportedVersions(V4_0)
 	public static final VCardDataType UTC_OFFSET = new VCardDataType("utc-offset");
 
 	/**
-	 * A standardized abbreviation for a language (e.g. "en-us" for American
-	 * English).
+	 * A standardized abbreviation for a language (for example, "en-us" for
+	 * American English).
 	 * @see <a href="http://tools.ietf.org/html/rfc5646">RFC 5646</a>
 	 */
 	@SupportedVersions(V4_0)
