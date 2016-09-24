@@ -302,10 +302,22 @@ public class TestUtils {
 	//@formatter:on
 
 	/**
+	 * <p>
 	 * Creates a {@link Date} object.
-	 * @param text the date string (e.g. "2000-01-30", see code for acceptable
-	 * formats)
-	 * @return the parsed date or null if it couldn't be parsed
+	 * </p>
+	 * <p>
+	 * The following date string formats are accepted.
+	 * </p>
+	 * <ul>
+	 * <li>yyyy-MM-dd</li>
+	 * <li>yyyy-MM-dd HH:mm:ss</li>
+	 * <li>yyyy-MM-dd HH:mm:ss Z</li>
+	 * </ul>
+	 * <p>
+	 * If no UTC offset is specified, the default timezone will be used.
+	 * </p>
+	 * @param text the date string to parse
+	 * @return the parsed date
 	 * @throws IllegalArgumentExcpetion if it couldn't be parsed
 	 */
 	public static Date date(String text) {
@@ -313,10 +325,20 @@ public class TestUtils {
 	}
 
 	/**
+	 * <p>
 	 * Creates a {@link Date} object.
-	 * @param text the date string (e.g. "2000-01-30", see code for acceptable
-	 * formats)
-	 * @param timezone the timezone the date string is in
+	 * </p>
+	 * <p>
+	 * The following date string formats are accepted.
+	 * </p>
+	 * <ul>
+	 * <li>yyyy-MM-dd</li>
+	 * <li>yyyy-MM-dd HH:mm:ss</li>
+	 * <li>yyyy-MM-dd HH:mm:ss Z</li>
+	 * </ul>
+	 * @param text the date string
+	 * @param timezone the timezone the date string is in (ignored if the date
+	 * string contains a UTC offset)
 	 * @return the parsed date
 	 * @throws IllegalArgumentExcpetion if it couldn't be parsed
 	 */
