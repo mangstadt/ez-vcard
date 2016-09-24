@@ -80,7 +80,7 @@ public final class DataUri {
 	 * @param original the data URI to copy
 	 */
 	public DataUri(DataUri original) {
-		this(original.contentType, (original.data == null) ? null : Arrays.copyOf(original.data, original.data.length), original.text);
+		this(original.contentType, (original.data == null) ? null : original.data.clone(), original.text);
 	}
 
 	private DataUri(String contentType, byte[] data, String text) {

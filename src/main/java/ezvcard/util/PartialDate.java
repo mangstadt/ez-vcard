@@ -486,7 +486,7 @@ public final class PartialDate {
 		 * @param original the partial date to copy
 		 */
 		public Builder(PartialDate original) {
-			components = Arrays.copyOf(original.components, original.components.length);
+			components = original.components.clone();
 			offset = original.offset;
 		}
 

@@ -115,7 +115,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 */
 	public BinaryProperty(BinaryProperty<T> original) {
 		super(original);
-		data = (original.data == null) ? null : Arrays.copyOf(original.data, original.data.length);
+		data = (original.data == null) ? null : original.data.clone();
 		url = original.url;
 		contentType = original.contentType;
 	}
