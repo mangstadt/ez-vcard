@@ -107,6 +107,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @param include true to include the trailing semicolons, false not to,
 	 * null to use the default behavior (defaults to false for vCard versions
 	 * 2.1 and 3.0 and true for vCard version 4.0)
+	 * @return this
 	 * @see <a href="https://github.com/mangstadt/ez-vcard/issues/57">Issue
 	 * 57</a>
 	 */
@@ -126,6 +127,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * </p>
 	 * @param targetApplication the target application or null if the vCards do
 	 * not require any special processing (defaults to null)
+	 * @return this
 	 * @see VCardWriter#setTargetApplication(TargetApplication)
 	 */
 	public ChainingTextWriter targetApplication(TargetApplication targetApplication) {

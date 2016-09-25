@@ -161,6 +161,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param property the property
 	 * @param context contains information about the vCard being written, such
 	 * as the target version
+	 * @return the string value
 	 * @throws SkipMeException if the property should not be written to the data
 	 * stream
 	 */

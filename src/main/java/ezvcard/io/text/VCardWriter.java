@@ -265,7 +265,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * specification and may not be supported by the consumer of the vCard.
 	 * </p>
 	 * @return true if circumflex accent encoding is enabled, false if not
-	 * @see VCardRawWriter#isCaretEncodingEnabled()
+	 * @see VObjectWriter#isCaretEncodingEnabled()
 	 */
 	public boolean isCaretEncodingEnabled() {
 		return writer.isCaretEncodingEnabled();
@@ -284,7 +284,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * specification and may not be supported by the consumer of the vCard.
 	 * </p>
 	 * @param enable true to use circumflex accent encoding, false not to
-	 * @see VCardRawWriter#setCaretEncodingEnabled(boolean)
+	 * @see VObjectWriter#setCaretEncodingEnabled(boolean)
 	 */
 	public void setCaretEncodingEnabled(boolean enable) {
 		writer.setCaretEncodingEnabled(enable);
