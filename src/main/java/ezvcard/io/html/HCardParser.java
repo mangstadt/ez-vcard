@@ -76,7 +76,7 @@ import ezvcard.util.IOUtils;
  * </p>
  * 
  * <pre class="brush:java">
- * URL url = new URL(&quot;http://example.com&quot;);
+ * URL url = new URL("http://example.com");
  * HCardParser parser = new HCardParser(url);
  * List&lt;VCard&gt; vcards = parser.parseAll();
  * </pre>

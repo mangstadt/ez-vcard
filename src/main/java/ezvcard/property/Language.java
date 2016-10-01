@@ -47,11 +47,11 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Language lang = new Language(&quot;en&quot;);
+ * Language lang = new Language("en");
  * lang.setPref(1); //most preferred
  * vcard.addLanguage(lang);
  * 
- * lang = new Language(&quot;fr&quot;);
+ * lang = new Language("fr");
  * lang.setPref(2); //second-most preferred
  * vcard.addLanguage(lang);
  * </pre>

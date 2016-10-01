@@ -48,9 +48,9 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Nickname nickname = new Nickname();
- * nickname.getValues().add(&quot;Ricky&quot;);
- * nickname.getValues().add(&quot;Bobby&quot;);
- * nickname.getValues().add(&quot;Ricky Bobby&quot;);
+ * nickname.getValues().add("Ricky");
+ * nickname.getValues().add("Bobby");
+ * nickname.getValues().add("Ricky Bobby");
  * vcard.setNickname(nickname);
  * </pre>
  * 

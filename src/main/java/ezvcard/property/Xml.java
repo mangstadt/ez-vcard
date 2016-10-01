@@ -57,7 +57,7 @@ import ezvcard.util.XmlUtils;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Xml xml = new Xml(&quot;&lt;b&gt;Some xml&lt;/b&gt;&quot;);
+ * Xml xml = new Xml("&lt;b&gt;Some xml&lt;/b&gt;");
  * vcard.addXml(xml);
  * </pre>
  * 

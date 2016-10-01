@@ -45,7 +45,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Role role = new Role(&quot;Project Lead&quot;);
+ * Role role = new Role("Project Lead");
  * vcard.addRole(role);
  * </pre>
  * 

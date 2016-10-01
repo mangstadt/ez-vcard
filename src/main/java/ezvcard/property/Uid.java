@@ -43,7 +43,7 @@ import java.util.UUID;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Uid uid = new Uid(&quot;urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519&quot;);
+ * Uid uid = new Uid("urn:uuid:b8767877-b4a1-4c70-9acc-505d3819e519");
  * vcard.setUid(uid);
  * 
  * //or, generate a random UID

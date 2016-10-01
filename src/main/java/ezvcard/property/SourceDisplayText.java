@@ -44,7 +44,7 @@ import ezvcard.VCardVersion;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * SourceDisplayText name = new SourceDisplayText(&quot;Download the latest version of my vCard&quot;);
+ * SourceDisplayText name = new SourceDisplayText("Download the latest version of my vCard");
  * vcard.setSourceDisplayText(name);
  * </pre>
  * 

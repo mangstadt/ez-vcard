@@ -49,7 +49,7 @@ import ezvcard.parameter.VCardParameters;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Interest interest = new Interest(&quot;hockey&quot;);
+ * Interest interest = new Interest("hockey");
  * interest.setLevel(InterestLevel.HIGH);
  * vcard.addInterest(interest);
  * </pre>

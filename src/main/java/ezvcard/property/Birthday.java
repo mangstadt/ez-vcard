@@ -59,7 +59,7 @@ import ezvcard.util.PartialDate;
  * vcard.setBirthday(bday);
  * 
  * //plain text value (vCard 4.0 only)
- * bday = new Birthday(&quot;Don't even go there, dude...&quot;);
+ * bday = new Birthday("Don't even go there, dude...");
  * vcard.setBirthday(bday);
  * </pre>
  * 
@@ -72,19 +72,19 @@ import ezvcard.util.PartialDate;
  * Birthday bday = vcard.getBirthday();
  * 
  * Date date = bday.getDate();
- * if (date != null){
+ * if (date != null) {
  *   //property value is a date
  * }
  * 
  * PartialDate partialDate = bday.getPartialDate();
- * if (partialDate != null){
+ * if (partialDate != null) {
  *   //property value is a partial date
  *   int year = partialDate.getYear();
  *   int month = partialDate.getMonth();
  * }
  * 
  * String text = bday.getText();
- * if (text != null){
+ * if (text != null) {
  *   //property value is plain text
  * }
  * </pre>

@@ -44,7 +44,7 @@ import ezvcard.VCardVersion;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * ProductId prodid = new ProductId(&quot;ez-vcard 0.6.0&quot;);
+ * ProductId prodid = new ProductId("ez-vcard 0.6.0");
  * vcard.setProdId(prodid);
  * </pre>
  * 

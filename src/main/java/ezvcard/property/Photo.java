@@ -63,17 +63,17 @@ import ezvcard.parameter.ImageType;
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * for (Photo photo : vcard.getPhotos()){
+ * for (Photo photo : vcard.getPhotos()) {
  *   PhotoType contentType = photo.getContentType(); //e.g. "image/jpeg"
  * 
  *   String url = photo.getUrl();
- *   if (url != null){
+ *   if (url != null) {
  *     //property value is a URL
  *     continue;
  *   }
  *   
  *   byte[] data = photo.getData();
- *   if (data != null){
+ *   if (data != null) {
  *     //property value is binary data
  *     continue;
  *   }

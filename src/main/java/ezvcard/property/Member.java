@@ -51,15 +51,15 @@ import ezvcard.util.TelUri;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * //kind property must be set to &quot;group&quot; in order to add members
+ * //kind property must be set to "group" in order to add members
  * vcard.setKind(Kind.group());
  * 
  * //static factory methods
- * Member member = Member.email(&quot;johndoe@hotmail.com&quot;);
+ * Member member = Member.email("johndoe@hotmail.com");
  * vcard.addMember(member);
  * 
  * //reference another vCard by putting its UID property here
- * member = new Member(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * member = new Member("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
  * vcard.addMember(member);
  * </pre>
  * 

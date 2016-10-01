@@ -70,8 +70,8 @@ import ezvcard.property.VCardProperty;
  * try {
  *   reader = new JCardReader(file);
  *   VCard vcard;
- *   while ((vcard = reader.readNext()) != null){
- *     ...
+ *   while ((vcard = reader.readNext()) != null) {
+ *     //...
  *   }
  * } finally {
  *   if (reader != null) reader.close();

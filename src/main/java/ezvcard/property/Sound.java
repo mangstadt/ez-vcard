@@ -63,17 +63,17 @@ import ezvcard.parameter.SoundType;
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * for (Sound sound : vcard.getSounds()){
+ * for (Sound sound : vcard.getSounds()) {
  *   SoundType contentType = sound.getContentType(); //e.g. "audio/ogg"
  * 
  *   String url = sound.getUrl();
- *   if (url != null){
+ *   if (url != null) {
  *     //property value is a URL
  *     continue;
  *   }
  *   
  *   byte[] data = sound.getData();
- *   if (data != null){
+ *   if (data != null) {
  *     //property value is binary data
  *     continue;
  *   }

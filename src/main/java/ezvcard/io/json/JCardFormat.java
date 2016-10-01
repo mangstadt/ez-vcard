@@ -52,15 +52,15 @@ import ezvcard.property.ProductId;
  * 
  * <pre class="brush:java">
  * class Person {
- * 	private VCard contact;
+ *   private VCard contact;
  * 
- * 	&#064;JsonSerialize(using = JCardSerializer.class)
- * 	&#064;JCardOptions(addProdId = false, versionStrict = false)
- * 	public VCard getContact() {
- * 		return contact;
- * 	}
+ *   &#064;JsonSerialize(using = JCardSerializer.class)
+ *   &#064;JCardOptions(addProdId = false, versionStrict = false)
+ *   public VCard getContact() {
+ *     return contact;
+ *   }
  * 
- * 	// ...
+ *   //...
  * }
  * </pre>
  * @author Buddy Gorven

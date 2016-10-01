@@ -44,7 +44,7 @@ import ezvcard.VCardVersion;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Mailer mailer = new Mailer(&quot;Thunderbird&quot;);
+ * Mailer mailer = new Mailer("Thunderbird");
  * vcard.setMailer(mailer);
  * </pre>
  * 

@@ -47,10 +47,10 @@ import java.util.Map;
  * VCard vcard = new VCard();
  * 
  * StructuredName n = new StructuredName();
- * n.setFamily(&quot;House&quot;);
- * n.setGiven(&quot;Gregory&quot;);
- * n.getPrefixes().add(&quot;Dr&quot;);
- * n.getSuffixes().add(&quot;MD&quot;);
+ * n.setFamily("House");
+ * n.setGiven("Gregory");
+ * n.getPrefixes().add("Dr");
+ * n.getSuffixes().add("MD");
  * vcard.setStructuredName(n);
  * </pre>
  * 

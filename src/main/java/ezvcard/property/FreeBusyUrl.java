@@ -47,7 +47,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * FreeBusyUrl fburl = new FreeBusyUrl(&quot;http://www.example.com/freebusy/janedoe&quot;);
+ * FreeBusyUrl fburl = new FreeBusyUrl("http://www.example.com/freebusy/janedoe");
  * vcard.addFbUrl(fburl);
  * </pre>
  * 

@@ -82,8 +82,8 @@ import ezvcard.util.StringUtils;
  * try {
  *   reader = new VCardReader(file);
  *   VCard vcard;
- *   while ((vcard = reader.readNext()) != null){
- *     ...
+ *   while ((vcard = reader.readNext()) != null) {
+ *     //...
  *   }
  * } finally {
  *   if (reader != null) reader.close();

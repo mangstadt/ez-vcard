@@ -45,7 +45,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Url url = new Url(&quot;http://www.company.com&quot;);
+ * Url url = new Url("http://www.company.com");
  * vcard.addUrl(url);
  * </pre>
  * 

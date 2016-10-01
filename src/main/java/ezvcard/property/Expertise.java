@@ -49,7 +49,7 @@ import ezvcard.parameter.VCardParameters;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Expertise expertise = new Expertise(&quot;Java programming&quot;);
+ * Expertise expertise = new Expertise("Java programming");
  * expertise.setLevel(ExpertiseLevel.EXPERT);
  * vcard.addExpertise(expertise);
  * </pre>

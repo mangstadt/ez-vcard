@@ -56,15 +56,15 @@ import ezvcard.util.StringUtils;
  * VCard vcard = new VCard();
  * 
  * Address adr = new Address();
- * adr.setStreetAddress(&quot;123 Main St.&quot;);
- * adr.setLocality(&quot;Austin&quot;);
- * adr.setRegion(&quot;TX&quot;);
- * adr.setPostalCode(&quot;12345&quot;);
- * adr.setCountry(&quot;USA&quot;);
+ * adr.setStreetAddress("123 Main St.");
+ * adr.setLocality("Austin");
+ * adr.setRegion("TX");
+ * adr.setPostalCode("12345");
+ * adr.setCountry("USA");
  * adr.getTypes().add(AddressType.WORK);
  * 
  * //optionally, set the text to print on the mailing label
- * adr.setLabel(&quot;123 Main St.\nAustin, TX 12345\nUSA&quot;);
+ * adr.setLabel("123 Main St.\nAustin, TX 12345\nUSA");
  * 
  * vcard.addAddress(adr);
  * </pre>
@@ -75,7 +75,7 @@ import ezvcard.util.StringUtils;
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * for (Address adr : vcard.getAddresses()){
+ * for (Address adr : vcard.getAddresses()) {
  *   String street = adr.getStreetAddress();
  *   String city = adr.getLocality();
  *   //etc.

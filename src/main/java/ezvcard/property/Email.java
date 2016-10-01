@@ -49,11 +49,11 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Email email = new Email(&quot;johndoe@hotmail.com&quot;);
+ * Email email = new Email("johndoe@hotmail.com");
  * email.getTypes().add(EmailType.HOME);
  * vcard.addEmail(email);
  * 
- * email = new Email(&quot;jdoe@company.com&quot;);
+ * email = new Email("jdoe@company.com");
  * email.getTypes().add(EmailType.WORK);
  * email.setPref(1); //the most preferred email
  * vcard.addEmail(email);

@@ -52,10 +52,10 @@ import ezvcard.VCardVersion;
  * VCard vcard = new VCard();
  * 
  * StructuredName n = new StructuredName();
- * n.setFamily(&quot;d'Armour&quot;);
- * n.setGiven(&quot;Miles&quot;);
+ * n.setFamily("d'Armour");
+ * n.setGiven("Miles");
  * vcard.setStructuredName(n);
- * SortString sortString = new SortString(&quot;Armour&quot;);
+ * SortString sortString = new SortString("Armour");
  * vcard.setSortString(sortString);
  * </pre>
  * 
@@ -67,9 +67,9 @@ import ezvcard.VCardVersion;
  * VCard vcard = new VCard();
  * 
  * StructuredName n = new StructuredName();
- * n.setFamily(&quot;d'Armour&quot;);
- * n.setGiven(&quot;Miles&quot;);
- * n.setSortAs(&quot;Armour&quot;);
+ * n.setFamily("d'Armour");
+ * n.setGiven("Miles");
+ * n.setSortAs("Armour");
  * vcard.setStructuredName(n);
  * </pre>
  * 

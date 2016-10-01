@@ -53,13 +53,13 @@ import ezvcard.util.TelUri;
  * VCard vcard = new VCard();
  * 
  * //text
- * Telephone tel = new Telephone(&quot;(123) 555-6789&quot;);
+ * Telephone tel = new Telephone("(123) 555-6789");
  * tel.getTypes().add(TelephoneType.HOME);
  * tel.setPref(2); //the second-most preferred
  * vcard.addTelephoneNumber(tel);
  * 
  * //URI (vCard version 4.0 only)
- * TelUri uri = new TelUri.Builder(&quot;+1-800-555-9876&quot;).extension(&quot;111&quot;).build();
+ * TelUri uri = new TelUri.Builder("+1-800-555-9876").extension("111").build();
  * tel = new Telephone(uri);
  * tel.getTypes().add(TelephoneType.WORK);
  * tel.setPref(1); //the most preferred

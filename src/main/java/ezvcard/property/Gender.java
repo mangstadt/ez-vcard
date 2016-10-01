@@ -61,9 +61,9 @@ import ezvcard.Warning;
  * <pre class="brush:java">
  * VCard vcard = ...
  * Gender gender = vcard.getGender();
- * if (gender.isMale()){
+ * if (gender.isMale()) {
  *   //gender is male
- * } else if (gender.isFemale()){
+ * } else if (gender.isFemale()) {
  *   //gender is female
  * }
  * //etc

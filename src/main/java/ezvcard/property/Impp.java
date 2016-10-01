@@ -58,11 +58,11 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * //URI
- * Impp impp = new Impp(&quot;aim:johndoe@aol.com&quot;);
+ * Impp impp = new Impp("aim:johndoe@aol.com");
  * vcard.addImpp(impp);
  * 
  * //static factory methods
- * impp = Impp.msn(&quot;janedoe@msn.com&quot;);
+ * impp = Impp.msn("janedoe@msn.com");
  * vcard.addImpp(impp);
  * </pre>
  * 

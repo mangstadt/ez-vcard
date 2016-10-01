@@ -49,7 +49,7 @@ import ezvcard.parameter.VCardParameters;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Hobby hobby = new Hobby(&quot;hockey&quot;);
+ * Hobby hobby = new Hobby("hockey");
  * hobby.setLevel(HobbyLevel.LOW);
  * vcard.addHobby(hobby);
  * </pre>

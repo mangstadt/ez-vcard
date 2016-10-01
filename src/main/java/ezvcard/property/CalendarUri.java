@@ -47,7 +47,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * CalendarUri caluri = new CalendarUri(&quot;http://www.ibm.com/janedoe/calendar&quot;);
+ * CalendarUri caluri = new CalendarUri("http://www.ibm.com/janedoe/calendar");
  * vcard.addCalendarUri(caluri);
  * </pre>
  * 

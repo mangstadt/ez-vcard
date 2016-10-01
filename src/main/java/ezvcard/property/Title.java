@@ -45,7 +45,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Title title = new Title(&quot;Research Scientist&quot;);
+ * Title title = new Title("Research Scientist");
  * vcard.addTitle(title);
  * </pre>
  * 

@@ -53,9 +53,9 @@ import ezvcard.Messages;
  * </p>
  * 
  * <pre class="brush:java">
- * TelUri uri = new TelUri.Builder(&quot;+1-212-555-0101&quot;).extension(&quot;123&quot;).build();
- * TelUri uri = TelUri.parse(&quot;tel:+1-212-555-0101;ext=123&quot;);
- * TelUri copy = new TelUri.Builder(uri).extension(&quot;124&quot;).build();
+ * TelUri uri = new TelUri.Builder("+1-212-555-0101").extension("123").build();
+ * TelUri uri = TelUri.parse("tel:+1-212-555-0101;ext=123");
+ * TelUri copy = new TelUri.Builder(uri).extension("124").build();
  * </pre>
  * @see <a href="http://tools.ietf.org/html/rfc3966">RFC 3966</a>
  * @author Michael Angstadt

@@ -68,13 +68,13 @@ import ezvcard.Warning;
  * adr.addPid(1, 1);
  * vcard.addAddress(adr);
  * 
- * Email email = vcard.addEmail(&quot;johndoe@hotmail.com&quot;);
+ * Email email = vcard.addEmail("johndoe@hotmail.com");
  * emai.addPid(1, 1);
- * email = vcard.addEmail(&quot;jdoe@company.com&quot;);
+ * email = vcard.addEmail("jdoe@company.com");
  * email.addPid(2, 2);
  * 
  * //specify the URI to use
- * ClientPidMap clientpidmap = new ClientPidMap(1, &quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * ClientPidMap clientpidmap = new ClientPidMap(1, "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
  * vcard.addClientPidMap(clientpidmap);
  * 
  * //or, generate a random URI

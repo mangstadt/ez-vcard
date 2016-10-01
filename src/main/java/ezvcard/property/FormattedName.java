@@ -45,7 +45,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * FormattedName fn = new FormattedName(&quot;Dr. Gregory House M.D.&quot;);
+ * FormattedName fn = new FormattedName("Dr. Gregory House M.D.");
  * vcard.setFormattedName(fn);
  * </pre>
  * 

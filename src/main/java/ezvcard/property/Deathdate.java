@@ -61,7 +61,7 @@ import ezvcard.util.PartialDate;
  * vcard.setDeathdate(deathdate);
  * 
  * //plain text value
- * deathdate = new Deathdate(&quot;In the 1950s&quot;);
+ * deathdate = new Deathdate("In the 1950s");
  * vcard.setDeathdate(deathdate);
  * </pre>
  * 
@@ -74,19 +74,19 @@ import ezvcard.util.PartialDate;
  * Deathdate deathdate = vcard.getDeathdate();
  * 
  * Date date = deathdate.getDate();
- * if (date != null){
+ * if (date != null) {
  *   //property value is a date
  * }
  * 
  * PartialDate partialDate = deathdate.getPartialDate();
- * if (partialDate != null){
+ * if (partialDate != null) {
  *   //property value is a partial date
  *   int year = partialDate.getYear();
  *   int month = partialDate.getMonth();
  * }
  * 
  * String text = deathdate.getText();
- * if (text != null){
+ * if (text != null) {
  *   //property value is plain text
  * }
  * </pre>

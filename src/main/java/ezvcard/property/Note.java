@@ -45,7 +45,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Note note = new Note(&quot;This is a\nnote property.&quot;);
+ * Note note = new Note("This is a\nnote property.");
  * vcard.addNote(note);
  * </pre>
  * 

@@ -94,8 +94,8 @@ import ezvcard.util.XmlUtils;
  * try {
  *   reader = new XCardReader(file);
  *   VCard vcard;
- *   while ((vcard = reader.readNext()) != null){
- * 	   ...
+ *   while ((vcard = reader.readNext()) != null) {
+ *     //...
  *   }
  * } finally {
  *   if (reader != null) reader.close();

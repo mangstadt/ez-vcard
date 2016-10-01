@@ -54,11 +54,11 @@ import ezvcard.util.VCardDateFormat;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Timezone tz = new Timezone(-5, 0, &quot;America/New_York&quot;);
+ * Timezone tz = new Timezone(-5, 0, "America/New_York");
  * vcard.addTimezone(tz);
  * 
- * //using a Java &quot;TimeZone&quot; object
- * java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone(&quot;America/New_York&quot;);
+ * //using a Java "TimeZone" object
+ * java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone("America/New_York");
  * tz = new Timezone(javaTz);
  * vcard.addTimezone(tz);
  * </pre>

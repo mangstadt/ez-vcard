@@ -58,7 +58,7 @@ import ezvcard.property.Xml;
  * vcardReader.setScribeIndex(index);
  * List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
  * VCard vcard;
- * while ((vcards = vcardReader.readNext()) != null){
+ * while ((vcards = vcardReader.readNext()) != null) {
  *   vcards.add(vcard);
  * }
  * vcardReader.close();
@@ -66,7 +66,7 @@ import ezvcard.property.Xml;
  * //inject the same ScribeIndex instance into a jCard writer and write the vCards
  * JCardWriter jcardWriter = new JCardWriter(...);
  * jcardWriter.setScribeIndex(index);
- * for (VCard vcard : vcards){
+ * for (VCard vcard : vcards) {
  *   jcardWriter.write(vcard);
  * }
  * jcardWriter.close();

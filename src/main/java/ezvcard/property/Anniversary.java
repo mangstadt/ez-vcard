@@ -62,7 +62,7 @@ import ezvcard.util.PartialDate;
  * vcard.setAnniversary(anniversary);
  * 
  * //plain text value
- * anniversary = new Anniversary(&quot;Over 20 years ago!&quot;);
+ * anniversary = new Anniversary("Over 20 years ago!");
  * vcard.setAnniversary(anniversary);
  * </pre>
  * 
@@ -75,19 +75,19 @@ import ezvcard.util.PartialDate;
  * Anniversary anniversary = vcard.getAnniversary();
  * 
  * Date date = anniversary.getDate();
- * if (date != null){
+ * if (date != null) {
  *   //property value is a date
  * }
  * 
  * PartialDate partialDate = anniversary.getPartialDate();
- * if (partialDate != null){
+ * if (partialDate != null) {
  *   //property value is a partial date
  *   int year = partialDate.getYear();
  *   int month = partialDate.getMonth();
  * }
  * 
  * String text = anniversary.getText();
- * if (text != null){
+ * if (text != null) {
  *   //property value is plain text
  * }
  * </pre>

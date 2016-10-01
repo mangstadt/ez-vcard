@@ -48,7 +48,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * CalendarRequestUri caladruri = new CalendarRequestUri(&quot;mailto:janedoe@ibm.com&quot;);
+ * CalendarRequestUri caladruri = new CalendarRequestUri("mailto:janedoe@ibm.com");
  * vcard.addCalendarRequestUri(caladruri);
  * </pre>
  * 

@@ -45,20 +45,20 @@ import ezvcard.property.VCardProperty;
  * 
  * <pre class="brush:java">
  * {@literal @}SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
- * public class Agent extends VCardProperty{
- *   ...
+ * public class Agent extends VCardProperty {
+ *   //...
  * }
  * 
- * public class AddressType extends VCardParameter{
+ * public class AddressType extends VCardParameter {
  *   {@literal @}SupportedVersions({ VCardVersion.V2_1, VCardVersion.V3_0 })
  *   public static final AddressType DOM = new AddressType("dom");
- *   ...
+ *   //...
  * }
  * 
- * public class VCardDataType{
+ * public class VCardDataType {
  *   {@literal @}SupportedVersions(VCardVersion.V2_1)
  *   public static final VCardDataType CONTENT_ID = new VCardDataType("content-id");
- *   ...
+ *   //...
  * }
  * </pre>
  * @author Michael Angstadt

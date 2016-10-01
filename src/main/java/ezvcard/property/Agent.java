@@ -53,14 +53,14 @@ import ezvcard.Warning;
  * VCard vcard = new VCard();
  * 
  * //URL
- * Agent agent = new Agent(&quot;http://www.linkedin.com/BobSmith&quot;);
+ * Agent agent = new Agent("http://www.linkedin.com/BobSmith");
  * vcard.setAgent(agent);
  * 
  * //vCard
  * VCard agentVCard = new VCard();
- * agentVCard.setFormattedName(&quot;Bob Smith&quot;);
- * agentVCard.addTelephoneNumber(&quot;(555) 123-4566&quot;);
- * agentVCard.addUrl(&quot;http://www.linkedin.com/BobSmith&quot;);
+ * agentVCard.setFormattedName("Bob Smith");
+ * agentVCard.addTelephoneNumber("(555) 123-4566");
+ * agentVCard.addUrl("http://www.linkedin.com/BobSmith");
  * agent = new Agent(agentVCard);
  * vcard.setAgent(agent);
  * </pre>
@@ -74,12 +74,12 @@ import ezvcard.Warning;
  * Agent agent = vcard.getAgent();
  * 
  * String url = agent.getUrl();
- * if (url != null){
+ * if (url != null) {
  *   //property value is a URL
  * }
  * 
  * VCard agentVCard = agent.getVCard();
- * if (agentVCard != null){
+ * if (agentVCard != null) {
  *   //property value is a vCard
  * }
  * </pre>

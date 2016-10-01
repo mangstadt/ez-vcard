@@ -45,7 +45,7 @@ import ezvcard.VCardVersion;
  * VCard vcard = new VCard();
  * 
  * //text
- * Deathplace deathplace = new Deathplace(&quot;Wilmslow, Cheshire, England&quot;);
+ * Deathplace deathplace = new Deathplace("Wilmslow, Cheshire, England");
  * vcard.setDeathplace(deathplace);
  * 
  * //geo coordinates
@@ -54,7 +54,7 @@ import ezvcard.VCardVersion;
  * 
  * //URI
  * deathplace = new Deathplace();
- * deathplace.setUri(&quot;http://en.wikipedia.org/wiki/Wilmslow&quot;);
+ * deathplace.setUri("http://en.wikipedia.org/wiki/Wilmslow");
  * vcard.setDeathplace(deathplace);
  * </pre>
  * 
@@ -67,18 +67,18 @@ import ezvcard.VCardVersion;
  * Deathplace deathplace = vcard.getDeathplace();
  * 
  * String text = deathplace.getText();
- * if (text != null){
+ * if (text != null) {
  *   //property value is plain text
  * }
  * 
  * Double latitude = deathplace.getLatitude();
  * Double longitude = deathplace.getLongitude();
- * if (latitude != null){
+ * if (latitude != null) {
  *   //property value is a set of geo coordinates
  * }
  * 
  * String uri = deathplace.getUri();
- * if (uri != null){
+ * if (uri != null) {
  *   //property value is a URI
  * }
  * </pre>

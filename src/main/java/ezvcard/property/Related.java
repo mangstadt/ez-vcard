@@ -54,19 +54,19 @@ import ezvcard.util.TelUri;
  * VCard vcard = new VCard();
  * 
  * //static factory methods
- * Related related = Related.email(&quot;bob.smith@example.com&quot;);
+ * Related related = Related.email("bob.smith@example.com");
  * related.getTypes().add(RelatedType.CO_WORKER);
  * related.getTypes().add(RelatedType.FRIEND);
  * vcard.addRelated(related);
  * 
  * //free-form text
  * related = new Related();
- * related.setText(&quot;Edna Smith&quot;);
+ * related.setText("Edna Smith");
  * related.getTypes().add(RelatedType.SPOUSE);
  * vcard.addRelated(related);
  * 
  * //reference another vCard by putting its UID property here
- * related = new Related(&quot;urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af&quot;);
+ * related = new Related("urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af");
  * related.getTypes().add(RelatedType.SIBLING);
  * vcard.addRelated(related);
  * </pre>

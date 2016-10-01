@@ -73,23 +73,23 @@ import ezvcard.parameter.KeyType;
  * 
  * <pre class="brush:java">
  * VCard vcard = ...
- * for (Key key : vcard.getKeys()){
+ * for (Key key : vcard.getKeys()) {
  *   KeyType contentType = key.getContentType(); //e.g. "application/pgp-keys"
  * 
  *   String url = key.getUrl();
- *   if (url != null){
+ *   if (url != null) {
  *     //property value is a URL
  *     continue;
  *   }
  *   
  *   byte[] data = key.getData();
- *   if (data != null){
+ *   if (data != null) {
  *     //property value is binary data
  *     continue;
  *   }
  *   
  *   String text = key.getText();
- *   if (text != null){
+ *   if (text != null) {
  *     //property value is plain-text
  *     continue;
  *   }

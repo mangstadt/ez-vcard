@@ -46,7 +46,7 @@ import ezvcard.parameter.Pid;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Source source = new Source(&quot;http://www.company.com/employees/doe_john.vcf&quot;);
+ * Source source = new Source("http://www.company.com/employees/doe_john.vcf");
  * vcard.addSource(source);
  * </pre>
  * 

@@ -44,7 +44,7 @@ import ezvcard.VCardVersion;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Classification classification = new Classification(&quot;PUBLIC&quot;);
+ * Classification classification = new Classification("PUBLIC");
  * vcard.setClassification(classification);
  * </pre>
  * 

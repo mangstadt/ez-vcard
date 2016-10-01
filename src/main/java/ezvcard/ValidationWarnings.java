@@ -57,23 +57,23 @@ import ezvcard.util.StringUtils;
  * 
  * //iterate over the warnings
  * for (Map.Entry&lt;VCardProperty, List&lt;Warning&gt;&gt; entry : warnings) {
- * 	//the property that caused the warning(s)
- * 	VCardProperty property = entry.getKey();
+ *   //the property that caused the warning(s)
+ *   VCardProperty property = entry.getKey();
  * 
- * 	//the list of warnings that belong to this property
- * 	List&lt;Warning&gt; propWarnings = entry.getValue();
+ *   //the list of warnings that belong to this property
+ *   List&lt;Warning&gt; propWarnings = entry.getValue();
  * 
- * 	if (property == null) {
- * 		//it's a warning about the vCard as a whole
- * 	}
+ *   if (property == null) {
+ *     //it's a warning about the vCard as a whole
+ *   }
  * 
- * 	//each warning message has a numeric code
- * 	//this allows you to programmatically respond to specific warning messages
- * 	List&lt;Warning&gt; propWarnings = entry.getValue();
- * 	for (Warning w : propWarnings) {
- * 		System.out.println(&quot;Code: &quot; + w.getCode());
- * 		System.out.printkn(&quot;Message: &quot; + w.getMessage());
- * 	}
+ *   //each warning message has a numeric code
+ *   //this allows you to programmatically respond to specific warning messages
+ *   List&lt;Warning&gt; propWarnings = entry.getValue();
+ *   for (Warning w : propWarnings) {
+ *     System.out.println("Code: " + w.getCode());
+ *     System.out.printkn("Message: " + w.getMessage());
+ *   }
  * }
  * 
  * //you can also get the warnings of specific property classes

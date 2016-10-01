@@ -45,7 +45,7 @@ import ezvcard.VCardVersion;
  * VCard vcard = new VCard();
  * 
  * //text
- * Birthplace birthplace = new Birthplace(&quot;Maida Vale, London, United Kingdom&quot;);
+ * Birthplace birthplace = new Birthplace("Maida Vale, London, United Kingdom");
  * vcard.setBirthplace(birthplace);
  * 
  * //geo coordinates
@@ -54,7 +54,7 @@ import ezvcard.VCardVersion;
  * 
  * //URI
  * birthplace = new Birthplace();
- * birthplace.setUri(&quot;http://en.wikipedia.org/wiki/Maida_Vale&quot;);
+ * birthplace.setUri("http://en.wikipedia.org/wiki/Maida_Vale");
  * vcard.setBirthplace(birthplace);
  * </pre>
  * 
@@ -67,18 +67,18 @@ import ezvcard.VCardVersion;
  * Birthplace birthplace = vcard.getBirthplace();
  * 
  * String text = birthplace.getText();
- * if (text != null){
+ * if (text != null) {
  *   //property value is plain text
  * }
  * 
  * Double latitude = birthplace.getLatitude();
  * Double longitude = birthplace.getLongitude();
- * if (latitude != null){
+ * if (latitude != null) {
  *   //property value is a set of geo coordinates
  * }
  * 
  * String uri = birthplace.getUri();
- * if (uri != null){
+ * if (uri != null) {
  *   //property value is a URI
  * }
  * </pre>

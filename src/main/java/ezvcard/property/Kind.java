@@ -56,9 +56,9 @@ import ezvcard.VCardVersion;
  * <pre class="brush:java">
  * VCard vcard = ...
  * Kind kind = vcard.getKind();
- * if (kind.isIndividual()){
+ * if (kind.isIndividual()) {
  *   //vCard contains information on an individual person
- * } else if (kind.isGroup()){
+ * } else if (kind.isGroup()) {
  *   //vCard contains information on a group of people
  * }
  * //etc
