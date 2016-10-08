@@ -494,7 +494,7 @@
 <span class="sourceLineNo">486</span>                 * @param original the partial date to copy<a name="line.486"></a>
 <span class="sourceLineNo">487</span>                 */<a name="line.487"></a>
 <span class="sourceLineNo">488</span>                public Builder(PartialDate original) {<a name="line.488"></a>
-<span class="sourceLineNo">489</span>                        components = Arrays.copyOf(original.components, original.components.length);<a name="line.489"></a>
+<span class="sourceLineNo">489</span>                        components = original.components.clone();<a name="line.489"></a>
 <span class="sourceLineNo">490</span>                        offset = original.offset;<a name="line.490"></a>
 <span class="sourceLineNo">491</span>                }<a name="line.491"></a>
 <span class="sourceLineNo">492</span><a name="line.492"></a>
