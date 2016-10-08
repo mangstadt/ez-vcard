@@ -45,6 +45,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 # Features
 
  * Simple, intuitive API (see [Examples](https://github.com/mangstadt/ez-vcard/wiki/Examples)).
+ * Streaming API.
  * Android compatibility (see [ez-vcard-android](https://github.com/mangstadt/ez-vcard-android) project).
  * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
@@ -53,6 +54,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
  * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
+
+**October 8, 2016**
+
+[Version 0.10.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release contains mostly refactorings to support a newly integrated library.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 **August 28, 2016**
 
@@ -80,14 +85,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.9.11</version>
+   <version>0.10.0</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.9.11'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.10.0'
 ```
 
 # Build Instructions
