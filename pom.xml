@@ -3,7 +3,7 @@
 	<groupId>com.googlecode.ez-vcard</groupId>
 	<artifactId>ez-vcard</artifactId>
 	<packaging>bundle</packaging> <!-- "bundle" used for OSGi support -->
-	<version>0.10.1-SNAPSHOT</version>
+	<version>0.9.11-SNAPSHOT</version>
 	<name>ez-vcard</name>
 	<url>http://github.com/mangstadt/ez-vcard</url>
 	<inceptionYear>2012</inceptionYear>
@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>com.github.mangstadt</groupId>
 			<artifactId>vinnie</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jsoup</groupId>
