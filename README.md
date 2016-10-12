@@ -34,7 +34,7 @@ VCard vcard = new VCard();
 StructuredName n = new StructuredName();
 n.setFamily("Doe");
 n.setGiven("Jonathan");
-n.addPrefix("Mr");
+n.getPrefixes().add("Mr");
 vcard.setStructuredName(n);
 
 vcard.setFormattedName("John Doe");
