@@ -69,7 +69,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 		}
 
 		String xml = valueToString(value);
-		return VObjectPropertyValues.escape(xml);
+		return escape(xml, context);
 	}
 
 	@Override

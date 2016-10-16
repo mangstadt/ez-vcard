@@ -729,6 +729,28 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
+	 * <p>
+	 * Escapes special characters in a property value for writing to a
+	 * plain-text output stream.
+	 * </p>
+	 * <p>
+	 * If the target version is 2.1, then the value will be returned unchanged.
+	 * 2.1 only requires special characters to be escaped within properties that
+	 * make use of those special characters.
+	 * </p>
+	 * @param text the value to escape
+	 * @param context the write context
+	 * @return the escaped value
+	 */
+	protected static String escape(String value, WriteContext context) {
+		if (context.getVersion() == VCardVersion.V2_1) {
+			return value;
+		}
+
+		return VObjectPropertyValues.escape(value);
+	}
+
+	/**
 	 * Represents the result of an unmarshal operation.
 	 * @author Michael Angstadt
 	 * @param <T> the unmarshalled property class

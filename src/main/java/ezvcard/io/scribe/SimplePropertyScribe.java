@@ -60,7 +60,7 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	@Override
 	protected String _writeText(T property, WriteContext context) {
 		String value = _writeValue(property);
-		return (value == null) ? "" : VObjectPropertyValues.escape(value);
+		return (value == null) ? "" : escape(value, context);
 	}
 
 	@Override

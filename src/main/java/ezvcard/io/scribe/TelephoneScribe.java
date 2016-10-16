@@ -78,7 +78,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	protected String _writeText(Telephone property, WriteContext context) {
 		String text = property.getText();
 		if (text != null) {
-			return VObjectPropertyValues.escape(text);
+			return escape(text, context);
 		}
 
 		TelUri uri = property.getUri();
@@ -89,7 +89,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 
 			String ext = uri.getExtension();
 			String value = (ext == null) ? uri.getNumber() : uri.getNumber() + " x" + ext;
-			return VObjectPropertyValues.escape(value);
+			return escape(value, context);
 		}
 
 		return "";

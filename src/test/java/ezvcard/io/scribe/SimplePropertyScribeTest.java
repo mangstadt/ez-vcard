@@ -1,5 +1,8 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -53,7 +56,8 @@ public class SimplePropertyScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withValue).run(valueEscaped);
+		sensei.assertWriteText(withValue).versions(V2_1).run(value);
+		sensei.assertWriteText(withValue).versions(V3_0, V4_0).run(valueEscaped);
 		sensei.assertWriteText(empty).run("");
 	}
 
