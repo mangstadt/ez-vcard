@@ -158,7 +158,7 @@ David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7
 Melchin Sapir (README suggestion)  
 Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
 David Spieler ([hCard template bug](https://github.com/mangstadt/ez-vcard/issues/19))  
-stonio ([unit test fix](https://github.com/mangstadt/ez-vcard/pull/63))  
+stonio ([unit test fix](https://github.com/mangstadt/ez-vcard/pull/63), [readme fix](https://github.com/mangstadt/ez-vcard/pull/68))  
 Tom Vogel ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/10))  
 Eike Weyl (Wiki fix, Javadoc fix)  
 沈健 (plain-text vCard formatting issue)
