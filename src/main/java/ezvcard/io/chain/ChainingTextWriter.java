@@ -171,16 +171,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the output stream
 	 */
 	public void go(OutputStream out) throws IOException {
-		/*
-		 * The VCardWriter constructor does not allow a null version, so if the
-		 * user hasn't chosen a version, pass one in to avoid a NPE.
-		 * 
-		 * The version that is passed in doesn't matter because, when the vCards
-		 * are written, the writer's target version is set to the version
-		 * assigned to each vCard being written.
-		 */
-		VCardVersion v = (version == null) ? VCardVersion.V3_0 : version;
-		go(new VCardWriter(out, v));
+		go(new VCardWriter(out, getVCardWriterConstructorVersion()));
 	}
 
 	/**
@@ -200,7 +191,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void go(File file, boolean append) throws IOException {
-		VCardWriter writer = new VCardWriter(file, append, version);
+		VCardWriter writer = new VCardWriter(file, append, getVCardWriterConstructorVersion());
 		try {
 			go(writer);
 		} finally {
@@ -214,16 +205,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the writer
 	 */
 	public void go(Writer writer) throws IOException {
-		/*
-		 * The VCardWriter constructor does not allow a null version, so if the
-		 * user hasn't chosen a version, pass one in to avoid a NPE.
-		 * 
-		 * The version that is passed in doesn't matter because, when the vCards
-		 * are written, the writer's target version is set to the version
-		 * assigned to each vCard being written.
-		 */
-		VCardVersion v = (version == null) ? VCardVersion.V3_0 : version;
-		go(new VCardWriter(writer, v));
+		go(new VCardWriter(writer, getVCardWriterConstructorVersion()));
 	}
 
 	private void go(VCardWriter writer) throws IOException {
@@ -248,5 +230,23 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 			writer.write(vcard);
 			writer.flush();
 		}
+	}
+
+	/**
+	 * <p>
+	 * Gets the {@link VCardVersion} object to pass into the {@link VCardWriter}
+	 * constructor. The constructor does not allow a null version, so this
+	 * method ensures that a non-null version is passed in.
+	 * </p>
+	 * <p>
+	 * If the user hasn't chosen a version, the version that is passed into the
+	 * constructor doesn't matter. This is because the writer's target version
+	 * is reset every time a vCard is written (see the {@link #go(VCardWriter)}
+	 * method).
+	 * </p>
+	 * @return the version to pass into the constructor
+	 */
+	private VCardVersion getVCardWriterConstructorVersion() {
+		return (version == null) ? VCardVersion.V3_0 : version;
 	}
 }

@@ -20,7 +20,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.jsoup.Jsoup;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -71,6 +73,9 @@ public class EzvcardTest {
 	{
 		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 	}
+
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
 	public void parse_first() throws Exception {
@@ -507,6 +512,14 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void write_file() throws Exception {
+		VCard vcard = new VCard();
+		File file = folder.newFile();
+		Ezvcard.write(vcard).go(file);
+		assertTrue(file.length() > 0);
+	}
+
+	@Test
 	public void writeXml_go() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -734,14 +747,13 @@ public class EzvcardTest {
 	public void writeJson_does_not_close_stream() throws Exception {
 		VCard vcard = new VCard();
 
-		File file = new File("target", "temp.json");
+		File file = folder.newFile();
 		FileWriter writer = new FileWriter(file);
 		try {
 			Ezvcard.writeJson(vcard).go(writer);
 			writer.write("test"); //an exception will be thrown if the writer is closed
 		} finally {
 			writer.close();
-			file.delete();
 		}
 	}
 }
