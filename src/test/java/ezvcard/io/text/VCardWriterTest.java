@@ -38,8 +38,8 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
+import ezvcard.util.Gobble;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
 
@@ -312,7 +312,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			String actual = IOUtils.getFileContents(file, "UTF-8");
+			String actual = new Gobble(file).asString("UTF-8");
 			assertEquals(expected, actual);
 		}
 
@@ -331,7 +331,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			String actual = IOUtils.getFileContents(file, "UTF-8");
+			String actual = new Gobble(file).asString("UTF-8");
 			assertEquals(expected, actual);
 		}
 	}

@@ -15,7 +15,7 @@ import ezvcard.VCardVersion;
 import ezvcard.Warning;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.Pid;
-import ezvcard.util.IOUtils;
+import ezvcard.util.Gobble;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -96,7 +96,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @throws IOException if there is a problem reading from the input stream
 	 */
 	public BinaryProperty(InputStream in, T type) throws IOException {
-		this(IOUtils.toByteArray(in, true), type);
+		this(new Gobble(in).asByteArray(), type);
 	}
 
 	/**

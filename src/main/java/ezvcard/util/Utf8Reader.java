@@ -1,13 +1,11 @@
 package ezvcard.util;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.io.Closeable;
-import java.io.IOException;
-
-import org.junit.Test;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -32,23 +30,32 @@ import org.junit.Test;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
  */
 
 /**
+ * Reads characters that are encoded in UTF-8.
  * @author Michael Angstadt
  */
-public class IOUtilsTest {
-	@Test
-	public void closeQuietly() throws Exception {
-		IOUtils.closeQuietly(null);
+public class Utf8Reader extends InputStreamReader {
+	/**
+	 * Creates a new UTF-8 reader.
+	 * @param in the input stream to read from
+	 */
+	public Utf8Reader(InputStream in) {
+		super(in, Charset.forName("UTF-8"));
+	}
 
-		Closeable closeable = mock(Closeable.class);
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
-
-		closeable = mock(Closeable.class);
-		doThrow(new IOException()).when(closeable).close();
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
+	/**
+	 * Creates a new UTF-8 reader.
+	 * @param file the file to read from
+	 * @throws FileNotFoundException if the file does not exist or cannot be
+	 * opened
+	 */
+	public Utf8Reader(File file) throws FileNotFoundException {
+		this(new FileInputStream(file));
 	}
 }

@@ -39,10 +39,10 @@ import ezvcard.property.Organization;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.asserter.VCardAsserter;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
+import ezvcard.util.Utf8Writer;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -364,7 +364,7 @@ public class JCardReaderTest {
 		"]";
 
 		File file = tempFolder.newFile();
-		Writer writer = IOUtils.utf8Writer(file);
+		Writer writer = new Utf8Writer(file);
 		writer.write(json);
 		writer.close();
 

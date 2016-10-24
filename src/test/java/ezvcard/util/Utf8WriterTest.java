@@ -1,7 +1,13 @@
 package ezvcard.util;
 
-import java.io.Closeable;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -33,25 +39,57 @@ import java.io.IOException;
  */
 
 /**
- * I/O helper classes.
  * @author Michael Angstadt
  */
-public final class IOUtils {
-	/**
-	 * Closes a closeable resource, catching its {@link IOException}.
-	 * @param closeable the resource to close (can be null)
-	 */
-	public static void closeQuietly(Closeable closeable) {
-		try {
-			if (closeable != null) {
-				closeable.close();
-			}
-		} catch (IOException e) {
-			//ignore
-		}
+public class Utf8WriterTest {
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+
+	@Test
+	public void outputStream() throws Exception {
+		String data = "one two three";
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Utf8Writer writer = new Utf8Writer(out);
+		writer.write(data);
+		writer.close();
+
+		String expected = data;
+		String actual = new String(out.toByteArray(), "UTF-8");
+		assertEquals(expected, actual);
 	}
 
-	private IOUtils() {
-		//hide
+	@Test
+	public void file() throws Exception {
+		String data = "one two three";
+
+		File file = folder.newFile();
+		Utf8Writer writer = new Utf8Writer(file);
+		writer.write(data);
+		writer.close();
+
+		String expected = data;
+		String actual = new Gobble(file).asString("UTF-8");
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void file_append() throws Exception {
+		File file = folder.newFile();
+		Utf8Writer writer = new Utf8Writer(file);
+		writer.write("one");
+		writer.close();
+
+		writer = new Utf8Writer(file, false);
+		writer.write("two");
+		writer.close();
+
+		writer = new Utf8Writer(file, true);
+		writer.write(" three");
+		writer.close();
+
+		String expected = "two three";
+		String actual = new Gobble(file).asString("UTF-8");
+		assertEquals(expected, actual);
 	}
 }

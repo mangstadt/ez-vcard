@@ -37,6 +37,7 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
+import ezvcard.util.Gobble;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -166,7 +167,7 @@ public class HCardParser extends StreamReader {
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
 	public HCardParser(Reader reader, String pageUrl) throws IOException {
-		this(IOUtils.toString(reader), pageUrl);
+		this(new Gobble(reader).asString(), pageUrl);
 	}
 
 	/**

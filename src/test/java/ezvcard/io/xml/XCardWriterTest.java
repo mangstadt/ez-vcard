@@ -9,7 +9,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -57,8 +56,8 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
+import ezvcard.util.Gobble;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
@@ -669,7 +668,7 @@ public class XCardWriterTest {
 
 		writer.close();
 
-		String xml = IOUtils.getFileContents(file, "UTF-8");
+		String xml = new Gobble(file).asString("UTF-8");
 		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
 		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
 	}
@@ -772,7 +771,7 @@ public class XCardWriterTest {
 		writer.write(vcard);
 		writer.close();
 
-		String expected = IOUtils.toString(new InputStreamReader(getClass().getResourceAsStream(exampleFileName)));
+		String expected = new Gobble(getClass().getResourceAsStream(exampleFileName)).asString();
 		String actual = sw.toString();
 
 		assertXMLEqual(expected, actual);

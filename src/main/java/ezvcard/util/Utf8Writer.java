@@ -1,13 +1,11 @@
 package ezvcard.util;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.io.Closeable;
-import java.io.IOException;
-
-import org.junit.Test;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -32,23 +30,42 @@ import org.junit.Test;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
  */
 
 /**
+ * Writes characters that are UTF-8 encoded.
  * @author Michael Angstadt
  */
-public class IOUtilsTest {
-	@Test
-	public void closeQuietly() throws Exception {
-		IOUtils.closeQuietly(null);
+public class Utf8Writer extends OutputStreamWriter {
+	/**
+	 * Creates a new UTF-8 writer.
+	 * @param out the output stream to write to
+	 */
+	public Utf8Writer(OutputStream out) {
+		super(out, Charset.forName("UTF-8"));
+	}
 
-		Closeable closeable = mock(Closeable.class);
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
+	/**
+	 * Creates a new UTF-8 writer.
+	 * @param file the file to write to
+	 * @throws FileNotFoundException if the file cannot be written to
+	 */
+	public Utf8Writer(File file) throws FileNotFoundException {
+		this(file, false);
+	}
 
-		closeable = mock(Closeable.class);
-		doThrow(new IOException()).when(closeable).close();
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
+	/**
+	 * Creates a new UTF-8 writer.
+	 * @param file the file to write to
+	 * @param append true to append to the file, false to overwrite it (this
+	 * parameter has no effect if the file does not exist)
+	 * @throws FileNotFoundException if the file cannot be written to
+	 */
+	public Utf8Writer(File file, boolean append) throws FileNotFoundException {
+		this(new FileOutputStream(file, append));
 	}
 }

@@ -4,7 +4,6 @@ import static ezvcard.io.xml.XCardQNames.GROUP;
 import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
-import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +42,7 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -144,7 +144,7 @@ public class XCardWriter extends XCardWriterBase {
 	 * {@link Transformer#setOutputProperty})
 	 */
 	public XCardWriter(OutputStream out, Map<String, String> outputProperties) {
-		this(utf8Writer(out), outputProperties);
+		this(new Utf8Writer(out), outputProperties);
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class XCardWriter extends XCardWriterBase {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public XCardWriter(File file, Map<String, String> outputProperties) throws IOException {
-		this(utf8Writer(file), outputProperties);
+		this(new Utf8Writer(file), outputProperties);
 	}
 
 	/**

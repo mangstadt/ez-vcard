@@ -117,7 +117,7 @@ public class XmlUtilsTest {
 		//@formatter:on
 
 		File file = tempFolder.newFile();
-		Writer writer = IOUtils.utf8Writer(file);
+		Writer writer = new Utf8Writer(file);
 		writer.write(xml);
 		writer.close();
 

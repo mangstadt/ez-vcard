@@ -53,10 +53,10 @@ import ezvcard.property.RawProperty;
 import ezvcard.property.Url;
 import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
+import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -737,7 +737,7 @@ public class XCardReaderTest {
 		"</vcards>";
 
 		File file = tempFolder.newFile();
-		Writer writer = IOUtils.utf8Writer(file);
+		Writer writer = new Utf8Writer(file);
 		writer.write(xml);
 		writer.close();
 

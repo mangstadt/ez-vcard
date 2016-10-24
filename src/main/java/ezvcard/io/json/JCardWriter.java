@@ -1,7 +1,5 @@
 package ezvcard.io.json;
 
-import static ezvcard.util.IOUtils.utf8Writer;
-
 import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
@@ -21,6 +19,7 @@ import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.Utf8Writer;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -85,7 +84,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
 	 */
 	public JCardWriter(OutputStream out) {
-		this(utf8Writer(out));
+		this(new Utf8Writer(out));
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * false not to
 	 */
 	public JCardWriter(OutputStream out, boolean wrapInArray) {
-		this(utf8Writer(out), wrapInArray);
+		this(new Utf8Writer(out), wrapInArray);
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(File file) throws IOException {
-		this(utf8Writer(file));
+		this(new Utf8Writer(file));
 	}
 
 	/**
@@ -112,7 +111,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(File file, boolean wrapInArray) throws IOException {
-		this(utf8Writer(file), wrapInArray);
+		this(new Utf8Writer(file), wrapInArray);
 	}
 
 	/**

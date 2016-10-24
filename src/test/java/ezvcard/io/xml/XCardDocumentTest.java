@@ -62,8 +62,8 @@ import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
+import ezvcard.util.Gobble;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
@@ -674,7 +674,7 @@ public class XCardDocumentTest {
 		File file = tempFolder.newFile();
 		xcard.write(file);
 
-		String xml = IOUtils.getFileContents(file, "UTF-8");
+		String xml = new Gobble(file).asString("UTF-8");
 		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
 		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
 	}

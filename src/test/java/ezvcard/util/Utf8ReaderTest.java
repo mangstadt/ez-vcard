@@ -1,13 +1,16 @@
 package ezvcard.util;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -32,23 +35,44 @@ import org.junit.Test;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ The views and conclusions contained in the software and documentation are those
+ of the authors and should not be interpreted as representing official policies, 
+ either expressed or implied, of the FreeBSD Project.
  */
 
 /**
  * @author Michael Angstadt
  */
-public class IOUtilsTest {
+public class Utf8ReaderTest {
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+
 	@Test
-	public void closeQuietly() throws Exception {
-		IOUtils.closeQuietly(null);
+	public void inputStream() throws Exception {
+		String data = "one two three";
+		byte bytes[] = data.getBytes("UTF-8");
 
-		Closeable closeable = mock(Closeable.class);
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
+		Utf8Reader reader = new Utf8Reader(new ByteArrayInputStream(bytes));
 
-		closeable = mock(Closeable.class);
-		doThrow(new IOException()).when(closeable).close();
-		IOUtils.closeQuietly(closeable);
-		verify(closeable).close();
+		String expected = data;
+		String actual = new Gobble(reader).asString();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void file() throws Exception {
+		String data = "one two three";
+
+		File file = folder.newFile();
+		Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+		writer.write(data);
+		writer.close();
+
+		Utf8Reader reader = new Utf8Reader(file);
+
+		String expected = data;
+		String actual = new Gobble(reader).asString();
+		assertEquals(expected, actual);
 	}
 }

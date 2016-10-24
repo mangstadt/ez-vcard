@@ -1,7 +1,20 @@
 package ezvcard.util;
 
-import java.io.Closeable;
-import java.io.IOException;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -33,25 +46,52 @@ import java.io.IOException;
  */
 
 /**
- * I/O helper classes.
  * @author Michael Angstadt
  */
-public final class IOUtils {
-	/**
-	 * Closes a closeable resource, catching its {@link IOException}.
-	 * @param closeable the resource to close (can be null)
-	 */
-	public static void closeQuietly(Closeable closeable) {
-		try {
-			if (closeable != null) {
-				closeable.close();
-			}
-		} catch (IOException e) {
-			//ignore
-		}
+public class GobbleTest {
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+
+	@Test
+	public void file() throws Exception {
+		String data = "one two three";
+
+		File file = folder.newFile();
+		Writer writer = new FileWriter(file);
+		writer.write(data);
+		writer.close();
+
+		Gobble stream = new Gobble(file);
+		assertEquals(data, stream.asString());
+		assertArrayEquals(data.getBytes(), stream.asByteArray());
 	}
 
-	private IOUtils() {
-		//hide
+	@Test
+	public void inputStream() throws Exception {
+		String data = "one two three";
+
+		InputStream in = new ByteArrayInputStream(data.getBytes());
+		Gobble stream = new Gobble(in);
+		assertEquals(data, stream.asString());
+		assertArrayEquals(new byte[0], stream.asByteArray()); //input stream was consumed
+
+		in = new ByteArrayInputStream(data.getBytes());
+		stream = new Gobble(in);
+		assertArrayEquals(data.getBytes(), stream.asByteArray());
+	}
+
+	@Test
+	public void reader() throws Exception {
+		String data = "one two three";
+
+		Reader reader = new StringReader(data);
+		Gobble stream = new Gobble(reader);
+		assertEquals(data, stream.asString());
+		try {
+			stream.asByteArray();
+			fail();
+		} catch (IllegalStateException e) {
+			//expected
+		}
 	}
 }

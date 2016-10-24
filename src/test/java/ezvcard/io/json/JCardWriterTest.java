@@ -34,8 +34,8 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.IOUtils;
 import ezvcard.util.PartialDate;
+import ezvcard.util.Gobble;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
 
@@ -320,7 +320,7 @@ public class JCardWriterTest {
 			"]" +
 		"]";
 		//@formatter:on
-		String actual = IOUtils.getFileContents(file, "UTF-8");
+		String actual = new Gobble(file).asString("UTF-8");
 		assertEquals(expected, actual);
 	}
 
@@ -416,7 +416,7 @@ public class JCardWriterTest {
 			}
 		};
 
-		String expected = new String(IOUtils.toByteArray(JCardWriterTest.class.getResourceAsStream(exampleFileName)));
+		String expected = new Gobble(JCardWriterTest.class.getResourceAsStream(exampleFileName)).asString();
 		expected = expected.replaceAll("\\s", "");
 		if (filter != null) {
 			expected = filter.filter(expected);

@@ -1,7 +1,6 @@
 package ezvcard.io.text;
 
 import static com.github.mangstadt.vinnie.Utils.escapeNewlines;
-import static ezvcard.util.IOUtils.utf8Writer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +30,7 @@ import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
+import ezvcard.util.Utf8Writer;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -118,7 +118,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
-		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(out) : new OutputStreamWriter(out), targetVersion);
+		this((targetVersion == VCardVersion.V4_0) ? new Utf8Writer(out) : new OutputStreamWriter(out), targetVersion);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(File file, boolean append, VCardVersion targetVersion) throws IOException {
-		this((targetVersion == VCardVersion.V4_0) ? utf8Writer(file, append) : new FileWriter(file, append), targetVersion);
+		this((targetVersion == VCardVersion.V4_0) ? new Utf8Writer(file, append) : new FileWriter(file, append), targetVersion);
 	}
 
 	/**
