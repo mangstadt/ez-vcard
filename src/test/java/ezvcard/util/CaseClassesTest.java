@@ -62,9 +62,14 @@ public class CaseClassesTest {
 
 		PrimeNumber eleven1 = cc.get(11);
 		assertIntEquals(11, eleven1.value);
-
 		PrimeNumber eleven2 = cc.get(11);
 		assertSame(eleven1, eleven2);
+
+		//second runtime-defined object
+		PrimeNumber thirteen1 = cc.get(13);
+		assertIntEquals(11, eleven1.value);
+		PrimeNumber thirteen2 = cc.get(13);
+		assertSame(thirteen1, thirteen2);
 	}
 
 	@Test
@@ -115,6 +120,7 @@ public class CaseClassesTest {
 		public static final PrimeNumber SEVEN = new PrimeNumber(7);
 
 		private static final PrimeNumber NINE = new PrimeNumber(9); //not public
+		public static final PrimeNumber ELEVEN = null; //null
 		public static final String TEST = "test"; //not a PrimeNumber object
 
 		public Integer value;

@@ -41,9 +41,64 @@ import java.util.Collections;
  * <p>
  * This class awkwardly mimics the "case class" feature in Scala.
  * </p>
+ * <p>
+ * <b>Example:</b>
+ * </p>
+ * <pre class="brush:java">
+ * public class Color {
+ *   public static final CaseClasses&lt;Color, String&gt; VALUES = new ColorCaseClasses();
+ *   public static final Color RED = new Color("red");
+ *   public static final Color GREEN = new Color("green");
+ *   public static final Color BLUE = new Color("blue");
+ * 
+ *   private final String name;
+ * 
+ *   // Constructor should be PRIVATE in order to prevent users from
+ *   // instantiating their own objects and circumventing the CaseClasses
+ *   // object.
+ *   private Color(String name) {
+ *     this.name = name;
+ *   }
+ * 
+ *   public String getName() {
+ *     return name;
+ *   }
+ * 
+ *   // CaseClasses implementation is an inner class because the Color
+ *   // constructor is private.
+ *   private static class ColorCaseClasses extends CaseClasses&lt;Color, String&gt; {
+ *     public ColorCaseClasses() {
+ *       super(Color.class);
+ *     }
+ * 
+ *     &#64;Override
+ *     protected Color create(String value) {
+ *       return new Color(value);
+ *     }
+ * 
+ *     &#64;Override
+ *     protected boolean matches(Color object, String value) {
+ *       return object.getName().equalsIgnoreCase(value);
+ *     }
+ *   }
+ * }
+ * 
+ * public class Test {
+ *   &#64;Test
+ *   public void test() {
+ *     assertTrue(Color.RED == Color.VALUES.find("Red"));
+ *     assertTrue(Color.RED == Color.VALUES.get("Red"));
+ * 
+ *     assertNull(Color.VALUES.find("purple"));
+ *     Color purple = Color.VALUES.get("purple");
+ *     assertEquals("purple", purple.getName());
+ *     assertTrue(purple == Color.VALUES.get("Purple"));
+ *   }
+ * }
+ * </pre>
  * @author Michael Angstadt
  * 
- * @param <T> the class
+ * @param <T> the case class
  * @param <V> the value that the class holds (e.g. String)
  */
 public abstract class CaseClasses<T, V> {
@@ -67,7 +122,7 @@ public abstract class CaseClasses<T, V> {
 	protected abstract T create(V value);
 
 	/**
-	 * Determines if a value is associated with a case object.
+	 * Determines if a case object is "equal to" the given value.
 	 * @param object the case object
 	 * @param value the value
 	 * @return true if it matches, false if not
@@ -76,7 +131,7 @@ public abstract class CaseClasses<T, V> {
 
 	/**
 	 * Searches for a case object by value, only looking at the case class'
-	 * static constants (i.e. does not search over runtime-defined objects).
+	 * static constants (does not search runtime-defined constants).
 	 * @param value the value
 	 * @return the object or null if one wasn't found
 	 */
@@ -117,7 +172,8 @@ public abstract class CaseClasses<T, V> {
 	}
 
 	/**
-	 * Gets all the static constants of the case class.
+	 * Gets all the static constants of the case class (does not include
+	 * runtime-defined constants).
 	 * @return all static constants
 	 */
 	public Collection<T> all() {
@@ -125,6 +181,11 @@ public abstract class CaseClasses<T, V> {
 		return preDefined;
 	}
 
+	/**
+	 * Checks to see if this class's fields were initialized yet, and
+	 * initializes them if they haven't been initialized. This method is
+	 * thread-safe.
+	 */
 	private void checkInit() {
 		if (preDefined == null) {
 			synchronized (this) {
@@ -136,31 +197,47 @@ public abstract class CaseClasses<T, V> {
 		}
 	}
 
+	/**
+	 * Initializes this class's fields.
+	 */
 	private void init() {
 		Collection<T> preDefined = new ArrayList<T>();
 		for (Field field : clazz.getFields()) {
-			int modifiers = field.getModifiers();
-			//@formatter:off
-			if (Modifier.isStatic(modifiers) &&
-				Modifier.isPublic(modifiers) &&
-				field.getDeclaringClass() == clazz &&
-				field.getType() == clazz) {
-				//@formatter:on
-				try {
-					Object obj = field.get(null);
-					if (obj != null) {
-						T c = clazz.cast(obj);
-						preDefined.add(c);
-					}
-				} catch (Exception e) {
-					//reflection error
-					//should never be thrown because we check for "public static" and the correct type
-					throw new RuntimeException(e);
+			if (!isPreDefinedField(field)) {
+				continue;
+			}
+
+			try {
+				Object obj = field.get(null);
+				if (obj != null) {
+					T c = clazz.cast(obj);
+					preDefined.add(c);
 				}
+			} catch (Exception e) {
+				//reflection error
+				//should never be thrown because we check for "public static" and the correct type
+				throw new RuntimeException(e);
 			}
 		}
 
 		runtimeDefined = new ArrayList<T>(0);
 		this.preDefined = Collections.unmodifiableCollection(preDefined);
+	}
+
+	/**
+	 * Determines if a field should be treated as a predefined case object.
+	 * @param field the field
+	 * @return true if it's a predefined case object, false if not
+	 */
+	private boolean isPreDefinedField(Field field) {
+		int modifiers = field.getModifiers();
+
+		//@formatter:off
+		return
+			Modifier.isStatic(modifiers) &&
+			Modifier.isPublic(modifiers) &&
+			field.getDeclaringClass() == clazz &&
+			field.getType() == clazz;
+		//@formatter:on
 	}
 }
