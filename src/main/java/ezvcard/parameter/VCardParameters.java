@@ -657,8 +657,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the index or null if not set
-	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed. If this happens, you may use the
+	 * @throws IllegalStateException if the parameter value cannot be parsed as
+	 * an integer. If this happens, you may use the
 	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw value.
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>
@@ -1007,8 +1007,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the preference value or null if not set
-	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed. If this happens, you may use the
+	 * @throws IllegalStateException if the parameter value cannot be parsed as
+	 * an integer. If this happens, you may use the
 	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw value.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
 	 * p.17</a>
