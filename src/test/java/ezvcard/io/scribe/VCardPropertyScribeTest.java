@@ -1,7 +1,11 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
+import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.date;
+import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -137,6 +141,94 @@ public class VCardPropertyScribeTest {
 
 		assertNotSame(property.getParameters(), copy);
 		assertEquals("value", copy.first("PARAM"));
+	}
+
+	@Test
+	public void handlePrefParam_to_4() {
+		VCard vcard = new VCard();
+
+		TestProperty two = new TestProperty("");
+		two.getParameters().setType("HOME");
+		vcard.addProperty(two);
+
+		TestProperty one = new TestProperty("");
+		one.getParameters().setType("PREF");
+		vcard.addProperty(one);
+
+		TestProperty three = new TestProperty("");
+		vcard.addProperty(three);
+
+		//no change
+		for (VCardVersion version : each(V2_1, V3_0)) {
+			for (TestProperty p : vcard.getProperties(TestProperty.class)) {
+				VCardParameters copy = new VCardParameters(p.getParameters());
+				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
+				assertEquals(p.getParameters(), copy);
+			}
+		}
+
+		{
+			VCardVersion version = V4_0;
+
+			VCardParameters copy = new VCardParameters(one.getParameters());
+			VCardPropertyScribe.handlePrefParam(one, copy, version, vcard);
+			assertIntEquals(1, copy.getPref());
+			assertNull(copy.getType());
+
+			for (TestProperty p : each(two, three)) {
+				copy = new VCardParameters(p.getParameters());
+				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
+				assertEquals(p.getParameters(), copy);
+			}
+		}
+	}
+
+	@Test
+	public void handlePrefParam_from_4() {
+		VCard vcard = new VCard();
+
+		TestProperty two = new TestProperty("");
+		two.getParameters().setPref(2);
+		vcard.addProperty(two);
+
+		TestProperty nullPref = new TestProperty("");
+		vcard.addProperty(nullPref);
+
+		TestProperty invalidPref = new TestProperty("");
+		invalidPref.getParameters().replace("PREF", "invalid");
+		vcard.addProperty(invalidPref);
+
+		TestProperty one = new TestProperty("");
+		one.getParameters().setPref(1);
+		vcard.addProperty(one);
+
+		TestProperty three = new TestProperty("");
+		three.getParameters().setPref(3);
+		vcard.addProperty(three);
+
+		//no change
+		{
+			VCardVersion version = V4_0;
+			for (TestProperty p : vcard.getProperties(TestProperty.class)) {
+				VCardParameters copy = new VCardParameters(p.getParameters());
+				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
+				assertEquals(p.getParameters(), copy);
+			}
+		}
+
+		for (VCardVersion version : each(V2_1, V3_0)) {
+			VCardParameters copy = new VCardParameters(one.getParameters());
+			VCardPropertyScribe.handlePrefParam(one, copy, version, vcard);
+			assertEquals("pref", copy.getType());
+			assertNull(copy.getPref());
+
+			for (TestProperty p : each(nullPref, invalidPref, two, three)) {
+				copy = new VCardParameters(p.getParameters());
+				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
+				assertNull(copy.getType());
+				assertNull(copy.getPref());
+			}
+		}
 	}
 
 	@Test

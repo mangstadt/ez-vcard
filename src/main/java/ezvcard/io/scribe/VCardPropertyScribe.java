@@ -688,39 +688,49 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * while version 3.0 vCards use "TYPE=PREF"). This method is meant to be
 	 * called from a scribe's {@link #_prepareParameters} method.
 	 * @param property the property that is being marshalled
-	 * @param copy the parameters that are being marshalled
-	 * @param version the vCard version
+	 * @param parameters the parameters that are being marshalled (this should
+	 * be a copy of the property's parameters so that changes can be made to
+	 * them without affecting the original object)
+	 * @param version the vCard version that the vCard is being marshalled to
 	 * @param vcard the vCard that's being marshalled
 	 */
-	protected static void handlePrefParam(VCardProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected static void handlePrefParam(VCardProperty property, VCardParameters parameters, VCardVersion version, VCard vcard) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
-			copy.setPref(null);
+			parameters.setPref(null);
 
 			//find the property with the lowest PREF value in the vCard
 			VCardProperty mostPreferred = null;
+			Integer lowestPref = null;
 			for (VCardProperty p : vcard.getProperties(property.getClass())) {
-				Integer pref = p.getParameters().getPref();
+				Integer pref;
+				try {
+					pref = p.getParameters().getPref();
+				} catch (IllegalStateException e) {
+					continue;
+				}
+
 				if (pref == null) {
 					continue;
 				}
 
-				if (mostPreferred == null || pref < mostPreferred.getParameters().getPref()) {
+				if (lowestPref == null || pref < lowestPref) {
 					mostPreferred = p;
+					lowestPref = pref;
 				}
 			}
 
 			if (property == mostPreferred) {
-				copy.put(VCardParameters.TYPE, "pref");
+				parameters.put(VCardParameters.TYPE, "pref");
 			}
 
 			break;
 		case V4_0:
 			for (String type : property.getParameters().get(VCardParameters.TYPE)) {
 				if ("pref".equalsIgnoreCase(type)) {
-					copy.remove(VCardParameters.TYPE, type);
-					copy.setPref(1);
+					parameters.remove(VCardParameters.TYPE, type);
+					parameters.setPref(1);
 					break;
 				}
 			}
