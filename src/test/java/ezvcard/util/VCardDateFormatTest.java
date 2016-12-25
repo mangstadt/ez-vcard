@@ -88,12 +88,17 @@ public class VCardDateFormatTest {
 
 		//basic, datetime, timezone
 		assertEquals(datetime, VCardDateFormat.parse("20120701T100130+0300"));
+		assertEquals(datetime, VCardDateFormat.parse("20120701T100130+03"));
+		assertEquals(datetime, VCardDateFormat.parse("20120701T040130-0300"));
 
 		//extended, datetime, timezone
 		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+03:00"));
 
 		//hCard, datetime, timezone
 		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+0300"));
+
+		//no offset
+		assertEquals(datetime, VCardDateFormat.parse("20120701T080130"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

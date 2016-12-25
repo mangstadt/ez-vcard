@@ -85,11 +85,13 @@ public class VCardPropertyScribeTest {
 		assertEquals(datetime, actual);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void date_parse_local() {
-		//date-times must have an offset or be in UTC
 		String value = "20130611T144302";
-		VCardPropertyScribe.date(value);
+
+		Date actual = VCardPropertyScribe.date(value);
+
+		assertEquals(datetime, actual);
 	}
 
 	@Test

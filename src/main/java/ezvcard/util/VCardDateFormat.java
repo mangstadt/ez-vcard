@@ -2,10 +2,11 @@ package ezvcard.util;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ezvcard.Messages;
@@ -51,43 +52,29 @@ public enum VCardDateFormat {
 	 * Example: 20120701
 	 */
 	DATE_BASIC(
-	"\\d{8}",
 	"yyyyMMdd"),
 	
 	/**
 	 * Example: 2012-07-01
 	 */
 	DATE_EXTENDED(
-	"\\d{4}-\\d{2}-\\d{2}",
 	"yyyy-MM-dd"),
 	
 	/**
 	 * Example: 20120701T142110-0500
 	 */
 	DATE_TIME_BASIC(
-	"\\d{8}T\\d{6}[-\\+]\\d{4}",
 	"yyyyMMdd'T'HHmmssZ"),
 	
 	/**
 	 * Example: 2012-07-01T14:21:10-05:00
 	 */
 	DATE_TIME_EXTENDED(
-	"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[-\\+]\\d{2}:\\d{2}",
 	"yyyy-MM-dd'T'HH:mm:ssZ"){
 		@SuppressWarnings("serial")
 		@Override
 		public DateFormat getDateFormat(TimeZone timezone) {
 			DateFormat df = new SimpleDateFormat(formatStr){
-				@Override
-				public Date parse(String str) throws ParseException {
-					//remove the colon from the timezone offset
-					//SimpleDateFormat doesn't recognize timezone offsets that have colons
-					int index = str.lastIndexOf(':');
-					str = str.substring(0, index) + str.substring(index+1);
-
-					return super.parse(str);
-				}
-				
 				@Override
 				public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition){
 					StringBuffer sb = super.format(date, toAppendTo, fieldPosition);
@@ -111,7 +98,6 @@ public enum VCardDateFormat {
 	 * Example: 20120701T192110Z
 	 */
 	UTC_DATE_TIME_BASIC(
-	"\\d{8}T\\d{6}Z",
 	"yyyyMMdd'T'HHmmss'Z'"){
 		@Override
 		public DateFormat getDateFormat(TimeZone timezone) {
@@ -125,7 +111,6 @@ public enum VCardDateFormat {
 	 * Example: 2012-07-01T19:21:10Z
 	 */
 	UTC_DATE_TIME_EXTENDED(
-	"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
 	"yyyy-MM-dd'T'HH:mm:ss'Z'"){
 		@Override
 		public DateFormat getDateFormat(TimeZone timezone) {
@@ -139,35 +124,10 @@ public enum VCardDateFormat {
 	 * Example: 2012-07-01T14:21:10-0500
 	 */
 	HCARD_DATE_TIME(
-	"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}[-\\+]\\d{2}:?\\d{2}",
-	"yyyy-MM-dd'T'HH:mm:ssZ"){
-		@SuppressWarnings("serial")
-		@Override
-		public DateFormat getDateFormat(TimeZone timezone) {
-			DateFormat df = new SimpleDateFormat(formatStr){
-				@Override
-				public Date parse(String str) throws ParseException {
-					//remove the colon from the timezone offset if present
-					//SimpleDateFormat doesn't recognize timezone offsets that have colons
-					str = str.replaceAll("([-\\+]\\d{2}):(\\d{2})$", "$1$2");
-					
-					return super.parse(str);
-				}
-			};
-			
-			if (timezone != null){
-				df.setTimeZone(timezone);
-			}
-			
-			return df;
-		}
-	};
+	"yyyy-MM-dd'T'HH:mm:ssZ")
+	
+	;
 	//@formatter:on
-
-	/**
-	 * The regular expression pattern for the date format.
-	 */
-	private final Pattern pattern;
 
 	/**
 	 * The {@link SimpleDateFormat} format string used for parsing dates.
@@ -175,22 +135,11 @@ public enum VCardDateFormat {
 	protected final String formatStr;
 
 	/**
-	 * @param regex the regular expression for the date format
 	 * @param formatStr the {@link SimpleDateFormat} format string used for
-	 * parsing dates.
+	 * formatting dates.
 	 */
-	private VCardDateFormat(String regex, String formatStr) {
-		pattern = Pattern.compile(regex);
+	private VCardDateFormat(String formatStr) {
 		this.formatStr = formatStr;
-	}
-
-	/**
-	 * Determines whether a date string is in this ISO format.
-	 * @param dateStr the date string
-	 * @return true if it matches the date format, false if not
-	 */
-	public boolean matches(String dateStr) {
-		return pattern.matcher(dateStr).matches();
 	}
 
 	/**
@@ -239,20 +188,6 @@ public enum VCardDateFormat {
 	}
 
 	/**
-	 * Determines the ISO format a date string is in.
-	 * @param dateStr the date string (e.g. "20140322T120000Z")
-	 * @return the ISO format (e.g. DATETIME_BASIC) or null if not found
-	 */
-	public static VCardDateFormat find(String dateStr) {
-		for (VCardDateFormat format : values()) {
-			if (format.matches(dateStr)) {
-				return format;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Parses a date string.
 	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
 	 * @return the parsed date
@@ -260,19 +195,114 @@ public enum VCardDateFormat {
 	 * accepted ISO8601 formats
 	 */
 	public static Date parse(String dateStr) {
-		//determine which ISOFormat the date is in
-		VCardDateFormat format = find(dateStr);
-		if (format == null) {
+		TimestampPattern p = new TimestampPattern(dateStr);
+		if (!p.matches()) {
 			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
 		}
 
-		//parse the date
-		DateFormat df = format.getDateFormat();
-		try {
-			return df.parse(dateStr);
-		} catch (ParseException e) {
-			//should never be thrown because the string is checked against a regex before being parsed
-			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
+		TimeZone timezone = p.hasOffset() ? TimeZone.getTimeZone("UTC") : TimeZone.getDefault();
+		Calendar c = Calendar.getInstance(timezone);
+		c.clear();
+
+		c.set(Calendar.YEAR, p.year());
+		c.set(Calendar.MONTH, p.month() - 1);
+		c.set(Calendar.DATE, p.date());
+
+		if (p.hasTime()) {
+			c.set(Calendar.HOUR_OF_DAY, p.hour());
+			c.set(Calendar.MINUTE, p.minute());
+			c.set(Calendar.SECOND, p.second());
+
+			if (p.hasOffset()) {
+				c.set(Calendar.ZONE_OFFSET, p.offsetMillis());
+			}
+		}
+
+		return c.getTime();
+	}
+
+	/**
+	 * Wrapper for a complex regular expression that parses multiple date
+	 * formats.
+	 */
+	private static class TimestampPattern {
+		//@formatter:off
+		private static final Pattern regex = Pattern.compile(
+			"^(\\d{4})-?(\\d{2})-?(\\d{2})" +
+			"(" +
+				"T(\\d{2}):?(\\d{2}):?(\\d{2})" +
+				"(" +
+					"Z|([-+])((\\d{2})|((\\d{2}):?(\\d{2})))" +
+				")?" +
+			")?$"
+		);
+		//@formatter:on
+
+		private final Matcher m;
+		private final boolean matches;
+
+		public TimestampPattern(String str) {
+			m = regex.matcher(str);
+			matches = m.find();
+		}
+
+		public boolean matches() {
+			return matches;
+		}
+
+		public int year() {
+			return parseInt(1);
+		}
+
+		public int month() {
+			return parseInt(2);
+		}
+
+		public int date() {
+			return parseInt(3);
+		}
+
+		public boolean hasTime() {
+			return m.group(5) != null;
+		}
+
+		public int hour() {
+			return parseInt(5);
+		}
+
+		public int minute() {
+			return parseInt(6);
+		}
+
+		public int second() {
+			return parseInt(7);
+		}
+
+		public boolean hasOffset() {
+			return m.group(8) != null;
+		}
+
+		public int offsetMillis() {
+			if (m.group(8).equals("Z")) {
+				return 0;
+			}
+
+			int positive = m.group(9).equals("+") ? 1 : -1;
+
+			int offsetHour, offsetMinute;
+			if (m.group(11) != null) {
+				offsetHour = parseInt(11);
+				offsetMinute = 0;
+			} else {
+				offsetHour = parseInt(13);
+				offsetMinute = parseInt(14);
+			}
+
+			return (offsetHour * 60 * 60 * 1000 + offsetMinute * 60 * 1000) * positive;
+		}
+
+		private int parseInt(int group) {
+			return Integer.parseInt(m.group(group));
 		}
 	}
 
