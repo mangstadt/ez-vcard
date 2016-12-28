@@ -212,6 +212,7 @@ public enum VCardDateFormat {
 			c.set(Calendar.HOUR_OF_DAY, p.hour());
 			c.set(Calendar.MINUTE, p.minute());
 			c.set(Calendar.SECOND, p.second());
+			c.set(Calendar.MILLISECOND, p.millisecond());
 
 			if (p.hasOffset()) {
 				c.set(Calendar.ZONE_OFFSET, p.offsetMillis());
@@ -230,7 +231,7 @@ public enum VCardDateFormat {
 		private static final Pattern regex = Pattern.compile(
 			"^(\\d{4})-?(\\d{2})-?(\\d{2})" +
 			"(" +
-				"T(\\d{2}):?(\\d{2}):?(\\d{2})" +
+				"T(\\d{2}):?(\\d{2}):?(\\d{2})(\\.\\d+)?" +
 				"(" +
 					"Z|([-+])((\\d{2})|((\\d{2}):?(\\d{2})))" +
 				")?" +
@@ -278,24 +279,33 @@ public enum VCardDateFormat {
 			return parseInt(7);
 		}
 
-		public boolean hasOffset() {
-			return m.group(8) != null;
-		}
-
-		public int offsetMillis() {
-			if (m.group(8).equals("Z")) {
+		public int millisecond() {
+			if (m.group(8) == null) {
 				return 0;
 			}
 
-			int positive = m.group(9).equals("+") ? 1 : -1;
+			double ms = Double.parseDouble(m.group(8)) * 1000;
+			return (int) Math.round(ms);
+		}
+
+		public boolean hasOffset() {
+			return m.group(9) != null;
+		}
+
+		public int offsetMillis() {
+			if (m.group(9).equals("Z")) {
+				return 0;
+			}
+
+			int positive = m.group(10).equals("+") ? 1 : -1;
 
 			int offsetHour, offsetMinute;
-			if (m.group(11) != null) {
-				offsetHour = parseInt(11);
+			if (m.group(12) != null) {
+				offsetHour = parseInt(12);
 				offsetMinute = 0;
 			} else {
-				offsetHour = parseInt(13);
-				offsetMinute = parseInt(14);
+				offsetHour = parseInt(14);
+				offsetMinute = parseInt(15);
 			}
 
 			return (offsetHour * 60 * 60 * 1000 + offsetMinute * 60 * 1000) * positive;

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -99,6 +100,14 @@ public class VCardDateFormatTest {
 
 		//no offset
 		assertEquals(datetime, VCardDateFormat.parse("20120701T080130"));
+
+		//with milliseconds
+		Calendar c = Calendar.getInstance();
+		c.setTime(datetime);
+		c.set(Calendar.MILLISECOND, 100);
+		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1Z"));
+		c.set(Calendar.MILLISECOND, 124);
+		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1239Z")); //round
 	}
 
 	@Test(expected = IllegalArgumentException.class)
