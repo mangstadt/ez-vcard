@@ -748,7 +748,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * 2.1 only requires special characters to be escaped within properties that
 	 * make use of those special characters.
 	 * </p>
-	 * @param text the value to escape
+	 * @param value the value to escape
 	 * @param context the write context
 	 * @return the escaped value
 	 */
