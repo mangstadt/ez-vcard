@@ -696,82 +696,114 @@
 <span class="sourceLineNo">688</span>         * while version 3.0 vCards use "TYPE=PREF"). This method is meant to be<a name="line.688"></a>
 <span class="sourceLineNo">689</span>         * called from a scribe's {@link #_prepareParameters} method.<a name="line.689"></a>
 <span class="sourceLineNo">690</span>         * @param property the property that is being marshalled<a name="line.690"></a>
-<span class="sourceLineNo">691</span>         * @param copy the parameters that are being marshalled<a name="line.691"></a>
-<span class="sourceLineNo">692</span>         * @param version the vCard version<a name="line.692"></a>
-<span class="sourceLineNo">693</span>         * @param vcard the vCard that's being marshalled<a name="line.693"></a>
-<span class="sourceLineNo">694</span>         */<a name="line.694"></a>
-<span class="sourceLineNo">695</span>        protected static void handlePrefParam(VCardProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {<a name="line.695"></a>
-<span class="sourceLineNo">696</span>                switch (version) {<a name="line.696"></a>
-<span class="sourceLineNo">697</span>                case V2_1:<a name="line.697"></a>
-<span class="sourceLineNo">698</span>                case V3_0:<a name="line.698"></a>
-<span class="sourceLineNo">699</span>                        copy.setPref(null);<a name="line.699"></a>
-<span class="sourceLineNo">700</span><a name="line.700"></a>
-<span class="sourceLineNo">701</span>                        //find the property with the lowest PREF value in the vCard<a name="line.701"></a>
-<span class="sourceLineNo">702</span>                        VCardProperty mostPreferred = null;<a name="line.702"></a>
-<span class="sourceLineNo">703</span>                        for (VCardProperty p : vcard.getProperties(property.getClass())) {<a name="line.703"></a>
-<span class="sourceLineNo">704</span>                                Integer pref = p.getParameters().getPref();<a name="line.704"></a>
-<span class="sourceLineNo">705</span>                                if (pref == null) {<a name="line.705"></a>
-<span class="sourceLineNo">706</span>                                        continue;<a name="line.706"></a>
-<span class="sourceLineNo">707</span>                                }<a name="line.707"></a>
-<span class="sourceLineNo">708</span><a name="line.708"></a>
-<span class="sourceLineNo">709</span>                                if (mostPreferred == null || pref &lt; mostPreferred.getParameters().getPref()) {<a name="line.709"></a>
-<span class="sourceLineNo">710</span>                                        mostPreferred = p;<a name="line.710"></a>
-<span class="sourceLineNo">711</span>                                }<a name="line.711"></a>
-<span class="sourceLineNo">712</span>                        }<a name="line.712"></a>
+<span class="sourceLineNo">691</span>         * @param parameters the parameters that are being marshalled (this should<a name="line.691"></a>
+<span class="sourceLineNo">692</span>         * be a copy of the property's parameters so that changes can be made to<a name="line.692"></a>
+<span class="sourceLineNo">693</span>         * them without affecting the original object)<a name="line.693"></a>
+<span class="sourceLineNo">694</span>         * @param version the vCard version that the vCard is being marshalled to<a name="line.694"></a>
+<span class="sourceLineNo">695</span>         * @param vcard the vCard that's being marshalled<a name="line.695"></a>
+<span class="sourceLineNo">696</span>         */<a name="line.696"></a>
+<span class="sourceLineNo">697</span>        protected static void handlePrefParam(VCardProperty property, VCardParameters parameters, VCardVersion version, VCard vcard) {<a name="line.697"></a>
+<span class="sourceLineNo">698</span>                switch (version) {<a name="line.698"></a>
+<span class="sourceLineNo">699</span>                case V2_1:<a name="line.699"></a>
+<span class="sourceLineNo">700</span>                case V3_0:<a name="line.700"></a>
+<span class="sourceLineNo">701</span>                        parameters.setPref(null);<a name="line.701"></a>
+<span class="sourceLineNo">702</span><a name="line.702"></a>
+<span class="sourceLineNo">703</span>                        //find the property with the lowest PREF value in the vCard<a name="line.703"></a>
+<span class="sourceLineNo">704</span>                        VCardProperty mostPreferred = null;<a name="line.704"></a>
+<span class="sourceLineNo">705</span>                        Integer lowestPref = null;<a name="line.705"></a>
+<span class="sourceLineNo">706</span>                        for (VCardProperty p : vcard.getProperties(property.getClass())) {<a name="line.706"></a>
+<span class="sourceLineNo">707</span>                                Integer pref;<a name="line.707"></a>
+<span class="sourceLineNo">708</span>                                try {<a name="line.708"></a>
+<span class="sourceLineNo">709</span>                                        pref = p.getParameters().getPref();<a name="line.709"></a>
+<span class="sourceLineNo">710</span>                                } catch (IllegalStateException e) {<a name="line.710"></a>
+<span class="sourceLineNo">711</span>                                        continue;<a name="line.711"></a>
+<span class="sourceLineNo">712</span>                                }<a name="line.712"></a>
 <span class="sourceLineNo">713</span><a name="line.713"></a>
-<span class="sourceLineNo">714</span>                        if (property == mostPreferred) {<a name="line.714"></a>
-<span class="sourceLineNo">715</span>                                copy.put(VCardParameters.TYPE, "pref");<a name="line.715"></a>
-<span class="sourceLineNo">716</span>                        }<a name="line.716"></a>
+<span class="sourceLineNo">714</span>                                if (pref == null) {<a name="line.714"></a>
+<span class="sourceLineNo">715</span>                                        continue;<a name="line.715"></a>
+<span class="sourceLineNo">716</span>                                }<a name="line.716"></a>
 <span class="sourceLineNo">717</span><a name="line.717"></a>
-<span class="sourceLineNo">718</span>                        break;<a name="line.718"></a>
-<span class="sourceLineNo">719</span>                case V4_0:<a name="line.719"></a>
-<span class="sourceLineNo">720</span>                        for (String type : property.getParameters().get(VCardParameters.TYPE)) {<a name="line.720"></a>
-<span class="sourceLineNo">721</span>                                if ("pref".equalsIgnoreCase(type)) {<a name="line.721"></a>
-<span class="sourceLineNo">722</span>                                        copy.remove(VCardParameters.TYPE, type);<a name="line.722"></a>
-<span class="sourceLineNo">723</span>                                        copy.setPref(1);<a name="line.723"></a>
-<span class="sourceLineNo">724</span>                                        break;<a name="line.724"></a>
-<span class="sourceLineNo">725</span>                                }<a name="line.725"></a>
+<span class="sourceLineNo">718</span>                                if (lowestPref == null || pref &lt; lowestPref) {<a name="line.718"></a>
+<span class="sourceLineNo">719</span>                                        mostPreferred = p;<a name="line.719"></a>
+<span class="sourceLineNo">720</span>                                        lowestPref = pref;<a name="line.720"></a>
+<span class="sourceLineNo">721</span>                                }<a name="line.721"></a>
+<span class="sourceLineNo">722</span>                        }<a name="line.722"></a>
+<span class="sourceLineNo">723</span><a name="line.723"></a>
+<span class="sourceLineNo">724</span>                        if (property == mostPreferred) {<a name="line.724"></a>
+<span class="sourceLineNo">725</span>                                parameters.put(VCardParameters.TYPE, "pref");<a name="line.725"></a>
 <span class="sourceLineNo">726</span>                        }<a name="line.726"></a>
-<span class="sourceLineNo">727</span>                        break;<a name="line.727"></a>
-<span class="sourceLineNo">728</span>                }<a name="line.728"></a>
-<span class="sourceLineNo">729</span>        }<a name="line.729"></a>
-<span class="sourceLineNo">730</span><a name="line.730"></a>
-<span class="sourceLineNo">731</span>        /**<a name="line.731"></a>
-<span class="sourceLineNo">732</span>         * Represents the result of an unmarshal operation.<a name="line.732"></a>
-<span class="sourceLineNo">733</span>         * @author Michael Angstadt<a name="line.733"></a>
-<span class="sourceLineNo">734</span>         * @param &lt;T&gt; the unmarshalled property class<a name="line.734"></a>
-<span class="sourceLineNo">735</span>         */<a name="line.735"></a>
-<span class="sourceLineNo">736</span>        public static class Result&lt;T extends VCardProperty&gt; {<a name="line.736"></a>
-<span class="sourceLineNo">737</span>                private final T property;<a name="line.737"></a>
-<span class="sourceLineNo">738</span>                private final List&lt;String&gt; warnings;<a name="line.738"></a>
-<span class="sourceLineNo">739</span><a name="line.739"></a>
-<span class="sourceLineNo">740</span>                /**<a name="line.740"></a>
-<span class="sourceLineNo">741</span>                 * Creates a new result.<a name="line.741"></a>
-<span class="sourceLineNo">742</span>                 * @param property the property object<a name="line.742"></a>
-<span class="sourceLineNo">743</span>                 * @param warnings the warnings<a name="line.743"></a>
-<span class="sourceLineNo">744</span>                 */<a name="line.744"></a>
-<span class="sourceLineNo">745</span>                public Result(T property, List&lt;String&gt; warnings) {<a name="line.745"></a>
-<span class="sourceLineNo">746</span>                        this.property = property;<a name="line.746"></a>
-<span class="sourceLineNo">747</span>                        this.warnings = warnings;<a name="line.747"></a>
-<span class="sourceLineNo">748</span>                }<a name="line.748"></a>
-<span class="sourceLineNo">749</span><a name="line.749"></a>
-<span class="sourceLineNo">750</span>                /**<a name="line.750"></a>
-<span class="sourceLineNo">751</span>                 * Gets the warnings.<a name="line.751"></a>
-<span class="sourceLineNo">752</span>                 * @return the warnings<a name="line.752"></a>
-<span class="sourceLineNo">753</span>                 */<a name="line.753"></a>
-<span class="sourceLineNo">754</span>                public List&lt;String&gt; getWarnings() {<a name="line.754"></a>
-<span class="sourceLineNo">755</span>                        return warnings;<a name="line.755"></a>
-<span class="sourceLineNo">756</span>                }<a name="line.756"></a>
-<span class="sourceLineNo">757</span><a name="line.757"></a>
-<span class="sourceLineNo">758</span>                /**<a name="line.758"></a>
-<span class="sourceLineNo">759</span>                 * Gets the property object.<a name="line.759"></a>
-<span class="sourceLineNo">760</span>                 * @return the property object<a name="line.760"></a>
-<span class="sourceLineNo">761</span>                 */<a name="line.761"></a>
-<span class="sourceLineNo">762</span>                public T getProperty() {<a name="line.762"></a>
-<span class="sourceLineNo">763</span>                        return property;<a name="line.763"></a>
-<span class="sourceLineNo">764</span>                }<a name="line.764"></a>
-<span class="sourceLineNo">765</span>        }<a name="line.765"></a>
-<span class="sourceLineNo">766</span>}<a name="line.766"></a>
+<span class="sourceLineNo">727</span><a name="line.727"></a>
+<span class="sourceLineNo">728</span>                        break;<a name="line.728"></a>
+<span class="sourceLineNo">729</span>                case V4_0:<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                        for (String type : property.getParameters().get(VCardParameters.TYPE)) {<a name="line.730"></a>
+<span class="sourceLineNo">731</span>                                if ("pref".equalsIgnoreCase(type)) {<a name="line.731"></a>
+<span class="sourceLineNo">732</span>                                        parameters.remove(VCardParameters.TYPE, type);<a name="line.732"></a>
+<span class="sourceLineNo">733</span>                                        parameters.setPref(1);<a name="line.733"></a>
+<span class="sourceLineNo">734</span>                                        break;<a name="line.734"></a>
+<span class="sourceLineNo">735</span>                                }<a name="line.735"></a>
+<span class="sourceLineNo">736</span>                        }<a name="line.736"></a>
+<span class="sourceLineNo">737</span>                        break;<a name="line.737"></a>
+<span class="sourceLineNo">738</span>                }<a name="line.738"></a>
+<span class="sourceLineNo">739</span>        }<a name="line.739"></a>
+<span class="sourceLineNo">740</span><a name="line.740"></a>
+<span class="sourceLineNo">741</span>        /**<a name="line.741"></a>
+<span class="sourceLineNo">742</span>         * &lt;p&gt;<a name="line.742"></a>
+<span class="sourceLineNo">743</span>         * Escapes special characters in a property value for writing to a<a name="line.743"></a>
+<span class="sourceLineNo">744</span>         * plain-text output stream.<a name="line.744"></a>
+<span class="sourceLineNo">745</span>         * &lt;/p&gt;<a name="line.745"></a>
+<span class="sourceLineNo">746</span>         * &lt;p&gt;<a name="line.746"></a>
+<span class="sourceLineNo">747</span>         * If the target version is 2.1, then the value will be returned unchanged.<a name="line.747"></a>
+<span class="sourceLineNo">748</span>         * 2.1 only requires special characters to be escaped within properties that<a name="line.748"></a>
+<span class="sourceLineNo">749</span>         * make use of those special characters.<a name="line.749"></a>
+<span class="sourceLineNo">750</span>         * &lt;/p&gt;<a name="line.750"></a>
+<span class="sourceLineNo">751</span>         * @param value the value to escape<a name="line.751"></a>
+<span class="sourceLineNo">752</span>         * @param context the write context<a name="line.752"></a>
+<span class="sourceLineNo">753</span>         * @return the escaped value<a name="line.753"></a>
+<span class="sourceLineNo">754</span>         */<a name="line.754"></a>
+<span class="sourceLineNo">755</span>        protected static String escape(String value, WriteContext context) {<a name="line.755"></a>
+<span class="sourceLineNo">756</span>                if (context.getVersion() == VCardVersion.V2_1) {<a name="line.756"></a>
+<span class="sourceLineNo">757</span>                        return value;<a name="line.757"></a>
+<span class="sourceLineNo">758</span>                }<a name="line.758"></a>
+<span class="sourceLineNo">759</span><a name="line.759"></a>
+<span class="sourceLineNo">760</span>                return VObjectPropertyValues.escape(value);<a name="line.760"></a>
+<span class="sourceLineNo">761</span>        }<a name="line.761"></a>
+<span class="sourceLineNo">762</span><a name="line.762"></a>
+<span class="sourceLineNo">763</span>        /**<a name="line.763"></a>
+<span class="sourceLineNo">764</span>         * Represents the result of an unmarshal operation.<a name="line.764"></a>
+<span class="sourceLineNo">765</span>         * @author Michael Angstadt<a name="line.765"></a>
+<span class="sourceLineNo">766</span>         * @param &lt;T&gt; the unmarshalled property class<a name="line.766"></a>
+<span class="sourceLineNo">767</span>         */<a name="line.767"></a>
+<span class="sourceLineNo">768</span>        public static class Result&lt;T extends VCardProperty&gt; {<a name="line.768"></a>
+<span class="sourceLineNo">769</span>                private final T property;<a name="line.769"></a>
+<span class="sourceLineNo">770</span>                private final List&lt;String&gt; warnings;<a name="line.770"></a>
+<span class="sourceLineNo">771</span><a name="line.771"></a>
+<span class="sourceLineNo">772</span>                /**<a name="line.772"></a>
+<span class="sourceLineNo">773</span>                 * Creates a new result.<a name="line.773"></a>
+<span class="sourceLineNo">774</span>                 * @param property the property object<a name="line.774"></a>
+<span class="sourceLineNo">775</span>                 * @param warnings the warnings<a name="line.775"></a>
+<span class="sourceLineNo">776</span>                 */<a name="line.776"></a>
+<span class="sourceLineNo">777</span>                public Result(T property, List&lt;String&gt; warnings) {<a name="line.777"></a>
+<span class="sourceLineNo">778</span>                        this.property = property;<a name="line.778"></a>
+<span class="sourceLineNo">779</span>                        this.warnings = warnings;<a name="line.779"></a>
+<span class="sourceLineNo">780</span>                }<a name="line.780"></a>
+<span class="sourceLineNo">781</span><a name="line.781"></a>
+<span class="sourceLineNo">782</span>                /**<a name="line.782"></a>
+<span class="sourceLineNo">783</span>                 * Gets the warnings.<a name="line.783"></a>
+<span class="sourceLineNo">784</span>                 * @return the warnings<a name="line.784"></a>
+<span class="sourceLineNo">785</span>                 */<a name="line.785"></a>
+<span class="sourceLineNo">786</span>                public List&lt;String&gt; getWarnings() {<a name="line.786"></a>
+<span class="sourceLineNo">787</span>                        return warnings;<a name="line.787"></a>
+<span class="sourceLineNo">788</span>                }<a name="line.788"></a>
+<span class="sourceLineNo">789</span><a name="line.789"></a>
+<span class="sourceLineNo">790</span>                /**<a name="line.790"></a>
+<span class="sourceLineNo">791</span>                 * Gets the property object.<a name="line.791"></a>
+<span class="sourceLineNo">792</span>                 * @return the property object<a name="line.792"></a>
+<span class="sourceLineNo">793</span>                 */<a name="line.793"></a>
+<span class="sourceLineNo">794</span>                public T getProperty() {<a name="line.794"></a>
+<span class="sourceLineNo">795</span>                        return property;<a name="line.795"></a>
+<span class="sourceLineNo">796</span>                }<a name="line.796"></a>
+<span class="sourceLineNo">797</span>        }<a name="line.797"></a>
+<span class="sourceLineNo">798</span>}<a name="line.798"></a>
 
 
 
