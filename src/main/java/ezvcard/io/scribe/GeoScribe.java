@@ -3,8 +3,6 @@ package ezvcard.io.scribe;
 import java.util.List;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
-import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
-import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -78,12 +76,13 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 		switch (version) {
 		case V2_1:
 		case V3_0:
-			SemiStructuredValueIterator it = new SemiStructuredValueIterator(value);
-			String latitudeStr = it.next();
-			String longitudeStr = it.next();
-			if (latitudeStr == null || longitudeStr == null) {
+			int pos = value.indexOf(';');
+			if (pos < 0) {
 				throw new CannotParseException(11);
 			}
+
+			String latitudeStr = value.substring(0, pos);
+			String longitudeStr = value.substring(pos + 1);
 
 			Double latitude;
 			try {
@@ -185,10 +184,9 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 		case V2_1:
 		case V3_0:
 			VCardFloatFormatter formatter = new VCardFloatFormatter(6);
-			StructuredValueBuilder builder = new StructuredValueBuilder();
-			builder.append(formatter.format(property.getLatitude()));
-			builder.append(formatter.format(property.getLongitude()));
-			return builder.build();
+			String latitudeStr = formatter.format(property.getLatitude());
+			String longitudeStr = formatter.format(property.getLongitude());
+			return latitudeStr + ';' + longitudeStr;
 		case V4_0:
 			return property.getGeoUri().toString(6);
 		}
