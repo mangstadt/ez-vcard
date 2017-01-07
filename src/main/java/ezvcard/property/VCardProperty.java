@@ -386,6 +386,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the PID parameter values (this list is mutable)
+	 * @throws IllegalStateException if one or more parameter values cannot be
+	 * parsed as PIDs. If this happens, you may use the
+	 * {@link #getParameters(String)} method to retrieve the raw values.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-19">RFC 6350
 	 * p.19</a>
 	 */
@@ -415,6 +418,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the preference value or null if not set
+	 * @throws IllegalStateException if the parameter value cannot be parsed as
+	 * an integer. If this happens, you may use the
+	 * {@link #getParameter(String)} method to retrieve its raw value.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
 	 * p.17</a>
 	 */
@@ -478,8 +484,8 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the index or null if not set
-	 * @throws IllegalStateException if the parameter value is malformed and
-	 * cannot be parsed. If this happens, you may use the
+	 * @throws IllegalStateException if the parameter value cannot be parsed as
+	 * an integer. If this happens, you may use the
 	 * {@link #getParameter(String)} method to retrieve its raw value.
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>

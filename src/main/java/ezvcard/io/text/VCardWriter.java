@@ -412,7 +412,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * </p>
 	 * <p>
 	 * Only version 4.0 allows this (and only version 4.0 defines a LABEL
-	 * parameter), but do this for all versions for compatibility.
+	 * parameter), but this method does this for all versions for compatibility.
 	 * </p>
 	 * @param property the property
 	 * @param parameters the property parameters
