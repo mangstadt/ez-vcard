@@ -84,7 +84,7 @@ public class RawPropertyTest {
 	@Test
 	public void validate() {
 		RawProperty property = new RawProperty("foo.bar", "value");
-		assertValidate(property).versions(V2_1).run(31);
+		assertValidate(property).versions(V2_1).run(33);
 		assertValidate(property).versions(V3_0, V4_0).run(24);
 
 		property = new RawProperty("foobar", "value");

@@ -121,7 +121,7 @@ public class RawProperty extends TextProperty {
 		if (!allowed.check(propertyName)) {
 			if (syntax == SyntaxStyle.OLD) {
 				AllowedCharacters notAllowed = allowed.flip();
-				warnings.add(new Warning(31, propertyName, notAllowed.toString(true)));
+				warnings.add(new Warning(33, propertyName, notAllowed.toString(true)));
 			} else {
 				warnings.add(new Warning(24, propertyName));
 			}
