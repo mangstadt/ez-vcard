@@ -880,9 +880,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
 	 * @return the PIDs
-	 * @throws IllegalStateException if one or more parameter values are
-	 * malformed and cannot be parsed. If this happens, you may use the
-	 * {@link ListMultimap#get(Object) get()} method to retrieve its raw values.
+	 * @throws IllegalStateException if one or more parameter values cannot be
+	 * parsed as PIDs. If this happens, you may use the
+	 * {@link ListMultimap#get(Object) get()} method to retrieve the raw values.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-19">RFC 6350
 	 * p.19</a>
 	 */
