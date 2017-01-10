@@ -1,7 +1,11 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.util.StringUtils.join;
+
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
 
@@ -55,25 +59,72 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 
 	@Override
 	protected String _writeText(StructuredName property, WriteContext context) {
-		StructuredValueBuilder builder = new StructuredValueBuilder();
-		builder.append(property.getFamily());
-		builder.append(property.getGiven());
-		builder.append(property.getAdditionalNames());
-		builder.append(property.getPrefixes());
-		builder.append(property.getSuffixes());
-		return builder.build(context.isIncludeTrailingSemicolons());
+		/*
+		 * StructuredValueBuilder cannot be used with 2.1 because it escapes
+		 * comma characters. For example, if someone's last name is "Foo,bar",
+		 * the comma character must NOT be escaped when written to a 2.1 vCard.
+		 * 
+		 * The reason commas are not escaped in 2.1 is because 2.1 does not
+		 * allow multi-valued components like 3.0 and 4.0 do (for example,
+		 * multiple suffixes).
+		 * 
+		 * If a StructuredName object has multi-valued components, and it is
+		 * being written to a 2.1 vCard, then ez-vcard will comma-delimit them
+		 * to prevent data loss. But this is not part of the 2.1 syntax.
+		 */
+		if (context.getVersion() == VCardVersion.V2_1) {
+			SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
+			builder.append(property.getFamily());
+			builder.append(property.getGiven());
+			builder.append(join(property.getAdditionalNames(), ","));
+			builder.append(join(property.getPrefixes(), ","));
+			builder.append(join(property.getSuffixes(), ","));
+			return builder.build(false, context.isIncludeTrailingSemicolons());
+		} else {
+			StructuredValueBuilder builder = new StructuredValueBuilder();
+			builder.append(property.getFamily());
+			builder.append(property.getGiven());
+			builder.append(property.getAdditionalNames());
+			builder.append(property.getPrefixes());
+			builder.append(property.getSuffixes());
+			return builder.build(context.isIncludeTrailingSemicolons());
+		}
 	}
 
 	@Override
 	protected StructuredName _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
 		StructuredName property = new StructuredName();
-		StructuredValueIterator it = new StructuredValueIterator(value);
 
-		property.setFamily(it.nextValue());
-		property.setGiven(it.nextValue());
-		property.getAdditionalNames().addAll(it.nextComponent());
-		property.getPrefixes().addAll(it.nextComponent());
-		property.getSuffixes().addAll(it.nextComponent());
+		if (version == VCardVersion.V2_1) {
+			/*
+			 * 2.1 does not recognize multi-valued components.
+			 */
+			SemiStructuredValueIterator it = new SemiStructuredValueIterator(value);
+			property.setFamily(it.next());
+			property.setGiven(it.next());
+
+			String next = it.next();
+			if (next != null) {
+				property.getAdditionalNames().add(next);
+			}
+
+			next = it.next();
+			if (next != null) {
+				property.getPrefixes().add(next);
+			}
+
+			next = it.next();
+			if (next != null) {
+				property.getSuffixes().add(next);
+			}
+		} else {
+			StructuredValueIterator it = new StructuredValueIterator(value);
+			property.setFamily(it.nextValue());
+			property.setGiven(it.nextValue());
+			property.getAdditionalNames().addAll(it.nextComponent());
+			property.getPrefixes().addAll(it.nextComponent());
+			property.getSuffixes().addAll(it.nextComponent());
+		}
 
 		return property;
 	}
@@ -100,7 +151,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 		return property;
 	}
 
-	private String s(String value) {
+	private static String s(String value) {
 		return (value == null || value.length() == 0) ? null : value;
 	}
 

@@ -467,6 +467,23 @@ public class Address extends VCardProperty implements HasAltId {
 				warnings.add(new Warning(9, type.getValue()));
 			}
 		}
+
+		/*
+		 * 2.1 does not allow multi-valued components.
+		 */
+		if (version == VCardVersion.V2_1) {
+			//@formatter:off
+			if (poBoxes.size() > 1 ||
+				extendedAddresses.size() > 1 ||
+				streetAddresses.size() > 1 ||
+				localities.size() > 1 ||
+				regions.size() > 1 ||
+				postalCodes.size() > 1 ||
+				countries.size() > 1) {
+				warnings.add(new Warning(35));
+			}
+			//@formatter:on
+		}
 	}
 
 	@Override

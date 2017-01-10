@@ -59,7 +59,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 		SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
 		builder.append(property.getPid());
 		builder.append(property.getUri());
-		return builder.build(context.isIncludeTrailingSemicolons());
+		return builder.build(true, context.isIncludeTrailingSemicolons());
 	}
 
 	@Override

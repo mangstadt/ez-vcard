@@ -55,7 +55,8 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 	@Override
 	protected String _writeText(Organization property, WriteContext context) {
-		return VObjectPropertyValues.writeSemiStructured(property.getValues(), context.isIncludeTrailingSemicolons());
+		boolean escapeCommas = (context.getVersion() != VCardVersion.V2_1);
+		return VObjectPropertyValues.writeSemiStructured(property.getValues(), escapeCommas, context.isIncludeTrailingSemicolons());
 	}
 
 	@Override
@@ -100,7 +101,10 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 		}
 
 		if (property.getValues().isEmpty()) {
-			property.getValues().add(element.value());
+			String value = element.value();
+			if (value.length() > 0) {
+				property.getValues().add(value);
+			}
 		}
 
 		return property;
@@ -126,7 +130,10 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 		while (it.hasNext()) {
-			property.getValues().add(it.nextValue());
+			String next = it.nextValue();
+			if (next != null) {
+				property.getValues().add(next);
+			}
 		}
 
 		return property;

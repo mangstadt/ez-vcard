@@ -1,5 +1,8 @@
 package ezvcard.property;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
@@ -15,7 +18,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ezvcard.VCardVersion;
 import ezvcard.parameter.AddressType;
 
 /*
@@ -238,8 +240,85 @@ public class AddressTest {
 		property.getTypes().add(AddressType.DOM);
 		property.getTypes().add(AddressType.HOME);
 		property.getTypes().add(AddressType.PREF);
-		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run();
-		assertValidate(property).versions(VCardVersion.V4_0).run(9);
+		assertValidate(property).versions(V2_1, V3_0).run();
+		assertValidate(property).versions(V4_0).run(9);
+	}
+
+	@Test
+	public void validate_multi_valued() {
+		//zero values
+		assertValidate(new Address()).run();
+
+		//one value
+		List<Address> properties = new ArrayList<Address>();
+		{
+			Address property = new Address();
+			property.getPoBoxes().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getExtendedAddresses().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getStreetAddresses().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getLocalities().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getRegions().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getPostalCodes().add("one");
+			properties.add(property);
+
+			property = new Address();
+			property.getCountries().add("one");
+			properties.add(property);
+		}
+		for (Address property : properties) {
+			assertValidate(property).run();
+		}
+
+		//multiple values
+		properties = new ArrayList<Address>();
+		{
+			Address property = new Address();
+			property.getPoBoxes().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getExtendedAddresses().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getStreetAddresses().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getLocalities().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getRegions().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getPostalCodes().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+
+			property = new Address();
+			property.getCountries().addAll(Arrays.asList("one", "two"));
+			properties.add(property);
+		}
+		for (Address property : properties) {
+			assertValidate(property).versions(V2_1).run(35);
+			assertValidate(property).versions(V3_0, V4_0).run();
+		}
 	}
 
 	@Test

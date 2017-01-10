@@ -5,6 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.Warning;
+
 /*
  Copyright (c) 2012-2016, Michael Angstadt
  All rights reserved.
@@ -230,6 +234,22 @@ public class StructuredName extends VCardProperty implements HasAltId {
 		values.put("prefixes", prefixes);
 		values.put("suffixes", suffixes);
 		return values;
+	}
+
+	@Override
+	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+		/*
+		 * 2.1 does not allow multi-valued components.
+		 */
+		if (version == VCardVersion.V2_1) {
+			//@formatter:off
+			if (additional.size() > 1 ||
+				prefixes.size() > 1 ||
+				suffixes.size() > 1) {
+				warnings.add(new Warning(34));
+			}
+			//@formatter:on
+		}
 	}
 
 	@Override

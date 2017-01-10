@@ -1,5 +1,9 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.VCardVersion.V2_1;
+import static ezvcard.VCardVersion.V3_0;
+import static ezvcard.VCardVersion.V4_0;
+
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -63,9 +67,13 @@ public class StructuredNameScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withAllValues).run("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III");
-		sensei.assertWriteText(withEmptyValues).run(";Jonathan;Joh\\;nny\\,,John");
-		sensei.assertWriteText(withEmptyValues).includeTrailingSemicolons(true).run(";Jonathan;Joh\\;nny\\,,John;;");
+		sensei.assertWriteText(withAllValues).versions(V2_1).run("Doe;Jonathan;Joh\\;nny,,John;Mr.;III");
+		sensei.assertWriteText(withAllValues).versions(V3_0, V4_0).run("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III");
+
+		sensei.assertWriteText(withEmptyValues).versions(V2_1).run(";Jonathan;Joh\\;nny,,John");
+		sensei.assertWriteText(withEmptyValues).versions(V3_0, V4_0).run(";Jonathan;Joh\\;nny\\,,John");
+		sensei.assertWriteText(withEmptyValues).includeTrailingSemicolons(true).versions(V3_0, V4_0).run(";Jonathan;Joh\\;nny\\,,John;;");
+
 		sensei.assertWriteText(empty).run("");
 		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";;;;");
 	}
@@ -110,8 +118,18 @@ public class StructuredNameScribeTest {
 
 	@Test
 	public void parseText() {
-		sensei.assertParseText("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III").run(withAllValues);
-		sensei.assertParseText(";Jonathan;Joh\\;nny\\,,John;;").run(withEmptyValues);
+		StructuredName withAllValuesV2_1 = new StructuredName(withAllValues);
+		withAllValuesV2_1.getAdditionalNames().clear();
+		withAllValuesV2_1.getAdditionalNames().add("Joh;nny,,John");
+		sensei.assertParseText("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III").versions(V2_1).run(withAllValuesV2_1);
+		sensei.assertParseText("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III").versions(V3_0, V4_0).run(withAllValues);
+
+		StructuredName withEmptyValuesV2_1 = new StructuredName(withEmptyValues);
+		withEmptyValuesV2_1.getAdditionalNames().clear();
+		withEmptyValuesV2_1.getAdditionalNames().add("Joh;nny,,John");
+		sensei.assertParseText(";Jonathan;Joh\\;nny\\,,John;;").versions(V2_1).run(withEmptyValuesV2_1);
+		sensei.assertParseText(";Jonathan;Joh\\;nny\\,,John;;").versions(V3_0, V4_0).run(withEmptyValues);
+
 		sensei.assertParseText(";;;;").run(empty);
 		sensei.assertParseText("").run(empty);
 	}

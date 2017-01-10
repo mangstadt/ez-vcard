@@ -1,7 +1,11 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.util.StringUtils.join;
+
 import java.util.List;
 
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
+import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
 
@@ -70,21 +74,55 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 
 	@Override
 	protected String _writeText(Address property, WriteContext context) {
-		StructuredValueBuilder builder = new StructuredValueBuilder();
-		builder.append(property.getPoBoxes());
-		builder.append(property.getExtendedAddresses());
-		builder.append(property.getStreetAddresses());
-		builder.append(property.getLocalities());
-		builder.append(property.getRegions());
-		builder.append(property.getPostalCodes());
-		builder.append(property.getCountries());
-		return builder.build(context.isIncludeTrailingSemicolons());
+		/*
+		 * StructuredValueBuilder cannot be used with 2.1 because it escapes
+		 * comma characters. For example, if someone's street address is
+		 * "Foo,bar Lane", the comma character must NOT be escaped when written
+		 * to a 2.1 vCard.
+		 * 
+		 * The reason commas are not escaped in 2.1 is because 2.1 does not
+		 * allow multi-valued components like 3.0 and 4.0 do (for example,
+		 * multiple street addresses).
+		 * 
+		 * If an Address object has multi-valued components, and it is being
+		 * written to a 2.1 vCard, then ez-vcard will comma-delimit them to
+		 * prevent data loss. But this is not part of the 2.1 syntax.
+		 */
+		if (context.getVersion() == VCardVersion.V2_1) {
+			SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
+			builder.append(join(property.getPoBoxes(), ","));
+			builder.append(join(property.getExtendedAddresses(), ","));
+			builder.append(join(property.getStreetAddresses(), ","));
+			builder.append(join(property.getLocalities(), ","));
+			builder.append(join(property.getRegions(), ","));
+			builder.append(join(property.getPostalCodes(), ","));
+			builder.append(join(property.getCountries(), ","));
+			return builder.build(false, context.isIncludeTrailingSemicolons());
+		} else {
+			StructuredValueBuilder builder = new StructuredValueBuilder();
+			builder.append(property.getPoBoxes());
+			builder.append(property.getExtendedAddresses());
+			builder.append(property.getStreetAddresses());
+			builder.append(property.getLocalities());
+			builder.append(property.getRegions());
+			builder.append(property.getPostalCodes());
+			builder.append(property.getCountries());
+			return builder.build(context.isIncludeTrailingSemicolons());
+		}
 	}
 
 	@Override
 	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		StructuredValueIterator it = new StructuredValueIterator(value);
-		return parseStructuredValue(it);
+		if (version == VCardVersion.V2_1) {
+			/*
+			 * 2.1 does not recognize multi-valued components.
+			 */
+			SemiStructuredValueIterator it = new SemiStructuredValueIterator(value);
+			return parseSemiStructuredValue(it);
+		} else {
+			StructuredValueIterator it = new StructuredValueIterator(value);
+			return parseStructuredValue(it);
+		}
 	}
 
 	@Override
@@ -153,7 +191,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 		return parseStructuredValue(it);
 	}
 
-	private Address parseStructuredValue(StructuredValueIterator it) {
+	private static Address parseStructuredValue(StructuredValueIterator it) {
 		Address property = new Address();
 
 		property.getPoBoxes().addAll(it.nextComponent());
@@ -163,6 +201,47 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 		property.getRegions().addAll(it.nextComponent());
 		property.getPostalCodes().addAll(it.nextComponent());
 		property.getCountries().addAll(it.nextComponent());
+
+		return property;
+	}
+
+	private static Address parseSemiStructuredValue(SemiStructuredValueIterator it) {
+		Address property = new Address();
+
+		String next = it.next();
+		if (next != null) {
+			property.getPoBoxes().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getExtendedAddresses().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getStreetAddresses().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getLocalities().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getRegions().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getPostalCodes().add(next);
+		}
+
+		next = it.next();
+		if (next != null) {
+			property.getCountries().add(next);
+		}
 
 		return property;
 	}

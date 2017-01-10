@@ -85,32 +85,6 @@ public class AddressScribeTest {
 	private final Address empty = new Address();
 
 	@Test
-	public void getExtendedAddressFull() {
-		String actual = withAllFields.getExtendedAddressFull();
-		String expected = "Apt, 11";
-		assertEquals(expected, actual);
-
-		actual = withMultipleValuesFields.getExtendedAddressFull();
-		expected = "Apt, 11,P.O. Box 12";
-		assertEquals(expected, actual);
-
-		assertNull(withSomeFields.getExtendedAddressFull());
-	}
-
-	@Test
-	public void getStreetAddressFull() {
-		String actual = withAllFields.getStreetAddressFull();
-		String expected = "123 Main St";
-		assertEquals(expected, actual);
-
-		actual = withMultipleValuesFields.getStreetAddressFull();
-		expected = "123 Main St,555 Main St";
-		assertEquals(expected, actual);
-
-		assertNull(withSomeFields.getStreetAddressFull());
-	}
-
-	@Test
 	public void prepareParameters_label() {
 		Address property = new Address();
 		property.setLabel("label");
@@ -172,10 +146,15 @@ public class AddressScribeTest {
 
 	@Test
 	public void writeText() {
-		sensei.assertWriteText(withAllFields).run("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA");
-		sensei.assertWriteText(withMultipleValuesFields).run("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA");
+		sensei.assertWriteText(withAllFields).versions(V2_1).run("P.O. Box 1234\\;;Apt, 11;123 Main St;Austin;TX;12345;USA");
+		sensei.assertWriteText(withAllFields).versions(V3_0, V4_0).run("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA");
+
+		sensei.assertWriteText(withMultipleValuesFields).versions(V2_1).run("P.O. Box 1234\\;;Apt, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA");
+		sensei.assertWriteText(withMultipleValuesFields).versions(V3_0, V4_0).run("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA");
+
 		sensei.assertWriteText(withSomeFields).run("P.O. Box 1234\\;;;;Austin;TX;12345");
 		sensei.assertWriteText(withSomeFields).includeTrailingSemicolons(true).run("P.O. Box 1234\\;;;;Austin;TX;12345;");
+
 		sensei.assertWriteText(empty).run("");
 		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";;;;;;");
 	}
@@ -234,7 +213,13 @@ public class AddressScribeTest {
 	@Test
 	public void parseText() {
 		sensei.assertParseText("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA").run(withAllFields);
-		sensei.assertParseText("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA").run(withMultipleValuesFields);
+
+		Address multipleValuesUnderV2_1 = new Address(withAllFields);
+		multipleValuesUnderV2_1.setExtendedAddress("Apt, 11,P.O. Box 12");
+		multipleValuesUnderV2_1.setStreetAddress("123 Main St,555 Main St");
+		sensei.assertParseText("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA").versions(V2_1).run(multipleValuesUnderV2_1);
+
+		sensei.assertParseText("P.O. Box 1234\\;;Apt\\, 11,P.O. Box 12;123 Main St,555 Main St;Austin;TX;12345;USA").versions(V3_0, V4_0).run(withMultipleValuesFields);
 		sensei.assertParseText("P.O. Box 1234\\;;;;Austin;TX;12345;").run(withSomeFields);
 		sensei.assertParseText(";;;;;;").run(empty);
 		sensei.assertParseText("").run(empty);
