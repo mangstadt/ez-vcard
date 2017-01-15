@@ -2,10 +2,15 @@ package ezvcard;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -100,14 +105,45 @@ public class MessagesTest {
 		assertNull(messages.getMessage("does-not-exist"));
 	}
 
+	@Test
+	public void duplicate_keys() throws Exception {
+		Set<String> keys = new HashSet<String>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream()));
+		String line;
+		try {
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				if (line.length() == 0 || line.charAt(0) == '#') {
+					continue;
+				}
+
+				int pos = line.indexOf('=');
+				if (pos < 0) {
+					continue;
+				}
+
+				String key = line.substring(0, pos);
+				if (!keys.add(key)) {
+					fail("Key \"" + key + "\" appears more than once.");
+				}
+			}
+		} finally {
+			reader.close();
+		}
+	}
+
 	private Properties load() throws IOException {
 		Properties properties = new Properties();
-		InputStream in = getClass().getResourceAsStream("/ezvcard/messages.properties");
+		InputStream in = inputStream();
 		try {
 			properties.load(in);
 		} finally {
 			in.close();
 		}
 		return properties;
+	}
+
+	private InputStream inputStream() {
+		return getClass().getResourceAsStream("/ezvcard/messages.properties");
 	}
 }
