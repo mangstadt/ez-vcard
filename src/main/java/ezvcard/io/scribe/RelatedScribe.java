@@ -1,11 +1,10 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
@@ -78,7 +77,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Related _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		value = VObjectPropertyValues.unescape(value);
 
 		Related property = new Related();
@@ -108,7 +107,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Related _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String uri = element.first(VCardDataType.URI);
 		if (uri != null) {
 			Related property = new Related();
@@ -142,7 +141,7 @@ public class RelatedScribe extends VCardPropertyScribe<Related> {
 	}
 
 	@Override
-	protected Related _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Related _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
 
 		Related property = new Related();

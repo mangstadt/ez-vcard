@@ -1,7 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.property.Categories;
 
@@ -40,7 +39,7 @@ public class CategoriesScribe extends ListPropertyScribe<Categories> {
 	}
 
 	@Override
-	protected Categories _parseHtml(HCardElement element, List<String> warnings) {
+	protected Categories _parseHtml(HCardElement element, ParseContext context) {
 		String value = element.attr("rel");
 		if (value.length() == 0) {
 			value = element.value();

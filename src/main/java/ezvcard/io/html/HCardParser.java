@@ -22,11 +22,11 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.property.Categories;
 import ezvcard.property.Email;
 import ezvcard.property.Impp;
@@ -36,8 +36,8 @@ import ezvcard.property.RawProperty;
 import ezvcard.property.Telephone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.IOUtils;
 import ezvcard.util.Gobble;
+import ezvcard.util.IOUtils;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -82,8 +82,8 @@ import ezvcard.util.Gobble;
  * List&lt;VCard&gt; vcards = parser.parseAll();
  * </pre>
  * @author Michael Angstadt
- * @see <a
- * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
+ * @see <a href="http://microformats.org/wiki/hcard">http://microformats.org/
+ * wiki/hcard</a>
  */
 public class HCardParser extends StreamReader {
 	private final String pageUrl;
@@ -264,6 +264,7 @@ public class HCardParser extends StreamReader {
 			return null;
 		}
 
+		context.setVersion(VCardVersion.V3_0);
 		parseVCardElement(vcardElementsIt.next());
 		return vcard;
 	}
@@ -305,12 +306,13 @@ public class HCardParser extends StreamReader {
 					} else {
 						//try parsing as IMPP
 						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
+
+						context.getWarnings().clear();
+						context.setPropertyName(scribe.getPropertyName());
 						try {
-							Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
-							vcard.addProperty(result.getProperty());
-							for (String warning : result.getWarnings()) {
-								warnings.add(null, scribe.getPropertyName(), warning);
-							}
+							VCardProperty property = scribe.parseHtml(new HCardElement(element), context);
+							vcard.addProperty(property);
+							warnings.addAll(context.getWarnings());
 							continue;
 						} catch (SkipMeException e) {
 							//URL is not an instant messenger URL
@@ -335,15 +337,13 @@ public class HCardParser extends StreamReader {
 				scribe = new RawPropertyScribe(className);
 			}
 
+			context.getWarnings().clear();
+			context.setPropertyName(scribe.getPropertyName());
+
 			VCardProperty property;
 			try {
-				Result<? extends VCardProperty> result = scribe.parseHtml(new HCardElement(element));
-
-				for (String warning : result.getWarnings()) {
-					warnings.add(null, className, warning);
-				}
-
-				property = result.getProperty();
+				property = scribe.parseHtml(new HCardElement(element), context);
+				warnings.addAll(context.getWarnings());
 
 				//LABELs must be treated specially so they can be matched up with their ADRs
 				if (property instanceof Label) {
@@ -375,12 +375,22 @@ public class HCardParser extends StreamReader {
 					continue;
 				}
 			} catch (SkipMeException e) {
-				warnings.add(null, className, 22, e.getMessage());
+				//@formatter:off
+				warnings.add(new ParseWarning.Builder(context)
+					.message(22, e.getMessage())
+					.build()
+				);
+				//@formatter:on
 				continue;
 			} catch (CannotParseException e) {
-				String html = element.outerHtml();
-				warnings.add(null, className, 32, html, e.getMessage());
-				property = new RawProperty(className, html);
+				//@formatter:off
+				warnings.add(new ParseWarning.Builder(context)
+					.message(e)
+					.build()
+				);
+				//@formatter:on
+
+				property = new RawProperty(className, element.outerHtml());
 			} catch (EmbeddedVCardException e) {
 				if (isChildOf(element, embeddedVCards)) {
 					//prevents multiple-nested embedded elements from overwriting each other
@@ -395,9 +405,7 @@ public class HCardParser extends StreamReader {
 					VCard embeddedVCard = embeddedReader.readNext();
 					e.injectVCard(embeddedVCard);
 				} finally {
-					for (String warning : embeddedReader.getWarnings()) {
-						warnings.add(null, className, 26, warning);
-					}
+					warnings.addAll(embeddedReader.getWarnings());
 					IOUtils.closeQuietly(embeddedReader);
 				}
 				visitChildren = false;

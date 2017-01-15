@@ -15,14 +15,13 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamReader;
 import ezvcard.io.json.JCardRawReader.JCardDataStreamListener;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
-import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.Utf8Reader;
 
@@ -124,13 +123,19 @@ public class JCardReader extends StreamReader {
 			return null;
 		}
 
-		warnings.clear();
+		context.setVersion(VCardVersion.V4_0);
 
 		JCardDataStreamListenerImpl listener = new JCardDataStreamListenerImpl();
 		reader.readNext(listener);
 		VCard vcard = listener.vcard;
 		if (vcard != null && !listener.versionFound) {
-			warnings.add(reader.getLineNum(), null, 29);
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder()
+				.lineNumber(reader.getLineNum())
+				.message(29)
+				.build()
+			);
+			//@formatter:on
 		}
 		return vcard;
 	}
@@ -149,13 +154,22 @@ public class JCardReader extends StreamReader {
 		}
 
 		public void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
+			context.getWarnings().clear();
+			context.setLineNumber(reader.getLineNum());
+			context.setPropertyName(propertyName);
+
 			if ("version".equalsIgnoreCase(propertyName)) {
 				//don't unmarshal "version" because we don't treat it as a property
 				versionFound = true;
 
 				VCardVersion version = VCardVersion.valueOfByStr(value.asSingle());
 				if (version != VCardVersion.V4_0) {
-					warnings.add(reader.getLineNum(), propertyName, 30);
+					//@formatter:off
+					warnings.add(new ParseWarning.Builder(context)
+						.message(30)
+						.build()
+					);
+					//@formatter:on
 				}
 				return;
 			}
@@ -165,28 +179,38 @@ public class JCardReader extends StreamReader {
 				scribe = new RawPropertyScribe(propertyName);
 			}
 
-			Result<? extends VCardProperty> result;
+			VCardProperty property;
 			try {
-				result = scribe.parseJson(value, dataType, parameters);
-				for (String warning : result.getWarnings()) {
-					warnings.add(reader.getLineNum(), warning, propertyName);
-				}
+				property = scribe.parseJson(value, dataType, parameters, context);
+				warnings.addAll(context.getWarnings());
 			} catch (SkipMeException e) {
-				warnings.add(reader.getLineNum(), propertyName, 22, e.getMessage());
+				//@formatter:off
+				warnings.add(new ParseWarning.Builder(context)
+					.message(22, e.getMessage())
+					.build()
+				);
+				//@formatter:on
 				return;
 			} catch (CannotParseException e) {
 				scribe = new RawPropertyScribe(propertyName);
-				result = scribe.parseJson(value, dataType, parameters);
+				property = scribe.parseJson(value, dataType, parameters, context);
 
-				VCardProperty property = result.getProperty();
-				String valueStr = ((RawProperty) property).getValue();
-				warnings.add(reader.getLineNum(), propertyName, 25, valueStr, e.getMessage());
+				//@formatter:off
+				warnings.add(new ParseWarning.Builder(context)
+					.message(e)
+					.build()
+				);
+				//@formatter:on
 			} catch (EmbeddedVCardException e) {
-				warnings.add(reader.getLineNum(), propertyName, 31);
+				//@formatter:off
+				warnings.add(new ParseWarning.Builder(context)
+					.message(31)
+					.build()
+				);
+				//@formatter:on
 				return;
 			}
 
-			VCardProperty property = result.getProperty();
 			property.setGroup(group);
 			vcard.addProperty(property);
 		}

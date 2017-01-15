@@ -110,7 +110,7 @@ public class PlacePropertyScribeTest {
 		sensei.assertParseXml("<uri>" + geoUri + "</uri>").run(hasGeoUri(geoUriObj));
 		sensei.assertParseXml("<uri>" + badGeoUri + "</uri>").run(hasUri(badGeoUri));
 		sensei.assertParseXml("<text>" + text + "</text><uri>" + text + "</uri>").run(hasText(text));
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test

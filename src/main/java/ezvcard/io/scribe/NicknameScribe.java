@@ -1,7 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.property.Nickname;
 
@@ -40,7 +39,7 @@ public class NicknameScribe extends ListPropertyScribe<Nickname> {
 	}
 
 	@Override
-	protected Nickname _parseHtml(HCardElement element, List<String> warnings) {
+	protected Nickname _parseHtml(HCardElement element, ParseContext context) {
 		Nickname property = _newInstance();
 		property.getValues().add(element.value());
 		return property;

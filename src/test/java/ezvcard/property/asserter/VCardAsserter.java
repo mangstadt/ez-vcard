@@ -1,7 +1,7 @@
 package ezvcard.property.asserter;
 
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertValidate;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -84,7 +84,7 @@ public class VCardAsserter {
 			first = false;
 		} else {
 			if (!warningsChecked) {
-				warnings(0);
+				warnings();
 			}
 
 			int total = vcard.getProperties().size();
@@ -235,8 +235,8 @@ public class VCardAsserter {
 		return new RawPropertyAsserter(vcard.getExtendedProperties(name), name, this);
 	}
 
-	public void warnings(int expected) {
-		assertWarnings(expected, reader);
+	public void warnings(Integer... expected) {
+		assertParseWarnings(reader, expected);
 		warningsChecked = true;
 	}
 

@@ -99,7 +99,7 @@ public class RelatedScribeTest {
 		sensei.assertParseXml("<text>" + text + "</text>").run(hasText(text));
 		sensei.assertParseXml("<uri>" + uri + "</uri>").run(hasUri(uri));
 		sensei.assertParseXml("<text>" + text + "</text><uri>" + uri + "</uri>").run(hasUri(uri));
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test

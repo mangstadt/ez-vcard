@@ -1,8 +1,7 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.SoundType;
 import ezvcard.property.Sound;
@@ -68,10 +67,10 @@ public class SoundScribe extends BinaryPropertyScribe<Sound, SoundType> {
 	}
 
 	@Override
-	protected Sound _parseHtml(HCardElement element, List<String> warnings) {
+	protected Sound _parseHtml(HCardElement element, ParseContext context) {
 		String elementName = element.tagName();
 		if (!"audio".equals(elementName) && !"source".equals(elementName)) {
-			return super._parseHtml(element, warnings);
+			return super._parseHtml(element, context);
 		}
 
 		if ("audio".equals(elementName)) {

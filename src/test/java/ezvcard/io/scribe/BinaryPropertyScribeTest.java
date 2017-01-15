@@ -240,7 +240,7 @@ public class BinaryPropertyScribeTest {
 
 	@Test
 	public void parseXml_empty() {
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
@@ -265,8 +265,8 @@ public class BinaryPropertyScribeTest {
 
 	@Test
 	public void parseHtml_invalid() {
-		sensei.assertParseHtml("<object type=\"image/gif\" />").cannotParse();
-		sensei.assertParseHtml("<div />").cannotParse();
+		sensei.assertParseHtml("<object type=\"image/gif\" />").cannotParse(2);
+		sensei.assertParseHtml("<div />").cannotParse(1);
 	}
 
 	@Test

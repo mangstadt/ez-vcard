@@ -49,8 +49,9 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public abstract class StreamReader implements Closeable {
-	protected final ParseWarnings warnings = new ParseWarnings();
+	protected final List<ParseWarning> warnings = new ArrayList<ParseWarning>();
 	protected ScribeIndex index = new ScribeIndex();
+	protected ParseContext context;
 
 	/**
 	 * Reads all vCards from the data stream.
@@ -73,6 +74,7 @@ public abstract class StreamReader implements Closeable {
 	 */
 	public VCard readNext() throws IOException {
 		warnings.clear();
+		context = new ParseContext();
 		return _readNext();
 	}
 
@@ -148,7 +150,7 @@ public abstract class StreamReader implements Closeable {
 	 * reset every time a new vCard is read.
 	 * @return the warnings or empty list if there were no warnings
 	 */
-	public List<String> getWarnings() {
-		return warnings.copy();
+	public List<ParseWarning> getWarnings() {
+		return new ArrayList<ParseWarning>(warnings);
 	}
 }

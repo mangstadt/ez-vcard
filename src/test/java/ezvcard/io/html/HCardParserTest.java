@@ -2,9 +2,9 @@ package ezvcard.io.html;
 
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -303,7 +303,7 @@ public class HCardParserTest {
 			}
 		}
 
-		assertWarnings(0, parser);
+		assertParseWarnings(parser);
 
 		assertNoMoreVCards(parser);
 	}
@@ -741,7 +741,7 @@ public class HCardParserTest {
 		//read a type without a type class
 		assertEquals("male", vcard.getExtendedProperty("X-GENDER").getValue());
 
-		assertWarnings(0, parser);
+		assertParseWarnings(parser);
 
 		assertNoMoreVCards(parser);
 	}
@@ -769,7 +769,7 @@ public class HCardParserTest {
 		//read a type that has a type class
 		assertEquals("JOHN DOE", vcard.getProperty(MyFormattedNameProperty.class).value);
 
-		assertWarnings(0, parser);
+		assertParseWarnings(parser);
 
 		assertNoMoreVCards(parser);
 	}
@@ -797,7 +797,7 @@ public class HCardParserTest {
 			.value("value")
 		.noMore();
 
-		asserter.warnings(1);
+		asserter.warnings(22);
 		asserter.done();
 		//@formatter:on
 	}
@@ -829,7 +829,7 @@ public class HCardParserTest {
 			.value("<span class=\"cannotparse\">value</span>")
 		.noMore();
 
-		asserter.warnings(1);
+		asserter.warnings(25);
 		asserter.done();
 		//@formatter:on
 	}

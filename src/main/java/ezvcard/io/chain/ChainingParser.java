@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ezvcard.VCard;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -51,7 +52,7 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	final File file;
 
 	ScribeIndex index;
-	List<List<String>> warnings;
+	List<List<ParseWarning>> warnings;
 
 	@SuppressWarnings("unchecked")
 	final T this_ = (T) this;
@@ -105,7 +106,7 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 * warning list will be empty.
 	 * @return this
 	 */
-	public T warnings(List<List<String>> warnings) {
+	public T warnings(List<List<ParseWarning>> warnings) {
 		this.warnings = warnings;
 		return this_;
 	}

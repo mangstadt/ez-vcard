@@ -41,10 +41,10 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
@@ -163,6 +163,7 @@ public class XCardReader extends StreamReader {
 	protected VCard _readNext() throws IOException {
 		readVCard = null;
 		thrown = null;
+		context.setVersion(version);
 
 		if (!thread.started) {
 			thread.start();
@@ -385,27 +386,40 @@ public class XCardReader extends StreamReader {
 					VCardProperty property;
 					QName propertyQName = new QName(propertyElement.getNamespaceURI(), propertyElement.getLocalName());
 					VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(propertyQName);
+
+					context.getWarnings().clear();
+					context.setPropertyName(propertyName);
 					try {
-						Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
-						property = result.getProperty();
+						property = scribe.parseXml(propertyElement, parameters, context);
 						property.setGroup(group);
 						readVCard.addProperty(property);
-						for (String warning : result.getWarnings()) {
-							warnings.add(null, propertyName, warning);
-						}
+						warnings.addAll(context.getWarnings());
 					} catch (SkipMeException e) {
-						warnings.add(null, propertyName, 22, e.getMessage());
+						//@formatter:off
+						warnings.add(new ParseWarning.Builder(context)
+							.message(22, e.getMessage())
+							.build()
+						);
+						//@formatter:on
 					} catch (CannotParseException e) {
-						String xml = XmlUtils.toString(propertyElement);
-						warnings.add(null, propertyName, 33, xml, e.getMessage());
+						//@formatter:off
+						warnings.add(new ParseWarning.Builder(context)
+							.message(e)
+							.build()
+						);
+						//@formatter:on
 
 						scribe = index.getPropertyScribe(Xml.class);
-						Result<? extends VCardProperty> result = scribe.parseXml(propertyElement, parameters);
-						property = result.getProperty();
+						property = scribe.parseXml(propertyElement, parameters, context);
 						property.setGroup(group);
 						readVCard.addProperty(property);
 					} catch (EmbeddedVCardException e) {
-						warnings.add(null, propertyName, 34);
+						//@formatter:off
+						warnings.add(new ParseWarning.Builder(context)
+							.message(34)
+							.build()
+						);
+						//@formatter:on
 					}
 
 					propertyElement = null;

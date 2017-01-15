@@ -13,7 +13,6 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -23,6 +22,7 @@ import org.junit.Test;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.text.WriteContext;
@@ -242,7 +242,7 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void parseText() {
 		final VCardParameters params = new VCardParameters();
-		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings(1).params(params).run(new Check<TestProperty>() {
+		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings((Integer) null).params(params).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertEquals(VCardDataType.TEXT, property.parsedDataType);
@@ -265,7 +265,7 @@ public class VCardPropertyScribeTest {
 		sensei.assertParseXml(
 		"<ignore xmlns=\"http://example.com\">ignore-me</ignore>" +
 		"<integer>value</integer>" +
-		"<text>ignore-me</text>").params(params).warnings(1).run(new Check<TestProperty>(){
+		"<text>ignore-me</text>").params(params).warnings((Integer)null).run(new Check<TestProperty>(){
 			public void check(TestProperty property){
 				assertEquals("value", property.value);
 				assertEquals(VCardDataType.INTEGER, property.parsedDataType);
@@ -277,7 +277,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseXml_no_xcard_element() {
-		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><two xmlns=\"http://example.com\">2</two>").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><two xmlns=\"http://example.com\">2</two>").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("12", property.value);
 				assertNull(property.parsedDataType);
@@ -287,7 +287,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseXml_no_child_elements() {
-		sensei.assertParseXml("value").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseXml("value").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertNull(property.parsedDataType);
@@ -297,19 +297,19 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseXml_unknown() {
-		sensei.assertParseXml("<unknown>value</unknown>").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseXml("<unknown>value</unknown>").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertEquals(null, property.parsedDataType);
 			}
 		});
-		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><unknown>value</unknown>").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><unknown>value</unknown>").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertEquals(null, property.parsedDataType);
 			}
 		});
-		sensei.assertParseXml("<unknown />").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseXml("<unknown />").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("", property.value);
 				assertEquals(null, property.parsedDataType);
@@ -334,7 +334,7 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<div>value<del>ignore</del>value</div>").warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseHtml("<div>value<del>ignore</del>value</div>").warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("valuevalue", property.value);
 				assertNull(property.parsedDataType);
@@ -352,7 +352,7 @@ public class VCardPropertyScribeTest {
 	public void parseJson_single() {
 		final VCardParameters params = new VCardParameters();
 		JCardValue value = JCardValue.single("value");
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value", property.value);
 				assertSame(params, property.getParameters());
@@ -363,7 +363,7 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void parseJson_list() {
 		JCardValue value = JCardValue.multi("value1", "val,;ue2");
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals("value1,val\\,\\;ue2", property.value);
 			}
@@ -373,7 +373,7 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void parseJson_structured() {
 		JCardValue value = JCardValue.structured(null, "value1", "val,;ue2", Arrays.asList("value3", "value4"));
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings(1).run(new Check<TestProperty>() {
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(new Check<TestProperty>() {
 			public void check(TestProperty property) {
 				assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);
 			}
@@ -400,8 +400,8 @@ public class VCardPropertyScribeTest {
 		}
 
 		@Override
-		protected TestProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			warnings.add("parseText");
+		protected TestProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+			context.addWarning("parseText");
 			return new TestProperty(value, dataType);
 		}
 	}

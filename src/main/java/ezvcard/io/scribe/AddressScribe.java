@@ -12,6 +12,7 @@ import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueItera
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -112,8 +113,8 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-		if (version == VCardVersion.V2_1) {
+	protected Address _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+		if (context.getVersion() == VCardVersion.V2_1) {
 			/*
 			 * 2.1 does not recognize multi-valued components.
 			 */
@@ -137,7 +138,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Address _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		Address property = new Address();
 		property.getPoBoxes().addAll(sanitizeXml(element, "pobox"));
 		property.getExtendedAddresses().addAll(sanitizeXml(element, "ext"));
@@ -154,7 +155,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseHtml(HCardElement element, List<String> warnings) {
+	protected Address _parseHtml(HCardElement element, ParseContext context) {
 		Address property = new Address();
 		property.getPoBoxes().addAll(element.allValues("post-office-box"));
 		property.getExtendedAddresses().addAll(element.allValues("extended-address"));
@@ -186,7 +187,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Address _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 		return parseStructuredValue(it);
 	}

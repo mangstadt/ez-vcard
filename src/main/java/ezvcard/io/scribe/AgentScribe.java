@@ -1,6 +1,5 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
 import java.util.Set;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
@@ -10,6 +9,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.text.WriteContext;
@@ -81,7 +81,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 	}
 
 	@Override
-	protected Agent _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Agent _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		Agent property = new Agent();
 
 		if (dataType == null) {
@@ -93,7 +93,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 	}
 
 	@Override
-	protected Agent _parseHtml(HCardElement element, List<String> warnings) {
+	protected Agent _parseHtml(HCardElement element, ParseContext context) {
 		Agent property = new Agent();
 
 		Set<String> classes = element.classNames();

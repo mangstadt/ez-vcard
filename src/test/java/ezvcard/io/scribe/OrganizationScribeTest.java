@@ -91,7 +91,7 @@ public class OrganizationScribeTest {
 	public void parseXml() {
 		sensei.assertParseXml("<text>one,two;three</text>").run(withOneValue);
 		sensei.assertParseXml("<text>one,two;three</text><text>four</text>").run(withMultipleValues);
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test

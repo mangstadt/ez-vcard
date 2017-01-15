@@ -2,14 +2,13 @@ package ezvcard.io.json;
 
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.Writer;
-import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +19,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.MyFormattedNameProperty;
 import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
+import ezvcard.io.ParseContext;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -153,7 +153,7 @@ public class JCardReaderTest {
 			.value("John Doe")
 		.noMore();
 		
-		asserter.warnings(1);
+		asserter.warnings(29);
 		asserter.done();
 		//@formatter:on
 	}
@@ -176,7 +176,7 @@ public class JCardReaderTest {
 			.value("John Doe")
 		.noMore();
 
-		asserter.warnings(1);
+		asserter.warnings(30);
 		asserter.done();
 		//@formatter:on
 	}
@@ -192,7 +192,7 @@ public class JCardReaderTest {
 		);
 
 		asserter.next(V4_0); //default to 4.0
-		asserter.warnings(1); //missing VERSION property
+		asserter.warnings(29); //missing VERSION property
 		asserter.done();
 		//@formatter:on
 	}
@@ -214,10 +214,10 @@ public class JCardReaderTest {
 		);
 
 		asserter.next(V4_0); //default to 4.0
-		asserter.warnings(1); //missing VERSION property
+		asserter.warnings(29); //missing VERSION property
 
 		asserter.next(V4_0); //default to 4.0
-		asserter.warnings(1); //missing VERSION property
+		asserter.warnings(29); //missing VERSION property
 
 		asserter.done();
 		//@formatter:on
@@ -268,7 +268,7 @@ public class JCardReaderTest {
 		TypeForTesting prop = vcard.getProperty(TypeForTesting.class);
 		assertEquals("value", prop.value.asSingle());
 
-		assertWarnings(0, reader);
+		assertParseWarnings(reader);
 		assertNoMoreVCards(reader);
 	}
 
@@ -294,7 +294,7 @@ public class JCardReaderTest {
 		MyFormattedNameProperty prop = vcard.getProperty(MyFormattedNameProperty.class);
 		assertEquals("JOHN DOE", prop.value);
 
-		assertWarnings(0, reader);
+		assertParseWarnings(reader);
 		assertNoMoreVCards(reader);
 	}
 
@@ -315,7 +315,7 @@ public class JCardReaderTest {
 		VCardAsserter asserter = new VCardAsserter(reader);
 
 		asserter.next(V4_0);
-		asserter.warnings(1);
+		asserter.warnings(22);
 		asserter.done();
 	}
 
@@ -347,7 +347,7 @@ public class JCardReaderTest {
 			.value("value")
 		.noMore();
 
-		asserter.warnings(1);
+		asserter.warnings(25);
 		asserter.done();
 		//@formatter:on
 	}
@@ -410,12 +410,12 @@ public class JCardReaderTest {
 		}
 
 		@Override
-		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected TypeForTesting _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return new TypeForTesting(null);
 		}
 
 		@Override
-		protected TypeForTesting _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+		protected TypeForTesting _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return new TypeForTesting(value);
 		}
 

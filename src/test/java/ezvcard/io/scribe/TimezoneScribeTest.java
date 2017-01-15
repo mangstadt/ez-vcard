@@ -119,12 +119,12 @@ public class TimezoneScribeTest {
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.UTC_OFFSET).run(withOffset);
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.TEXT).run(withOffset);
 
-		sensei.assertParseText(timezoneIdStr).versions(V2_1).cannotParse();
-		sensei.assertParseText(timezoneIdStr).versions(V3_0).warnings(1).run(withTimezoneId);
-		sensei.assertParseText(timezoneIdStr).versions(V3_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(withTimezoneId);
+		sensei.assertParseText(timezoneIdStr).versions(V2_1).cannotParse(19);
+		sensei.assertParseText(timezoneIdStr).versions(V3_0).warnings(20).run(withTimezoneId);
+		sensei.assertParseText(timezoneIdStr).versions(V3_0).dataType(VCardDataType.UTC_OFFSET).warnings(20).run(withTimezoneId);
 		sensei.assertParseText(timezoneIdStr).versions(V3_0).dataType(VCardDataType.TEXT).run(withTimezoneId);
 		sensei.assertParseText(timezoneIdStr).versions(V4_0).run(withTimezoneId);
-		sensei.assertParseText(timezoneIdStr).versions(V4_0).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(withTimezoneId);
+		sensei.assertParseText(timezoneIdStr).versions(V4_0).dataType(VCardDataType.UTC_OFFSET).warnings(20).run(withTimezoneId);
 		sensei.assertParseText(timezoneIdStr).versions(V4_0).dataType(VCardDataType.TEXT).run(withTimezoneId);
 
 		sensei.assertParseText("").run(empty);
@@ -135,8 +135,8 @@ public class TimezoneScribeTest {
 		sensei.assertParseXml("<utc-offset>" + offsetStrBasic + "</utc-offset>").run(withOffset);
 		sensei.assertParseXml("<text>" + timezoneIdStr + "</text>").run(withTimezoneId);
 		sensei.assertParseXml("<utc-offset>" + offsetStrBasic + "</utc-offset><text>" + timezoneIdStr + "</text>").run(withTimezoneId);
-		sensei.assertParseXml("<utc-offset>invalid</utc-offset>").cannotParse();
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<utc-offset>invalid</utc-offset>").cannotParse(19);
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class TimezoneScribeTest {
 		sensei.assertParseJson(offsetStrExtended).dataType(VCardDataType.TEXT).run(withOffset);
 
 		sensei.assertParseJson(timezoneIdStr).run(withTimezoneId);
-		sensei.assertParseJson(timezoneIdStr).dataType(VCardDataType.UTC_OFFSET).warnings(1).run(withTimezoneId);
+		sensei.assertParseJson(timezoneIdStr).dataType(VCardDataType.UTC_OFFSET).warnings(20).run(withTimezoneId);
 		sensei.assertParseJson(timezoneIdStr).dataType(VCardDataType.TEXT).run(withTimezoneId);
 
 		sensei.assertParseJson("").dataType(VCardDataType.TEXT).run(empty);

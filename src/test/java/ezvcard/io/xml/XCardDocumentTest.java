@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
@@ -29,6 +28,7 @@ import ezvcard.io.AgeProperty.AgeScribe;
 import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.LuckyNumProperty;
 import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.ParseContext;
 import ezvcard.io.SalaryProperty;
 import ezvcard.io.SalaryProperty.SalaryScribe;
 import ezvcard.io.StreamReader;
@@ -958,7 +958,7 @@ public class XCardDocumentTest {
 		}
 
 		@Override
-		protected EmbeddedProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected EmbeddedProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return null;
 		}
 

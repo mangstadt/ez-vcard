@@ -1,12 +1,11 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -68,12 +67,12 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Geo _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		if (value.length() == 0) {
 			return new Geo((GeoUri) null);
 		}
 
-		switch (version) {
+		switch (context.getVersion()) {
 		case V2_1:
 		case V3_0:
 			int pos = value.indexOf(';');
@@ -112,7 +111,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Geo _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
 			if (value.length() == 0) {
@@ -125,7 +124,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseHtml(HCardElement element, List<String> warnings) {
+	protected Geo _parseHtml(HCardElement element, ParseContext context) {
 		String latitudeStr = element.firstValue("latitude");
 		if (latitudeStr == null) {
 			throw new CannotParseException(7);
@@ -159,7 +158,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	}
 
 	@Override
-	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
 		if (valueStr.length() == 0) {
 			return new Geo((GeoUri) null);

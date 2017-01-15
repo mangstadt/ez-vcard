@@ -1,11 +1,10 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -64,7 +63,7 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		value = VObjectPropertyValues.unescape(value);
 		return _parseValue(value);
 	}
@@ -75,7 +74,7 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(dataType);
 		if (value != null) {
 			return _parseValue(value);
@@ -85,7 +84,7 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	}
 
 	@Override
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String value = element.value();
 		return _parseValue(value);
 	}
@@ -101,7 +100,7 @@ public abstract class SimplePropertyScribe<T extends VCardProperty> extends VCar
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
 		return _parseValue(valueStr);
 	}

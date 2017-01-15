@@ -34,13 +34,22 @@ import ezvcard.Messages;
  * @author Michael Angstadt
  */
 public class CannotParseException extends RuntimeException {
-	private static final long serialVersionUID = -486457159436167471L;
+	private static final long serialVersionUID = -7230344536456543576L;
+	private final Integer code;
+	private final Object args[];
+
+	public CannotParseException() {
+		this(null);
+	}
 
 	/**
 	 * Creates a new "cannot parse" exception.
+	 * @param code the warning message code
+	 * @param args the warning message arguments
 	 */
-	public CannotParseException() {
-		super();
+	public CannotParseException(int code, Object... args) {
+		this.code = code;
+		this.args = args;
 	}
 
 	/**
@@ -48,16 +57,27 @@ public class CannotParseException extends RuntimeException {
 	 * @param reason the reason why the property value cannot be parsed
 	 */
 	public CannotParseException(String reason) {
-		super(reason);
+		this(25, reason);
 	}
 
 	/**
-	 * Creates a new "cannot parse" exception.
-	 * @param code the code for retrieving the message text from the resource
-	 * bundle
-	 * @param args the message arguments
+	 * Gets the warning message code.
+	 * @return the message code
 	 */
-	public CannotParseException(int code, Object... args) {
-		this(Messages.INSTANCE.getParseMessage(code, args));
+	public Integer getCode() {
+		return code;
+	}
+
+	/**
+	 * Gets the warning message arguments.
+	 * @return the message arguments
+	 */
+	public Object[] getArgs() {
+		return args;
+	}
+
+	@Override
+	public String getMessage() {
+		return Messages.INSTANCE.getParseMessage(code, args);
 	}
 }

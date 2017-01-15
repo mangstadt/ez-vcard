@@ -7,9 +7,9 @@ import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -32,6 +32,7 @@ import ezvcard.io.LuckyNumProperty;
 import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
 import ezvcard.io.MyFormattedNameProperty;
 import ezvcard.io.MyFormattedNameProperty.MyFormattedNameScribe;
+import ezvcard.io.ParseContext;
 import ezvcard.io.scribe.CannotParseScribe;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -172,7 +173,7 @@ public class VCardReaderTest {
 				.value("=nnnn")
 			.noMore();
 			
-			asserter.warnings(1);
+			asserter.warnings(27);
 			asserter.done();
 			//@formatter:on
 		}
@@ -205,7 +206,7 @@ public class VCardReaderTest {
 					.value(decoded)
 				.noMore();
 				
-				asserter.warnings(1);
+				asserter.warnings(27);
 				asserter.done();
 				//@formatter:on
 			}
@@ -235,7 +236,7 @@ public class VCardReaderTest {
 					.value(decoded)
 				.noMore();
 				
-				asserter.warnings(1);
+				asserter.warnings(27);
 				asserter.done();
 				//@formatter:on
 			}
@@ -273,7 +274,7 @@ public class VCardReaderTest {
 			assertEquals(1, genderTypes.size());
 			assertEquals("ma\\,le", genderTypes.get(0).getValue()); //raw type values are not unescaped
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -299,7 +300,7 @@ public class VCardReaderTest {
 			MyFormattedNameProperty fn = vcard.getProperty(MyFormattedNameProperty.class);
 			assertEquals("JOHN DOE", fn.value);
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -377,7 +378,7 @@ public class VCardReaderTest {
 				}
 			}
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -408,7 +409,7 @@ public class VCardReaderTest {
 			assertEquals("John Doe", vcard.getFormattedName().getValue());
 			assertNull(vcard.getProperty(Nested.class).vcard);
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -481,7 +482,7 @@ public class VCardReaderTest {
 				}
 			}
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -530,7 +531,7 @@ public class VCardReaderTest {
 				}
 			}
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -637,7 +638,7 @@ public class VCardReaderTest {
 				.value("value")
 			.noMore();
 	
-			asserter.warnings(1);
+			asserter.warnings(22);
 			asserter.done();
 			//@formatter:on
 		}
@@ -671,7 +672,7 @@ public class VCardReaderTest {
 				.value("value")
 			.noMore();
 	
-			asserter.warnings(1);
+			asserter.warnings(25);
 			asserter.done();
 			//@formatter:on
 		}
@@ -690,7 +691,7 @@ public class VCardReaderTest {
 			//@formatter:on
 
 			asserter.next(version);
-			asserter.warnings(1);
+			asserter.warnings(27);
 			asserter.done();
 		}
 	}
@@ -711,7 +712,7 @@ public class VCardReaderTest {
 			VCard vcard = reader.readNext();
 			assertVersion(version, vcard);
 			assertPropertyCount(1, vcard);
-			assertEquals(Arrays.asList("Line 3 (WARNINGS property): one"), reader.getWarnings());
+			assertParseWarnings(reader, (Integer) null);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -732,7 +733,7 @@ public class VCardReaderTest {
 			//@formatter:on
 
 			asserter.next(version);
-			asserter.warnings(1);
+			asserter.warnings(27);
 
 			asserter.next(version);
 
@@ -759,7 +760,7 @@ public class VCardReaderTest {
 			reader.registerScribe(new WarningsScribe());
 			reader.readNext();
 
-			assertEquals(Arrays.asList("Line 6 (WARNINGS property): one"), reader.getWarnings());
+			assertParseWarnings(reader, (Integer) null);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -779,7 +780,7 @@ public class VCardReaderTest {
 			reader.registerScribe(new WarningsScribe());
 			reader.readNext();
 
-			assertEquals(Arrays.asList("Line 3 (AGENT property): Problem parsing property in nested vCard: Line 3 (WARNINGS property): one"), reader.getWarnings());
+			assertParseWarnings(reader, (Integer) null);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -830,7 +831,7 @@ public class VCardReaderTest {
 			assertNull(prop.getParameters().getValue());
 			assertNull(prop.getParameters().getLanguage());
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 			assertNoMoreVCards(reader);
 		}
 	}
@@ -848,7 +849,7 @@ public class VCardReaderTest {
 		asserter.rawProperty("VERSION")
 			.value("invalid")
 		.noMore();
-		asserter.warnings(1);
+		asserter.warnings(27);
 		asserter.done();
 		//@formatter:on
 	}
@@ -905,7 +906,7 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected ValueProp _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected ValueProp _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return new ValueProp(dataType);
 		}
 	}
@@ -930,8 +931,8 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected WarningsProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
-			warnings.add("one");
+		protected WarningsProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+			context.addWarning("one");
 			return new WarningsProperty();
 		}
 	}
@@ -960,7 +961,7 @@ public class VCardReaderTest {
 		}
 
 		@Override
-		protected Nested _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected Nested _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			throw new EmbeddedVCardException(new EmbeddedVCardException.InjectionCallback() {
 				private final Nested property = new Nested();
 

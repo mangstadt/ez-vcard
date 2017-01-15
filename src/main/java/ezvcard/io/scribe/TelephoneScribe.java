@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
-import ezvcard.Messages;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -96,9 +96,9 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Telephone _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		value = VObjectPropertyValues.unescape(value);
-		return parse(value, dataType, warnings);
+		return parse(value, dataType, context);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Telephone _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String text = element.first(VCardDataType.TEXT);
 		if (text != null) {
 			return new Telephone(text);
@@ -130,7 +130,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 			try {
 				return new Telephone(TelUri.parse(uri));
 			} catch (IllegalArgumentException e) {
-				warnings.add(Messages.INSTANCE.getParseMessage(18));
+				context.addWarning(18);
 				return new Telephone(uri);
 			}
 		}
@@ -139,7 +139,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseHtml(HCardElement element, List<String> warnings) {
+	protected Telephone _parseHtml(HCardElement element, ParseContext context) {
 		Telephone property;
 		String href = element.attr("href");
 		try {
@@ -171,17 +171,17 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected Telephone _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Telephone _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
-		return parse(valueStr, dataType, warnings);
+		return parse(valueStr, dataType, context);
 	}
 
-	private Telephone parse(String value, VCardDataType dataType, List<String> warnings) {
+	private Telephone parse(String value, VCardDataType dataType, ParseContext context) {
 		try {
 			return new Telephone(TelUri.parse(value));
 		} catch (IllegalArgumentException e) {
 			if (dataType == VCardDataType.URI) {
-				warnings.add(Messages.INSTANCE.getParseMessage(18));
+				context.addWarning(18);
 			}
 		}
 

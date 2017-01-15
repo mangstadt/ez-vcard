@@ -2,9 +2,9 @@ package ezvcard.io.xml;
 
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertNoMoreVCards;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static ezvcard.util.TestUtils.assertWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -592,7 +592,7 @@ public class XCardReaderTest {
 			MyFormattedNameProperty fn = vcard.getProperty(MyFormattedNameProperty.class);
 			assertEquals("JOHN DOE", fn.value);
 
-			assertWarnings(0, reader);
+			assertParseWarnings(reader);
 		}
 
 		assertNoMoreVCards(reader);
@@ -656,7 +656,7 @@ public class XCardReaderTest {
 			.value("value")
 		.noMore();
 		
-		asserter.warnings(1);
+		asserter.warnings(22);
 		asserter.done();
 		//@formatter:on
 	}
@@ -693,7 +693,7 @@ public class XCardReaderTest {
 			.value("<cannotparse xmlns=\"" + V4_0.getXmlNamespace() + "\"><text>value2</text></cannotparse>")
 		.noMore();
 
-		asserter.warnings(2);
+		asserter.warnings(25, 25);
 		asserter.done();
 		//@formatter:on
 	}
@@ -718,7 +718,7 @@ public class XCardReaderTest {
 		assertVersion(V4_0, vcard);
 		assertPropertyCount(1, vcard);
 		assertEquals("Dr. Gregory House M.D.", vcard.getFormattedName().getValue());
-		assertWarnings(0, reader);
+		assertParseWarnings(reader);
 
 		reader.close();
 

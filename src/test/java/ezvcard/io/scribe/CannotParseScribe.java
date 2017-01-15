@@ -1,10 +1,9 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -61,22 +60,22 @@ public class CannotParseScribe extends VCardPropertyScribe<CannotParseProperty> 
 	}
 
 	@Override
-	protected CannotParseProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected CannotParseProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		throw new CannotParseException();
 	}
 
 	@Override
-	protected CannotParseProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected CannotParseProperty _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		throw new CannotParseException();
 	}
 
 	@Override
-	protected CannotParseProperty _parseHtml(HCardElement element, List<String> warnings) {
+	protected CannotParseProperty _parseHtml(HCardElement element, ParseContext context) {
 		throw new CannotParseException();
 	}
 
 	@Override
-	protected CannotParseProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected CannotParseProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		throw new CannotParseException();
 	}
 }

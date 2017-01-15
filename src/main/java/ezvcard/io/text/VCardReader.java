@@ -26,11 +26,11 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamReader;
 import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
-import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
@@ -261,8 +261,8 @@ public class VCardReader extends StreamReader {
 			}
 		}
 
-		public void onProperty(VObjectProperty vobjectProperty, Context context) {
-			if (!inVCardComponent(context.getParentComponents())) {
+		public void onProperty(VObjectProperty vobjectProperty, Context vobjectContext) {
+			if (!inVCardComponent(vobjectContext.getParentComponents())) {
 				//ignore properties that are not directly inside a VCARD component
 				return;
 			}
@@ -276,7 +276,7 @@ public class VCardReader extends StreamReader {
 			VCard curVCard = stack.peek().vcard;
 			VCardVersion version = curVCard.getVersion();
 
-			VCardProperty property = parseProperty(vobjectProperty, version, context.getLineNumber());
+			VCardProperty property = parseProperty(vobjectProperty, version, vobjectContext.getLineNumber());
 			if (property != null) {
 				curVCard.addProperty(property);
 			}
@@ -287,6 +287,11 @@ public class VCardReader extends StreamReader {
 			String name = vobjectProperty.getName();
 			VCardParameters parameters = new VCardParameters(vobjectProperty.getParameters().getMap());
 			String value = vobjectProperty.getValue();
+
+			context.getWarnings().clear();
+			context.setVersion(version);
+			context.setLineNumber(lineNumber);
+			context.setPropertyName(name);
 
 			//sanitize the parameters
 			processNamelessParameters(parameters);
@@ -308,11 +313,8 @@ public class VCardReader extends StreamReader {
 
 			VCardProperty property;
 			try {
-				Result<? extends VCardProperty> result = scribe.parseText(value, dataType, version, parameters);
-				for (String warning : result.getWarnings()) {
-					warnings.add(lineNumber, name, warning);
-				}
-				property = result.getProperty();
+				property = scribe.parseText(value, dataType, parameters, context);
+				warnings.addAll(context.getWarnings());
 			} catch (SkipMeException e) {
 				handleSkippedProperty(name, lineNumber, e);
 				return null;
@@ -344,13 +346,24 @@ public class VCardReader extends StreamReader {
 		}
 
 		private void handleSkippedProperty(String propertyName, int lineNumber, SkipMeException e) {
-			warnings.add(lineNumber, propertyName, 22, e.getMessage());
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder(context)
+				.message(22, e.getMessage())
+				.build()
+			);
+			//@formatter:on
 		}
 
 		private VCardProperty handleUnparseableProperty(String name, VCardParameters parameters, String value, VCardDataType dataType, int lineNumber, VCardVersion version, CannotParseException e) {
-			warnings.add(lineNumber, name, 25, value, e.getMessage());
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder(context)
+				.message(e)
+				.build()
+			);
+			//@formatter:on
+
 			RawPropertyScribe scribe = new RawPropertyScribe(name);
-			return scribe.parseText(value, dataType, version, parameters).getProperty();
+			return scribe.parseText(value, dataType, parameters, null);
 		}
 
 		private void handledEmbeddedVCard(String name, String value, int lineNumber, EmbeddedVCardException exception) {
@@ -382,9 +395,7 @@ public class VCardReader extends StreamReader {
 			} catch (IOException e) {
 				//shouldn't be thrown because we're reading from a string
 			} finally {
-				for (String warning : agentReader.getWarnings()) {
-					warnings.add(lineNumber, name, 26, warning);
-				}
+				warnings.addAll(agentReader.getWarnings());
 				IOUtils.closeQuietly(agentReader);
 			}
 		}
@@ -415,19 +426,26 @@ public class VCardReader extends StreamReader {
 			adr.setLabel(label);
 		}
 
-		public void onVersion(String value, Context context) {
+		public void onVersion(String value, Context vobjectContext) {
 			VCardVersion version = VCardVersion.valueOfByStr(value);
+			context.setVersion(version);
 			stack.peek().vcard.setVersion(version);
 		}
 
-		public void onWarning(Warning warning, VObjectProperty property, Exception thrown, Context context) {
-			if (!inVCardComponent(context.getParentComponents())) {
+		public void onWarning(Warning warning, VObjectProperty property, Exception thrown, Context vobjectContext) {
+			if (!inVCardComponent(vobjectContext.getParentComponents())) {
 				//ignore warnings that are not directly inside a VCARD component
 				return;
 			}
 
-			String name = (property == null) ? null : property.getName();
-			warnings.add(context.getLineNumber(), name, 27, warning.getMessage(), context.getUnfoldedLine());
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder(context)
+				.lineNumber(vobjectContext.getLineNumber())
+				.propertyName((property == null) ? null : property.getName())
+				.message(27, warning.getMessage(), vobjectContext.getUnfoldedLine())
+				.build()
+			);
+			//@formatter:on
 		}
 
 		private boolean inVCardComponent(List<String> parentComponents) {

@@ -1,7 +1,5 @@
 package ezvcard.io;
 
-import java.util.List;
-
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -66,7 +64,7 @@ public class AgeProperty extends VCardProperty {
 		}
 
 		@Override
-		protected AgeProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected AgeProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return new AgeProperty(Integer.parseInt(value));
 		}
 	}

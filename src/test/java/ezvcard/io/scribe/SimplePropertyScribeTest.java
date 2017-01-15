@@ -82,7 +82,7 @@ public class SimplePropertyScribeTest {
 	@Test
 	public void parseXml() {
 		sensei.assertParseXml("<text>" + value + "</text>").run(withValue);
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test

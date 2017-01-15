@@ -1,14 +1,13 @@
 package ezvcard.io.scribe;
 
 import java.util.Date;
-import java.util.List;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
-import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -107,13 +106,13 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		value = VObjectPropertyValues.unescape(value);
-		if (version == VCardVersion.V4_0 && dataType == VCardDataType.TEXT) {
+		if (context.getVersion() == VCardVersion.V4_0 && dataType == VCardDataType.TEXT) {
 			return newInstance(value);
 		}
 
-		return parse(value, version, warnings);
+		return parse(value, context);
 	}
 
 	@Override
@@ -156,10 +155,10 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(VCardDataType.DATE, VCardDataType.DATE_TIME, VCardDataType.DATE_AND_OR_TIME);
 		if (value != null) {
-			return parse(value, element.version(), warnings);
+			return parse(value, context);
 		}
 
 		value = element.first(VCardDataType.TEXT);
@@ -171,7 +170,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String value = null;
 		if ("time".equals(element.tagName())) {
 			String datetime = element.attr("datetime");
@@ -182,7 +181,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 		if (value == null) {
 			value = element.value();
 		}
-		return parse(value, VCardVersion.V3_0, warnings);
+		return parse(value, context);
 	}
 
 	@Override
@@ -209,28 +208,28 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
 		if (dataType == VCardDataType.TEXT) {
 			return newInstance(valueStr);
 		}
 
-		return parse(valueStr, VCardVersion.V4_0, warnings);
+		return parse(valueStr, context);
 	}
 
-	private T parse(String value, VCardVersion version, List<String> warnings) {
+	private T parse(String value, ParseContext context) {
 		try {
 			boolean hasTime = value.contains("T");
 			return newInstance(date(value), hasTime);
 		} catch (IllegalArgumentException e) {
-			if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
+			if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
 				throw new CannotParseException(5);
 			}
 
 			try {
 				return newInstance(PartialDate.parse(value));
 			} catch (IllegalArgumentException e2) {
-				warnings.add(Messages.INSTANCE.getParseMessage(6));
+				context.addWarning(6);
 				return newInstance(value);
 			}
 		}

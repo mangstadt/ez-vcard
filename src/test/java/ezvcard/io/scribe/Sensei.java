@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.TestUtils.assertWarnings;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,10 +19,10 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
-import ezvcard.io.scribe.VCardPropertyScribe.Result;
 import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -406,13 +406,13 @@ public class Sensei<T extends VCardProperty> {
 	 */
 	private abstract class ParseTest<U extends ParseTest<U>> {
 		protected VCardParameters parameters = new VCardParameters();
-		protected int warnings = 0;
+		protected Integer[] parseWarningCodes = new Integer[0];
 
 		@SuppressWarnings("unchecked")
 		private final U this_ = (U) this;
 
 		/**
-		 * Adds a parameter.
+		 * Adds an expected parameter.
 		 * @param name the parameter name
 		 * @param value the parameter value
 		 * @return this
@@ -423,7 +423,7 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		/**
-		 * Sets the parameters.
+		 * Sets the expected parameters.
 		 * @param parameters the parameters
 		 * @return this
 		 */
@@ -433,12 +433,13 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		/**
-		 * Sets the expected number of warnings (defaults to "0").
-		 * @param warnings the expected number of warnings
+		 * Sets the expected parse warning codes (by default, the scribe is not
+		 * expected to return any parse warnings).
+		 * @param codes the expected parse warning codes (order does not matter)
 		 * @return this
 		 */
-		public U warnings(int warnings) {
-			this.warnings = warnings;
+		public U warnings(Integer... codes) {
+			parseWarningCodes = codes;
 			return this_;
 		}
 
@@ -446,14 +447,7 @@ public class Sensei<T extends VCardProperty> {
 		 * Runs the test, without testing the returned property object.
 		 */
 		public void run() {
-			run(null, null);
-		}
-
-		/**
-		 * Runs the test, expecting a {@link CannotParseException} to be thrown.
-		 */
-		public void cannotParse() {
-			run(null, CannotParseException.class);
+			run(null, -1);
 		}
 
 		/**
@@ -461,7 +455,7 @@ public class Sensei<T extends VCardProperty> {
 		 * @param check object for validating the parsed property object
 		 */
 		public void run(Check<T> check) {
-			run(check, null);
+			run(check, -1);
 		}
 
 		/**
@@ -474,17 +468,29 @@ public class Sensei<T extends VCardProperty> {
 				public void check(T actual) {
 					assertEquals(expected, actual);
 				}
-			}, null);
+			}, -1);
+		}
+
+		/**
+		 * Runs the test, expecting a {@link CannotParseException} to be thrown.
+		 * @param expectedCode the expected warning code of the exception, or
+		 * null if the exception shouldn't have a warning code
+		 */
+		public void cannotParse(Integer expectedCode) {
+			run(null, expectedCode);
 		}
 
 		/**
 		 * Runs the test.
-		 * @param check object for validating the parsed property object or null
-		 * not to validate the property
-		 * @param exception the exception that is expected to be thrown or null
-		 * if no exception is expected
+		 * @param check object for asserting the parsed property object or null
+		 * not to assert the property object
+		 * @param expectedCode if the parse operation is expected to throw a
+		 * {@link CannotParseException}, this parameter is the expected warning
+		 * code of the exception. This should be null if the exception is not
+		 * expected to have a warning code. This should be -1 if a
+		 * {@link CannotParseException} is not expected to be thrown
 		 */
-		protected abstract void run(Check<T> check, Class<? extends RuntimeException> exception);
+		protected abstract void run(Check<T> check, Integer cannotParseExceptionCode);
 	}
 
 	/**
@@ -524,27 +530,37 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		@Override
-		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
-			for (VCardVersion version : this.versions) {
+		protected void run(Check<T> check, Integer cannotParseExceptionCode) {
+			for (VCardVersion version : versions) {
 				VCardDataType dataType = this.dataType;
 				if (dataType == null) {
 					dataType = scribe.defaultDataType(version);
 				}
 
+				ParseContext context = new ParseContext();
+				context.setVersion(version);
 				try {
-					Result<T> result = scribe.parseText(value, dataType, version, parameters);
-					if (exception != null) {
-						fail("Expected " + exception.getSimpleName() + " to be thrown.");
+					T property = scribe.parseText(value, dataType, parameters, context);
+
+					if (cannotParseExceptionCode == null || cannotParseExceptionCode >= 0) {
+						fail("Expected a CannotParseException with code <" + cannotParseExceptionCode + "> to be thrown.");
 					}
+
 					if (check != null) {
-						check.check(result.getProperty());
+						check.check(property);
 					}
-					assertWarnings(warnings, result.getWarnings());
-				} catch (RuntimeException t) {
-					if (exception == null) {
-						throw t;
+
+					assertParseWarnings(context.getWarnings(), parseWarningCodes);
+				} catch (CannotParseException e) {
+					if (cannotParseExceptionCode == -1) {
+						/*
+						 * Throw the exception to fail the test, since it was
+						 * not expected to be thrown.
+						 */
+						throw e;
 					}
-					assertEquals(exception, t.getClass());
+
+					assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
 				}
 			}
 		}
@@ -565,25 +581,33 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		@Override
-		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
+		protected void run(Check<T> check, Integer cannotParseExceptionCode) {
 			try {
+				ParseContext context = new ParseContext();
+				context.setVersion(VCardVersion.V4_0);
 				Document document = createXCardElement(innerXml);
 				Element element = document.getDocumentElement();
-				Result<T> result = scribe.parseXml(element, parameters);
+				T property = scribe.parseXml(element, parameters, context);
 
-				if (exception != null) {
-					fail("Expected " + exception.getSimpleName() + " to be thrown.");
+				if (cannotParseExceptionCode == null || cannotParseExceptionCode >= 0) {
+					fail("Expected a CannotParseException with code <" + cannotParseExceptionCode + "> to be thrown.");
 				}
+
 				if (check != null) {
-					check.check(result.getProperty());
+					check.check(property);
 				}
 
-				assertWarnings(warnings, result.getWarnings());
-			} catch (RuntimeException t) {
-				if (exception == null) {
-					throw t;
+				assertParseWarnings(context.getWarnings(), parseWarningCodes);
+			} catch (CannotParseException e) {
+				if (cannotParseExceptionCode == -1) {
+					/*
+					 * Throw the exception to fail the test, since it was not
+					 * expected to be thrown.
+					 */
+					throw e;
 				}
-				assertEquals(exception, t.getClass());
+
+				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
 			}
 		}
 	}
@@ -613,24 +637,32 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		@Override
-		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
+		protected void run(Check<T> check, Integer cannotParseExceptionCode) {
 			try {
+				ParseContext context = new ParseContext();
+				context.setVersion(VCardVersion.V3_0);
 				org.jsoup.nodes.Element element = HtmlUtils.toElement(html);
-				Result<T> result = scribe.parseHtml(new HCardElement(element));
+				T property = scribe.parseHtml(new HCardElement(element), context);
 
-				if (exception != null) {
-					fail("Expected " + exception.getSimpleName() + " to be thrown.");
+				if (cannotParseExceptionCode == null || cannotParseExceptionCode >= 0) {
+					fail("Expected a CannotParseException with code <" + cannotParseExceptionCode + "> to be thrown.");
 				}
+
 				if (check != null) {
-					check.check(result.getProperty());
+					check.check(property);
 				}
 
-				assertWarnings(warnings, result.getWarnings());
-			} catch (RuntimeException t) {
-				if (exception == null) {
-					throw t;
+				assertParseWarnings(context.getWarnings(), parseWarningCodes);
+			} catch (CannotParseException e) {
+				if (cannotParseExceptionCode == -1) {
+					/*
+					 * Throw the exception to fail the test, since it was not
+					 * expected to be thrown.
+					 */
+					throw e;
 				}
-				assertEquals(exception, t.getClass());
+
+				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
 			}
 		}
 	}
@@ -661,23 +693,31 @@ public class Sensei<T extends VCardProperty> {
 		}
 
 		@Override
-		protected void run(Check<T> check, Class<? extends RuntimeException> exception) {
+		protected void run(Check<T> check, Integer cannotParseExceptionCode) {
 			try {
-				Result<T> result = scribe.parseJson(value, dataType, parameters);
+				ParseContext context = new ParseContext();
+				context.setVersion(VCardVersion.V4_0);
+				T property = scribe.parseJson(value, dataType, parameters, context);
 
-				if (exception != null) {
-					fail("Expected " + exception.getSimpleName() + " to be thrown.");
+				if (cannotParseExceptionCode == null || cannotParseExceptionCode >= 0) {
+					fail("Expected a CannotParseException with code <" + cannotParseExceptionCode + "> to be thrown.");
 				}
+
 				if (check != null) {
-					check.check(result.getProperty());
+					check.check(property);
 				}
 
-				assertWarnings(warnings, result.getWarnings());
-			} catch (RuntimeException t) {
-				if (exception == null) {
-					throw t;
+				assertParseWarnings(context.getWarnings(), parseWarningCodes);
+			} catch (CannotParseException e) {
+				if (cannotParseExceptionCode == -1) {
+					/*
+					 * Throw the exception to fail the test, since it was not
+					 * expected to be thrown.
+					 */
+					throw e;
 				}
-				assertEquals(exception, t.getClass());
+
+				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
 			}
 		}
 	}

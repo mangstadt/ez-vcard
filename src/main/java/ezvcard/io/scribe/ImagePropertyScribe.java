@@ -1,8 +1,7 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.ImageProperty;
@@ -59,10 +58,10 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 	}
 
 	@Override
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String elementName = element.tagName();
 		if (!"img".equals(elementName)) {
-			return super._parseHtml(element, warnings);
+			return super._parseHtml(element, context);
 		}
 
 		String src = element.absUrl("src");

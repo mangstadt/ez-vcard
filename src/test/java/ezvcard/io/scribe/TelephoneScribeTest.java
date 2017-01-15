@@ -144,7 +144,7 @@ public class TelephoneScribeTest {
 	public void parseText() {
 		sensei.assertParseText(text).run(withText);
 		sensei.assertParseText(text).dataType(VCardDataType.TEXT).run(withText);
-		sensei.assertParseText(text).dataType(VCardDataType.URI).warnings(1).run(withText);
+		sensei.assertParseText(text).dataType(VCardDataType.URI).warnings(18).run(withText);
 
 		sensei.assertParseText(uri).run(withUri);
 		sensei.assertParseText(uri).dataType(VCardDataType.TEXT).run(withUri);
@@ -152,11 +152,11 @@ public class TelephoneScribeTest {
 
 		sensei.assertParseText("invalid").run(hasText("invalid"));
 		sensei.assertParseText("invalid").dataType(VCardDataType.TEXT).run(hasText("invalid"));
-		sensei.assertParseText("invalid").dataType(VCardDataType.URI).warnings(1).run(hasText("invalid"));
+		sensei.assertParseText("invalid").dataType(VCardDataType.URI).warnings(18).run(hasText("invalid"));
 
 		sensei.assertParseText("").run(hasText(""));
 		sensei.assertParseText("").dataType(VCardDataType.TEXT).run(hasText(""));
-		sensei.assertParseText("").dataType(VCardDataType.URI).warnings(1).run(hasText(""));
+		sensei.assertParseText("").dataType(VCardDataType.URI).warnings(18).run(hasText(""));
 	}
 
 	@Test
@@ -167,8 +167,8 @@ public class TelephoneScribeTest {
 		//prefer <text> to <uri>
 		sensei.assertParseXml("<uri>" + uri + "</uri><text>" + text + "</text>").run(withText);
 
-		sensei.assertParseXml("<uri>invalid</uri>").warnings(1).run(hasText("invalid"));
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<uri>invalid</uri>").warnings(18).run(hasText("invalid"));
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
@@ -195,16 +195,16 @@ public class TelephoneScribeTest {
 	@Test
 	public void parseJson() {
 		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(withText);
-		sensei.assertParseJson(text).dataType(VCardDataType.URI).warnings(1).run(withText);
+		sensei.assertParseJson(text).dataType(VCardDataType.URI).warnings(18).run(withText);
 
 		sensei.assertParseJson(uri).dataType(VCardDataType.TEXT).run(withUri);
 		sensei.assertParseJson(uri).dataType(VCardDataType.URI).run(withUri);
 
 		sensei.assertParseJson("invalid").dataType(VCardDataType.TEXT).run(hasText("invalid"));
-		sensei.assertParseJson("invalid").dataType(VCardDataType.URI).warnings(1).run(hasText("invalid"));
+		sensei.assertParseJson("invalid").dataType(VCardDataType.URI).warnings(18).run(hasText("invalid"));
 
 		sensei.assertParseJson("").dataType(VCardDataType.TEXT).run(hasText(""));
-		sensei.assertParseJson("").dataType(VCardDataType.URI).warnings(1).run(hasText(""));
+		sensei.assertParseJson("").dataType(VCardDataType.URI).warnings(18).run(hasText(""));
 	}
 
 	private Check<Telephone> hasText(final String text) {

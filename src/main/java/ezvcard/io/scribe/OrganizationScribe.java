@@ -7,6 +7,7 @@ import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueItera
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -60,7 +61,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Organization _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		Organization property = new Organization();
 
 		List<String> values = VObjectPropertyValues.parseSemiStructured(value);
@@ -75,7 +76,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Organization _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		List<String> values = element.all(VCardDataType.TEXT);
 		if (!values.isEmpty()) {
 			Organization property = new Organization();
@@ -87,7 +88,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseHtml(HCardElement element, List<String> warnings) {
+	protected Organization _parseHtml(HCardElement element, ParseContext context) {
 		Organization property = new Organization();
 
 		String orgName = element.firstValue("organization-name");
@@ -125,7 +126,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 	}
 
 	@Override
-	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Organization _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		Organization property = new Organization();
 
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());

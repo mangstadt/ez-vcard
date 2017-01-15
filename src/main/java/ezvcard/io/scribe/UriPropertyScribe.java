@@ -1,8 +1,7 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import ezvcard.VCardDataType;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.property.TextProperty;
 
@@ -42,10 +41,10 @@ public abstract class UriPropertyScribe<T extends TextProperty> extends StringPr
 	}
 
 	@Override
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String href = element.absUrl("href");
 		if (href.length() == 0) {
-			return super._parseHtml(element, warnings);
+			return super._parseHtml(element, context);
 		}
 		return _parseValue(href);
 	}

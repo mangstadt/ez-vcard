@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.io.ParseContext;
 import ezvcard.io.scribe.SortStringScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
@@ -153,7 +154,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first()), new ParseContext());
 			assertEquals("Doe", ss.getValue());
 		}
 
@@ -169,7 +170,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first()), new ParseContext());
 			assertEquals("Smith", ss.getValue());
 		}
 
@@ -182,7 +183,7 @@ public class HCardPageTest {
 			Document document = generate(vcard);
 
 			Elements elements = document.select(".vcard .sort-string");
-			SortString ss = scribe.parseHtml(new HCardElement(elements.first())).getProperty();
+			SortString ss = scribe.parseHtml(new HCardElement(elements.first()), new ParseContext());
 			assertEquals("Jones", ss.getValue());
 		}
 	}

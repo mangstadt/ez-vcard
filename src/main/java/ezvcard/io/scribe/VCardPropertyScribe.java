@@ -1,6 +1,5 @@
 package ezvcard.io.scribe;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +15,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
 import ezvcard.io.EmbeddedVCardException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
@@ -201,9 +201,9 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * default datatype, as determined by the {@link #defaultDataType} method.
 	 * Note that the VALUE parameter is removed from the property's parameter
 	 * list after it has been read.
-	 * @param version the version of the vCard that is being parsed
 	 * @param parameters the parsed parameters
-	 * @return the unmarshalled property and its warnings
+	 * @param context the parse context
+	 * @return the unmarshalled property
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
@@ -211,44 +211,42 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws EmbeddedVCardException if the property value is an embedded vCard
 	 * (i.e. the AGENT property)
 	 */
-	public final Result<T> parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters) {
-		List<String> warnings = new ArrayList<String>(0);
-		T property = _parseText(value, dataType, version, parameters, warnings);
+	public final T parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+		T property = _parseText(value, dataType, parameters, context);
 		property.setParameters(parameters);
-		return new Result<T>(property, warnings);
+		return property;
 	}
 
 	/**
 	 * Unmarshals a property's value from an XML document (xCard).
 	 * @param element the property's XML element
-	 * @param parameters the parsed parameters
-	 * @return the unmarshalled property and its warnings
+	 * @param parameters the parsed para
+	 * @param context the parse contextmeters
+	 * @return the unmarshalled property
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	public final Result<T> parseXml(Element element, VCardParameters parameters) {
-		List<String> warnings = new ArrayList<String>(0);
-		T property = _parseXml(new XCardElement(element), parameters, warnings);
+	public final T parseXml(Element element, VCardParameters parameters, ParseContext context) {
+		T property = _parseXml(new XCardElement(element), parameters, context);
 		property.setParameters(parameters);
-		return new Result<T>(property, warnings);
+		return property;
 	}
 
 	/**
 	 * Unmarshals the property from an HTML document (hCard).
 	 * @param element the property's HTML element
-	 * @return the unmarshalled property and its warnings
+	 * @param context the parse context
+	 * @return the unmarshalled property
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this type should NOT be added to the
 	 * {@link VCard} object
 	 * @throws EmbeddedVCardException if the property value is an embedded vCard
 	 * (i.e. the AGENT property)
 	 */
-	public final Result<T> parseHtml(HCardElement element) {
-		List<String> warnings = new ArrayList<String>(0);
-		T property = _parseHtml(element, warnings);
-		return new Result<T>(property, warnings);
+	public final T parseHtml(HCardElement element, ParseContext context) {
+		return _parseHtml(element, context);
 	}
 
 	/**
@@ -256,17 +254,17 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param value the property's JSON value
 	 * @param dataType the data type
 	 * @param parameters the parsed parameters
-	 * @return the unmarshalled property and its warnings
+	 * @param context the parse context
+	 * @return the unmarshalled property
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	public final Result<T> parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters) {
-		List<String> warnings = new ArrayList<String>(0);
-		T property = _parseJson(value, dataType, parameters, warnings);
+	public final T parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+		T property = _parseJson(value, dataType, parameters, context);
 		property.setParameters(parameters);
-		return new Result<T>(property, warnings);
+		return property;
 	}
 
 	/**
@@ -388,21 +386,18 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * default datatype, as determined by the {@link #defaultDataType} method.
 	 * Note that the VALUE parameter is removed from the property's parameter
 	 * list after it has been read.
-	 * @param version the version of the vCard that is being parsed
 	 * @param parameters the parsed parameters. These parameters will be
 	 * assigned to the property object once this method returns. Therefore, do
 	 * not assign any parameters to the property object itself whilst inside of
 	 * this method, or else they will be overwritten.
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
+	 * @param context the parse context
 	 * @return the unmarshalled property object
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected abstract T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings);
+	protected abstract T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context);
 
 	/**
 	 * <p>
@@ -423,20 +418,18 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * assigned to the property object once this method returns. Therefore, do
 	 * not assign any parameters to the property object itself whilst inside of
 	 * this method, or else they will be overwritten.
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
+	 * @param context the parse context
 	 * @return the unmarshalled property object
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		XCardValue firstValue = element.firstValue();
 		VCardDataType dataType = firstValue.getDataType();
 		String value = VObjectPropertyValues.escape(firstValue.getValue());
-		return _parseText(value, dataType, element.version(), parameters, warnings);
+		return _parseText(value, dataType, parameters, context);
 	}
 
 	/**
@@ -450,9 +443,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * pass it into the {@link #_parseText} method.
 	 * </p>
 	 * @param element the property's HTML element
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
+	 * @param context the parse context
 	 * @return the unmarshalled property object
 	 * @throws CannotParseException if the property value could not be parsed
 	 * @throws SkipMeException if this property should NOT be added to the
@@ -460,10 +451,10 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @throws EmbeddedVCardException if the value of this property is an
 	 * embedded vCard (i.e. the AGENT property)
 	 */
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String value = VObjectPropertyValues.escape(element.value());
 		VCardParameters parameters = new VCardParameters();
-		T property = _parseText(value, null, VCardVersion.V3_0, parameters, warnings);
+		T property = _parseText(value, null, parameters, context);
 		property.setParameters(parameters);
 		return property;
 	}
@@ -526,18 +517,16 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * assigned to the property object once this method returns. Therefore, do
 	 * not assign any parameters to the property object itself whilst inside of
 	 * this method, or else they will be overwritten.
-	 * @param warnings allows the programmer to alert the user to any
-	 * note-worthy (but non-critical) issues that occurred during the
-	 * unmarshalling process
+	 * @param context the parse context
 	 * @return the unmarshalled property object
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
 	 * @throws SkipMeException if the property should not be added to the final
 	 * {@link VCard} object
 	 */
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = jcardValueToString(value);
-		return _parseText(valueStr, dataType, VCardVersion.V4_0, parameters, warnings);
+		return _parseText(valueStr, dataType, parameters, context);
 	}
 
 	/**
@@ -758,41 +747,5 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		}
 
 		return VObjectPropertyValues.escape(value);
-	}
-
-	/**
-	 * Represents the result of an unmarshal operation.
-	 * @author Michael Angstadt
-	 * @param <T> the unmarshalled property class
-	 */
-	public static class Result<T extends VCardProperty> {
-		private final T property;
-		private final List<String> warnings;
-
-		/**
-		 * Creates a new result.
-		 * @param property the property object
-		 * @param warnings the warnings
-		 */
-		public Result(T property, List<String> warnings) {
-			this.property = property;
-			this.warnings = warnings;
-		}
-
-		/**
-		 * Gets the warnings.
-		 * @return the warnings
-		 */
-		public List<String> getWarnings() {
-			return warnings;
-		}
-
-		/**
-		 * Gets the property object.
-		 * @return the property object
-		 */
-		public T getProperty() {
-			return property;
-		}
 	}
 }

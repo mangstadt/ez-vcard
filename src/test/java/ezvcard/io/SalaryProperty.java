@@ -1,7 +1,5 @@
 package ezvcard.io;
 
-import java.util.List;
-
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.VCardPropertyScribe;
@@ -67,7 +65,7 @@ public class SalaryProperty extends VCardProperty {
 		}
 
 		@Override
-		protected SalaryProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected SalaryProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			return new SalaryProperty(Integer.parseInt(value));
 		}
 
@@ -77,7 +75,7 @@ public class SalaryProperty extends VCardProperty {
 		}
 
 		@Override
-		protected SalaryProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+		protected SalaryProperty _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 			return new SalaryProperty(Integer.parseInt(element.first(VCardDataType.INTEGER)));
 		}
 	}

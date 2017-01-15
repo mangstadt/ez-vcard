@@ -1,7 +1,5 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
@@ -9,6 +7,7 @@ import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueItera
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
@@ -63,7 +62,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected ClientPidMap _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		SemiStructuredValueIterator it = new SemiStructuredValueIterator(value, 2);
 		String pid = it.next();
 		String uri = it.next();
@@ -83,7 +82,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected ClientPidMap _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String sourceid = element.first("sourceid");
 		String uri = element.first(VCardDataType.URI);
 
@@ -106,7 +105,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 	}
 
 	@Override
-	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected ClientPidMap _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 		String pid = it.nextValue();
 		String uri = it.nextValue();

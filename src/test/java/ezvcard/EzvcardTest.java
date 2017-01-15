@@ -1,8 +1,8 @@
 package ezvcard;
 
 import static ezvcard.util.StringUtils.NEWLINE;
+import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertVersion;
-import static ezvcard.util.TestUtils.assertWarningsLists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 
 import ezvcard.io.LuckyNumProperty;
 import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.text.TargetApplication;
 import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.parameter.ImageType;
@@ -87,11 +88,13 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
 		assertVersion(VCardVersion.V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertWarningsLists(warnings, 0);
+
+		assertEquals(1, warnings.size());
+		assertParseWarnings(warnings.get(0));
 	}
 
 	@Test
@@ -108,7 +111,7 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 		List<VCard> vcards = Ezvcard.parse(str).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
@@ -120,7 +123,9 @@ public class EzvcardTest {
 		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertWarningsLists(warnings, 0, 0);
+		assertEquals(2, warnings.size());
+		assertParseWarnings(warnings.get(0));
+		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
 	}
@@ -167,12 +172,14 @@ public class EzvcardTest {
 	public void parseXml_first() throws Exception {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("fn", "<text>John Doe</text>");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).warnings(warnings).first();
 		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertWarningsLists(warnings, 0);
+
+		assertEquals(1, warnings.size());
+		assertParseWarnings(warnings.get(0));
 	}
 
 	@Test
@@ -181,7 +188,7 @@ public class EzvcardTest {
 		xb.prop("fn", "<text>John Doe</text>");
 		xb.begin();
 		xb.prop("fn", "<text>Jane Doe</text>");
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		List<VCard> vcards = Ezvcard.parseXml(xb.toString()).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
@@ -194,7 +201,9 @@ public class EzvcardTest {
 		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertWarningsLists(warnings, 0, 0);
+		assertEquals(2, warnings.size());
+		assertParseWarnings(warnings.get(0));
+		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
 	}
@@ -220,12 +229,14 @@ public class EzvcardTest {
 		"</div>";
 		//@formatter:on
 
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		VCard vcard = Ezvcard.parseHtml(html).warnings(warnings).first();
 		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertWarningsLists(warnings, 0);
+
+		assertEquals(1, warnings.size());
+		assertParseWarnings(warnings.get(0));
 	}
 
 	@Test
@@ -241,7 +252,7 @@ public class EzvcardTest {
 			"</div>" +
 		"</html>";
 		//@formatter:on
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		List<VCard> vcards = Ezvcard.parseHtml(html).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
@@ -254,7 +265,9 @@ public class EzvcardTest {
 		assertVersion(VCardVersion.V3_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertWarningsLists(warnings, 0, 0);
+		assertEquals(2, warnings.size());
+		assertParseWarnings(warnings.get(0));
+		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
 	}
@@ -311,12 +324,14 @@ public class EzvcardTest {
 		  "]";
 		//@formatter:on
 
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		VCard vcard = Ezvcard.parseJson(json).warnings(warnings).first();
 		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
-		assertWarningsLists(warnings, 0);
+
+		assertEquals(1, warnings.size());
+		assertParseWarnings(warnings.get(0));
 	}
 
 	@Test
@@ -339,7 +354,7 @@ public class EzvcardTest {
 		"]";
 		//@formatter:on
 
-		List<List<String>> warnings = new ArrayList<List<String>>();
+		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
 
 		List<VCard> vcards = Ezvcard.parseJson(json).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
@@ -352,7 +367,9 @@ public class EzvcardTest {
 		assertVersion(VCardVersion.V4_0, vcard);
 		assertEquals("Jane Doe", vcard.getFormattedName().getValue());
 
-		assertWarningsLists(warnings, 0, 0);
+		assertEquals(2, warnings.size());
+		assertParseWarnings(warnings.get(0));
+		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
 	}

@@ -54,8 +54,8 @@ public class ImagePropertyScribeTest {
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<img />").cannotParse();
-		sensei.assertParseHtml("<img src=\"\" />").cannotParse();
+		sensei.assertParseHtml("<img />").cannotParse(13);
+		sensei.assertParseHtml("<img src=\"\" />").cannotParse(13);
 		sensei.assertParseHtml("<img src=\"" + url + "\" />").run(hasUrl(url, ImageType.JPEG));
 		sensei.assertParseHtml("<img src=\"" + urlWithoutExtension + "\" />").run(hasUrl(urlWithoutExtension, null));
 		sensei.assertParseHtml("<img src=\"" + dataUri + "\" />").run(hasData(data, ImageType.JPEG));

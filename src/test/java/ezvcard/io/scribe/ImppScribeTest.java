@@ -94,28 +94,28 @@ public class ImppScribeTest {
 	@Test
 	public void parseText() {
 		sensei.assertParseText(uri).run(withValue);
-		sensei.assertParseText(badUri).cannotParse();
+		sensei.assertParseText(badUri).cannotParse(15);
 		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
 	public void parseXml() {
 		sensei.assertParseXml("<uri>" + uri + "</uri>").run(withValue);
-		sensei.assertParseXml("<uri>" + badUri + "</uri>").cannotParse();
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<uri>" + badUri + "</uri>").cannotParse(15);
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
 	public void parseHtml() {
 		sensei.assertParseHtml("<a href=\"aim:goim?screenname=johndoe\">IM me</a>").run(withValue);
 		sensei.assertParseHtml("<div>aim:goim?screenname=johndoe</div>").run(withValue);
-		sensei.assertParseHtml("<div>johndoe</div>").cannotParse();
+		sensei.assertParseHtml("<div>johndoe</div>").cannotParse(14);
 	}
 
 	@Test
 	public void parseJson() {
 		sensei.assertParseJson(uri).run(withValue);
-		sensei.assertParseJson(badUri).cannotParse();
+		sensei.assertParseJson(badUri).cannotParse(15);
 		sensei.assertParseJson("").run(empty);
 	}
 

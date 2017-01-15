@@ -32,24 +32,24 @@ import ezvcard.VCard;
  */
 
 /**
- * Thrown during the marshalling/unmarshalling of a vCard property to show that
- * the property should NOT be included in the marshalled vCard or the
- * unmarshalled {@link VCard} object.
+ * Thrown during the reading or writing of a vCard property to signal that the
+ * property should not be written to the vCard data stream or not be included in
+ * the parsed {@link VCard} object.
  * @author Michael Angstadt
  */
 public class SkipMeException extends RuntimeException {
 	private static final long serialVersionUID = -2317261463920887137L;
 
 	/**
-	 * Creates a skip-me exception.
+	 * Creates a new "skip me" exception.
 	 */
 	public SkipMeException() {
 		super();
 	}
 
 	/**
-	 * Creates a skip-me exception.
-	 * @param reason the reason why this property should be skipped
+	 * Creates a new "skip me" exception.
+	 * @param reason the reason why the property was skipped
 	 */
 	public SkipMeException(String reason) {
 		super(reason);

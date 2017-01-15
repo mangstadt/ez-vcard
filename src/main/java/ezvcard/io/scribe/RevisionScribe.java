@@ -1,11 +1,11 @@
 package ezvcard.io.scribe;
 
 import java.util.Date;
-import java.util.List;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -59,7 +59,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected Revision _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		return parse(value);
 	}
 
@@ -69,7 +69,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected Revision _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(VCardDataType.TIMESTAMP);
 		if (value != null) {
 			return parse(value);
@@ -79,7 +79,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseHtml(HCardElement element, List<String> warnings) {
+	protected Revision _parseHtml(HCardElement element, ParseContext context) {
 		String value = null;
 		if ("time".equals(element.tagName())) {
 			String datetime = element.attr("datetime");
@@ -100,7 +100,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	@Override
-	protected Revision _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected Revision _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
 		return parse(valueStr);
 	}

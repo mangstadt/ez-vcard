@@ -55,8 +55,8 @@ public class SoundScribeTest {
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<audio />").cannotParse();
-		sensei.assertParseHtml("<audio><source /></audio>").cannotParse();
+		sensei.assertParseHtml("<audio />").cannotParse(16);
+		sensei.assertParseHtml("<audio><source /></audio>").cannotParse(17);
 		sensei.assertParseHtml("<audio><source src=\"" + url + "\" /></audio>").run(hasUrl(url, SoundType.MP3));
 		sensei.assertParseHtml("<audio><source src=\"" + urlUnknownExtension + "\" /></audio>").run(hasUrl(urlUnknownExtension, null));
 		sensei.assertParseHtml("<audio><source src=\"" + urlWithoutExtension + "\" /></audio>").run(hasUrl(urlWithoutExtension, null));

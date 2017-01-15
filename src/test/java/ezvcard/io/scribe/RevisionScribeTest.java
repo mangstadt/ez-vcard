@@ -81,33 +81,33 @@ public class RevisionScribeTest {
 	@Test
 	public void parseText() {
 		sensei.assertParseText(datetimeStr).run(withValue);
-		sensei.assertParseText("invalid").cannotParse();
+		sensei.assertParseText("invalid").cannotParse(5);
 		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
 	public void parseXml() {
 		sensei.assertParseXml("<timestamp>" + datetimeStr + "</timestamp>").run(withValue);
-		sensei.assertParseXml("<timestamp>invalid</timestamp>").cannotParse();
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<timestamp>invalid</timestamp>").cannotParse(5);
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
 	public void parseHtml() {
 		sensei.assertParseHtml("<time datetime=\"" + datetimeStrExt + "\">June 5, 1980</time>").run(withValue);
-		sensei.assertParseHtml("<time datetime=\"invalid\">June 5, 1980</time>").cannotParse();
+		sensei.assertParseHtml("<time datetime=\"invalid\">June 5, 1980</time>").cannotParse(5);
 
 		sensei.assertParseHtml("<time>" + datetimeStrExt + "</time>").run(withValue);
-		sensei.assertParseHtml("<time>invalid</time>").cannotParse();
+		sensei.assertParseHtml("<time>invalid</time>").cannotParse(5);
 
 		sensei.assertParseHtml("<div>" + datetimeStrExt + "</div>").run(withValue);
-		sensei.assertParseHtml("<div>invalid</div>").cannotParse();
+		sensei.assertParseHtml("<div>invalid</div>").cannotParse(5);
 	}
 
 	@Test
 	public void parseJson() {
 		sensei.assertParseJson(datetimeStrExt).run(withValue);
-		sensei.assertParseJson("invalid").cannotParse();
+		sensei.assertParseJson("invalid").cannotParse(5);
 		sensei.assertParseJson("").run(empty);
 	}
 }

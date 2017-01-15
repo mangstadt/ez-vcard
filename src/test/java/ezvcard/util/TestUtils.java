@@ -27,6 +27,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
 import ezvcard.Warning;
+import ezvcard.io.ParseWarning;
 import ezvcard.io.StreamReader;
 import ezvcard.property.VCardProperty;
 
@@ -97,47 +98,43 @@ public class TestUtils {
 	}
 
 	/**
-	 * Asserts that a warnings list is a certain size.
-	 * @param expectedSize the expected size of the warnings list
-	 * @param warnings the warnings list
+	 * Asserts a list of parse warnings.
+	 * @param warnings the parse warnings
+	 * @param expectedCodes the expected warning codes (order does not matter,
+	 * use "null" for warnings that do not have a code)
 	 */
-	public static void assertWarnings(int expectedSize, List<String> warnings) {
-		assertEquals(warnings.toString(), expectedSize, warnings.size());
-	}
-
-	/**
-	 * Asserts that a StreamReader's warnings list is a certain size.
-	 * @param expectedSize the expected size of the warnings list
-	 * @param reader the reader
-	 */
-	public static void assertWarnings(int expectedSize, StreamReader reader) {
-		assertWarnings(expectedSize, reader.getWarnings());
-	}
-
-	/**
-	 * Asserts that a warnings list is a certain size.
-	 * @param message a message to print if the test fails
-	 * @param expectedSize the expected size of the warnings list
-	 * @param warnings the warnings list
-	 */
-	public static void assertWarnings(String message, int expectedSize, List<String> warnings) {
-		assertEquals(message + " " + warnings.toString(), expectedSize, warnings.size());
-	}
-
-	/**
-	 * Asserts the sizes of each warnings list within a list of warnings lists.
-	 * @param warningsLists the list of warnings lists
-	 * @param expectedSizes the expected sizes of each warnings list
-	 */
-	public static void assertWarningsLists(List<List<String>> warningsLists, int... expectedSizes) {
-		assertEquals(warningsLists.toString(), expectedSizes.length, warningsLists.size());
-
-		for (int i = 0; i < expectedSizes.length; i++) {
-			int expectedSize = expectedSizes[i];
-			List<String> warnings = warningsLists.get(i);
-
-			assertWarnings(expectedSize, warnings);
+	public static void assertParseWarnings(List<ParseWarning> warnings, Integer... expectedCodes) {
+		List<Integer> expectedWarnings = new ArrayList<Integer>(Arrays.asList(expectedCodes));
+		List<Integer> actualWarnings = new ArrayList<Integer>(warnings.size());
+		for (ParseWarning warning : warnings) {
+			actualWarnings.add(warning.getCode());
 		}
+
+		for (Integer actualWarning : actualWarnings) {
+			if (!expectedWarnings.remove(actualWarning)) {
+				fail("Expected these warnings " + expectedWarnings + ", but was this: " + actualWarnings + ".  Actual warnings: " + warnings);
+			}
+		}
+	}
+
+	/**
+	 * Asserts the parse warnings of a {@link StreamReader}.
+	 * @param reader the {@link StreamReader}
+	 * @param expectedCodes the expected warning codes (order does not matter,
+	 * use "null" for warnings that do not have a code)
+	 */
+	public static void assertParseWarnings(StreamReader reader, Integer... expectedCodes) {
+		assertParseWarnings(reader.getWarnings(), expectedCodes);
+	}
+
+	/**
+	 * Asserts that a list is a certain size.
+	 * @param expectedSize the expected size of the list
+	 * @param list the list
+	 */
+	public static void assertListSize(int expectedSize, List<?> list) {
+		int actualSize = list.size();
+		assertEquals(list.toString(), expectedSize, actualSize);
 	}
 
 	public static boolean checkCodes(List<Warning> warnings, Integer... expectedCodes) {

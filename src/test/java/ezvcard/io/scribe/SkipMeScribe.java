@@ -1,9 +1,8 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
@@ -61,7 +60,7 @@ public class SkipMeScribe extends VCardPropertyScribe<SkipMeProperty> {
 	}
 
 	@Override
-	protected SkipMeProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected SkipMeProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		throw new SkipMeException();
 	}
 
@@ -71,12 +70,12 @@ public class SkipMeScribe extends VCardPropertyScribe<SkipMeProperty> {
 	}
 
 	@Override
-	protected SkipMeProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected SkipMeProperty _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		throw new SkipMeException();
 	}
 
 	@Override
-	protected SkipMeProperty _parseHtml(HCardElement element, List<String> warnings) {
+	protected SkipMeProperty _parseHtml(HCardElement element, ParseContext context) {
 		throw new SkipMeException();
 	}
 
@@ -86,7 +85,7 @@ public class SkipMeScribe extends VCardPropertyScribe<SkipMeProperty> {
 	}
 
 	@Override
-	protected SkipMeProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected SkipMeProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		throw new SkipMeException();
 	}
 }

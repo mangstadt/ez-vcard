@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,6 +14,7 @@ import org.junit.rules.TemporaryFolder;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
@@ -362,7 +362,7 @@ public class VCardWriterTest {
 			}
 
 			@Override
-			protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+			protected T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 				return null;
 			}
 		}

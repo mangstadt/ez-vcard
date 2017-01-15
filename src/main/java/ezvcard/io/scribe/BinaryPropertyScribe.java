@@ -1,13 +1,12 @@
 package ezvcard.io.scribe;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -147,9 +146,9 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		value = VObjectPropertyValues.unescape(value);
-		return parse(value, dataType, parameters, version, warnings);
+		return parse(value, dataType, parameters, context.getVersion());
 	}
 
 	@Override
@@ -158,17 +157,17 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected T _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
-			return parse(value, VCardDataType.URI, parameters, element.version(), warnings);
+			return parse(value, VCardDataType.URI, parameters, element.version());
 		}
 
 		throw missingXmlElements(VCardDataType.URI);
 	}
 
 	@Override
-	protected T _parseHtml(HCardElement element, List<String> warnings) {
+	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String elementName = element.tagName();
 		if (!"object".equals(elementName)) {
 			throw new CannotParseException(1, elementName);
@@ -205,9 +204,9 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	@Override
-	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
-		return parse(valueStr, dataType, parameters, VCardVersion.V4_0, warnings);
+		return parse(valueStr, dataType, parameters, VCardVersion.V4_0);
 	}
 
 	/**
@@ -215,12 +214,11 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * value.
 	 * @param value the value
 	 * @param version the version of the vCard
-	 * @param warnings the warnings
 	 * @param contentType the content type of the resource of null if unknown
 	 * @return the unmarshalled property object or null if it cannot be
 	 * unmarshalled
 	 */
-	protected T cannotUnmarshalValue(String value, VCardVersion version, List<String> warnings, U contentType) {
+	protected T cannotUnmarshalValue(String value, VCardVersion version, U contentType) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
@@ -285,7 +283,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		return (extension == null) ? null : _mediaTypeFromFileExtension(extension);
 	}
 
-	private T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version, List<String> warnings) {
+	private T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
 		U contentType = parseContentType(value, parameters, version);
 
 		switch (version) {
@@ -315,7 +313,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			break;
 		}
 
-		return cannotUnmarshalValue(value, version, warnings, contentType);
+		return cannotUnmarshalValue(value, version, contentType);
 	}
 
 	private String write(T property, VCardVersion version) {

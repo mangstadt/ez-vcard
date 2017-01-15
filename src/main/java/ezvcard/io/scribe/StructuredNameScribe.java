@@ -2,8 +2,6 @@ package ezvcard.io.scribe;
 
 import static ezvcard.util.StringUtils.join;
 
-import java.util.List;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
@@ -11,6 +9,7 @@ import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueItera
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.text.WriteContext;
@@ -92,10 +91,10 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected StructuredName _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		StructuredName property = new StructuredName();
 
-		if (version == VCardVersion.V2_1) {
+		if (context.getVersion() == VCardVersion.V2_1) {
 			/*
 			 * 2.1 does not recognize multi-valued components.
 			 */
@@ -139,7 +138,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected StructuredName _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		StructuredName property = new StructuredName();
 
 		property.setFamily(s(element.first("surname")));
@@ -156,7 +155,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseHtml(HCardElement element, List<String> warnings) {
+	protected StructuredName _parseHtml(HCardElement element, ParseContext context) {
 		StructuredName property = new StructuredName();
 
 		property.setFamily(s(element.firstValue("family-name")));
@@ -174,7 +173,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	@Override
-	protected StructuredName _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected StructuredName _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		StructuredName property = new StructuredName();
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 

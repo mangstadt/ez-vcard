@@ -90,22 +90,25 @@ public class GeoScribeTest {
 	@Test
 	public void parseText() {
 		sensei.assertParseText("-12.34;56.78").versions(V2_1, V3_0).run(withBoth);
+		sensei.assertParseText("-12.34;56.78").versions(V4_0).cannotParse(12);
+
+		sensei.assertParseText("geo:-12.34,56.78").versions(V2_1, V3_0).cannotParse(11);
 		sensei.assertParseText("geo:-12.34,56.78").versions(V4_0).run(withBoth);
 
-		sensei.assertParseText("invalid;56.78").cannotParse();
-		sensei.assertParseText("-12.34;invalid").cannotParse();
-		sensei.assertParseText("invalid;invalid").cannotParse();
-		sensei.assertParseText(";56.78").cannotParse();
-		sensei.assertParseText("-12.34;").cannotParse();
-		sensei.assertParseText("-12.34").cannotParse();
-		sensei.assertParseText(";").cannotParse();
+		sensei.assertParseText("invalid;56.78").versions(V2_1, V3_0).cannotParse(8);
+		sensei.assertParseText("-12.34;invalid").versions(V2_1, V3_0).cannotParse(10);
+		sensei.assertParseText("invalid;invalid").versions(V2_1, V3_0).cannotParse(8);
+		sensei.assertParseText(";56.78").versions(V2_1, V3_0).cannotParse(8);
+		sensei.assertParseText("-12.34;").versions(V2_1, V3_0).cannotParse(10);
+		sensei.assertParseText("-12.34").versions(V2_1, V3_0).cannotParse(11);
+		sensei.assertParseText(";").versions(V2_1, V3_0).cannotParse(8);
 
-		sensei.assertParseText("geo:invalid,56.78").cannotParse();
-		sensei.assertParseText("geo:-12.34,invalid").cannotParse();
-		sensei.assertParseText("geo:invalid,invalid").cannotParse();
-		sensei.assertParseText("geo:,56.78").cannotParse();
-		sensei.assertParseText("geo:-12.34,").cannotParse();
-		sensei.assertParseText("geo:-12.34").cannotParse();
+		sensei.assertParseText("geo:invalid,56.78").versions(V4_0).cannotParse(12);
+		sensei.assertParseText("geo:-12.34,invalid").versions(V4_0).cannotParse(12);
+		sensei.assertParseText("geo:invalid,invalid").versions(V4_0).cannotParse(12);
+		sensei.assertParseText("geo:,56.78").versions(V4_0).cannotParse(12);
+		sensei.assertParseText("geo:-12.34,").versions(V4_0).cannotParse(12);
+		sensei.assertParseText("geo:-12.34").versions(V4_0).cannotParse(12);
 
 		sensei.assertParseText("").run(empty);
 	}
@@ -113,14 +116,14 @@ public class GeoScribeTest {
 	@Test
 	public void parseXml() {
 		sensei.assertParseXml("<uri>geo:-12.34,56.78</uri>").run(withBoth);
-		sensei.assertParseXml("<uri>geo:invalid,56.78</uri>").cannotParse();
-		sensei.assertParseXml("<uri>geo:-12.34,invalid</uri>").cannotParse();
-		sensei.assertParseXml("<uri>geo:invalid,invalid</uri>").cannotParse();
-		sensei.assertParseXml("<uri>geo:,56.78</uri>").cannotParse();
-		sensei.assertParseXml("<uri>geo:-12.34,</uri>").cannotParse();
-		sensei.assertParseXml("<uri>geo:-12.34</uri>").cannotParse();
-		sensei.assertParseXml("<uri>invalid</uri>").cannotParse();
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<uri>geo:invalid,56.78</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>geo:-12.34,invalid</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>geo:invalid,invalid</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>geo:,56.78</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>geo:-12.34,</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>geo:-12.34</uri>").cannotParse(12);
+		sensei.assertParseXml("<uri>invalid</uri>").cannotParse(12);
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
@@ -138,51 +141,51 @@ public class GeoScribeTest {
 			"<span class=\"latitude\">invalid</span>" +
 			"<span class=\"longitude\">56.78</span>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(8);
 		
 		sensei.assertParseHtml(
 		"<div>" +
 			"<span class=\"latitude\">-12.34</span>" +
 			"<span class=\"longitude\">invalid</span>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(10);
 		
 		sensei.assertParseHtml(
 		"<div>" +
 			"<span class=\"latitude\">invalid</span>" +
 			"<span class=\"longitude\">invalid</span>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(8);
 		
 		sensei.assertParseHtml(
 		"<div>" +
 			"<span class=\"latitude\">-12.34</span>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(9);
 		
 		sensei.assertParseHtml(
 		"<div>" +
 			"<span class=\"longitude\">56.78</span>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(7);
 		
 		sensei.assertParseHtml(
 		"<div>" +
 		"</div>"		
-		).cannotParse();
+		).cannotParse(7);
 		//@formatter:on
 	}
 
 	@Test
 	public void parseJson() {
 		sensei.assertParseJson("geo:-12.34,56.78").run(withBoth);
-		sensei.assertParseJson("geo:invalid,56.78").cannotParse();
-		sensei.assertParseJson("geo:-12.34,invalid").cannotParse();
-		sensei.assertParseJson("geo:invalid,invalid").cannotParse();
-		sensei.assertParseJson("geo:,56.78").cannotParse();
-		sensei.assertParseJson("geo:-12.34,").cannotParse();
-		sensei.assertParseJson("geo:-12.34").cannotParse();
-		sensei.assertParseJson("invalid").cannotParse();
+		sensei.assertParseJson("geo:invalid,56.78").cannotParse(12);
+		sensei.assertParseJson("geo:-12.34,invalid").cannotParse(12);
+		sensei.assertParseJson("geo:invalid,invalid").cannotParse(12);
+		sensei.assertParseJson("geo:,56.78").cannotParse(12);
+		sensei.assertParseJson("geo:-12.34,").cannotParse(12);
+		sensei.assertParseJson("geo:-12.34").cannotParse(12);
+		sensei.assertParseJson("invalid").cannotParse(12);
 		sensei.assertParseJson("").run(empty);
 	}
 }

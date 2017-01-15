@@ -6,6 +6,7 @@ import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
+import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.json.JsonValue;
@@ -77,14 +78,14 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
-	protected RawProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+	protected RawProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		RawProperty property = new RawProperty(propertyName, value);
 		property.setDataType(dataType);
 		return property;
 	}
 
 	@Override
-	protected RawProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+	protected RawProperty _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		XCardValue firstValue = element.firstValue();
 		VCardDataType dataType = firstValue.getDataType();
 		String value = firstValue.getValue();
@@ -95,7 +96,7 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
-	protected RawProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, List<String> warnings) {
+	protected RawProperty _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = jcardValueToString(value);
 
 		RawProperty property = new RawProperty(propertyName, valueStr);
@@ -104,7 +105,7 @@ public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
 	}
 
 	@Override
-	protected RawProperty _parseHtml(HCardElement element, List<String> warnings) {
+	protected RawProperty _parseHtml(HCardElement element, ParseContext context) {
 		String value = element.value();
 
 		return new RawProperty(propertyName, value);

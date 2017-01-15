@@ -1,7 +1,5 @@
 package ezvcard.io;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -73,7 +71,7 @@ public class LuckyNumProperty extends VCardProperty {
 		}
 
 		@Override
-		protected LuckyNumProperty _parseText(String value, VCardDataType dataType, VCardVersion version, VCardParameters parameters, List<String> warnings) {
+		protected LuckyNumProperty _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			int luckyNum = Integer.parseInt(value);
 			return new LuckyNumProperty(luckyNum);
 		}
@@ -85,7 +83,7 @@ public class LuckyNumProperty extends VCardProperty {
 		}
 
 		@Override
-		protected LuckyNumProperty _parseXml(XCardElement element, VCardParameters parameters, List<String> warnings) {
+		protected LuckyNumProperty _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 			NodeList nodeList = element.element().getElementsByTagNameNS(qname.getNamespaceURI(), "num");
 			if (nodeList.getLength() == 0) {
 				return new LuckyNumProperty(0);
@@ -98,7 +96,7 @@ public class LuckyNumProperty extends VCardProperty {
 		}
 
 		@Override
-		protected LuckyNumProperty _parseHtml(HCardElement element, List<String> warnings) {
+		protected LuckyNumProperty _parseHtml(HCardElement element, ParseContext context) {
 			return new LuckyNumProperty(Integer.parseInt(element.value()));
 		}
 	}

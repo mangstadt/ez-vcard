@@ -93,8 +93,8 @@ public class GenderScribeTest {
 	public void parseXml() {
 		sensei.assertParseXml("<sex>" + gender + "</sex><identity>" + text + "</identity>").run(withGenderAndText);
 		sensei.assertParseXml("<sex>" + gender + "</sex>").run(withGender);
-		sensei.assertParseXml("<identity>" + text + "</identity>").cannotParse();
-		sensei.assertParseXml("").cannotParse();
+		sensei.assertParseXml("<identity>" + text + "</identity>").cannotParse(0);
+		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
