@@ -7,7 +7,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -68,9 +68,9 @@ public class ListProperty<T> extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (values.isEmpty()) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 	}
 

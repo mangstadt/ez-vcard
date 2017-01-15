@@ -11,7 +11,7 @@ import com.github.mangstadt.vinnie.validate.VObjectValidator;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -115,15 +115,15 @@ public class RawProperty extends TextProperty {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		SyntaxStyle syntax = version.getSyntaxStyle();
 		AllowedCharacters allowed = VObjectValidator.allowedCharactersParameterName(syntax, true);
 		if (!allowed.check(propertyName)) {
 			if (syntax == SyntaxStyle.OLD) {
 				AllowedCharacters notAllowed = allowed.flip();
-				warnings.add(new Warning(33, propertyName, notAllowed.toString(true)));
+				warnings.add(new ValidationWarning(33, propertyName, notAllowed.toString(true)));
 			} else {
-				warnings.add(new Warning(24, propertyName));
+				warnings.add(new ValidationWarning(24, propertyName));
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.EmailType;
 import ezvcard.parameter.Pid;
 
@@ -126,7 +126,7 @@ public class Email extends TextProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
 
 		for (EmailType type : getTypes()) {
@@ -135,7 +135,7 @@ public class Email extends TextProperty implements HasAltId {
 				continue;
 			}
 			if (!type.isSupportedBy(version)) {
-				warnings.add(new Warning(9, type.getValue()));
+				warnings.add(new ValidationWarning(9, type.getValue()));
 			}
 		}
 	}

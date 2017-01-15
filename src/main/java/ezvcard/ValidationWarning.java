@@ -26,43 +26,34 @@ package ezvcard;
  */
 
 /**
- * Represents a warning.
+ * Represents a validation warning.
  * @author Michael Angstadt
  */
-public class Warning {
+public class ValidationWarning {
 	private final Integer code;
 	private final String message;
 
 	/**
-	 * Creates a new warning.
+	 * Creates a new validation warning.
 	 * @param message the warning message
 	 */
-	public Warning(String message) {
-		this(message, null);
-	}
-
-	/**
-	 * Creates a new warning whose message text is defined in the resource
-	 * bundle.
-	 * @param code the message code
-	 * @param args the message arguments
-	 */
-	public Warning(int code, Object... args) {
-		this(Messages.INSTANCE.getValidationWarning(code, args), code);
-	}
-
-	/**
-	 * Creates a new warning.
-	 * @param message the warning message
-	 * @param code the message code
-	 */
-	public Warning(String message, Integer code) {
-		this.code = code;
+	public ValidationWarning(String message) {
+		this.code = null;
 		this.message = message;
 	}
 
 	/**
-	 * Gets the warning code.
+	 * Creates a new validation warning.
+	 * @param code the warning message code
+	 * @param args the warning message arguments
+	 */
+	public ValidationWarning(int code, Object... args) {
+		this.code = code;
+		this.message = Messages.INSTANCE.getValidationWarning(code, args);
+	}
+
+	/**
+	 * Gets the validation warning code.
 	 * @return the warning code or null if no code was specified
 	 */
 	public Integer getCode() {
@@ -70,7 +61,7 @@ public class Warning {
 	}
 
 	/**
-	 * Gets the warning message
+	 * Gets the validation warning message
 	 * @return the warning message
 	 */
 	public String getMessage() {

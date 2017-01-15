@@ -4459,15 +4459,15 @@ public class VCard implements Iterable<VCardProperty> {
 
 		//validate overall vCard object
 		if (getStructuredName() == null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add(null, new Warning(0));
+			warnings.add(null, new ValidationWarning(0));
 		}
 		if (getFormattedName() == null && (version == VCardVersion.V3_0 || version == VCardVersion.V4_0)) {
-			warnings.add(null, new Warning(1));
+			warnings.add(null, new ValidationWarning(1));
 		}
 
 		//validate properties
 		for (VCardProperty property : this) {
-			List<Warning> propWarnings = property.validate(version, this);
+			List<ValidationWarning> propWarnings = property.validate(version, this);
 			if (!propWarnings.isEmpty()) {
 				warnings.add(property, propWarnings);
 			}

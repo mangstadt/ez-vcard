@@ -6,7 +6,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.util.TelUri;
@@ -187,13 +187,13 @@ public class Telephone extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null && text == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 
 		if (uri != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add(new Warning(19));
+			warnings.add(new ValidationWarning(19));
 		}
 
 		for (TelephoneType type : getTypes()) {
@@ -203,7 +203,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 			}
 
 			if (!type.isSupportedBy(version)) {
-				warnings.add(new Warning(9, type.getValue()));
+				warnings.add(new ValidationWarning(9, type.getValue()));
 			}
 		}
 	}

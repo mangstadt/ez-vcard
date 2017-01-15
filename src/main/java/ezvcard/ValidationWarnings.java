@@ -83,15 +83,15 @@ import ezvcard.util.StringUtils;
  * @author Michael Angstadt
  * @see VCard#validate
  */
-public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<Warning>>> {
-	private final ListMultimap<VCardProperty, Warning> warnings = new ListMultimap<VCardProperty, Warning>(new IdentityHashMap<VCardProperty, List<Warning>>());
+public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<ValidationWarning>>> {
+	private final ListMultimap<VCardProperty, ValidationWarning> warnings = new ListMultimap<VCardProperty, ValidationWarning>(new IdentityHashMap<VCardProperty, List<ValidationWarning>>());
 
 	/**
 	 * Adds a validation warning.
 	 * @param property the property that caused the warning
 	 * @param warning the warning
 	 */
-	public void add(VCardProperty property, Warning warning) {
+	public void add(VCardProperty property, ValidationWarning warning) {
 		warnings.put(property, warning);
 	}
 
@@ -100,7 +100,7 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 * @param property the property that caused the warnings
 	 * @param warnings the warnings
 	 */
-	public void add(VCardProperty property, List<Warning> warnings) {
+	public void add(VCardProperty property, List<ValidationWarning> warnings) {
 		this.warnings.putAll(property, warnings);
 	}
 
@@ -108,7 +108,7 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 * Gets all of the validation warnings.
 	 * @return the validation warnings
 	 */
-	public ListMultimap<VCardProperty, Warning> getWarnings() {
+	public ListMultimap<VCardProperty, ValidationWarning> getWarnings() {
 		return warnings;
 	}
 
@@ -128,13 +128,13 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 * null to get the warnings that apply to the vCard as a whole
 	 * @return the validation warnings
 	 */
-	public List<Warning> getByProperty(Class<? extends VCardProperty> propertyClass) {
-		List<Warning> propWarnings = new ArrayList<Warning>();
-		for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+	public List<ValidationWarning> getByProperty(Class<? extends VCardProperty> propertyClass) {
+		List<ValidationWarning> propWarnings = new ArrayList<ValidationWarning>();
+		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
 			VCardProperty property = entry.getKey();
 
 			if ((property == null && propertyClass == null) || (property != null && propertyClass == property.getClass())) {
-				List<Warning> propViolations = entry.getValue();
+				List<ValidationWarning> propViolations = entry.getValue();
 				propWarnings.addAll(propViolations);
 			}
 		}
@@ -158,11 +158,11 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 		nf.setMinimumIntegerDigits(2);
 
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
 			VCardProperty property = entry.getKey();
-			List<Warning> propViolations = entry.getValue();
+			List<ValidationWarning> propViolations = entry.getValue();
 
-			for (Warning propViolation : propViolations) {
+			for (ValidationWarning propViolation : propViolations) {
 				if (property != null) {
 					sb.append('[');
 					sb.append(property.getClass().getSimpleName());
@@ -184,7 +184,7 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 		return sb.toString();
 	}
 
-	public Iterator<Entry<VCardProperty, List<Warning>>> iterator() {
+	public Iterator<Entry<VCardProperty, List<ValidationWarning>>> iterator() {
 		return warnings.iterator();
 	}
 }

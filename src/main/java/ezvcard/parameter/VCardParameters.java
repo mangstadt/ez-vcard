@@ -20,7 +20,7 @@ import com.github.mangstadt.vinnie.validate.VObjectValidator;
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.property.Address;
 import ezvcard.property.ClientPidMap;
 import ezvcard.property.Email;
@@ -1335,8 +1335,8 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @param version the vCard version to validate against
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
-	public List<Warning> validate(VCardVersion version) {
-		List<Warning> warnings = new ArrayList<Warning>(0);
+	public List<ValidationWarning> validate(VCardVersion version) {
+		List<ValidationWarning> warnings = new ArrayList<ValidationWarning>(0);
 
 		/*
 		 * Check for invalid characters in names and values.
@@ -1357,9 +1357,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 			if (!VObjectValidator.validateParameterName(name, syntax, true)) {
 				if (syntax == SyntaxStyle.OLD) {
 					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterName(syntax, true).flip();
-					warnings.add(new Warning(30, name, notAllowed.toString(true)));
+					warnings.add(new ValidationWarning(30, name, notAllowed.toString(true)));
 				} else {
-					warnings.add(new Warning(26, name));
+					warnings.add(new ValidationWarning(26, name));
 				}
 			}
 
@@ -1377,7 +1377,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 				if (!VObjectValidator.validateParameterValue(value, syntax, false, true)) {
 					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterValue(syntax, false, true).flip();
 					int code = (syntax == SyntaxStyle.OLD) ? 31 : 25;
-					warnings.add(new Warning(code, name, value, notAllowed.toString(true)));
+					warnings.add(new ValidationWarning(code, name, value, notAllowed.toString(true)));
 				}
 			}
 		}
@@ -1391,16 +1391,16 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 			String value = first(CALSCALE);
 			if (value != null && Calscale.find(value) == null) {
-				warnings.add(new Warning(nonStandardValueCode, CALSCALE, value, Calscale.all()));
+				warnings.add(new ValidationWarning(nonStandardValueCode, CALSCALE, value, Calscale.all()));
 			}
 
 			value = first(ENCODING);
 			if (value != null) {
 				Encoding encoding = Encoding.find(value);
 				if (encoding == null) {
-					warnings.add(new Warning(nonStandardValueCode, ENCODING, value, Encoding.all()));
+					warnings.add(new ValidationWarning(nonStandardValueCode, ENCODING, value, Encoding.all()));
 				} else if (!encoding.isSupportedBy(version)) {
-					warnings.add(new Warning(unsupportedValueCode, ENCODING, value));
+					warnings.add(new ValidationWarning(unsupportedValueCode, ENCODING, value));
 				}
 			}
 
@@ -1408,9 +1408,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 			if (value != null) {
 				VCardDataType dataType = VCardDataType.find(value);
 				if (dataType == null) {
-					warnings.add(new Warning(nonStandardValueCode, VALUE, value, VCardDataType.all()));
+					warnings.add(new ValidationWarning(nonStandardValueCode, VALUE, value, VCardDataType.all()));
 				} else if (!dataType.isSupportedBy(version)) {
-					warnings.add(new Warning(unsupportedValueCode, VALUE, value));
+					warnings.add(new ValidationWarning(unsupportedValueCode, VALUE, value));
 				}
 			}
 		}
@@ -1424,32 +1424,32 @@ public class VCardParameters extends ListMultimap<String, String> {
 			try {
 				getGeo();
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedValueCode, GEO, first(GEO)));
+				warnings.add(new ValidationWarning(malformedValueCode, GEO, first(GEO)));
 			}
 
 			try {
 				Integer index = getIndex();
 				if (index != null && index <= 0) {
-					warnings.add(new Warning(28, index));
+					warnings.add(new ValidationWarning(28, index));
 				}
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedValueCode, INDEX, first(INDEX)));
+				warnings.add(new ValidationWarning(malformedValueCode, INDEX, first(INDEX)));
 			}
 
 			List<String> pids = get(PID);
 			for (String pid : pids) {
 				if (!isPidValid(pid)) {
-					warnings.add(new Warning(27, pid));
+					warnings.add(new ValidationWarning(27, pid));
 				}
 			}
 
 			try {
 				Integer pref = getPref();
 				if (pref != null && (pref < 1 || pref > 100)) {
-					warnings.add(new Warning(29, pref));
+					warnings.add(new ValidationWarning(29, pref));
 				}
 			} catch (IllegalStateException e) {
-				warnings.add(new Warning(malformedValueCode, PREF, first(PREF)));
+				warnings.add(new ValidationWarning(malformedValueCode, PREF, first(PREF)));
 			}
 		}
 
@@ -1468,7 +1468,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 				Set<VCardVersion> versions = entry.getValue();
 				if (!versions.contains(version)) {
-					warnings.add(new Warning(paramNotSupportedCode, name));
+					warnings.add(new ValidationWarning(paramNotSupportedCode, name));
 				}
 			}
 		}
@@ -1485,9 +1485,9 @@ public class VCardParameters extends ListMultimap<String, String> {
 				try {
 					Charset.forName(charsetStr);
 				} catch (IllegalCharsetNameException e) {
-					warnings.add(new Warning(invalidCharsetCode, charsetStr));
+					warnings.add(new ValidationWarning(invalidCharsetCode, charsetStr));
 				} catch (UnsupportedCharsetException e) {
-					warnings.add(new Warning(invalidCharsetCode, charsetStr));
+					warnings.add(new ValidationWarning(invalidCharsetCode, charsetStr));
 				}
 			}
 		}

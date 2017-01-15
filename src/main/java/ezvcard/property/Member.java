@@ -5,7 +5,7 @@ import java.util.List;
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.util.TelUri;
 
@@ -182,11 +182,11 @@ public class Member extends UriProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
 
 		if (vcard.getKind() == null || !vcard.getKind().isGroup()) {
-			warnings.add(new Warning(17));
+			warnings.add(new ValidationWarning(17));
 		}
 	}
 

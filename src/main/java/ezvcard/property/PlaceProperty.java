@@ -6,7 +6,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.util.GeoUri;
 
 /*
@@ -183,9 +183,9 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null && text == null && geoUri == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 	}
 

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -237,7 +237,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		/*
 		 * 2.1 does not allow multi-valued components.
 		 */
@@ -246,7 +246,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 			if (additional.size() > 1 ||
 				prefixes.size() > 1 ||
 				suffixes.size() > 1) {
-				warnings.add(new Warning(34));
+				warnings.add(new ValidationWarning(34));
 			}
 			//@formatter:on
 		}

@@ -9,7 +9,7 @@ import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 
 /*
  Copyright (c) 2012-2016, Michael Angstadt
@@ -168,9 +168,9 @@ public class Agent extends VCardProperty {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && this.vcard == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 
 		if (this.vcard != null) {
@@ -178,17 +178,17 @@ public class Agent extends VCardProperty {
 			nf.setMinimumIntegerDigits(2);
 
 			ValidationWarnings validationWarnings = this.vcard.validate(version);
-			for (Map.Entry<VCardProperty, List<Warning>> entry : validationWarnings) {
+			for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : validationWarnings) {
 				VCardProperty property = entry.getKey();
-				List<Warning> propViolations = entry.getValue();
+				List<ValidationWarning> propViolations = entry.getValue();
 
-				for (Warning propViolation : propViolations) {
+				for (ValidationWarning propViolation : propViolations) {
 					String className = (property == null) ? "" : property.getClass().getSimpleName();
 
 					int code = propViolation.getCode();
 					String codeStr = (code >= 0) ? "W" + nf.format(code) : "";
 					String message = propViolation.getMessage();
-					warnings.add(new Warning(10, className, codeStr, message));
+					warnings.add(new ValidationWarning(10, className, codeStr, message));
 				}
 			}
 		}

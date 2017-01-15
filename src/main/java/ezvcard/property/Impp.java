@@ -9,7 +9,7 @@ import java.util.Map;
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.ImppType;
 import ezvcard.parameter.Pid;
 
@@ -395,9 +395,9 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (uri == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 	}
 

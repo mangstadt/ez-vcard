@@ -16,7 +16,7 @@ import java.util.List;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.util.TestUtils;
 
 /*
@@ -99,7 +99,7 @@ public class PropertySensei {
 		 */
 		public void run(Integer... expectedCodes) {
 			for (VCardVersion version : versions) {
-				List<Warning> warnings = property.validate(version, vcard);
+				List<ValidationWarning> warnings = property.validate(version, vcard);
 				boolean passed = checkCodes(warnings, expectedCodes);
 				if (!passed) {
 					fail("For version " + version + ", expected codes were " + Arrays.toString(expectedCodes) + " but were actually:\n" + warnings);

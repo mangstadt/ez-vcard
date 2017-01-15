@@ -26,7 +26,7 @@ import java.util.TimeZone;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarnings;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.io.ParseWarning;
 import ezvcard.io.StreamReader;
 import ezvcard.property.VCardProperty;
@@ -137,7 +137,7 @@ public class TestUtils {
 		assertEquals(list.toString(), expectedSize, actualSize);
 	}
 
-	public static boolean checkCodes(List<Warning> warnings, Integer... expectedCodes) {
+	public static boolean checkCodes(List<ValidationWarning> warnings, Integer... expectedCodes) {
 		if (warnings.size() != expectedCodes.length) {
 			return false;
 		}
@@ -148,7 +148,7 @@ public class TestUtils {
 		 */
 		List<Integer> expected = new ArrayList<Integer>(Arrays.asList(expectedCodes));
 
-		for (Warning warning : warnings) {
+		for (ValidationWarning warning : warnings) {
 			Integer code = warning.getCode();
 			boolean removed = expected.remove((Object) code);
 			if (!removed) {
@@ -158,7 +158,7 @@ public class TestUtils {
 		return true;
 	}
 
-	public static void assertValidate(List<Warning> warnings, Integer... expectedCodes) {
+	public static void assertValidate(List<ValidationWarning> warnings, Integer... expectedCodes) {
 		boolean passed = checkCodes(warnings, expectedCodes);
 		if (!passed) {
 			fail("Expected codes were " + Arrays.toString(expectedCodes) + " but were actually:\n" + warnings);
@@ -206,9 +206,9 @@ public class TestUtils {
 			for (VCardVersion version : versions) {
 				Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<VCardProperty, Integer[]>(this.expectedPropCodes);
 				ValidationWarnings warnings = vcard.validate(version);
-				for (Map.Entry<VCardProperty, List<Warning>> entry : warnings) {
+				for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
 					VCardProperty property = entry.getKey();
-					List<Warning> actualWarnings = entry.getValue();
+					List<ValidationWarning> actualWarnings = entry.getValue();
 
 					Integer[] expectedCodes = expectedPropCodes.remove(property);
 					if (expectedCodes == null) {

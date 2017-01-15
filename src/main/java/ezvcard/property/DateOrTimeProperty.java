@@ -7,7 +7,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Calscale;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
@@ -229,17 +229,17 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (date == null && partialDate == null && text == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
 			if (text != null) {
-				warnings.add(new Warning(11));
+				warnings.add(new ValidationWarning(11));
 			}
 			if (partialDate != null) {
-				warnings.add(new Warning(12));
+				warnings.add(new ValidationWarning(12));
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.util.GeoUri;
 
@@ -259,12 +259,12 @@ public class Geo extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (getLatitude() == null) {
-			warnings.add(new Warning(13));
+			warnings.add(new ValidationWarning(13));
 		}
 		if (getLongitude() == null) {
-			warnings.add(new Warning(14));
+			warnings.add(new ValidationWarning(14));
 		}
 	}
 

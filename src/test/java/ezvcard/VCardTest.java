@@ -474,10 +474,10 @@ public class VCardTest {
 		public VCard validateVCard;
 
 		@Override
-		public void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+		public void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 			validateVersion = version;
 			validateVCard = vcard;
-			warnings.add(new Warning(0));
+			warnings.add(new ValidationWarning(0));
 		}
 	}
 }

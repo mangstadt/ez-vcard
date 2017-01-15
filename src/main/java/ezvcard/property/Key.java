@@ -8,7 +8,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.KeyType;
 
 /*
@@ -197,13 +197,13 @@ public class Key extends BinaryProperty<KeyType> {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && data == null && text == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 
 		if (url != null && (version == VCardVersion.V2_1 || version == VCardVersion.V3_0)) {
-			warnings.add(new Warning(15));
+			warnings.add(new ValidationWarning(15));
 		}
 	}
 

@@ -8,7 +8,7 @@ import java.util.TimeZone;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.util.UtcOffset;
 import ezvcard.util.VCardDateFormat;
@@ -260,12 +260,12 @@ public class Timezone extends VCardProperty implements HasAltId {
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (offset == null && text == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 		if (offset == null && version == VCardVersion.V2_1) {
-			warnings.add(new Warning(20));
+			warnings.add(new ValidationWarning(20));
 		}
 	}
 

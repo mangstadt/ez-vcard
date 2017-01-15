@@ -49,7 +49,7 @@ public class ValidationWarningsTest {
 		ValidationWarnings warnings = new ValidationWarnings();
 		assertTrue(warnings.isEmpty());
 
-		warnings.add(null, new Warning(0));
+		warnings.add(null, new ValidationWarning(0));
 		assertFalse(warnings.isEmpty());
 	}
 
@@ -57,17 +57,17 @@ public class ValidationWarningsTest {
 	public void getByProperty() {
 		ValidationWarnings warnings = new ValidationWarnings();
 
-		Warning v0 = new Warning(0);
-		Warning v1 = new Warning(1);
-		Warning v2 = new Warning(2);
-		Warning v3 = new Warning(3);
+		ValidationWarning v0 = new ValidationWarning(0);
+		ValidationWarning v1 = new ValidationWarning(1);
+		ValidationWarning v2 = new ValidationWarning(2);
+		ValidationWarning v3 = new ValidationWarning(3);
 
 		warnings.add(new TestProperty1(), v0);
 		warnings.add(new TestProperty1(), v1);
 		warnings.add(new TestProperty2(), v2);
 		warnings.add(null, v3);
 
-		assertSetEquals(new HashSet<Warning>(warnings.getByProperty(TestProperty1.class)), v0, v1);
+		assertSetEquals(new HashSet<ValidationWarning>(warnings.getByProperty(TestProperty1.class)), v0, v1);
 		assertEquals(Arrays.asList(v2), warnings.getByProperty(TestProperty2.class));
 		assertEquals(Arrays.asList(v3), warnings.getByProperty(null));
 		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty3.class));
@@ -77,17 +77,17 @@ public class ValidationWarningsTest {
 	public void toString_() {
 		ValidationWarnings warnings = new ValidationWarnings();
 
-		warnings.add(null, new Warning("one"));
-		warnings.add(null, new Warning("two", 2));
-		warnings.add(new TestProperty1(), new Warning("three"));
-		warnings.add(new TestProperty1(), new Warning("four", 4));
+		warnings.add(null, new ValidationWarning("one"));
+		warnings.add(null, new ValidationWarning(2, "two"));
+		warnings.add(new TestProperty1(), new ValidationWarning("three"));
+		warnings.add(new TestProperty1(), new ValidationWarning(4, "four"));
 
 		//@formatter:off
 		List<String> expectedLines = Arrays.asList(
 			"one",
-			"W02: two",
+			"W02: " + Messages.INSTANCE.getValidationWarning(2, "two"),
 			"[TestProperty1] | three",
-			"[TestProperty1] | W04: four"
+			"[TestProperty1] | W04: " + Messages.INSTANCE.getValidationWarning(4, "four")
 		);
 		//@formatter:on
 		Collections.sort(expectedLines);

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.Pid;
 import ezvcard.util.Gobble;
@@ -226,9 +226,9 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	}
 
 	@Override
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		if (url == null && data == null) {
-			warnings.add(new Warning(8));
+			warnings.add(new ValidationWarning(8));
 		}
 	}
 

@@ -15,7 +15,7 @@ import ezvcard.Messages;
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.Warning;
+import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
 
@@ -130,12 +130,12 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @see VCard#validate
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
-	public final List<Warning> validate(VCardVersion version, VCard vcard) {
-		List<Warning> warnings = new ArrayList<Warning>(0);
+	public final List<ValidationWarning> validate(VCardVersion version, VCard vcard) {
+		List<ValidationWarning> warnings = new ArrayList<ValidationWarning>(0);
 
 		//check the supported versions
 		if (!isSupportedBy(version)) {
-			warnings.add(new Warning(2, Arrays.toString(getSupportedVersions())));
+			warnings.add(new ValidationWarning(2, Arrays.toString(getSupportedVersions())));
 		}
 
 		//check parameters
@@ -148,9 +148,9 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			if (!allowed.check(group)) {
 				if (syntax == SyntaxStyle.OLD) {
 					AllowedCharacters notAllowed = allowed.flip();
-					warnings.add(new Warning(32, group, notAllowed.toString(true)));
+					warnings.add(new ValidationWarning(32, group, notAllowed.toString(true)));
 				} else {
-					warnings.add(new Warning(23, group));
+					warnings.add(new ValidationWarning(23, group));
 				}
 			}
 		}
@@ -168,7 +168,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @param version the version to check the property against
 	 * @param vcard the vCard this property belongs to
 	 */
-	protected void _validate(List<Warning> warnings, VCardVersion version, VCard vcard) {
+	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		//empty
 	}
 
