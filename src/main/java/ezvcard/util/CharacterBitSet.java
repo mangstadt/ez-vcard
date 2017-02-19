@@ -3,7 +3,7 @@ package ezvcard.util;
 import java.util.BitSet;
 
 /*
- Copyright (c) 2012-2016, Michael Angstadt
+ Copyright (c) 2012-2017, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
