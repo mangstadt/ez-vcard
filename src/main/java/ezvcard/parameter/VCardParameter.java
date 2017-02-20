@@ -56,11 +56,23 @@ public class VCardParameter {
 	/**
 	 * Creates a new parameter.
 	 * @param value the value
-	 * @param preserveCase true to preserve the case of the value, false convert
-	 * it to lower-case
+	 * @param preserveCase not used
+	 * 
+	 * The program uses a configuration static value instead to define lower case.
 	 */
 	protected VCardParameter(String value, boolean preserveCase) {
-		this.value = (value == null || preserveCase) ? value : value.toLowerCase();
+		String param = null;
+		
+		if (value != null) {			
+			param = value;
+			if (LowerCaseConfig.isLowerCase()) {
+				param = value.toLowerCase();
+			} else {
+				param = value;
+			}			
+		}
+		
+		this.value = param;
 	}
 
 	/**

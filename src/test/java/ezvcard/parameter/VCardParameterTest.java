@@ -66,6 +66,7 @@ public class VCardParameterTest {
 
 	@Test
 	public void value_to_lowercase() {
+		LowerCaseConfig.setLowerCase(true);
 		VCardParameterImpl three = new VCardParameterImpl("THREE");
 		assertEquals("three", three.getValue());
 	}
