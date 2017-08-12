@@ -475,6 +475,22 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void write_foldLines() throws Exception {
+		VCard vcard = new VCard();
+		vcard.addNote("In the beginning God created the heavens and the earth. Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.");
+
+		//default should be "true"
+		String actual = Ezvcard.write(vcard).go();
+		assertTrue(actual.contains("\r\nNOTE:In the beginning God created the heavens and the earth. Now the earth \r\n was formless and empty\\, darkness was over the surface of the deep\\, and t\r\n he Spirit of God was hovering over the waters."));
+
+		actual = Ezvcard.write(vcard).foldLines(false).go();
+		assertTrue(actual.contains("\r\nNOTE:In the beginning God created the heavens and the earth. Now the earth was formless and empty\\, darkness was over the surface of the deep\\, and the Spirit of God was hovering over the waters."));
+
+		actual = Ezvcard.write(vcard).foldLines(true).go();
+		assertTrue(actual.contains("\r\nNOTE:In the beginning God created the heavens and the earth. Now the earth \r\n was formless and empty\\, darkness was over the surface of the deep\\, and t\r\n he Spirit of God was hovering over the waters."));
+	}
+
+	@Test
 	public void write_versionStrict() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);

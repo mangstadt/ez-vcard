@@ -52,6 +52,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	private VCardVersion version;
 	private boolean caretEncoding = false;
 	private Boolean includeTrailingSemicolons;
+	private boolean foldLines = true;
 	private TargetApplication targetApplication;
 
 	/**
@@ -113,6 +114,25 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 */
 	public ChainingTextWriter includeTrailingSemicolons(Boolean include) {
 		this.includeTrailingSemicolons = include;
+		return this;
+	}
+
+	/**
+	 * <p>
+	 * Sets whether to fold long lines. Line folding is when long lines are
+	 * split up into multiple lines. No data is lost or changed when a line is
+	 * folded.
+	 * </p>
+	 * <p>
+	 * Line folding is enabled by default. If the vCard consumer is not parsing
+	 * your vCards properly, disabling line folding may help.
+	 * </p>
+	 * @param foldLines true to enable line folding, false to disable it
+	 * (defaults to true)
+	 * @return this
+	 */
+	public ChainingTextWriter foldLines(boolean foldLines) {
+		this.foldLines = foldLines;
 		return this;
 	}
 
@@ -213,6 +233,9 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 		writer.setCaretEncodingEnabled(caretEncoding);
 		writer.setVersionStrict(versionStrict);
 		writer.setIncludeTrailingSemicolons(includeTrailingSemicolons);
+		if (!foldLines) {
+			writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+		}
 		writer.setTargetApplication(targetApplication);
 		if (index != null) {
 			writer.setScribeIndex(index);
