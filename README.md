@@ -55,6 +55,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**August 12, 2017**
+
+[Version 0.10.3](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a few improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **February 19, 2017**
 
 [Version 0.10.2](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -77,14 +81,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.10.2</version>
+   <version>0.10.3</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.10.2'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.10.3'
 ```
 
 # Build Instructions
@@ -143,7 +147,8 @@ Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 [isindir](https://github.com/isindir) ([Javadoc fix](https://github.com/mangstadt/ez-vcard/pull/53))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
-[Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))  
+[Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))
+[Alexander Myltsev](https://github.com/alexander-myltsev) ([Issue with folding quoted printable values](https://github.com/mangstadt/ez-vcard/issues/80))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
 [rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32), [trailing semicolons issue](https://github.com/mangstadt/ez-vcard/issues/57))  
 [Steven Ruppert](https://github.com/blendmaster) ([folding surrogate character pairs](https://github.com/mangstadt/ez-vcard/pull/36), [parsing tel URIs](https://github.com/mangstadt/ez-vcard/pull/38))  
