@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../syntaxhighlighter.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.parameter;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import ezvcard.property.ClientPidMap;<a name="line.3"></a>
+<span class="sourceLineNo">004</span><a name="line.4"></a>
+<span class="sourceLineNo">005</span>/*<a name="line.5"></a>
+<span class="sourceLineNo">006</span> Copyright (c) 2012-2017, Michael Angstadt<a name="line.6"></a>
+<span class="sourceLineNo">007</span> All rights reserved.<a name="line.7"></a>
+<span class="sourceLineNo">008</span><a name="line.8"></a>
+<span class="sourceLineNo">009</span> Redistribution and use in source and binary forms, with or without<a name="line.9"></a>
+<span class="sourceLineNo">010</span> modification, are permitted provided that the following conditions are met: <a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.12"></a>
+<span class="sourceLineNo">013</span> list of conditions and the following disclaimer. <a name="line.13"></a>
+<span class="sourceLineNo">014</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.14"></a>
+<span class="sourceLineNo">015</span> this list of conditions and the following disclaimer in the documentation<a name="line.15"></a>
+<span class="sourceLineNo">016</span> and/or other materials provided with the distribution. <a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.18"></a>
+<span class="sourceLineNo">019</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.19"></a>
+<span class="sourceLineNo">020</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.20"></a>
+<span class="sourceLineNo">021</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.21"></a>
+<span class="sourceLineNo">022</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.22"></a>
+<span class="sourceLineNo">023</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.23"></a>
+<span class="sourceLineNo">024</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.24"></a>
+<span class="sourceLineNo">025</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.25"></a>
+<span class="sourceLineNo">026</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.26"></a>
+<span class="sourceLineNo">027</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span> The views and conclusions contained in the software and documentation are those<a name="line.29"></a>
+<span class="sourceLineNo">030</span> of the authors and should not be interpreted as representing official policies, <a name="line.30"></a>
+<span class="sourceLineNo">031</span> either expressed or implied, of the FreeBSD Project.<a name="line.31"></a>
+<span class="sourceLineNo">032</span> */<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>/**<a name="line.34"></a>
+<span class="sourceLineNo">035</span> * Represents a PID parameter value. A PID uniquely identifies a property. They<a name="line.35"></a>
+<span class="sourceLineNo">036</span> * are used when two different versions of the same vCard have to be merged<a name="line.36"></a>
+<span class="sourceLineNo">037</span> * together (called "synchronizing").<a name="line.37"></a>
+<span class="sourceLineNo">038</span> * @author Michael Angstadt<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * @see &lt;a href="http://tools.ietf.org/html/rfc6350#section-5.5"&gt;RFC 6350<a name="line.39"></a>
+<span class="sourceLineNo">040</span> * Section 5.5&lt;/a&gt;<a name="line.40"></a>
+<span class="sourceLineNo">041</span> */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>public class Pid {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        private final Integer localId, clientPidMapReference;<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>        /**<a name="line.45"></a>
+<span class="sourceLineNo">046</span>         * Creates a new PID.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>         * @param localId the local ID (cannot be null, must be positive)<a name="line.47"></a>
+<span class="sourceLineNo">048</span>         * @param clientPidMapReference an integer that references the property's<a name="line.48"></a>
+<span class="sourceLineNo">049</span>         * globally unique ID (optional, must be positive). It must match the first<a name="line.49"></a>
+<span class="sourceLineNo">050</span>         * value in an existing {@link ClientPidMap} property<a name="line.50"></a>
+<span class="sourceLineNo">051</span>         * @throws NullPointerException if local ID is null<a name="line.51"></a>
+<span class="sourceLineNo">052</span>         */<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        public Pid(Integer localId, Integer clientPidMapReference) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                if (localId == null) {<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                        throw new NullPointerException("Local ID must not be null.");<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                }<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                this.localId = localId;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                this.clientPidMapReference = clientPidMapReference;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        }<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>        /**<a name="line.61"></a>
+<span class="sourceLineNo">062</span>         * Creates a new PID.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>         * @param localId the local ID (cannot be null, must be positive)<a name="line.63"></a>
+<span class="sourceLineNo">064</span>         * @throws NullPointerException if local ID is null<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        public Pid(Integer localId) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                this(localId, null);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>        /**<a name="line.70"></a>
+<span class="sourceLineNo">071</span>         * Gets the local ID<a name="line.71"></a>
+<span class="sourceLineNo">072</span>         * @return the local ID<a name="line.72"></a>
+<span class="sourceLineNo">073</span>         */<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        public Integer getLocalId() {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                return localId;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>        /**<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * Gets the reference to the property's globally unique ID (stored in a<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         * {@link ClientPidMap} property).<a name="line.80"></a>
+<span class="sourceLineNo">081</span>         * @return the reference ID or null if not set<a name="line.81"></a>
+<span class="sourceLineNo">082</span>         */<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        public Integer getClientPidMapReference() {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                return clientPidMapReference;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
+<span class="sourceLineNo">086</span><a name="line.86"></a>
+<span class="sourceLineNo">087</span>        /**<a name="line.87"></a>
+<span class="sourceLineNo">088</span>         * Parses a string into a {@link Pid} object.<a name="line.88"></a>
+<span class="sourceLineNo">089</span>         * @param value the string value (e.g. "1.2")<a name="line.89"></a>
+<span class="sourceLineNo">090</span>         * @return the {@link Pid} object<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @throws NumberFormatException if there's a problem parsing the string<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         */<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        public static Pid valueOf(String value) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                int dot = value.indexOf('.');<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                String localIdStr, clientPidMapReferenceStr;<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                if (dot &lt; 0) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        localIdStr = value;<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        clientPidMapReferenceStr = null;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                } else {<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                        localIdStr = value.substring(0, dot);<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                        clientPidMapReferenceStr = (dot == value.length() - 1) ? null : value.substring(dot + 1);<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                }<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>                Integer localId = Integer.valueOf(localIdStr);<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                Integer clientPidMapReference = (clientPidMapReferenceStr == null) ? null : Integer.valueOf(clientPidMapReferenceStr);<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                return new Pid(localId, clientPidMapReference);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        @Override<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        public String toString() {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                return (clientPidMapReference == null) ? Integer.toString(localId) : localId + "." + clientPidMapReference;<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        }<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>        @Override<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        public int hashCode() {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                final int prime = 31;<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                int result = 1;<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                result = prime * result + ((clientPidMapReference == null) ? 0 : clientPidMapReference.hashCode());<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                result = prime * result + localId.hashCode();<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                return result;<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        }<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>        @Override<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        public boolean equals(Object obj) {<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                if (this == obj) return true;<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                if (obj == null) return false;<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                if (getClass() != obj.getClass()) return false;<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                Pid other = (Pid) obj;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                if (clientPidMapReference == null) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                        if (other.clientPidMapReference != null) return false;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                } else if (!clientPidMapReference.equals(other.clientPidMapReference)) return false;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                if (!localId.equals(other.localId)) return false;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                return true;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        }<a name="line.134"></a>
+<span class="sourceLineNo">135</span>}<a name="line.135"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
