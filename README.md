@@ -147,7 +147,7 @@ Juliane Dombrowski ([quoted-printable line folding](https://github.com/mangstadt
 F. Gaffron ([quoted-printable charsets](https://github.com/mangstadt/ez-vcard/issues/12))  
 [isindir](https://github.com/isindir) ([Javadoc fix](https://github.com/mangstadt/ez-vcard/pull/53))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
-[Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))
+[Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))  
 [Alexander Myltsev](https://github.com/alexander-myltsev) ([Issue with folding quoted printable values](https://github.com/mangstadt/ez-vcard/issues/80))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
 [NeverWise](https://github.com/NeverWise) ([chaining parser & custom scribes issue](https://github.com/mangstadt/ez-vcard/issues/81))  
