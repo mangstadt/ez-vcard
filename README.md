@@ -150,6 +150,7 @@ knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](h
 [Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))
 [Alexander Myltsev](https://github.com/alexander-myltsev) ([Issue with folding quoted printable values](https://github.com/mangstadt/ez-vcard/issues/80))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
+[NeverWise](https://github.com/NeverWise) ([chaining parser & custom scribes issue](https://github.com/mangstadt/ez-vcard/issues/81))  
 [rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32), [trailing semicolons issue](https://github.com/mangstadt/ez-vcard/issues/57))  
 [Steven Ruppert](https://github.com/blendmaster) ([folding surrogate character pairs](https://github.com/mangstadt/ez-vcard/pull/36), [parsing tel URIs](https://github.com/mangstadt/ez-vcard/pull/38))  
 Melchin Sapir (README suggestion)  

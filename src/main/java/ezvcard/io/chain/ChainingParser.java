@@ -142,6 +142,10 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 */
 	public List<VCard> all() throws IOException {
 		StreamReader reader = constructReader();
+		if (index != null) {
+			reader.setScribeIndex(index);
+		}
+
 		try {
 			List<VCard> vcards = new ArrayList<VCard>();
 			VCard vcard;
