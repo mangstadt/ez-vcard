@@ -48,7 +48,7 @@ import ezvcard.util.UtcOffset;
 import freemarker.template.TemplateException;
 
 /*
- Copyright (c) 2012-2017, Michael Angstadt
+ Copyright (c) 2012-2018, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
