@@ -54,6 +54,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**April 7, 2018**
+
+[Version 0.10.4](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a few improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **August 12, 2017**
 
 [Version 0.10.3](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a few improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -66,10 +70,6 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 [Version 0.10.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a number of improvements and bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
-**October 8, 2016**
-
-[Version 0.10.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release contains mostly refactorings to support a newly integrated library.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
 # Maven/Gradle
@@ -80,14 +80,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.10.3</version>
+   <version>0.10.4</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.10.3'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.10.4'
 ```
 
 # Build Instructions
@@ -106,7 +106,6 @@ You have some options:
 
  * [Issue tracker](https://github.com/mangstadt/ez-vcard/issues)
  * [Gitter chat room](https://gitter.im/mangstadt/ez-vcard)
- * [codewake Q&A forum](https://www.codewake.com/p/ez-vcard)
  * [Post a question to StackOverflow](http://stackoverflow.com/questions/ask) with `vcard` as a tag.
  * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
