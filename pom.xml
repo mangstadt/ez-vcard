@@ -231,7 +231,7 @@
 					<encoding>UTF-8</encoding>
 					<linksource>true</linksource>
 					<links>
-						<link>http://mangstadt.github.io/vinnie/javadocs/latest/</link>
+						<link>https://mangstadt.github.io/vinnie/javadocs/latest/</link>
 						<link>http://freemarker.incubator.apache.org/docs/api</link>
 						<link>http://jsoup.org/apidocs/</link>
 						<link>http://fasterxml.github.io/jackson-core/javadoc/2.6/</link>
