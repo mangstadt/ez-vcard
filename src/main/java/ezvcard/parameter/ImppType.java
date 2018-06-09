@@ -50,7 +50,7 @@ public class ImppType extends VCardParameter {
 	public static final ImppType MOBILE = new ImppType("mobile");
 	public static final ImppType PREF = new ImppType("pref");
 
-	private ImppType(String value) {
+	ImppType(String value) {
 		super(value);
 	}
 

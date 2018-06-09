@@ -93,7 +93,7 @@ public class EmailType extends VCardParameter {
 	@SupportedVersions(V4_0)
 	public static final EmailType WORK = new EmailType("work");
 
-	private EmailType(String value) {
+	EmailType(String value) {
 		super(value);
 	}
 

@@ -68,7 +68,7 @@ public class AddressType extends VCardParameter {
 	@SupportedVersions({ V2_1, V3_0 })
 	public static final AddressType PREF = new AddressType("pref");
 
-	private AddressType(String value) {
+	AddressType(String value) {
 		super(value);
 	}
 
