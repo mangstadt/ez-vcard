@@ -220,8 +220,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	/**
 	 * Unmarshals a property's value from an XML document (xCard).
 	 * @param element the property's XML element
-	 * @param parameters the parsed para
-	 * @param context the parse contextmeters
+	 * @param parameters the parsed parameters
+	 * @param context the parse context
 	 * @return the unmarshalled property
 	 * @throws CannotParseException if the marshaller could not parse the
 	 * property's value
