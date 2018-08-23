@@ -44,12 +44,11 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 # Features
 
  * Simple, intuitive API (see [Examples](https://github.com/mangstadt/ez-vcard/wiki/Examples)).
- * Streaming API.
- * Android compatibility (see [ez-vcard-android](https://github.com/mangstadt/ez-vcard-android) project).
+ * Android compatibility.
  * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Extensive unit test coverage.
- * Low Java version requirement (1.5 or above, 1.6 for jCards).
+ * Low Java version requirement (1.5 or above).
  * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
@@ -110,6 +109,10 @@ You have some options:
  * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
+
+# Android
+
+The [ez-vcard-android project](https://github.com/mangstadt/ez-vcard-android) interfaces between ez-vcard and the native Android APIs.  Note, however, that it is not being actively maintained.
 
 # Credits
 
