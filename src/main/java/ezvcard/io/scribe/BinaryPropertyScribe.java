@@ -233,8 +233,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	/**
-	 * Builds a {@link MediaTypeParameter} object based on the information in
-	 * the MEDIATYPE parameter or data URI of 4.0 vCards.
+	 * Builds a {@link MediaTypeParameter} object based on the value of the
+	 * MEDIATYPE parameter or data URI of 4.0 vCards.
 	 * @param mediaType the media type string (e.g. "image/jpeg")
 	 * @return the media type object
 	 */
@@ -255,11 +255,30 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 */
 	protected abstract U _mediaTypeFromFileExtension(String extension);
 
+	/**
+	 * Creates a new instance of the property object from a URI.
+	 * @param uri the URI
+	 * @param contentType the content type or null if unknown
+	 * @return the property object
+	 */
 	protected abstract T _newInstance(String uri, U contentType);
 
+	/**
+	 * Creates a new instance of the property object from binary data.
+	 * @param data the data
+	 * @param contentType the content type or null if unknown
+	 * @return the property object
+	 */
 	protected abstract T _newInstance(byte data[], U contentType);
 
-	private U parseContentType(String value, VCardParameters parameters, VCardVersion version) {
+	/**
+	 * Tries to determine a property value's content type by looking at the
+	 * property's parameters.
+	 * @param parameters the parameters
+	 * @param version the vCard version
+	 * @return the content type or null if it can't be found
+	 */
+	protected U parseContentTypeFromParameters(VCardParameters parameters, VCardVersion version) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
@@ -278,13 +297,38 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			break;
 		}
 
+		return null;
+	}
+
+	/**
+	 * Tries to determine a property value's content type by looking at the
+	 * property's parameters and value.
+	 * @param value the property value
+	 * @param parameters the property parameters
+	 * @param version the vCard version
+	 * @return the content type or null if it can't be found
+	 */
+	protected U parseContentTypeFromValueAndParameters(String value, VCardParameters parameters, VCardVersion version) {
+		U contentType = parseContentTypeFromParameters(parameters, version);
+		if (contentType != null) {
+			return contentType;
+		}
+
 		//look for a file extension in the property value
 		String extension = getFileExtension(value);
 		return (extension == null) ? null : _mediaTypeFromFileExtension(extension);
 	}
 
-	private T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
-		U contentType = parseContentType(value, parameters, version);
+	/**
+	 * Parses the property.
+	 * @param value the property value
+	 * @param dataType the data type
+	 * @param parameters the property parameters
+	 * @param version the vCard version
+	 * @return the parsed property
+	 */
+	protected T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
+		U contentType = parseContentTypeFromValueAndParameters(value, parameters, version);
 
 		switch (version) {
 		case V2_1:
