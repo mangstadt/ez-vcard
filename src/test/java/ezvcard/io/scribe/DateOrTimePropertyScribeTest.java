@@ -57,7 +57,7 @@ public class DateOrTimePropertyScribeTest {
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final DateOrTimeScribeImpl scribe = new DateOrTimeScribeImpl();
-	private final Sensei<DateOrTimeTypeImpl> sensei = new Sensei<DateOrTimeTypeImpl>(scribe);
+	private final Sensei<DateOrTimePropertyImpl> sensei = new Sensei<DateOrTimePropertyImpl>(scribe);
 
 	private final Date date = date("1980-06-05");
 	private final String dateStr = "19800605";
@@ -74,31 +74,31 @@ public class DateOrTimePropertyScribeTest {
 	private final String text = "Sometime in, ;1980;";
 	private final String textEscaped = "Sometime in\\, \\;1980\\;";
 
-	private final DateOrTimeTypeImpl withDate = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withDate = new DateOrTimePropertyImpl();
 	{
 		withDate.setDate(date, false);
 	}
-	private final DateOrTimeTypeImpl withDateTime = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withDateTime = new DateOrTimePropertyImpl();
 	{
 		withDateTime.setDate(dateTime, true);
 	}
-	private final DateOrTimeTypeImpl withPartialDate = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withPartialDate = new DateOrTimePropertyImpl();
 	{
 		withPartialDate.setPartialDate(partialDate);
 	}
-	private final DateOrTimeTypeImpl withPartialTime = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withPartialTime = new DateOrTimePropertyImpl();
 	{
 		withPartialTime.setPartialDate(partialTime);
 	}
-	private final DateOrTimeTypeImpl withPartialDateTime = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withPartialDateTime = new DateOrTimePropertyImpl();
 	{
 		withPartialDateTime.setPartialDate(partialDateTime);
 	}
-	private final DateOrTimeTypeImpl withText = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl withText = new DateOrTimePropertyImpl();
 	{
 		withText.setText(text);
 	}
-	private final DateOrTimeTypeImpl empty = new DateOrTimeTypeImpl();
+	private final DateOrTimePropertyImpl empty = new DateOrTimePropertyImpl();
 
 	@Test
 	public void dataType() {
@@ -209,42 +209,42 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertParseHtml("<time>June 5, 1980</time>").cannotParse(5);
 	}
 
-	private static class DateOrTimeScribeImpl extends DateOrTimePropertyScribe<DateOrTimeTypeImpl> {
+	private static class DateOrTimeScribeImpl extends DateOrTimePropertyScribe<DateOrTimePropertyImpl> {
 		public DateOrTimeScribeImpl() {
-			super(DateOrTimeTypeImpl.class, "DATETIME");
+			super(DateOrTimePropertyImpl.class, "DATETIME");
 		}
 
 		@Override
-		protected DateOrTimeTypeImpl newInstance(String text) {
-			DateOrTimeTypeImpl property = new DateOrTimeTypeImpl();
+		protected DateOrTimePropertyImpl newInstance(String text) {
+			DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 			property.setText(text);
 			return property;
 		}
 
 		@Override
-		protected DateOrTimeTypeImpl newInstance(Date date, boolean hasTime) {
-			DateOrTimeTypeImpl property = new DateOrTimeTypeImpl();
+		protected DateOrTimePropertyImpl newInstance(Date date, boolean hasTime) {
+			DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 			property.setDate(date, hasTime);
 			return property;
 		}
 
 		@Override
-		protected DateOrTimeTypeImpl newInstance(PartialDate partialDate) {
-			DateOrTimeTypeImpl property = new DateOrTimeTypeImpl();
+		protected DateOrTimePropertyImpl newInstance(PartialDate partialDate) {
+			DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 			property.setPartialDate(partialDate);
 			return property;
 		}
 	}
 
-	private static class DateOrTimeTypeImpl extends DateOrTimeProperty {
-		public DateOrTimeTypeImpl() {
+	private static class DateOrTimePropertyImpl extends DateOrTimeProperty {
+		public DateOrTimePropertyImpl() {
 			super((Date) null);
 		}
 	}
 
-	private Check<DateOrTimeTypeImpl> hasText(final String text) {
-		return new Check<DateOrTimeTypeImpl>() {
-			public void check(DateOrTimeTypeImpl property) {
+	private Check<DateOrTimePropertyImpl> hasText(final String text) {
+		return new Check<DateOrTimePropertyImpl>() {
+			public void check(DateOrTimePropertyImpl property) {
 				assertNull(property.getDate());
 				assertNull(property.getPartialDate());
 				assertEquals(text, property.getText());

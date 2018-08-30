@@ -53,7 +53,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  */
 public class BinaryPropertyScribeTest {
 	private final BinaryPropertyScribeImpl scribe = new BinaryPropertyScribeImpl();
-	private final Sensei<BinaryTypeImpl> sensei = new Sensei<BinaryTypeImpl>(scribe);
+	private final Sensei<BinaryPropertyImpl> sensei = new Sensei<BinaryPropertyImpl>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
 	private final String urlUnknownExtension = "http://example.com/image.aaa";
@@ -63,23 +63,23 @@ public class BinaryPropertyScribeTest {
 	private final String dataUri = new DataUri("image/jpeg", data).toString();
 	private final String dataUriNoContentType = new DataUri("application/octet-stream", data).toString();
 
-	private final BinaryTypeImpl withUrl = new BinaryTypeImpl();
+	private final BinaryPropertyImpl withUrl = new BinaryPropertyImpl();
 	{
 		withUrl.setUrl(url, ImageType.JPEG);
 		withUrl.getParameters().setEncoding(Encoding._8BIT); //ENCODING parameter (if one exists) should be removed when written
 	}
-	private final BinaryTypeImpl withDataNoContentType = new BinaryTypeImpl();
+	private final BinaryPropertyImpl withDataNoContentType = new BinaryPropertyImpl();
 	{
 		withDataNoContentType.setData(data, null);
 	}
-	private final BinaryTypeImpl withData = new BinaryTypeImpl();
+	private final BinaryPropertyImpl withData = new BinaryPropertyImpl();
 	{
 		withData.setData(data, ImageType.JPEG);
 		withData.setType("work");
 		withData.getParameters().setEncoding(Encoding._8BIT); //ENCODING parameter (if one exists) should be removed/overwritten when written
 		withData.getParameters().setMediaType("foo"); //MEDIATYPE parameter (if one exists) should be removed when written
 	}
-	private final BinaryTypeImpl empty = new BinaryTypeImpl();
+	private final BinaryPropertyImpl empty = new BinaryPropertyImpl();
 
 	@Test
 	public void dataType() {
@@ -291,9 +291,9 @@ public class BinaryPropertyScribeTest {
 		sensei.assertParseJson(dataUri).run(hasData(data, ImageType.JPEG));
 	}
 
-	private static class BinaryPropertyScribeImpl extends BinaryPropertyScribe<BinaryTypeImpl, ImageType> {
+	private static class BinaryPropertyScribeImpl extends BinaryPropertyScribe<BinaryPropertyImpl, ImageType> {
 		public BinaryPropertyScribeImpl() {
-			super(BinaryTypeImpl.class, "BINARY");
+			super(BinaryPropertyImpl.class, "BINARY");
 		}
 
 		@Override
@@ -312,30 +312,28 @@ public class BinaryPropertyScribeTest {
 		}
 
 		@Override
-		protected BinaryTypeImpl _newInstance(String uri, ImageType contentType) {
-			BinaryTypeImpl property = new BinaryTypeImpl();
+		protected BinaryPropertyImpl _newInstance(String uri, ImageType contentType) {
+			BinaryPropertyImpl property = new BinaryPropertyImpl();
 			property.setUrl(uri, contentType);
 			return property;
 		}
 
 		@Override
-		protected BinaryTypeImpl _newInstance(byte[] data, ImageType contentType) {
-			BinaryTypeImpl property = new BinaryTypeImpl();
+		protected BinaryPropertyImpl _newInstance(byte[] data, ImageType contentType) {
+			BinaryPropertyImpl property = new BinaryPropertyImpl();
 			property.setData(data, contentType);
 			return property;
 		}
 
 	}
 
-	private static class BinaryTypeImpl extends BinaryProperty<ImageType> {
-		public BinaryTypeImpl() {
-			super((String) null, null);
-		}
+	private static class BinaryPropertyImpl extends BinaryProperty<ImageType> {
+		//empty
 	}
 
-	private Check<BinaryTypeImpl> hasUrl(final String url, final ImageType contentType) {
-		return new Check<BinaryTypeImpl>() {
-			public void check(BinaryTypeImpl actual) {
+	private Check<BinaryPropertyImpl> hasUrl(final String url, final ImageType contentType) {
+		return new Check<BinaryPropertyImpl>() {
+			public void check(BinaryPropertyImpl actual) {
 				assertEquals(url, actual.getUrl());
 				assertNull(actual.getData());
 				assertEquals(contentType, actual.getContentType());
@@ -343,9 +341,9 @@ public class BinaryPropertyScribeTest {
 		};
 	}
 
-	private Check<BinaryTypeImpl> hasData(final byte[] data, final ImageType contentType) {
-		return new Check<BinaryTypeImpl>() {
-			public void check(BinaryTypeImpl actual) {
+	private Check<BinaryPropertyImpl> hasData(final byte[] data, final ImageType contentType) {
+		return new Check<BinaryPropertyImpl>() {
+			public void check(BinaryPropertyImpl actual) {
 				assertNull(actual.getUrl());
 				assertArrayEquals(data, actual.getData());
 				assertEquals(contentType, actual.getContentType());
