@@ -125,7 +125,7 @@ public class KeyTest {
 		assertValidate(withUrl).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(15);
 		assertValidate(withUrl).versions(VCardVersion.V4_0).run();
 
-		Key withText = new Key((String) null, KeyType.PGP);
+		Key withText = new Key();
 		withText.setText("abc123", KeyType.PGP);
 		assertValidate(withText).run();
 	}
