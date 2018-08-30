@@ -102,11 +102,12 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 
 	@Override
 	protected Key _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
+		value = VObjectPropertyValues.unescape(value);
+
 		/*
 		 * Parse as text if VALUE parameter is explicitly set to TEXT.
 		 */
 		if (dataType == VCardDataType.TEXT) {
-			value = VObjectPropertyValues.unescape(value);
 			KeyType contentType = parseContentTypeFromValueAndParameters(value, parameters, context.getVersion());
 			Key property = new Key();
 			property.setText(value, contentType);
