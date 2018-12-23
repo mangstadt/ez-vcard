@@ -55,7 +55,7 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 **December 23, 2018**
 
-[[Version 0.10.5|https://github.com/mangstadt/ez-vcard/wiki/Downloads]] released.  This release adds a bug fix and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+[Version 0.10.5](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a bug fix and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 **April 7, 2018**
 
