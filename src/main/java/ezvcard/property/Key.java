@@ -56,6 +56,10 @@ import ezvcard.parameter.KeyType;
  * Key key = new Key("http://www.mywebsite.com/my-public-key.pgp", KeyType.PGP);
  * vcard.addKey(key);
  * 
+ * //URI
+ * Key key = new Key("OPENPGP4FPR:ABAF11C65A2970B130ABE3C479BE3E4300411886", null);
+ * vcard.addKey(key);
+ * 
  * //binary data
  * byte data[] = ...
  * key = new Key(data, KeyType.PGP);
@@ -128,8 +132,9 @@ public class Key extends BinaryProperty<KeyType> {
 
 	/**
 	 * Creates a key property.
-	 * @param url the URL to the key (vCard 4.0 only)
-	 * @param type the type of key (e.g. PGP)
+	 * @param url the URI or URL to the key
+	 * @param type the type of key (e.g. PGP) or null if the type can be
+	 * identified from the URI
 	 */
 	public Key(String url, KeyType type) {
 		super(url, type);
@@ -184,10 +189,25 @@ public class Key extends BinaryProperty<KeyType> {
 		return text;
 	}
 
+	/**
+	 * Sets the URL or URI of the key.
+	 * @param url the URL or URI of the key
+	 * @param type the type of key (e.g. PGP) or null if the type can be
+	 * identified from the URI
+	 */
 	@Override
 	public void setUrl(String url, KeyType type) {
 		super.setUrl(url, type);
 		text = null;
+	}
+
+	/**
+	 * Gets the URL or URI of the key.
+	 * @return the URL/URI or null if there is none
+	 */
+	@Override
+	public String getUrl() {
+		return super.getUrl();
 	}
 
 	@Override

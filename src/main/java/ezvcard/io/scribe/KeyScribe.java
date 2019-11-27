@@ -57,6 +57,14 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 			return VCardDataType.TEXT;
 		}
 
+		/*
+		 * Always use the URI data type with URL/URIs for consistency (even
+		 * though 2.1 technically only supports the "URL" data type).
+		 */
+		if (property.getUrl() != null) {
+			return VCardDataType.URI;
+		}
+
 		return super._dataType(property, version);
 	}
 

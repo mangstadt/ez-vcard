@@ -70,8 +70,7 @@ public class KeyScribeTest {
 
 	@Test
 	public void dataType() {
-		sensei.assertDataType(withUrl).versions(V2_1).run(URL);
-		sensei.assertDataType(withUrl).versions(V3_0, V4_0).run(URI);
+		sensei.assertDataType(withUrl).run(URI);
 
 		sensei.assertDataType(withData).versions(V2_1, V3_0).run(null);
 		sensei.assertDataType(withData).versions(V4_0).run(URI);
