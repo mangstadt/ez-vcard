@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -108,6 +109,40 @@ public class VCardDateFormatTest {
 		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1Z"));
 		c.set(Calendar.MILLISECOND, 124);
 		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1239Z")); //round
+	}
+
+	/**
+	 * Allow single digit month and/or date as long as there are dashes.
+	 */
+	@Test
+	public void parse_single_digit_month_and_date() throws Exception {
+		{
+			Date date = date("2012-07-01");
+
+			assertEquals(date, VCardDateFormat.parse("2012-07-1"));
+			assertEquals(date, VCardDateFormat.parse("2012-7-01"));
+			assertEquals(date, VCardDateFormat.parse("2012-7-1"));
+
+			try {
+				VCardDateFormat.parse("201271");
+				fail();
+			} catch (IllegalArgumentException e) {
+				//expected
+			}
+		}
+
+		{
+			Date ambiguous = date("2012-11-03");
+
+			assertEquals(ambiguous, VCardDateFormat.parse("2012-11-3"));
+
+			try {
+				VCardDateFormat.parse("2012113"); //Jan 13 or Nov 3?
+				fail();
+			} catch (IllegalArgumentException e) {
+				//expected
+			}
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)

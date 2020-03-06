@@ -229,7 +229,10 @@ public enum VCardDateFormat {
 	private static class TimestampPattern {
 		//@formatter:off
 		private static final Pattern regex = Pattern.compile(
-			"^(\\d{4})-?(\\d{2})-?(\\d{2})" +
+			"^(\\d{4})(" +
+				"-?(\\d{2})-?(\\d{2})|" +
+				"-(\\d{1,2})-(\\d{1,2})" + //allow single digit month and/or date as long as there are dashes
+			")" + 
 			"(" +
 				"T(\\d{2}):?(\\d{2}):?(\\d{2})(\\.\\d+)?" +
 				"(" +
@@ -256,63 +259,70 @@ public enum VCardDateFormat {
 		}
 
 		public int month() {
-			return parseInt(2);
+			return parseInt(3, 5);
 		}
 
 		public int date() {
-			return parseInt(3);
+			return parseInt(4, 6);
 		}
 
 		public boolean hasTime() {
-			return m.group(5) != null;
+			return m.group(8) != null;
 		}
 
 		public int hour() {
-			return parseInt(5);
+			return parseInt(8);
 		}
 
 		public int minute() {
-			return parseInt(6);
+			return parseInt(9);
 		}
 
 		public int second() {
-			return parseInt(7);
+			return parseInt(10);
 		}
 
 		public int millisecond() {
-			if (m.group(8) == null) {
+			String s = m.group(11);
+			if (s == null) {
 				return 0;
 			}
 
-			double ms = Double.parseDouble(m.group(8)) * 1000;
+			double ms = Double.parseDouble(s) * 1000;
 			return (int) Math.round(ms);
 		}
 
 		public boolean hasOffset() {
-			return m.group(9) != null;
+			return m.group(12) != null;
 		}
 
 		public int offsetMillis() {
-			if (m.group(9).equals("Z")) {
+			if (m.group(12).equals("Z")) {
 				return 0;
 			}
 
-			int positive = m.group(10).equals("+") ? 1 : -1;
+			int positive = m.group(13).equals("+") ? 1 : -1;
 
 			int offsetHour, offsetMinute;
-			if (m.group(12) != null) {
-				offsetHour = parseInt(12);
+			if (m.group(15) != null) {
+				offsetHour = parseInt(15);
 				offsetMinute = 0;
 			} else {
-				offsetHour = parseInt(14);
-				offsetMinute = parseInt(15);
+				offsetHour = parseInt(17);
+				offsetMinute = parseInt(18);
 			}
 
 			return (offsetHour * 60 * 60 * 1000 + offsetMinute * 60 * 1000) * positive;
 		}
 
-		private int parseInt(int group) {
-			return Integer.parseInt(m.group(group));
+		private int parseInt(int... group) {
+			for (int g : group) {
+				String s = m.group(g);
+				if (s != null) {
+					return Integer.parseInt(s);
+				}
+			}
+			throw new NullPointerException();
 		}
 	}
 
