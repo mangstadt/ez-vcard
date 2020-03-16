@@ -232,9 +232,9 @@
 					<linksource>true</linksource>
 					<links>
 						<link>https://mangstadt.github.io/vinnie/javadocs/latest/</link>
-						<link>http://freemarker.incubator.apache.org/docs/api</link>
+						<link>https://freemarker.apache.org/docs/api</link>
 						<link>http://jsoup.org/apidocs/</link>
-						<link>http://fasterxml.github.io/jackson-core/javadoc/2.6/</link>
+						<link>http://fasterxml.github.io/jackson-core/javadoc/2.10</link>
 					</links>
 					<quiet>true</quiet>
 					
