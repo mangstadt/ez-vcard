@@ -91,7 +91,7 @@ public enum VCardVersion {
 	 * @param version the text representation
 	 * @param xmlNamespace the xCard namespace or null if not defined
 	 */
-	private VCardVersion(String version, SyntaxStyle syntaxStyle, String xmlNamespace) {
+	VCardVersion(String version, SyntaxStyle syntaxStyle, String xmlNamespace) {
 		this.version = version;
 		this.syntaxStyle = syntaxStyle;
 		this.xmlNamespace = xmlNamespace;

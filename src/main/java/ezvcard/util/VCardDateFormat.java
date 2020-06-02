@@ -138,7 +138,7 @@ public enum VCardDateFormat {
 	 * @param formatStr the {@link SimpleDateFormat} format string used for
 	 * formatting dates.
 	 */
-	private VCardDateFormat(String formatStr) {
+	VCardDateFormat(String formatStr) {
 		this.formatStr = formatStr;
 	}
 

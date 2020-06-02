@@ -38,7 +38,7 @@ public enum Messages {
 
 	private final ResourceBundle messages;
 
-	private Messages() {
+	Messages() {
 		messages = ResourceBundle.getBundle("ezvcard/messages");
 	}
 
