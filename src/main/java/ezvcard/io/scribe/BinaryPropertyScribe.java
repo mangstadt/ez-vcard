@@ -185,7 +185,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return _newInstance(uri.getData(), mediaType);
 		} catch (IllegalArgumentException e) {
 			//not a data URI
-			U mediaType = null;
+			U mediaType;
 			String type = element.attr("type");
 			if (type.length() > 0) {
 				mediaType = _mediaTypeFromMediaTypeParameter(type);
