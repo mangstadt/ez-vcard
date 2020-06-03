@@ -376,7 +376,7 @@ public final class GeoUri {
 			} else {
 				if (sb == null) {
 					sb = new StringBuilder(value.length() * 2);
-					sb.append(value.substring(0, i));
+					sb.append(value, 0, i);
 				}
 				String hex = Integer.toString(c, 16);
 				sb.append('%').append(hex);
