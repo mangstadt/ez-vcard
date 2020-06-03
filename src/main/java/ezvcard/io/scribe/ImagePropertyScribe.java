@@ -65,7 +65,7 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 		}
 
 		String src = element.absUrl("src");
-		if (src.length() == 0) {
+		if (src.isEmpty()) {
 			throw new CannotParseException(13);
 		}
 

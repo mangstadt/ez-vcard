@@ -148,7 +148,7 @@ public final class PartialDate {
 		if (afterT == null) {
 			//date or time
 			success = parseDate(beforeT, builder) || parseTime(beforeT, builder);
-		} else if (beforeT.length() == 0) {
+		} else if (beforeT.isEmpty()) {
 			//time
 			success = parseTime(afterT, builder);
 		} else {

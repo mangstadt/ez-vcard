@@ -533,7 +533,7 @@ public class XCardDocument {
 			for (Element child : children) {
 				if (XmlUtils.hasQName(child, GROUP)) {
 					String group = child.getAttribute("name");
-					if (group.length() == 0) {
+					if (group.isEmpty()) {
 						group = null;
 					}
 					List<Element> grandChildren = XmlUtils.toElementList(child.getChildNodes());

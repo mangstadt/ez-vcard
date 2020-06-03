@@ -371,7 +371,7 @@ public class VCardReader extends StreamReader {
 			 * If the property does not have a value, a nested vCard is expected
 			 * to be next (2.1 style).
 			 */
-			if (value.trim().length() == 0) {
+			if (value.trim().isEmpty()) {
 				embeddedVCardException = exception;
 				return;
 			}

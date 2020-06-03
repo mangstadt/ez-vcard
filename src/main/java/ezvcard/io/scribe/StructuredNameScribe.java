@@ -151,7 +151,7 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 	}
 
 	private static String s(String value) {
-		return (value == null || value.length() == 0) ? null : value;
+		return (value == null || value.isEmpty()) ? null : value;
 	}
 
 	@Override

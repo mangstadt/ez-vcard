@@ -253,7 +253,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	}
 
 	private Timezone parse(String value, VCardDataType dataType, ParseContext context) {
-		if (value == null || value.length() == 0) {
+		if (value == null || value.isEmpty()) {
 			return new Timezone((String) null);
 		}
 

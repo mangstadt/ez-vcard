@@ -104,7 +104,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	@Override
 	protected Impp _parseHtml(HCardElement element, ParseContext context) {
 		String href = element.attr("href");
-		if (href.length() == 0) {
+		if (href.isEmpty()) {
 			href = element.value();
 		}
 
@@ -135,7 +135,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	private Impp parse(String value) {
-		if (value == null || value.length() == 0) {
+		if (value == null || value.isEmpty()) {
 			return new Impp((URI) null);
 		}
 

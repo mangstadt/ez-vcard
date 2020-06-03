@@ -102,7 +102,7 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 		}
 
 		String url = element.absUrl("href");
-		if (url.length() == 0) {
+		if (url.isEmpty()) {
 			url = element.value();
 		}
 		property.setUrl(url);

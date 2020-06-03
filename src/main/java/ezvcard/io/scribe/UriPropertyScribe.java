@@ -43,7 +43,7 @@ public abstract class UriPropertyScribe<T extends TextProperty> extends StringPr
 	@Override
 	protected T _parseHtml(HCardElement element, ParseContext context) {
 		String href = element.absUrl("href");
-		if (href.length() == 0) {
+		if (href.isEmpty()) {
 			return super._parseHtml(element, context);
 		}
 		return _parseValue(href);

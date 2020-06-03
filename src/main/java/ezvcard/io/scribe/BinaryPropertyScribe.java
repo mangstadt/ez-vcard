@@ -174,7 +174,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		}
 
 		String data = element.absUrl("data");
-		if (data.length() == 0) {
+		if (data.isEmpty()) {
 			throw new CannotParseException(2);
 		}
 

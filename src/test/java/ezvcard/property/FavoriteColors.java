@@ -157,7 +157,7 @@ public class FavoriteColors extends VCardProperty {
 			FavoriteColors property = new FavoriteColors();
 
 			String lang = element.attr("lang");
-			property.setLanguage((lang.length() == 0) ? null : lang);
+			property.setLanguage((lang.isEmpty()) ? null : lang);
 
 			property.getColors().addAll(element.allValues("color")); //gets the hCard values of all descendant elements that have a CSS class named "color"
 

@@ -81,7 +81,7 @@ public class HCardElement {
 	 */
 	public String absUrl(String name) {
 		String url = element.absUrl(name); //returns empty string for some protocols like "tel:" and "data:", but not for "http:" or "mailto:"
-		if (url.length() == 0) {
+		if (url.isEmpty()) {
 			url = element.attr(name);
 		}
 		return url;

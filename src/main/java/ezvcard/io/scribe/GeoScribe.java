@@ -68,7 +68,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 
 	@Override
 	protected Geo _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
-		if (value.length() == 0) {
+		if (value.isEmpty()) {
 			return new Geo((GeoUri) null);
 		}
 
@@ -114,7 +114,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	protected Geo _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
 		String value = element.first(VCardDataType.URI);
 		if (value != null) {
-			if (value.length() == 0) {
+			if (value.isEmpty()) {
 				return new Geo((GeoUri) null);
 			}
 			return parseGeoUri(value);
@@ -160,7 +160,7 @@ public class GeoScribe extends VCardPropertyScribe<Geo> {
 	@Override
 	protected Geo _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		String valueStr = value.asSingle();
-		if (valueStr.length() == 0) {
+		if (valueStr.isEmpty()) {
 			return new Geo((GeoUri) null);
 		}
 		return parseGeoUri(valueStr);

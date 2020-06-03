@@ -41,7 +41,7 @@ public class CategoriesScribe extends ListPropertyScribe<Categories> {
 	@Override
 	protected Categories _parseHtml(HCardElement element, ParseContext context) {
 		String value = element.attr("rel");
-		if (value.length() == 0) {
+		if (value.isEmpty()) {
 			value = element.value();
 		}
 
