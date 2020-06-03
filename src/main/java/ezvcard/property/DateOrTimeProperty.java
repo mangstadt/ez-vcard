@@ -113,7 +113,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 */
 	public void setDate(Date date, boolean hasTime) {
 		this.date = date;
-		this.dateHasTime = (date == null) ? false : hasTime;
+		this.dateHasTime = (date != null) && hasTime;
 		text = null;
 		partialDate = null;
 	}
@@ -143,7 +143,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 */
 	public void setPartialDate(PartialDate partialDate) {
 		this.partialDate = partialDate;
-		dateHasTime = (partialDate == null) ? false : partialDate.hasTimeComponent();
+		dateHasTime = (partialDate != null) && partialDate.hasTimeComponent();
 		text = null;
 		date = null;
 	}
