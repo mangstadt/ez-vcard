@@ -726,7 +726,7 @@ public class Sensei<T extends VCardProperty> {
 	 * Used for validating the contents of a parsed property object.
 	 * @param <T> the property class
 	 */
-	public static interface Check<T extends VCardProperty> {
+	public interface Check<T extends VCardProperty> {
 		/**
 		 * Validates the contents of the parsed property object.
 		 * @param property the parsed property object
