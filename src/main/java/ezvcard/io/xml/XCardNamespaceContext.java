@@ -1,6 +1,6 @@
 package ezvcard.io.xml;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.xml.namespace.NamespaceContext;
@@ -53,7 +53,7 @@ public class XCardNamespaceContext implements NamespaceContext {
 	//@Override
 	public Iterator<String> getPrefixes(String ns) {
 		if (this.ns.equals(ns)) {
-			return Arrays.asList(prefix).iterator();
+			return Collections.singletonList(prefix).iterator();
 		}
 		return null;
 	}
