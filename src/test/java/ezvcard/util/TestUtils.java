@@ -284,9 +284,7 @@ public class TestUtils {
 	 */
 	public static <T> void assertSetEquals(Set<T> actualSet, T... expectedElements) {
 		Set<T> expectedSet = new HashSet<T>(expectedElements.length);
-		for (T expectedElement : expectedElements) {
-			expectedSet.add(expectedElement);
-		}
+		expectedSet.addAll(Arrays.asList(expectedElements));
 		assertEquals(expectedSet, actualSet);
 	}
 
