@@ -479,9 +479,8 @@ public class HCardPageTest {
 	 * Builds an hCard-enabled HTML page.
 	 * @param vcards the vCards to add to the page
 	 * @return the HTML page
-	 * @throws TemplateException
 	 */
-	private Document generate(VCard... vcards) throws TemplateException {
+	private Document generate(VCard... vcards) {
 		HCardPage template = new HCardPage();
 		for (VCard vcard : vcards) {
 			template.add(vcard);

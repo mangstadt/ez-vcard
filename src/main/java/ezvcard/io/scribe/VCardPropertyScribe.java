@@ -439,7 +439,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * <p>
 	 * This method should be overridden by child classes that wish to support
 	 * hCard. The default implementation of this method will retrieve the HTML
-	 * element's hCard value (as described in {@link HCardElement#value}), and
+	 * element's hCard value (as described in {@link HCardElement#value()}), and
 	 * pass it into the {@link #_parseText} method.
 	 * </p>
 	 * @param element the property's HTML element

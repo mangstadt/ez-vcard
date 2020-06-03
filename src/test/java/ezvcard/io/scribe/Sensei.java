@@ -484,7 +484,7 @@ public class Sensei<T extends VCardProperty> {
 		 * Runs the test.
 		 * @param check object for asserting the parsed property object or null
 		 * not to assert the property object
-		 * @param expectedCode if the parse operation is expected to throw a
+		 * @param cannotParseExceptionCode if the parse operation is expected to throw a
 		 * {@link CannotParseException}, this parameter is the expected warning
 		 * code of the exception. This should be null if the exception is not
 		 * expected to have a warning code. This should be -1 if a

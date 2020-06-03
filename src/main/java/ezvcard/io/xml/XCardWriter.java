@@ -442,10 +442,10 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * Makes an childless element appear as {@code<foo />} instead of
-	 * {@code<foo></foo>}
+	 * Makes an childless element appear as {@code <foo />} instead of
+	 * {@code <foo></foo>}
 	 * @param element the element
-	 * @throws SAXException
+	 * @throws SAXException if there is a problem creating the element
 	 */
 	private void childless(Element element) throws SAXException {
 		Attributes attributes = getElementAttributes(element);

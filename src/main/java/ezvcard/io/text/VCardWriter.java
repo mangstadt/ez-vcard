@@ -380,7 +380,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * <li>The data type is NOT "unknown"</li>
 	 * <li>The data type is different from the property's default data type</li>
 	 * <li>The data type does not fall under the "date/time special case" (see
-	 * {@link #isDateTimeValueParameterSpecialCase()})</li>
+	 * {@link #isDateTimeValueParameterSpecialCase})</li>
 	 * </ol>
 	 * @param property the property
 	 * @param scribe the property scribe

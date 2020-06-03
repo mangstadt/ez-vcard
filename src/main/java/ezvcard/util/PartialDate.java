@@ -420,8 +420,8 @@ public final class PartialDate {
 
 		/**
 		 * Tries to parse a given string.
-		 * @param components the date/time components array
-		 * @param value the string
+		 * @param builder the object to assign the parsed data to
+		 * @param value the string to parse
 		 * @return true if the string was successfully parsed, false if not
 		 */
 		public boolean parse(Builder builder, String value) {

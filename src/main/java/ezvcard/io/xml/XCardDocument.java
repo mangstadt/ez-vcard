@@ -553,8 +553,6 @@ public class XCardDocument {
 		 * @param element the element to parse
 		 * @param group the group name or null if the property does not belong
 		 * to a group
-		 * @param vcard the vCard object
-		 * @param warningsBuf the list to add the warnings to
 		 */
 		private void parseAndAddElement(Element element, String group) {
 			VCardParameters parameters = parseParameters(element);

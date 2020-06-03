@@ -177,7 +177,7 @@ public class HCardPage {
 	 * @param name the file name, relative to this class
 	 * @param mediaType the media type of the image
 	 * @return the image
-	 * @throws IOException
+	 * @throws IOException if there's a problem reading the image
 	 */
 	private Photo readImage(String name, ImageType mediaType) throws IOException {
 		return new Photo(getClass().getResourceAsStream(name), mediaType);
