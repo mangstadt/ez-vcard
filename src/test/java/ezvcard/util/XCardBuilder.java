@@ -40,7 +40,7 @@ public class XCardBuilder {
 	private int count = 0;
 
 	public XCardBuilder() {
-		sb.append("<vcards xmlns=\"" + VCardVersion.V4_0.getXmlNamespace() + "\">");
+		sb.append("<vcards xmlns=\"").append(VCardVersion.V4_0.getXmlNamespace()).append("\">");
 		begin();
 	}
 
