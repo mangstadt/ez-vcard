@@ -476,7 +476,7 @@ public class XCardReader extends StreamReader {
 
 	private enum ElementType {
 		//enum values are lower-case so they won't get confused with the "XCardQNames" variable names
-		vcards, vcard, group, property, parameters, parameter, parameterValue;
+		vcards, vcard, group, property, parameters, parameter, parameterValue
 	}
 
 	/**
