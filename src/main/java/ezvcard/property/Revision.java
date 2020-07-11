@@ -72,7 +72,7 @@ public class Revision extends SimpleProperty<Date> {
 
 	/**
 	 * Creates a revision property.
-	 * @param date the date the vCard was last modified
+	 * @param calendar the date the vCard was last modified
 	 */
 	public Revision(Calendar calendar) {
 		this(calendar.getTime());
@@ -108,7 +108,7 @@ public class Revision extends SimpleProperty<Date> {
 	 * look like "GMT-05:00". If no offset was specified, the timezone will be
 	 * set to the local system's default timezone.
 	 * </p>
-	 * @param calendar the value
+	 * @return the value or null if not set
 	 */
 	public Calendar getCalendar() {
 		return (calendar == null) ? null : (Calendar) calendar.clone();
