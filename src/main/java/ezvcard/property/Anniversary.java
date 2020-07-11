@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import ezvcard.SupportedVersions;
@@ -118,6 +119,24 @@ public class Anniversary extends DateOrTimeProperty {
 	 * strictly a date
 	 */
 	public Anniversary(Date date, boolean hasTime) {
+		super(date, hasTime);
+	}
+	
+	/**
+	 * Creates an anniversary property.
+	 * @param date the anniversary date
+	 */
+	public Anniversary(Calendar date) {
+		super(date);
+	}
+
+	/**
+	 * Creates an anniversary property.
+	 * @param date the anniversary date
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public Anniversary(Calendar date, boolean hasTime) {
 		super(date, hasTime);
 	}
 

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,6 +35,7 @@ import ezvcard.property.Logo;
 import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
+import ezvcard.property.Revision;
 import ezvcard.property.Role;
 import ezvcard.property.SortString;
 import ezvcard.property.Sound;
@@ -45,7 +47,6 @@ import ezvcard.property.Uid;
 import ezvcard.property.Url;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
-import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2012-2018, Michael Angstadt
@@ -470,7 +471,7 @@ public class HCardPageTest {
 
 		vcard.setUid(new Uid("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));
 
-		vcard.setRevision(date("2000-03-10 13:22:44"));
+		vcard.setRevision(new Revision(date(2000, Calendar.MARCH, 15, 13, 22, 44, -5)));
 
 		return vcard;
 	}

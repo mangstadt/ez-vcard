@@ -10,6 +10,7 @@ import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.ClassRule;
@@ -63,7 +64,7 @@ public class DateOrTimePropertyScribeTest {
 	private final String dateStr = "19800605";
 	private final String dateExtendedStr = "1980-06-05";
 
-	private final Date dateTime = date("1980-06-05 13:10:20");
+	private final Calendar dateTime = date(1980, Calendar.JUNE, 5, 13, 10, 20, 1);
 	private final String dateTimeStr = dateStr + "T131020+0100";
 	private final String dateTimeExtendedStr = dateExtendedStr + "T13:10:20+01:00";
 
@@ -222,7 +223,7 @@ public class DateOrTimePropertyScribeTest {
 		}
 
 		@Override
-		protected DateOrTimePropertyImpl newInstance(Date date, boolean hasTime) {
+		protected DateOrTimePropertyImpl newInstance(Calendar date, boolean hasTime) {
 			DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 			property.setDate(date, hasTime);
 			return property;

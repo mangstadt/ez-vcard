@@ -3,8 +3,9 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.date;
+import static ezvcard.util.TestUtils.utc;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.ClassRule;
@@ -52,7 +53,7 @@ public class RevisionScribeTest {
 	private final RevisionScribe scribe = new RevisionScribe();
 	private final Sensei<Revision> sensei = new Sensei<Revision>(scribe);
 
-	private final Date datetime = date("1980-06-05 13:10:20");
+	private final Calendar datetime = utc(1980, Calendar.JUNE, 5, 12, 10, 20);
 	private final String datetimeStr = "19800605T121020Z";
 	private final String datetimeStrExt = "1980-06-05T12:10:20Z";
 

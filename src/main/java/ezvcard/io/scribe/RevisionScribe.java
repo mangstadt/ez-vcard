@@ -120,7 +120,7 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 		}
 
 		try {
-			return new Revision(date(value));
+			return new Revision(calendar(value));
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException(5);
 		}

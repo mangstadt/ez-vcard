@@ -1,6 +1,7 @@
 package ezvcard.io.scribe;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -565,12 +566,31 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
+	 * Parses a date string.
+	 * @param value the date string
+	 * @return the parsed date
+	 * @throws IllegalArgumentException if the date cannot be parsed
+	 */
+	protected static Calendar calendar(String value) {
+		return VCardDateFormat.parseAsCalendar(value);
+	}
+
+	/**
 	 * Formats a {@link Date} object as a string.
 	 * @param date the date
 	 * @return a helper object for customizing the write operation
 	 */
 	protected static DateWriter date(Date date) {
 		return new DateWriter(date);
+	}
+	
+	/**
+	 * Formats a {@link Calendar} object as a string.
+	 * @param calendar the date
+	 * @return a helper object for customizing the write operation
+	 */
+	protected static DateWriter date(Calendar calendar) {
+		return date(calendar.getTime());
 	}
 
 	/**

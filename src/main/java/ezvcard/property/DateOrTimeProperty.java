@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import ezvcard.ValidationWarning;
 import ezvcard.parameter.Calscale;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
+import ezvcard.util.VCardDateFormat;
 
 /*
  Copyright (c) 2012-2018, Michael Angstadt
@@ -47,7 +49,7 @@ import ezvcard.util.PartialDate;
  */
 public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	private String text;
-	private Date date;
+	private Calendar date;
 	private PartialDate partialDate;
 	private boolean dateHasTime;
 
@@ -56,7 +58,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * @param date the date value
 	 */
 	public DateOrTimeProperty(Date date) {
-		this(date, false);
+		this(VCardDateFormat.toCalendar(date));
 	}
 
 	/**
@@ -66,6 +68,24 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * strictly a date
 	 */
 	public DateOrTimeProperty(Date date, boolean hasTime) {
+		setDate(date, hasTime);
+	}
+
+	/**
+	 * Creates a date-and-or-time property.
+	 * @param date the date value
+	 */
+	public DateOrTimeProperty(Calendar date) {
+		this(date, false);
+	}
+
+	/**
+	 * Creates a date-and-or-time property.
+	 * @param date the date value
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public DateOrTimeProperty(Calendar date, boolean hasTime) {
 		setDate(date, hasTime);
 	}
 
@@ -92,7 +112,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	public DateOrTimeProperty(DateOrTimeProperty original) {
 		super(original);
 		text = original.text;
-		date = (original.date == null) ? null : new Date(original.date.getTime());
+		date = (original.date == null) ? null : (Calendar) original.date.clone();
 		partialDate = original.partialDate;
 		dateHasTime = original.dateHasTime;
 	}
@@ -102,7 +122,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * @return the date value or null if not set
 	 */
 	public Date getDate() {
-		return date;
+		return (date == null) ? null : date.getTime();
 	}
 
 	/**
@@ -112,10 +132,45 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * strictly a date
 	 */
 	public void setDate(Date date, boolean hasTime) {
+		setDate(VCardDateFormat.toCalendar(date), hasTime);
+	}
+
+	/**
+	 * Sets the value of this property to a complete date.
+	 * @param date the date
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public void setDate(Calendar date, boolean hasTime) {
 		this.date = date;
 		this.dateHasTime = (date != null) && hasTime;
 		text = null;
 		partialDate = null;
+	}
+
+	/**
+	 * <p>
+	 * Gets the date value as a {@link Calendar} object. This is useful for
+	 * retrieving the components of the original timestamp string from the
+	 * source vCard data.
+	 * </p>
+	 * <p>
+	 * Use {@link Calendar#isSet} to determine if a field was included in the
+	 * original timestamp string. Calls to this method should be made before
+	 * calling {@link Calendar#get} because calling latter method can cause
+	 * unset fields to become populated (as mentioned in the
+	 * {@link Calendar#isSet isSet} Javadocs).
+	 * </p>
+	 * <p>
+	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
+	 * in the timestamp string. If a numeric offset was used, the timezone will
+	 * look like "GMT-05:00". If no offset was specified, the timezone will be
+	 * set to the local system's default timezone.
+	 * </p>
+	 * @return the date value or null if not set
+	 */
+	public Calendar getCalendar() {
+		return (date == null) ? null : (Calendar) date.clone();
 	}
 
 	/**
@@ -248,7 +303,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	protected Map<String, Object> toStringValues() {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("text", text);
-		values.put("date", date);
+		values.put("date", getDate());
 		values.put("dateHasTime", dateHasTime);
 		values.put("partialDate", partialDate);
 		return values;
@@ -258,7 +313,13 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
+
+		/*
+		 * Call getDate() method to compare the actual timestamp of the calendar
+		 * object.
+		 */
+		result = prime * result + ((getDate() == null) ? 0 : getDate().hashCode());
+
 		result = prime * result + (dateHasTime ? 1231 : 1237);
 		result = prime * result + ((partialDate == null) ? 0 : partialDate.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
@@ -270,9 +331,15 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		DateOrTimeProperty other = (DateOrTimeProperty) obj;
-		if (date == null) {
-			if (other.date != null) return false;
-		} else if (!date.equals(other.date)) return false;
+
+		/*
+		 * Call getDate() method to compare the actual timestamp of the calendar
+		 * object.
+		 */
+		if (getDate() == null) {
+			if (other.getDate() != null) return false;
+		} else if (!getDate().equals(other.getDate())) return false;
+
 		if (dateHasTime != other.dateHasTime) return false;
 		if (partialDate == null) {
 			if (other.partialDate != null) return false;

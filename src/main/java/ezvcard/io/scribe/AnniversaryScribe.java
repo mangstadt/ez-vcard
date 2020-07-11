@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.Date;
+import java.util.Calendar;
 
 import ezvcard.property.Anniversary;
 import ezvcard.util.PartialDate;
@@ -45,7 +45,7 @@ public class AnniversaryScribe extends DateOrTimePropertyScribe<Anniversary> {
 	}
 
 	@Override
-	protected Anniversary newInstance(Date date, boolean hasTime) {
+	protected Anniversary newInstance(Calendar date, boolean hasTime) {
 		return new Anniversary(date, hasTime);
 	}
 

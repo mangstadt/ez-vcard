@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import ezvcard.util.PartialDate;
@@ -116,6 +117,24 @@ public class Birthday extends DateOrTimeProperty {
 	 * strictly a date
 	 */
 	public Birthday(Date date, boolean hasTime) {
+		super(date, hasTime);
+	}
+	
+	/**
+	 * Creates a birthday property.
+	 * @param date the birthday
+	 */
+	public Birthday(Calendar date) {
+		super(date);
+	}
+
+	/**
+	 * Creates a birthday property.
+	 * @param date the birthday
+	 * @param hasTime true to include the date's time component, false if it's
+	 * strictly a date
+	 */
+	public Birthday(Calendar date, boolean hasTime) {
 		super(date, hasTime);
 	}
 

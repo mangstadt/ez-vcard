@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,11 +23,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarning;
+import ezvcard.ValidationWarnings;
 import ezvcard.io.ParseWarning;
 import ezvcard.io.StreamReader;
 import ezvcard.property.VCardProperty;
@@ -347,6 +349,110 @@ public class TestUtils {
 			}
 		}
 		throw new IllegalArgumentException("Invalid date string: " + text);
+	}
+
+	/**
+	 * Creates a {@link Calendar} object using the local system's default
+	 * timezone.
+	 * @param year the year
+	 * @param month the month (0-11)
+	 * @param dayOfMonth the day of month
+	 * @param hourOfDay the hour of day (0-23)
+	 * @param minute the minute
+	 * @param second the second
+	 * @return the calendar
+	 */
+	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
+		return date(year, month, dayOfMonth, hourOfDay, minute, second, TimeZone.getDefault());
+	}
+
+	/**
+	 * Creates a {@link Calendar} object with UTC timezone.
+	 * @param year the year
+	 * @param month the month (0-11)
+	 * @param dayOfMonth the day of month
+	 * @param hourOfDay the hour of day (0-23)
+	 * @param minute the minute
+	 * @param second the second
+	 * @return the calendar
+	 */
+	public static Calendar utc(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
+		return date(year, month, dayOfMonth, hourOfDay, minute, second, TimeZone.getTimeZone("GMT"));
+	}
+
+	/**
+	 * Creates a {@link Calendar} object.
+	 * @param year the year
+	 * @param month the month (0-11)
+	 * @param dayOfMonth the day of month
+	 * @param hourOfDay the hour of day (0-23)
+	 * @param minute the minute
+	 * @param second the second
+	 * @param hourOffset the timezone's offset in hours
+	 * @return the calendar
+	 */
+	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second, int hourOffset) {
+		return date(year, month, dayOfMonth, hourOfDay, minute, second, gmtTz(TimeUnit.HOURS.toMillis(hourOffset)));
+	}
+
+	/**
+	 * Creates a GMT timezone.
+	 * @param offsetMillis the offset in milliseconds
+	 * @return the timezone
+	 */
+	public static TimeZone gmtTz(long offsetMillis) {
+		long totalMinutes = Math.abs(offsetMillis / 1000 / 60);
+		long hours = totalMinutes / 60;
+		long minutes = totalMinutes % 60;
+
+		StringBuilder tzid = new StringBuilder("GMT");
+		tzid.append((offsetMillis >= 0) ? '+' : '-');
+
+		if (hours < 10) {
+			tzid.append('0');
+		}
+		tzid.append(hours);
+
+		tzid.append(':');
+
+		if (minutes < 10) {
+			tzid.append('0');
+		}
+		tzid.append(minutes);
+
+		return TimeZone.getTimeZone(tzid.toString());
+	}
+
+	/**
+	 * Creates a {@link Calendar} object.
+	 * @param year the year
+	 * @param month the month (0-11)
+	 * @param dayOfMonth the day of month
+	 * @param hourOfDay the hour of day (0-23)
+	 * @param minute the minute
+	 * @param second the second
+	 * @param tz the timezone
+	 * @return the calendar
+	 */
+	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second, TimeZone tz) {
+		Calendar c = Calendar.getInstance(tz);
+		c.clear();
+		c.set(year, month, dayOfMonth, hourOfDay, minute, second);
+		return c;
+	}
+
+	/**
+	 * Creates a {@link Calendar} object.
+	 * @param year the year
+	 * @param month the month (0-11)
+	 * @param dayOfMonth the day of month
+	 * @return the calendar
+	 */
+	public static Calendar date(int year, int month, int dayOfMonth) {
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.set(year, month, dayOfMonth);
+		return c;
 	}
 
 	/**

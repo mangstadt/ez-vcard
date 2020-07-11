@@ -1,5 +1,6 @@
 package ezvcard.property;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /*
@@ -59,6 +60,8 @@ import java.util.Date;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
  */
 public class Revision extends SimpleProperty<Date> {
+	private Calendar calendar;
+
 	/**
 	 * Creates a revision property.
 	 * @param date the date the vCard was last modified
@@ -68,12 +71,56 @@ public class Revision extends SimpleProperty<Date> {
 	}
 
 	/**
+	 * Creates a revision property.
+	 * @param date the date the vCard was last modified
+	 */
+	public Revision(Calendar calendar) {
+		this(calendar.getTime());
+		this.calendar = calendar;
+	}
+
+	/**
 	 * Copy constructor.
 	 * @param original the property to make a copy of
 	 */
 	public Revision(Revision original) {
 		super(original);
 		value = (original.value == null) ? null : new Date(original.value.getTime());
+		calendar = (original.calendar == null) ? null : (Calendar) original.calendar.clone();
+	}
+
+	/**
+	 * <p>
+	 * Gets the value of this property as a {@link Calendar} object. This is
+	 * useful for retrieving the components of the original timestamp string
+	 * from the source vCard data.
+	 * </p>
+	 * <p>
+	 * Use {@link Calendar#isSet} to determine if a field was included in the
+	 * original timestamp string. Calls to this method should be made before
+	 * calling {@link Calendar#get} because calling latter method can cause
+	 * unset fields to become populated (as mentioned in the
+	 * {@link Calendar#isSet isSet} Javadocs).
+	 * </p>
+	 * <p>
+	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
+	 * in the timestamp string. If a numeric offset was used, the timezone will
+	 * look like "GMT-05:00". If no offset was specified, the timezone will be
+	 * set to the local system's default timezone.
+	 * </p>
+	 * @param calendar the value
+	 */
+	public Calendar getCalendar() {
+		return (calendar == null) ? null : (Calendar) calendar.clone();
+	}
+
+	/**
+	 * Sets the value of this property.
+	 * @param calendar the value
+	 */
+	public void setValue(Calendar calendar) {
+		setValue(calendar.getTime());
+		this.calendar = calendar;
 	}
 
 	/**

@@ -195,13 +195,42 @@ public enum VCardDateFormat {
 	 * accepted ISO8601 formats
 	 */
 	public static Date parse(String dateStr) {
+		return parseAsCalendar(dateStr).getTime();
+	}
+
+	/**
+	 * <p>
+	 * Parses a date string as a {@link Calendar} object. This allows the caller
+	 * to retrieve the individual components of the original date string, which
+	 * get lost with {@link Calendar#getTime}. This method was added at the
+	 * request of a user who needed the UTC offset from the original timestamp
+	 * string.
+	 * </p>
+	 * <p>
+	 * Use {@link Calendar#isSet} to determine if a field was included in the
+	 * original timestamp string. Calls to this method should be made before
+	 * calling {@link Calendar#get} because calling latter method can cause
+	 * unset fields to become populated (as mentioned in the
+	 * {@link Calendar#isSet isSet} Javadocs).
+	 * </p>
+	 * <p>
+	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
+	 * in the timestamp string. If a numeric offset was used, the timezone will
+	 * look like "GMT-05:00". If no offset was specified, the timezone will be
+	 * set to the local system's default timezone.
+	 * </p>
+	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
+	 * @return the parsed date
+	 * @throws IllegalArgumentException if the date string isn't in one of the
+	 * accepted ISO8601 formats
+	 */
+	public static Calendar parseAsCalendar(String dateStr) {
 		TimestampPattern p = new TimestampPattern(dateStr);
 		if (!p.matches()) {
 			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
 		}
 
-		TimeZone timezone = p.hasOffset() ? TimeZone.getTimeZone("UTC") : TimeZone.getDefault();
-		Calendar c = Calendar.getInstance(timezone);
+		Calendar c = Calendar.getInstance(p.timezone());
 		c.clear();
 
 		c.set(Calendar.YEAR, p.year());
@@ -213,13 +242,9 @@ public enum VCardDateFormat {
 			c.set(Calendar.MINUTE, p.minute());
 			c.set(Calendar.SECOND, p.second());
 			c.set(Calendar.MILLISECOND, p.millisecond());
-
-			if (p.hasOffset()) {
-				c.set(Calendar.ZONE_OFFSET, p.offsetMillis());
-			}
 		}
 
-		return c.getTime();
+		return c;
 	}
 
 	/**
@@ -292,27 +317,27 @@ public enum VCardDateFormat {
 			return (int) Math.round(ms);
 		}
 
-		public boolean hasOffset() {
-			return m.group(12) != null;
-		}
-
-		public int offsetMillis() {
-			if (m.group(12).equals("Z")) {
-				return 0;
+		public TimeZone timezone() {
+			String offsetStr = m.group(12);
+			if (offsetStr == null) {
+				return TimeZone.getDefault();
 			}
 
-			int positive = m.group(13).equals("+") ? 1 : -1;
-
-			int offsetHour, offsetMinute;
-			if (m.group(15) != null) {
-				offsetHour = parseInt(15);
-				offsetMinute = 0;
-			} else {
-				offsetHour = parseInt(17);
-				offsetMinute = parseInt(18);
+			/*
+			 * Use the naked "GMT" timezone when "Z" is specified. This allows
+			 * the user to differentiate from when an offset of "00:00" is
+			 * explicitly specified (they refer to the same timezone, though).
+			 */
+			if (offsetStr.equals("Z")) {
+				return TimeZone.getTimeZone("GMT");
 			}
 
-			return (offsetHour * 60 * 60 * 1000 + offsetMinute * 60 * 1000) * positive;
+			/*
+			 * Java is lenient regarding the format of the offset string. For
+			 * example, all of the following resolve to the same "GMT+03:00"
+			 * timezone: "GMT+3", "GMT+03", "GMT+3:00", "GMT+300"
+			 */
+			return TimeZone.getTimeZone("GMT" + offsetStr);
 		}
 
 		private int parseInt(int... group) {
@@ -353,5 +378,20 @@ public enum VCardDateFormat {
 	public static TimeZone parseTimeZoneId(String timezoneId) {
 		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
 		return "GMT".equals(timezone.getID()) ? null : timezone;
+	}
+
+	/**
+	 * Converts a {@link Date} object to a {@link Calendar} object.
+	 * @param date the date (can be null)
+	 * @return the calendar or null if the date is null
+	 */
+	public static Calendar toCalendar(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		return c;
 	}
 }

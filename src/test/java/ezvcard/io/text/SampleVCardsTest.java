@@ -5,6 +5,9 @@ import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.utc;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Calendar;
 
 import org.junit.Test;
 
@@ -447,7 +450,9 @@ public class SampleVCardsTest {
 		asserter.simpleProperty(Revision.class)
 			.value(utc("2012-03-05 13:32:54"))
 		.noMore();
-
+		Revision rev = asserter.getVCard().getRevision();
+		assertEquals(utc(2012, Calendar.MARCH, 5, 13, 32, 54), rev.getCalendar());
+		
 		asserter.rawProperty("X-COUCHDB-APPLICATION-ANNOTATIONS")
 			.value("{\"Evolution\":{\"revision\":\"2012-03-05T13:32:54Z\"}}")
 		.noMore();
@@ -1718,7 +1723,9 @@ public class SampleVCardsTest {
 		asserter.simpleProperty(Revision.class)
 			.value(utc("2012-03-05 13:19:33"))
 		.noMore();
-
+		Revision rev = asserter.getVCard().getRevision();
+		assertEquals(utc(2012, Calendar.MARCH, 5, 13, 19, 33), rev.getCalendar());
+		
 		asserter.rawProperty("X-MS-OL-DEFAULT-POSTAL-ADDRESS")
 			.value("2")
 		.noMore();
@@ -1856,6 +1863,8 @@ public class SampleVCardsTest {
 		asserter.simpleProperty(Revision.class)
 			.value(utc("2012-08-01 18:46:31"))
 		.noMore();
+		Revision rev = asserter.getVCard().getRevision();
+		assertEquals(utc(2012, Calendar.AUGUST, 1, 18, 46, 31), rev.getCalendar());
 
 		asserter.rawProperty("X-MS-TEL")
 			.value("(111) 555-4444")
@@ -2139,6 +2148,8 @@ public class SampleVCardsTest {
 		asserter.simpleProperty(Revision.class)
 			.value(utc("2012-10-12 21:05:25"))
 		.noMore();
+		Revision rev = asserter.getVCard().getRevision();
+		assertEquals(utc(2012, Calendar.OCTOBER, 12, 21, 5, 25), rev.getCalendar());
 		
 		VCard vcard = asserter.getVCard();
 		asserter.validate()

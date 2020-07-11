@@ -1,5 +1,6 @@
 package ezvcard.io.scribe;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
@@ -220,7 +221,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	private T parse(String value, ParseContext context) {
 		try {
 			boolean hasTime = value.contains("T");
-			return newInstance(date(value), hasTime);
+			return newInstance(calendar(value), hasTime);
 		} catch (IllegalArgumentException e) {
 			if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
 				throw new CannotParseException(5);
@@ -237,7 +238,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	protected abstract T newInstance(String text);
 
-	protected abstract T newInstance(Date date, boolean hasTime);
+	protected abstract T newInstance(Calendar date, boolean hasTime);
 
 	protected abstract T newInstance(PartialDate partialDate);
 }
