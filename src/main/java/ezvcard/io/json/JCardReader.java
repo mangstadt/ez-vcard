@@ -26,7 +26,7 @@ import ezvcard.property.VCardProperty;
 import ezvcard.util.Utf8Reader;
 
 /*
- Copyright (c) 2012-2018, Michael Angstadt
+ Copyright (c) 2012-2020, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without

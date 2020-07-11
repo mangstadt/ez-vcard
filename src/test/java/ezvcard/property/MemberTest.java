@@ -8,7 +8,7 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 
 /*
- Copyright (c) 2012-2018, Michael Angstadt
+ Copyright (c) 2012-2020, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
