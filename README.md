@@ -48,10 +48,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
  * Full compliance with 2.1, 3.0, and 4.0 specifications (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Supports XML, HTML, and JSON encoded vCards (see [Supported Specifications](https://github.com/mangstadt/ez-vcard/wiki/Supported-Specifications)).
  * Extensive unit test coverage.
- * Low Java version requirement (1.5 or above).
+ * Low Java version requirement (1.6 or above).
  * Few dependencies on external libraries.  Dependencies can be selectively excluded based on the functionality that is needed (see [Dependencies](https://github.com/mangstadt/ez-vcard/wiki/Dependencies)).
 
 # News
+
+**July 24, 2020**
+
+[Version 0.11.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds some small improvements and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 **March 16, 2020**
 
@@ -87,14 +91,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.10.6</version>
+   <version>0.11.0</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.10.6'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.11.0'
 ```
 
 # Build Instructions
