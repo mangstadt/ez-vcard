@@ -17,7 +17,7 @@
 <span class="sourceLineNo">009</span>import ezvcard.Messages;<a name="line.9"></a>
 <span class="sourceLineNo">010</span><a name="line.10"></a>
 <span class="sourceLineNo">011</span>/*<a name="line.11"></a>
-<span class="sourceLineNo">012</span> Copyright (c) 2012-2018, Michael Angstadt<a name="line.12"></a>
+<span class="sourceLineNo">012</span> Copyright (c) 2012-2020, Michael Angstadt<a name="line.12"></a>
 <span class="sourceLineNo">013</span> All rights reserved.<a name="line.13"></a>
 <span class="sourceLineNo">014</span><a name="line.14"></a>
 <span class="sourceLineNo">015</span> Redistribution and use in source and binary forms, with or without<a name="line.15"></a>
@@ -156,7 +156,7 @@
 <span class="sourceLineNo">148</span>                if (afterT == null) {<a name="line.148"></a>
 <span class="sourceLineNo">149</span>                        //date or time<a name="line.149"></a>
 <span class="sourceLineNo">150</span>                        success = parseDate(beforeT, builder) || parseTime(beforeT, builder);<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                } else if (beforeT.length() == 0) {<a name="line.151"></a>
+<span class="sourceLineNo">151</span>                } else if (beforeT.isEmpty()) {<a name="line.151"></a>
 <span class="sourceLineNo">152</span>                        //time<a name="line.152"></a>
 <span class="sourceLineNo">153</span>                        success = parseTime(afterT, builder);<a name="line.153"></a>
 <span class="sourceLineNo">154</span>                } else {<a name="line.154"></a>
@@ -428,8 +428,8 @@
 <span class="sourceLineNo">420</span><a name="line.420"></a>
 <span class="sourceLineNo">421</span>                /**<a name="line.421"></a>
 <span class="sourceLineNo">422</span>                 * Tries to parse a given string.<a name="line.422"></a>
-<span class="sourceLineNo">423</span>                 * @param components the date/time components array<a name="line.423"></a>
-<span class="sourceLineNo">424</span>                 * @param value the string<a name="line.424"></a>
+<span class="sourceLineNo">423</span>                 * @param builder the object to assign the parsed data to<a name="line.423"></a>
+<span class="sourceLineNo">424</span>                 * @param value the string to parse<a name="line.424"></a>
 <span class="sourceLineNo">425</span>                 * @return true if the string was successfully parsed, false if not<a name="line.425"></a>
 <span class="sourceLineNo">426</span>                 */<a name="line.426"></a>
 <span class="sourceLineNo">427</span>                public boolean parse(Builder builder, String value) {<a name="line.427"></a>

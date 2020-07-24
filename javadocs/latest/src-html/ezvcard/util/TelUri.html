@@ -17,7 +17,7 @@
 <span class="sourceLineNo">009</span>import ezvcard.Messages;<a name="line.9"></a>
 <span class="sourceLineNo">010</span><a name="line.10"></a>
 <span class="sourceLineNo">011</span>/*<a name="line.11"></a>
-<span class="sourceLineNo">012</span> Copyright (c) 2012-2018, Michael Angstadt<a name="line.12"></a>
+<span class="sourceLineNo">012</span> Copyright (c) 2012-2020, Michael Angstadt<a name="line.12"></a>
 <span class="sourceLineNo">013</span> All rights reserved.<a name="line.13"></a>
 <span class="sourceLineNo">014</span><a name="line.14"></a>
 <span class="sourceLineNo">015</span> Redistribution and use in source and binary forms, with or without<a name="line.15"></a>
@@ -340,7 +340,7 @@
 <span class="sourceLineNo">332</span>                        } else {<a name="line.332"></a>
 <span class="sourceLineNo">333</span>                                if (sb == null) {<a name="line.333"></a>
 <span class="sourceLineNo">334</span>                                        sb = new StringBuilder(value.length() * 2);<a name="line.334"></a>
-<span class="sourceLineNo">335</span>                                        sb.append(value.substring(0, i));<a name="line.335"></a>
+<span class="sourceLineNo">335</span>                                        sb.append(value, 0, i);<a name="line.335"></a>
 <span class="sourceLineNo">336</span>                                }<a name="line.336"></a>
 <span class="sourceLineNo">337</span>                                String hex = Integer.toString(c, 16);<a name="line.337"></a>
 <span class="sourceLineNo">338</span>                                sb.append('%').append(hex);<a name="line.338"></a>
