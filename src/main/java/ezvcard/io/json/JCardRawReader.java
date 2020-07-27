@@ -114,7 +114,10 @@ public class JCardRawReader implements Closeable {
 				if (prev != JsonToken.START_ARRAY) {
 					throw new JCardParseException(JsonToken.START_ARRAY, prev);
 				}
-
+				if (cur == JsonToken.START_ARRAY) {
+					parseNamecheap();
+					return;
+				}
 				if (cur != JsonToken.VALUE_STRING) {
 					throw new JCardParseException(JsonToken.VALUE_STRING, cur);
 				}
@@ -135,6 +138,36 @@ public class JCardRawReader implements Closeable {
 		parseProperties();
 
 		check(JsonToken.END_ARRAY, parser.nextToken());
+	}
+
+	/**
+	 * namecheap sometimes provides invalid vcard. it includes no "vcard" value string, nor does it nest the properties
+	 * within an array. rather, it provides json as shown below. so we special case their format in order to allow
+	 * parsing to succeed.
+	 *
+	 * "vcardArray": [
+	 *   [
+	 *     "version",
+	 *     {},
+	 *     "text",
+	 *     "4.0"
+	 *   ],
+	 *   [
+	 *     "fn",
+	 *     {},
+	 *     "text",
+	 *     "REACTIVATION PERIOD"
+	 *   ]
+	 * ]
+	 *
+	 * @throws IOException upon parse failure
+	 */
+	private void parseNamecheap() throws IOException {
+		listener.beginVCard();
+		do {
+			parser.nextToken();
+			parseProperty();
+		} while (parser.nextToken() != JsonToken.END_ARRAY);
 	}
 
 	private void parseProperties() throws IOException {
