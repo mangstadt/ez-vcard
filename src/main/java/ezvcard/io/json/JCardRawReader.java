@@ -104,7 +104,9 @@ public class JCardRawReader implements Closeable {
 		JsonToken prev = parser.getCurrentToken();
 		JsonToken cur;
 		while ((cur = parser.nextToken()) != null) {
-			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING && "vcard".equals(parser.getValueAsString())) {
+			// the eurodns registrar names the value string "vcards" instead. so we switched to startsWith() to accommodate
+			if (prev == JsonToken.START_ARRAY && cur == JsonToken.VALUE_STRING
+					&& ("vcard".equals(parser.getValueAsString()) || "vcards".equals(parser.getValueAsString()))) {
 				//found
 				break;
 			}
@@ -135,7 +137,17 @@ public class JCardRawReader implements Closeable {
 		}
 
 		listener.beginVCard();
-		parseProperties();
+		try {
+			parseProperties();
+		} catch (JCardParseException jpe) {
+			// ascio provides vcard properties that are not nested in an outer array. thus we provide custom parsing
+			// for such properties.
+			if (parser.getCurrentToken() == JsonToken.VALUE_STRING) {
+				parsePropertiesUnarrayed(false);
+				return;
+			}
+			throw jpe;
+		}
 
 		check(JsonToken.END_ARRAY, parser.nextToken());
 	}
@@ -164,9 +176,39 @@ public class JCardRawReader implements Closeable {
 	 */
 	private void parseNamecheap() throws IOException {
 		listener.beginVCard();
+		parsePropertiesUnarrayed(true);
+	}
+
+	/**
+	 * Parses vcard properties that are not nested in an outer array.
+	 *
+	 * "vcardArray": [
+	 *   "vcard",
+	 *   [
+	 *     "version",
+	 *     {},
+	 *     "text",
+	 *     "4.0"
+	 *   ],
+	 *   [
+	 *     "fn",
+	 *     {},
+	 *     "text",
+	 *     "Ascio Technologies, Inc"
+	 *   ],
+	 * ]
+	 * @param requiresInitialSkip true if the parser position is not already on the start array of the property values itself.
+	 * @throws IOException upon parse error
+	 */
+	private void parsePropertiesUnarrayed(boolean requiresInitialSkip) throws IOException {
+		int loop = 0;
+		if (requiresInitialSkip)
+			loop = 1;
 		do {
-			parser.nextToken();
+			if (loop >= 1)
+				parser.nextToken();
 			parseProperty();
+			loop++;
 		} while (parser.nextToken() != JsonToken.END_ARRAY);
 	}
 
