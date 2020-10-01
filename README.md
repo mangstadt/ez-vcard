@@ -12,7 +12,7 @@ ez-vcard is a vCard library written in Java.  It can read and write vCards in ma
 
 <p align="center"><strong><a href="https://github.com/mangstadt/ez-vcard/wiki/Downloads">Downloads</a> |
 <a href="http://mangstadt.github.io/ez-vcard/javadocs/latest/index.html">Javadocs</a> |
-<a href="#mavengradle">Maven/Gradle</a> | <a href="https://github.com/mangstadt/ez-vcard/wiki">Documentation</a></strong></p>
+<a href="#mavengradle">Maven/Gradle</a> | <a href="https://github.com/mangstadt/ez-vcard/wiki">Documentation</a> | <a href="https://www.npmjs.com/package/ez-vcard">NodeJS wrapper</a></strong></p>
 
 ```java
 String str =
