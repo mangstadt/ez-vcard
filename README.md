@@ -126,6 +126,10 @@ Please submit bug reports and feature requests to the [issue tracker](https://gi
 
 The [ez-vcard-android project](https://github.com/mangstadt/ez-vcard-android) interfaces between ez-vcard and the native Android APIs.  Note, however, that it is not being actively maintained.
 
+# Node.js
+
+A Node.js wrapper for ez-vcard can be found here: https://github.com/Maxim-Mazurok/ez-vcard
+
 # Credits
 
 **Lead Developer**  
