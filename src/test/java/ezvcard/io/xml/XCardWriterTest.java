@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import ezvcard.parameter.Encoding;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -689,6 +690,26 @@ public class XCardWriterTest {
 			"<vcard />" +
 		"</vcards>";
 		//@formatter:on
+
+		assertOutput(expected);
+	}
+
+	@Test
+	public void write_quoted_printable_encoding_not_supported() throws Exception {
+		VCard vcard = new VCard();
+		FormattedName fn = vcard.setFormattedName("Ömür Öde");
+		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+		fn.getParameters().setCharset("UTF-8");
+
+		writer.write(vcard);
+		writer.close();
+
+		String expected = //@formatter:off
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>Ömür Öde</text></fn>" +
+			"</vcard>" +
+		"</vcards>"; //@formatter:on
 
 		assertOutput(expected);
 	}

@@ -24,6 +24,7 @@ import ezvcard.io.EmbeddedVCardException;
 import ezvcard.io.SkipMeException;
 import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
 import ezvcard.property.BinaryProperty;
@@ -328,6 +329,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 			handleValueParameter(property, scribe, parameters);
 			handleLabelParameter(property, parameters);
+			handleQuotedPrintableEncodingParameter(property, parameters);
 
 			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), value);
 
@@ -429,6 +431,23 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 		label = escapeNewlines(label);
 		parameters.setLabel(label);
+	}
+
+	/**
+	 * Disables quoted-printable encoding on the given property if the target
+	 * vCard version does not support this encoding scheme.
+	 * @param property the property
+	 * @param parameters the property parameters
+	 */
+	private void handleQuotedPrintableEncodingParameter(VCardProperty property, VCardParameters parameters) {
+		if (targetVersion == VCardVersion.V2_1) {
+			return;
+		}
+
+		if (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE) {
+			parameters.setEncoding(null);
+			parameters.setCharset(null);
+		}
 	}
 
 	/**

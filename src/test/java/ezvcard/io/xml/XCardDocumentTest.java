@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import ezvcard.parameter.Encoding;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -677,6 +678,31 @@ public class XCardDocumentTest {
 		String xml = new Gobble(file).asString("UTF-8");
 		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
 		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
+	}
+
+	@Test
+	public void add_quoted_printable_encoding_not_supported() throws Throwable {
+		VCard vcard = new VCard();
+		FormattedName fn = vcard.setFormattedName("Ömür Öde");
+		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+		fn.getParameters().setCharset("UTF-8");
+
+		XCardDocument xcard = new XCardDocument();
+		XCardDocumentStreamWriter writer = xcard.writer();
+		writer.setAddProdId(false);
+		writer.write(vcard);
+
+		Document actual = xcard.getDocument();
+
+		String xml = //@formatter:off
+		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
+			"<vcard>" +
+				"<fn><text>Ömür Öde</text></fn>" +
+			"</vcard>" +
+		"</vcards>"; //@formatter:on
+		Document expected = XmlUtils.toDocument(xml);
+
+		assertXMLEqual(expected, actual);
 	}
 
 	@Test

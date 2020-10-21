@@ -172,6 +172,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 			String group = property.getGroup();
 			String name = scribe.getPropertyName().toLowerCase();
 			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+			removeUnsupportedParameters(parameters);
 			VCardDataType dataType = scribe.dataType(property, targetVersion);
 
 			writer.writeProperty(group, name, parameters, dataType, value);
@@ -182,7 +183,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 		setCurrentValue(previousValue);
 	}
 
-/**
+	/**
 	 * If this object has a {@link JsonGenerator), and the generator has an
 	 * output context, gets the current value of the output context.
 	 * 
@@ -193,7 +194,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 		return (generator == null) ? null : generator.getCurrentValue();
 	}
 
-/**
+	/**
 	 * If this object has a {@link JsonGenerator), and the generator has an
 	 * output context, sets the current value of the output context.
 	 * 
@@ -239,6 +240,16 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 */
 	public void setPrettyPrinter(PrettyPrinter prettyPrinter) {
 		writer.setPrettyPrinter(prettyPrinter);
+	}
+
+	/**
+	 * Removes parameters that are not supported by jCard.
+	 * @param parameters the property parameters
+	 */
+	private void removeUnsupportedParameters(VCardParameters parameters) {
+		parameters.setCharset(null);
+		parameters.setEncoding(null);
+		parameters.setValue(null);
 	}
 
 	/**

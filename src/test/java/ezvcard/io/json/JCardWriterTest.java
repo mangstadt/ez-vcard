@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import ezvcard.parameter.Encoding;
+import ezvcard.property.FormattedName;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -268,6 +270,32 @@ public class JCardWriterTest {
 				"[\"version\",{},\"text\",\"4.0\"]," +
 				"[\"fn\",{},\"text\",\"John Doe\"]," +
 				"[\"x-type\",{},\"text\",\"value\"]" +
+			"]" +
+		"]";
+		//@formatter:on
+		assertEquals(expected, sw.toString());
+	}
+
+	@Test
+	public void write_quoted_printable_encoding_not_supported() throws Exception {
+		StringWriter sw = new StringWriter();
+		JCardWriter writer = new JCardWriter(sw);
+		writer.setAddProdId(false);
+
+		VCard vcard = new VCard();
+		FormattedName fn = vcard.setFormattedName("Ömür Öde");
+		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+		fn.getParameters().setCharset("UTF-8");
+		writer.write(vcard);
+
+		writer.close();
+
+		//@formatter:off
+		String expected =
+		"[\"vcard\"," +
+			"[" +
+				"[\"version\",{},\"text\",\"4.0\"]," +
+				"[\"fn\",{},\"text\",\"Ömür Öde\"]" +
 			"]" +
 		"]";
 		//@formatter:on

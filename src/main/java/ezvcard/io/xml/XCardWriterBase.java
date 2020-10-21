@@ -74,6 +74,16 @@ abstract class XCardWriterBase extends StreamWriter {
 	}
 
 	/**
+	 * Removes parameters that are not supported by xCard.
+	 * @param parameters the property parameters
+	 */
+	protected void removeUnsupportedParameters(VCardParameters parameters) {
+		parameters.setCharset(null);
+		parameters.setEncoding(null);
+		parameters.setValue(null);
+	}
+
+	/**
 	 * Registers the data type of an experimental parameter. Experimental
 	 * parameters use the "unknown" data type by default.
 	 * @param parameterName the parameter name (e.g. "x-foo")

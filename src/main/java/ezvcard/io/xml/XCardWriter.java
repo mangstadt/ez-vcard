@@ -359,6 +359,8 @@ public class XCardWriter extends XCardWriterBase {
 		VCardPropertyScribe scribe = index.getPropertyScribe(property);
 		VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 
+		removeUnsupportedParameters(parameters);
+
 		//get the property element to write
 		Element propertyElement;
 		if (property instanceof Xml) {

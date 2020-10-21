@@ -723,6 +723,7 @@ public class XCardDocument {
 
 			//marshal the parameters
 			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+			removeUnsupportedParameters(parameters);
 			if (!parameters.isEmpty()) {
 				Element parametersElement = marshalParameters(parameters);
 				Node firstChild = propertyElement.getFirstChild();

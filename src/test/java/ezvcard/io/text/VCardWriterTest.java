@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
+import ezvcard.parameter.Encoding;
+import ezvcard.property.FormattedName;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -617,6 +619,68 @@ public class VCardWriterTest {
 				"NOTE:note\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
+
+			assertEquals(expected, actual);
+		}
+	}
+
+	@Test
+	public void quoted_printable_encoding() throws Throwable {
+		VCard vcard = new VCard();
+		FormattedName fn = vcard.setFormattedName("Ömür Öde");
+		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+		fn.getParameters().setCharset("UTF-8");
+
+		VCardVersion version = VCardVersion.V2_1;
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, version);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+			String actual = sw.toString();
+
+			String expected = //@formatter:off
+			"BEGIN:VCARD\r\n" +
+			"VERSION:2.1\r\n" +
+			"FN;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:=C3=96m=C3=BCr =C3=96de\r\n" +
+			"END:VCARD\r\n"; //@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		version = VCardVersion.V3_0;
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, version);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+			String actual = sw.toString();
+
+			String expected = //@formatter:off
+			"BEGIN:VCARD\r\n" +
+			"VERSION:3.0\r\n" +
+			"FN:Ömür Öde\r\n" +
+			"END:VCARD\r\n"; //@formatter:on
+
+			assertEquals(expected, actual);
+		}
+
+		version = VCardVersion.V4_0;
+		{
+			StringWriter sw = new StringWriter();
+			VCardWriter writer = new VCardWriter(sw, version);
+			writer.setAddProdId(false);
+			writer.write(vcard);
+			writer.close();
+			String actual = sw.toString();
+
+			String expected = //@formatter:off
+			"BEGIN:VCARD\r\n" +
+			"VERSION:4.0\r\n" +
+			"FN:Ömür Öde\r\n" +
+			"END:VCARD\r\n"; //@formatter:on
 
 			assertEquals(expected, actual);
 		}
