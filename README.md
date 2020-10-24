@@ -53,6 +53,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**October 24, 2020**
+
+[Version 0.11.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a vCard compatibility issue and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **July 24, 2020**
 
 [Version 0.11.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds some small improvements and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -91,14 +95,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.11.0</version>
+   <version>0.11.1</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.11.0'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.11.1'
 ```
 
 # Build Instructions
