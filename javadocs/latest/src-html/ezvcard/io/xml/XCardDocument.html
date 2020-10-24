@@ -731,65 +731,66 @@
 <span class="sourceLineNo">723</span><a name="line.723"></a>
 <span class="sourceLineNo">724</span>                        //marshal the parameters<a name="line.724"></a>
 <span class="sourceLineNo">725</span>                        VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);<a name="line.725"></a>
-<span class="sourceLineNo">726</span>                        if (!parameters.isEmpty()) {<a name="line.726"></a>
-<span class="sourceLineNo">727</span>                                Element parametersElement = marshalParameters(parameters);<a name="line.727"></a>
-<span class="sourceLineNo">728</span>                                Node firstChild = propertyElement.getFirstChild();<a name="line.728"></a>
-<span class="sourceLineNo">729</span>                                propertyElement.insertBefore(parametersElement, firstChild);<a name="line.729"></a>
-<span class="sourceLineNo">730</span>                        }<a name="line.730"></a>
-<span class="sourceLineNo">731</span><a name="line.731"></a>
-<span class="sourceLineNo">732</span>                        return propertyElement;<a name="line.732"></a>
-<span class="sourceLineNo">733</span>                }<a name="line.733"></a>
-<span class="sourceLineNo">734</span><a name="line.734"></a>
-<span class="sourceLineNo">735</span>                private Element marshalParameters(VCardParameters parameters) {<a name="line.735"></a>
-<span class="sourceLineNo">736</span>                        Element parametersElement = createElement(PARAMETERS);<a name="line.736"></a>
-<span class="sourceLineNo">737</span><a name="line.737"></a>
-<span class="sourceLineNo">738</span>                        for (Map.Entry&lt;String, List&lt;String&gt;&gt; parameter : parameters) {<a name="line.738"></a>
-<span class="sourceLineNo">739</span>                                String parameterName = parameter.getKey().toLowerCase();<a name="line.739"></a>
-<span class="sourceLineNo">740</span>                                Element parameterElement = createElement(parameterName);<a name="line.740"></a>
-<span class="sourceLineNo">741</span><a name="line.741"></a>
-<span class="sourceLineNo">742</span>                                for (String parameterValue : parameter.getValue()) {<a name="line.742"></a>
-<span class="sourceLineNo">743</span>                                        VCardDataType dataType = parameterDataTypes.get(parameterName);<a name="line.743"></a>
-<span class="sourceLineNo">744</span>                                        String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();<a name="line.744"></a>
-<span class="sourceLineNo">745</span>                                        Element dataTypeElement = createElement(dataTypeElementName);<a name="line.745"></a>
-<span class="sourceLineNo">746</span>                                        dataTypeElement.setTextContent(parameterValue);<a name="line.746"></a>
-<span class="sourceLineNo">747</span>                                        parameterElement.appendChild(dataTypeElement);<a name="line.747"></a>
-<span class="sourceLineNo">748</span>                                }<a name="line.748"></a>
-<span class="sourceLineNo">749</span><a name="line.749"></a>
-<span class="sourceLineNo">750</span>                                parametersElement.appendChild(parameterElement);<a name="line.750"></a>
-<span class="sourceLineNo">751</span>                        }<a name="line.751"></a>
-<span class="sourceLineNo">752</span><a name="line.752"></a>
-<span class="sourceLineNo">753</span>                        return parametersElement;<a name="line.753"></a>
-<span class="sourceLineNo">754</span>                }<a name="line.754"></a>
-<span class="sourceLineNo">755</span><a name="line.755"></a>
-<span class="sourceLineNo">756</span>                /**<a name="line.756"></a>
-<span class="sourceLineNo">757</span>                 * Creates a new XML element under the vCard namespace.<a name="line.757"></a>
-<span class="sourceLineNo">758</span>                 * @param name the name of the XML element<a name="line.758"></a>
-<span class="sourceLineNo">759</span>                 * @return the new XML element<a name="line.759"></a>
-<span class="sourceLineNo">760</span>                 */<a name="line.760"></a>
-<span class="sourceLineNo">761</span>                private Element createElement(String name) {<a name="line.761"></a>
-<span class="sourceLineNo">762</span>                        return createElement(name, targetVersion.getXmlNamespace());<a name="line.762"></a>
-<span class="sourceLineNo">763</span>                }<a name="line.763"></a>
-<span class="sourceLineNo">764</span><a name="line.764"></a>
-<span class="sourceLineNo">765</span>                /**<a name="line.765"></a>
-<span class="sourceLineNo">766</span>                 * Creates a new XML element.<a name="line.766"></a>
-<span class="sourceLineNo">767</span>                 * @param name the name of the XML element<a name="line.767"></a>
-<span class="sourceLineNo">768</span>                 * @param ns the namespace of the XML element<a name="line.768"></a>
-<span class="sourceLineNo">769</span>                 * @return the new XML element<a name="line.769"></a>
-<span class="sourceLineNo">770</span>                 */<a name="line.770"></a>
-<span class="sourceLineNo">771</span>                private Element createElement(String name, String ns) {<a name="line.771"></a>
-<span class="sourceLineNo">772</span>                        return document.createElementNS(ns, name);<a name="line.772"></a>
-<span class="sourceLineNo">773</span>                }<a name="line.773"></a>
-<span class="sourceLineNo">774</span><a name="line.774"></a>
-<span class="sourceLineNo">775</span>                /**<a name="line.775"></a>
-<span class="sourceLineNo">776</span>                 * Creates a new XML element.<a name="line.776"></a>
-<span class="sourceLineNo">777</span>                 * @param qname the element name<a name="line.777"></a>
-<span class="sourceLineNo">778</span>                 * @return the new XML element<a name="line.778"></a>
-<span class="sourceLineNo">779</span>                 */<a name="line.779"></a>
-<span class="sourceLineNo">780</span>                private Element createElement(QName qname) {<a name="line.780"></a>
-<span class="sourceLineNo">781</span>                        return createElement(qname.getLocalPart(), qname.getNamespaceURI());<a name="line.781"></a>
-<span class="sourceLineNo">782</span>                }<a name="line.782"></a>
-<span class="sourceLineNo">783</span>        }<a name="line.783"></a>
-<span class="sourceLineNo">784</span>}<a name="line.784"></a>
+<span class="sourceLineNo">726</span>                        removeUnsupportedParameters(parameters);<a name="line.726"></a>
+<span class="sourceLineNo">727</span>                        if (!parameters.isEmpty()) {<a name="line.727"></a>
+<span class="sourceLineNo">728</span>                                Element parametersElement = marshalParameters(parameters);<a name="line.728"></a>
+<span class="sourceLineNo">729</span>                                Node firstChild = propertyElement.getFirstChild();<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                                propertyElement.insertBefore(parametersElement, firstChild);<a name="line.730"></a>
+<span class="sourceLineNo">731</span>                        }<a name="line.731"></a>
+<span class="sourceLineNo">732</span><a name="line.732"></a>
+<span class="sourceLineNo">733</span>                        return propertyElement;<a name="line.733"></a>
+<span class="sourceLineNo">734</span>                }<a name="line.734"></a>
+<span class="sourceLineNo">735</span><a name="line.735"></a>
+<span class="sourceLineNo">736</span>                private Element marshalParameters(VCardParameters parameters) {<a name="line.736"></a>
+<span class="sourceLineNo">737</span>                        Element parametersElement = createElement(PARAMETERS);<a name="line.737"></a>
+<span class="sourceLineNo">738</span><a name="line.738"></a>
+<span class="sourceLineNo">739</span>                        for (Map.Entry&lt;String, List&lt;String&gt;&gt; parameter : parameters) {<a name="line.739"></a>
+<span class="sourceLineNo">740</span>                                String parameterName = parameter.getKey().toLowerCase();<a name="line.740"></a>
+<span class="sourceLineNo">741</span>                                Element parameterElement = createElement(parameterName);<a name="line.741"></a>
+<span class="sourceLineNo">742</span><a name="line.742"></a>
+<span class="sourceLineNo">743</span>                                for (String parameterValue : parameter.getValue()) {<a name="line.743"></a>
+<span class="sourceLineNo">744</span>                                        VCardDataType dataType = parameterDataTypes.get(parameterName);<a name="line.744"></a>
+<span class="sourceLineNo">745</span>                                        String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();<a name="line.745"></a>
+<span class="sourceLineNo">746</span>                                        Element dataTypeElement = createElement(dataTypeElementName);<a name="line.746"></a>
+<span class="sourceLineNo">747</span>                                        dataTypeElement.setTextContent(parameterValue);<a name="line.747"></a>
+<span class="sourceLineNo">748</span>                                        parameterElement.appendChild(dataTypeElement);<a name="line.748"></a>
+<span class="sourceLineNo">749</span>                                }<a name="line.749"></a>
+<span class="sourceLineNo">750</span><a name="line.750"></a>
+<span class="sourceLineNo">751</span>                                parametersElement.appendChild(parameterElement);<a name="line.751"></a>
+<span class="sourceLineNo">752</span>                        }<a name="line.752"></a>
+<span class="sourceLineNo">753</span><a name="line.753"></a>
+<span class="sourceLineNo">754</span>                        return parametersElement;<a name="line.754"></a>
+<span class="sourceLineNo">755</span>                }<a name="line.755"></a>
+<span class="sourceLineNo">756</span><a name="line.756"></a>
+<span class="sourceLineNo">757</span>                /**<a name="line.757"></a>
+<span class="sourceLineNo">758</span>                 * Creates a new XML element under the vCard namespace.<a name="line.758"></a>
+<span class="sourceLineNo">759</span>                 * @param name the name of the XML element<a name="line.759"></a>
+<span class="sourceLineNo">760</span>                 * @return the new XML element<a name="line.760"></a>
+<span class="sourceLineNo">761</span>                 */<a name="line.761"></a>
+<span class="sourceLineNo">762</span>                private Element createElement(String name) {<a name="line.762"></a>
+<span class="sourceLineNo">763</span>                        return createElement(name, targetVersion.getXmlNamespace());<a name="line.763"></a>
+<span class="sourceLineNo">764</span>                }<a name="line.764"></a>
+<span class="sourceLineNo">765</span><a name="line.765"></a>
+<span class="sourceLineNo">766</span>                /**<a name="line.766"></a>
+<span class="sourceLineNo">767</span>                 * Creates a new XML element.<a name="line.767"></a>
+<span class="sourceLineNo">768</span>                 * @param name the name of the XML element<a name="line.768"></a>
+<span class="sourceLineNo">769</span>                 * @param ns the namespace of the XML element<a name="line.769"></a>
+<span class="sourceLineNo">770</span>                 * @return the new XML element<a name="line.770"></a>
+<span class="sourceLineNo">771</span>                 */<a name="line.771"></a>
+<span class="sourceLineNo">772</span>                private Element createElement(String name, String ns) {<a name="line.772"></a>
+<span class="sourceLineNo">773</span>                        return document.createElementNS(ns, name);<a name="line.773"></a>
+<span class="sourceLineNo">774</span>                }<a name="line.774"></a>
+<span class="sourceLineNo">775</span><a name="line.775"></a>
+<span class="sourceLineNo">776</span>                /**<a name="line.776"></a>
+<span class="sourceLineNo">777</span>                 * Creates a new XML element.<a name="line.777"></a>
+<span class="sourceLineNo">778</span>                 * @param qname the element name<a name="line.778"></a>
+<span class="sourceLineNo">779</span>                 * @return the new XML element<a name="line.779"></a>
+<span class="sourceLineNo">780</span>                 */<a name="line.780"></a>
+<span class="sourceLineNo">781</span>                private Element createElement(QName qname) {<a name="line.781"></a>
+<span class="sourceLineNo">782</span>                        return createElement(qname.getLocalPart(), qname.getNamespaceURI());<a name="line.782"></a>
+<span class="sourceLineNo">783</span>                }<a name="line.783"></a>
+<span class="sourceLineNo">784</span>        }<a name="line.784"></a>
+<span class="sourceLineNo">785</span>}<a name="line.785"></a>
 
 
 

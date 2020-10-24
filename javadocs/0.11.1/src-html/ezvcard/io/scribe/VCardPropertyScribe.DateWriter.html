@@ -1,0 +1,843 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../syntaxhighlighter.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.io.scribe;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.util.Arrays;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.util.Calendar;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Date;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.List;<a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import javax.xml.namespace.QName;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.w3c.dom.Element;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>import com.github.mangstadt.vinnie.io.VObjectPropertyValues;<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span>import ezvcard.VCard;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>import ezvcard.VCardDataType;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import ezvcard.VCardVersion;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import ezvcard.io.CannotParseException;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import ezvcard.io.EmbeddedVCardException;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import ezvcard.io.ParseContext;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import ezvcard.io.SkipMeException;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>import ezvcard.io.html.HCardElement;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>import ezvcard.io.json.JCardValue;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>import ezvcard.io.json.JsonValue;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>import ezvcard.io.text.WriteContext;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>import ezvcard.io.xml.XCardElement;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>import ezvcard.io.xml.XCardElement.XCardValue;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>import ezvcard.parameter.VCardParameters;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>import ezvcard.property.VCardProperty;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import ezvcard.util.VCardDateFormat;<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>/*<a name="line.31"></a>
+<span class="sourceLineNo">032</span> Copyright (c) 2012-2020, Michael Angstadt<a name="line.32"></a>
+<span class="sourceLineNo">033</span> All rights reserved.<a name="line.33"></a>
+<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">035</span> Redistribution and use in source and binary forms, with or without<a name="line.35"></a>
+<span class="sourceLineNo">036</span> modification, are permitted provided that the following conditions are met: <a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.38"></a>
+<span class="sourceLineNo">039</span> list of conditions and the following disclaimer. <a name="line.39"></a>
+<span class="sourceLineNo">040</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.40"></a>
+<span class="sourceLineNo">041</span> this list of conditions and the following disclaimer in the documentation<a name="line.41"></a>
+<span class="sourceLineNo">042</span> and/or other materials provided with the distribution. <a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.44"></a>
+<span class="sourceLineNo">045</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.45"></a>
+<span class="sourceLineNo">046</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.46"></a>
+<span class="sourceLineNo">047</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.47"></a>
+<span class="sourceLineNo">048</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.48"></a>
+<span class="sourceLineNo">049</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.49"></a>
+<span class="sourceLineNo">050</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.50"></a>
+<span class="sourceLineNo">051</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.51"></a>
+<span class="sourceLineNo">052</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.52"></a>
+<span class="sourceLineNo">053</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.53"></a>
+<span class="sourceLineNo">054</span> */<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>/**<a name="line.56"></a>
+<span class="sourceLineNo">057</span> * Base class for vCard property scribes (aka "marshallers" or "serializers").<a name="line.57"></a>
+<span class="sourceLineNo">058</span> * @param &lt;T&gt; the property class<a name="line.58"></a>
+<span class="sourceLineNo">059</span> * @author Michael Angstadt<a name="line.59"></a>
+<span class="sourceLineNo">060</span> */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>public abstract class VCardPropertyScribe&lt;T extends VCardProperty&gt; {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        protected final Class&lt;T&gt; clazz;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        protected final String propertyName;<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        protected final QName qname;<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>        /**<a name="line.66"></a>
+<span class="sourceLineNo">067</span>         * Creates a new scribe.<a name="line.67"></a>
+<span class="sourceLineNo">068</span>         * @param clazz the property class<a name="line.68"></a>
+<span class="sourceLineNo">069</span>         * @param propertyName the property name (e.g. "FN")<a name="line.69"></a>
+<span class="sourceLineNo">070</span>         */<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        public VCardPropertyScribe(Class&lt;T&gt; clazz, String propertyName) {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()));<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        }<a name="line.73"></a>
+<span class="sourceLineNo">074</span><a name="line.74"></a>
+<span class="sourceLineNo">075</span>        /**<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         * Creates a new scribe.<a name="line.76"></a>
+<span class="sourceLineNo">077</span>         * @param clazz the property class<a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * @param propertyName the property name (e.g. "FN")<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @param qname the XML element name and namespace to use for xCard<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         * documents (by default, the XML element name is set to the lower-cased<a name="line.80"></a>
+<span class="sourceLineNo">081</span>         * property name, and the element namespace is set to the xCard namespace)<a name="line.81"></a>
+<span class="sourceLineNo">082</span>         */<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        public VCardPropertyScribe(Class&lt;T&gt; clazz, String propertyName, QName qname) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                this.clazz = clazz;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                this.propertyName = propertyName;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                this.qname = qname;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>        /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>         * Gets the property class.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @return the property class<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         */<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        public Class&lt;T&gt; getPropertyClass() {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                return clazz;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        /**<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         * Gets the property name.<a name="line.98"></a>
+<span class="sourceLineNo">099</span>         * @return the property name (e.g. "FN")<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         */<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        public String getPropertyName() {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                return propertyName;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * Gets this property's local name and namespace for xCard documents.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * @return the XML local name and namespace<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         */<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        public QName getQName() {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                return qname;<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        }<a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>        /**<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * Sanitizes a property's parameters (called before the property is<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         * written). Note that a copy of the parameters is returned so that the<a name="line.115"></a>
+<span class="sourceLineNo">116</span>         * property object does not get modified.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * @param property the property<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         * @param version the version of the vCard that is being generated<a name="line.118"></a>
+<span class="sourceLineNo">119</span>         * @param vcard the vCard that the property belongs to<a name="line.119"></a>
+<span class="sourceLineNo">120</span>         * @return the sanitized parameters<a name="line.120"></a>
+<span class="sourceLineNo">121</span>         */<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        public final VCardParameters prepareParameters(T property, VCardVersion version, VCard vcard) {<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                //make a copy because the property should not get modified when it is marshalled<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                VCardParameters copy = new VCardParameters(property.getParameters());<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                _prepareParameters(property, copy, version, vcard);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                return copy;<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        /**<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * &lt;p&gt;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         * Determines the property's default data type.<a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * &lt;/p&gt;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         * &lt;p&gt;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * When writing a plain-text vCard, if the data type of a property instance<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         * (as determined by the {@link #dataType} method) matches the default data<a name="line.135"></a>
+<span class="sourceLineNo">136</span>         * type, then a VALUE parameter will *not* be written.<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * &lt;/p&gt;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         * &lt;p&gt;<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * When parsing a plain-text vCard, if a property has no VALUE parameter,<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * then the property's default data type will be passed into the<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * {@link #parseText} method.<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * &lt;/p&gt;<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         * @param version the vCard version<a name="line.143"></a>
+<span class="sourceLineNo">144</span>         * @return the default data type or null if unknown<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         */<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        public final VCardDataType defaultDataType(VCardVersion version) {<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                return _defaultDataType(version);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        }<a name="line.148"></a>
+<span class="sourceLineNo">149</span><a name="line.149"></a>
+<span class="sourceLineNo">150</span>        /**<a name="line.150"></a>
+<span class="sourceLineNo">151</span>         * Determines the data type of a property instance.<a name="line.151"></a>
+<span class="sourceLineNo">152</span>         * @param property the property<a name="line.152"></a>
+<span class="sourceLineNo">153</span>         * @param version the version of the vCard that is being generated<a name="line.153"></a>
+<span class="sourceLineNo">154</span>         * @return the data type or null if unknown<a name="line.154"></a>
+<span class="sourceLineNo">155</span>         */<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        public final VCardDataType dataType(T property, VCardVersion version) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                return _dataType(property, version);<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>        /**<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * Marshals a property's value to a string.<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * @param property the property<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         * @param context contains information about the vCard being written, such<a name="line.163"></a>
+<span class="sourceLineNo">164</span>         * as the target version<a name="line.164"></a>
+<span class="sourceLineNo">165</span>         * @return the string value<a name="line.165"></a>
+<span class="sourceLineNo">166</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.166"></a>
+<span class="sourceLineNo">167</span>         * stream<a name="line.167"></a>
+<span class="sourceLineNo">168</span>         */<a name="line.168"></a>
+<span class="sourceLineNo">169</span>        public final String writeText(T property, WriteContext context) {<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                return _writeText(property, context);<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>        /**<a name="line.173"></a>
+<span class="sourceLineNo">174</span>         * Marshals a property's value to an XML element (xCard).<a name="line.174"></a>
+<span class="sourceLineNo">175</span>         * @param property the property<a name="line.175"></a>
+<span class="sourceLineNo">176</span>         * @param element the property's XML element.<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * stream<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         */<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        public final void writeXml(T property, Element element) {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                XCardElement xCardElement = new XCardElement(element);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                _writeXml(property, xCardElement);<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>        /**<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * Marshals a property's value to a JSON data stream (jCard).<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * @param property the property<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         * @return the marshalled value<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.189"></a>
+<span class="sourceLineNo">190</span>         * stream<a name="line.190"></a>
+<span class="sourceLineNo">191</span>         */<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        public final JCardValue writeJson(T property) {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                return _writeJson(property);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>        /**<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         * Unmarshals a property from a plain-text vCard.<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * @param value the value as read off the wire<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         * @param dataType the data type of the property value. The property's VALUE<a name="line.199"></a>
+<span class="sourceLineNo">200</span>         * parameter is used to determine the data type. If the property has no<a name="line.200"></a>
+<span class="sourceLineNo">201</span>         * VALUE parameter, then this parameter will be set to the property's<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * default datatype, as determined by the {@link #defaultDataType} method.<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         * Note that the VALUE parameter is removed from the property's parameter<a name="line.203"></a>
+<span class="sourceLineNo">204</span>         * list after it has been read.<a name="line.204"></a>
+<span class="sourceLineNo">205</span>         * @param parameters the parsed parameters<a name="line.205"></a>
+<span class="sourceLineNo">206</span>         * @param context the parse context<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         * @return the unmarshalled property<a name="line.207"></a>
+<span class="sourceLineNo">208</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.208"></a>
+<span class="sourceLineNo">209</span>         * property's value<a name="line.209"></a>
+<span class="sourceLineNo">210</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.210"></a>
+<span class="sourceLineNo">211</span>         * {@link VCard} object<a name="line.211"></a>
+<span class="sourceLineNo">212</span>         * @throws EmbeddedVCardException if the property value is an embedded vCard<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         * (i.e. the AGENT property)<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         */<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        public final T parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                T property = _parseText(value, dataType, parameters, context);<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                property.setParameters(parameters);<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                return property;<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        }<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>        /**<a name="line.221"></a>
+<span class="sourceLineNo">222</span>         * Unmarshals a property's value from an XML document (xCard).<a name="line.222"></a>
+<span class="sourceLineNo">223</span>         * @param element the property's XML element<a name="line.223"></a>
+<span class="sourceLineNo">224</span>         * @param parameters the parsed parameters<a name="line.224"></a>
+<span class="sourceLineNo">225</span>         * @param context the parse context<a name="line.225"></a>
+<span class="sourceLineNo">226</span>         * @return the unmarshalled property<a name="line.226"></a>
+<span class="sourceLineNo">227</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.227"></a>
+<span class="sourceLineNo">228</span>         * property's value<a name="line.228"></a>
+<span class="sourceLineNo">229</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.229"></a>
+<span class="sourceLineNo">230</span>         * {@link VCard} object<a name="line.230"></a>
+<span class="sourceLineNo">231</span>         */<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        public final T parseXml(Element element, VCardParameters parameters, ParseContext context) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                T property = _parseXml(new XCardElement(element), parameters, context);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>                property.setParameters(parameters);<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                return property;<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>        /**<a name="line.238"></a>
+<span class="sourceLineNo">239</span>         * Unmarshals the property from an HTML document (hCard).<a name="line.239"></a>
+<span class="sourceLineNo">240</span>         * @param element the property's HTML element<a name="line.240"></a>
+<span class="sourceLineNo">241</span>         * @param context the parse context<a name="line.241"></a>
+<span class="sourceLineNo">242</span>         * @return the unmarshalled property<a name="line.242"></a>
+<span class="sourceLineNo">243</span>         * @throws CannotParseException if the property value could not be parsed<a name="line.243"></a>
+<span class="sourceLineNo">244</span>         * @throws SkipMeException if this type should NOT be added to the<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * {@link VCard} object<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         * @throws EmbeddedVCardException if the property value is an embedded vCard<a name="line.246"></a>
+<span class="sourceLineNo">247</span>         * (i.e. the AGENT property)<a name="line.247"></a>
+<span class="sourceLineNo">248</span>         */<a name="line.248"></a>
+<span class="sourceLineNo">249</span>        public final T parseHtml(HCardElement element, ParseContext context) {<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                return _parseHtml(element, context);<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        }<a name="line.251"></a>
+<span class="sourceLineNo">252</span><a name="line.252"></a>
+<span class="sourceLineNo">253</span>        /**<a name="line.253"></a>
+<span class="sourceLineNo">254</span>         * Unmarshals a property's value from a JSON data stream (jCard).<a name="line.254"></a>
+<span class="sourceLineNo">255</span>         * @param value the property's JSON value<a name="line.255"></a>
+<span class="sourceLineNo">256</span>         * @param dataType the data type<a name="line.256"></a>
+<span class="sourceLineNo">257</span>         * @param parameters the parsed parameters<a name="line.257"></a>
+<span class="sourceLineNo">258</span>         * @param context the parse context<a name="line.258"></a>
+<span class="sourceLineNo">259</span>         * @return the unmarshalled property<a name="line.259"></a>
+<span class="sourceLineNo">260</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.260"></a>
+<span class="sourceLineNo">261</span>         * property's value<a name="line.261"></a>
+<span class="sourceLineNo">262</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.262"></a>
+<span class="sourceLineNo">263</span>         * {@link VCard} object<a name="line.263"></a>
+<span class="sourceLineNo">264</span>         */<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        public final T parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                T property = _parseJson(value, dataType, parameters, context);<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                property.setParameters(parameters);<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                return property;<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        }<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>        /**<a name="line.271"></a>
+<span class="sourceLineNo">272</span>         * &lt;p&gt;<a name="line.272"></a>
+<span class="sourceLineNo">273</span>         * Sanitizes a property's parameters before the property is written.<a name="line.273"></a>
+<span class="sourceLineNo">274</span>         * &lt;/p&gt;<a name="line.274"></a>
+<span class="sourceLineNo">275</span>         * &lt;p&gt;<a name="line.275"></a>
+<span class="sourceLineNo">276</span>         * This method should be overridden by child classes that wish to tweak the<a name="line.276"></a>
+<span class="sourceLineNo">277</span>         * property's parameters before the property is written. The default<a name="line.277"></a>
+<span class="sourceLineNo">278</span>         * implementation of this method does nothing.<a name="line.278"></a>
+<span class="sourceLineNo">279</span>         * &lt;/p&gt;<a name="line.279"></a>
+<span class="sourceLineNo">280</span>         * @param property the property<a name="line.280"></a>
+<span class="sourceLineNo">281</span>         * @param copy the list of parameters to make modifications to (it is a copy<a name="line.281"></a>
+<span class="sourceLineNo">282</span>         * of the property's parameters)<a name="line.282"></a>
+<span class="sourceLineNo">283</span>         * @param version the version of the vCard that is being generated<a name="line.283"></a>
+<span class="sourceLineNo">284</span>         * @param vcard the vCard that the property belongs to<a name="line.284"></a>
+<span class="sourceLineNo">285</span>         */<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        protected void _prepareParameters(T property, VCardParameters copy, VCardVersion version, VCard vcard) {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                //do nothing<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>        /**<a name="line.290"></a>
+<span class="sourceLineNo">291</span>         * &lt;p&gt;<a name="line.291"></a>
+<span class="sourceLineNo">292</span>         * Determines the property's default data type.<a name="line.292"></a>
+<span class="sourceLineNo">293</span>         * &lt;/p&gt;<a name="line.293"></a>
+<span class="sourceLineNo">294</span>         * &lt;p&gt;<a name="line.294"></a>
+<span class="sourceLineNo">295</span>         * When writing a plain-text vCard, if the data type of a property instance<a name="line.295"></a>
+<span class="sourceLineNo">296</span>         * (as determined by the {@link #dataType} method) matches the default data<a name="line.296"></a>
+<span class="sourceLineNo">297</span>         * type, then a VALUE parameter will *not* be written.<a name="line.297"></a>
+<span class="sourceLineNo">298</span>         * &lt;/p&gt;<a name="line.298"></a>
+<span class="sourceLineNo">299</span>         * &lt;p&gt;<a name="line.299"></a>
+<span class="sourceLineNo">300</span>         * When parsing a plain-text vCard, if a property has no VALUE parameter,<a name="line.300"></a>
+<span class="sourceLineNo">301</span>         * then the property's default data type will be passed into the<a name="line.301"></a>
+<span class="sourceLineNo">302</span>         * {@link #parseText} method.<a name="line.302"></a>
+<span class="sourceLineNo">303</span>         * &lt;/p&gt;<a name="line.303"></a>
+<span class="sourceLineNo">304</span>         * @param version the vCard version<a name="line.304"></a>
+<span class="sourceLineNo">305</span>         * @return the default data type or null if unknown<a name="line.305"></a>
+<span class="sourceLineNo">306</span>         */<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        protected abstract VCardDataType _defaultDataType(VCardVersion version);<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>        /**<a name="line.309"></a>
+<span class="sourceLineNo">310</span>         * &lt;p&gt;<a name="line.310"></a>
+<span class="sourceLineNo">311</span>         * Determines the data type of a property instance.<a name="line.311"></a>
+<span class="sourceLineNo">312</span>         * &lt;/p&gt;<a name="line.312"></a>
+<span class="sourceLineNo">313</span>         * &lt;p&gt;<a name="line.313"></a>
+<span class="sourceLineNo">314</span>         * This method should be overridden by child classes if a property's data<a name="line.314"></a>
+<span class="sourceLineNo">315</span>         * type changes depending on its value. The default implementation of this<a name="line.315"></a>
+<span class="sourceLineNo">316</span>         * method calls {@link #_defaultDataType}.<a name="line.316"></a>
+<span class="sourceLineNo">317</span>         * &lt;/p&gt;<a name="line.317"></a>
+<span class="sourceLineNo">318</span>         * @param property the property<a name="line.318"></a>
+<span class="sourceLineNo">319</span>         * @param version the version of the vCard that is being generated<a name="line.319"></a>
+<span class="sourceLineNo">320</span>         * @return the data type or null if unknown<a name="line.320"></a>
+<span class="sourceLineNo">321</span>         */<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        protected VCardDataType _dataType(T property, VCardVersion version) {<a name="line.322"></a>
+<span class="sourceLineNo">323</span>                return _defaultDataType(version);<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>        /**<a name="line.326"></a>
+<span class="sourceLineNo">327</span>         * Marshals a property's value to a string.<a name="line.327"></a>
+<span class="sourceLineNo">328</span>         * @param property the property<a name="line.328"></a>
+<span class="sourceLineNo">329</span>         * @param context contains information about the vCard being written, such<a name="line.329"></a>
+<span class="sourceLineNo">330</span>         * as the target version<a name="line.330"></a>
+<span class="sourceLineNo">331</span>         * @return the marshalled value<a name="line.331"></a>
+<span class="sourceLineNo">332</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.332"></a>
+<span class="sourceLineNo">333</span>         * stream<a name="line.333"></a>
+<span class="sourceLineNo">334</span>         */<a name="line.334"></a>
+<span class="sourceLineNo">335</span>        protected abstract String _writeText(T property, WriteContext context);<a name="line.335"></a>
+<span class="sourceLineNo">336</span><a name="line.336"></a>
+<span class="sourceLineNo">337</span>        /**<a name="line.337"></a>
+<span class="sourceLineNo">338</span>         * &lt;p&gt;<a name="line.338"></a>
+<span class="sourceLineNo">339</span>         * Marshals a property's value to an XML element (xCard).<a name="line.339"></a>
+<span class="sourceLineNo">340</span>         * &lt;/p&gt;<a name="line.340"></a>
+<span class="sourceLineNo">341</span>         * &lt;p&gt;<a name="line.341"></a>
+<span class="sourceLineNo">342</span>         * This method should be overridden by child classes that wish to support<a name="line.342"></a>
+<span class="sourceLineNo">343</span>         * xCard. The default implementation of this method will append one child<a name="line.343"></a>
+<span class="sourceLineNo">344</span>         * element to the property's XML element. The child element's name will be<a name="line.344"></a>
+<span class="sourceLineNo">345</span>         * that of the property's data type (retrieved using the {@link #dataType}<a name="line.345"></a>
+<span class="sourceLineNo">346</span>         * method), and the child element's text content will be set to the<a name="line.346"></a>
+<span class="sourceLineNo">347</span>         * property's marshalled plain-text value (retrieved using the<a name="line.347"></a>
+<span class="sourceLineNo">348</span>         * {@link #writeText} method).<a name="line.348"></a>
+<span class="sourceLineNo">349</span>         * &lt;/p&gt;<a name="line.349"></a>
+<span class="sourceLineNo">350</span>         * @param property the property<a name="line.350"></a>
+<span class="sourceLineNo">351</span>         * @param element the property's XML element<a name="line.351"></a>
+<span class="sourceLineNo">352</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.352"></a>
+<span class="sourceLineNo">353</span>         * stream<a name="line.353"></a>
+<span class="sourceLineNo">354</span>         */<a name="line.354"></a>
+<span class="sourceLineNo">355</span>        protected void _writeXml(T property, XCardElement element) {<a name="line.355"></a>
+<span class="sourceLineNo">356</span>                String value = writeText(property, new WriteContext(VCardVersion.V4_0, null, false));<a name="line.356"></a>
+<span class="sourceLineNo">357</span>                VCardDataType dataType = dataType(property, VCardVersion.V4_0);<a name="line.357"></a>
+<span class="sourceLineNo">358</span>                element.append(dataType, value);<a name="line.358"></a>
+<span class="sourceLineNo">359</span>        }<a name="line.359"></a>
+<span class="sourceLineNo">360</span><a name="line.360"></a>
+<span class="sourceLineNo">361</span>        /**<a name="line.361"></a>
+<span class="sourceLineNo">362</span>         * &lt;p&gt;<a name="line.362"></a>
+<span class="sourceLineNo">363</span>         * Marshals a property's value to a JSON data stream (jCard).<a name="line.363"></a>
+<span class="sourceLineNo">364</span>         * &lt;/p&gt;<a name="line.364"></a>
+<span class="sourceLineNo">365</span>         * &lt;p&gt;<a name="line.365"></a>
+<span class="sourceLineNo">366</span>         * This method should be overridden by child classes that wish to support<a name="line.366"></a>
+<span class="sourceLineNo">367</span>         * jCard. The default implementation of this method will create a jCard<a name="line.367"></a>
+<span class="sourceLineNo">368</span>         * property that has a single JSON string value (generated by the<a name="line.368"></a>
+<span class="sourceLineNo">369</span>         * {@link #writeText} method).<a name="line.369"></a>
+<span class="sourceLineNo">370</span>         * &lt;/p&gt;<a name="line.370"></a>
+<span class="sourceLineNo">371</span>         * @param property the property<a name="line.371"></a>
+<span class="sourceLineNo">372</span>         * @return the marshalled value<a name="line.372"></a>
+<span class="sourceLineNo">373</span>         * @throws SkipMeException if the property should not be written to the data<a name="line.373"></a>
+<span class="sourceLineNo">374</span>         * stream<a name="line.374"></a>
+<span class="sourceLineNo">375</span>         */<a name="line.375"></a>
+<span class="sourceLineNo">376</span>        protected JCardValue _writeJson(T property) {<a name="line.376"></a>
+<span class="sourceLineNo">377</span>                String value = writeText(property, new WriteContext(VCardVersion.V4_0, null, false));<a name="line.377"></a>
+<span class="sourceLineNo">378</span>                return JCardValue.single(value);<a name="line.378"></a>
+<span class="sourceLineNo">379</span>        }<a name="line.379"></a>
+<span class="sourceLineNo">380</span><a name="line.380"></a>
+<span class="sourceLineNo">381</span>        /**<a name="line.381"></a>
+<span class="sourceLineNo">382</span>         * Unmarshals a property from a plain-text vCard.<a name="line.382"></a>
+<span class="sourceLineNo">383</span>         * @param value the value as read off the wire<a name="line.383"></a>
+<span class="sourceLineNo">384</span>         * @param dataType the data type of the property value. The property's VALUE<a name="line.384"></a>
+<span class="sourceLineNo">385</span>         * parameter is used to determine the data type. If the property has no<a name="line.385"></a>
+<span class="sourceLineNo">386</span>         * VALUE parameter, then this parameter will be set to the property's<a name="line.386"></a>
+<span class="sourceLineNo">387</span>         * default datatype, as determined by the {@link #defaultDataType} method.<a name="line.387"></a>
+<span class="sourceLineNo">388</span>         * Note that the VALUE parameter is removed from the property's parameter<a name="line.388"></a>
+<span class="sourceLineNo">389</span>         * list after it has been read.<a name="line.389"></a>
+<span class="sourceLineNo">390</span>         * @param parameters the parsed parameters. These parameters will be<a name="line.390"></a>
+<span class="sourceLineNo">391</span>         * assigned to the property object once this method returns. Therefore, do<a name="line.391"></a>
+<span class="sourceLineNo">392</span>         * not assign any parameters to the property object itself whilst inside of<a name="line.392"></a>
+<span class="sourceLineNo">393</span>         * this method, or else they will be overwritten.<a name="line.393"></a>
+<span class="sourceLineNo">394</span>         * @param context the parse context<a name="line.394"></a>
+<span class="sourceLineNo">395</span>         * @return the unmarshalled property object<a name="line.395"></a>
+<span class="sourceLineNo">396</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.396"></a>
+<span class="sourceLineNo">397</span>         * property's value<a name="line.397"></a>
+<span class="sourceLineNo">398</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.398"></a>
+<span class="sourceLineNo">399</span>         * {@link VCard} object<a name="line.399"></a>
+<span class="sourceLineNo">400</span>         */<a name="line.400"></a>
+<span class="sourceLineNo">401</span>        protected abstract T _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context);<a name="line.401"></a>
+<span class="sourceLineNo">402</span><a name="line.402"></a>
+<span class="sourceLineNo">403</span>        /**<a name="line.403"></a>
+<span class="sourceLineNo">404</span>         * &lt;p&gt;<a name="line.404"></a>
+<span class="sourceLineNo">405</span>         * Unmarshals a property from an XML document (xCard).<a name="line.405"></a>
+<span class="sourceLineNo">406</span>         * &lt;/p&gt;<a name="line.406"></a>
+<span class="sourceLineNo">407</span>         * &lt;p&gt;<a name="line.407"></a>
+<span class="sourceLineNo">408</span>         * This method should be overridden by child classes that wish to support<a name="line.408"></a>
+<span class="sourceLineNo">409</span>         * xCard. The default implementation of this method will find the first<a name="line.409"></a>
+<span class="sourceLineNo">410</span>         * child element with the xCard namespace. The element's name will be used<a name="line.410"></a>
+<span class="sourceLineNo">411</span>         * as the property's data type and its text content (escaped for inclusion<a name="line.411"></a>
+<span class="sourceLineNo">412</span>         * in a text-based vCard, e.g. escaping comma characters) will be passed<a name="line.412"></a>
+<span class="sourceLineNo">413</span>         * into the {@link #_parseText} method. If no such child element is found,<a name="line.413"></a>
+<span class="sourceLineNo">414</span>         * then the parent element's text content will be passed into<a name="line.414"></a>
+<span class="sourceLineNo">415</span>         * {@link #_parseText} and the data type will be {@code null}.<a name="line.415"></a>
+<span class="sourceLineNo">416</span>         * &lt;/p&gt;<a name="line.416"></a>
+<span class="sourceLineNo">417</span>         * @param element the property's XML element<a name="line.417"></a>
+<span class="sourceLineNo">418</span>         * @param parameters the parsed parameters. These parameters will be<a name="line.418"></a>
+<span class="sourceLineNo">419</span>         * assigned to the property object once this method returns. Therefore, do<a name="line.419"></a>
+<span class="sourceLineNo">420</span>         * not assign any parameters to the property object itself whilst inside of<a name="line.420"></a>
+<span class="sourceLineNo">421</span>         * this method, or else they will be overwritten.<a name="line.421"></a>
+<span class="sourceLineNo">422</span>         * @param context the parse context<a name="line.422"></a>
+<span class="sourceLineNo">423</span>         * @return the unmarshalled property object<a name="line.423"></a>
+<span class="sourceLineNo">424</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.424"></a>
+<span class="sourceLineNo">425</span>         * property's value<a name="line.425"></a>
+<span class="sourceLineNo">426</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.426"></a>
+<span class="sourceLineNo">427</span>         * {@link VCard} object<a name="line.427"></a>
+<span class="sourceLineNo">428</span>         */<a name="line.428"></a>
+<span class="sourceLineNo">429</span>        protected T _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {<a name="line.429"></a>
+<span class="sourceLineNo">430</span>                XCardValue firstValue = element.firstValue();<a name="line.430"></a>
+<span class="sourceLineNo">431</span>                VCardDataType dataType = firstValue.getDataType();<a name="line.431"></a>
+<span class="sourceLineNo">432</span>                String value = VObjectPropertyValues.escape(firstValue.getValue());<a name="line.432"></a>
+<span class="sourceLineNo">433</span>                return _parseText(value, dataType, parameters, context);<a name="line.433"></a>
+<span class="sourceLineNo">434</span>        }<a name="line.434"></a>
+<span class="sourceLineNo">435</span><a name="line.435"></a>
+<span class="sourceLineNo">436</span>        /**<a name="line.436"></a>
+<span class="sourceLineNo">437</span>         * &lt;p&gt;<a name="line.437"></a>
+<span class="sourceLineNo">438</span>         * Unmarshals the property from an hCard (HTML document).<a name="line.438"></a>
+<span class="sourceLineNo">439</span>         * &lt;/p&gt;<a name="line.439"></a>
+<span class="sourceLineNo">440</span>         * &lt;p&gt;<a name="line.440"></a>
+<span class="sourceLineNo">441</span>         * This method should be overridden by child classes that wish to support<a name="line.441"></a>
+<span class="sourceLineNo">442</span>         * hCard. The default implementation of this method will retrieve the HTML<a name="line.442"></a>
+<span class="sourceLineNo">443</span>         * element's hCard value (as described in {@link HCardElement#value()}), and<a name="line.443"></a>
+<span class="sourceLineNo">444</span>         * pass it into the {@link #_parseText} method.<a name="line.444"></a>
+<span class="sourceLineNo">445</span>         * &lt;/p&gt;<a name="line.445"></a>
+<span class="sourceLineNo">446</span>         * @param element the property's HTML element<a name="line.446"></a>
+<span class="sourceLineNo">447</span>         * @param context the parse context<a name="line.447"></a>
+<span class="sourceLineNo">448</span>         * @return the unmarshalled property object<a name="line.448"></a>
+<span class="sourceLineNo">449</span>         * @throws CannotParseException if the property value could not be parsed<a name="line.449"></a>
+<span class="sourceLineNo">450</span>         * @throws SkipMeException if this property should NOT be added to the<a name="line.450"></a>
+<span class="sourceLineNo">451</span>         * {@link VCard} object<a name="line.451"></a>
+<span class="sourceLineNo">452</span>         * @throws EmbeddedVCardException if the value of this property is an<a name="line.452"></a>
+<span class="sourceLineNo">453</span>         * embedded vCard (i.e. the AGENT property)<a name="line.453"></a>
+<span class="sourceLineNo">454</span>         */<a name="line.454"></a>
+<span class="sourceLineNo">455</span>        protected T _parseHtml(HCardElement element, ParseContext context) {<a name="line.455"></a>
+<span class="sourceLineNo">456</span>                String value = VObjectPropertyValues.escape(element.value());<a name="line.456"></a>
+<span class="sourceLineNo">457</span>                VCardParameters parameters = new VCardParameters();<a name="line.457"></a>
+<span class="sourceLineNo">458</span>                T property = _parseText(value, null, parameters, context);<a name="line.458"></a>
+<span class="sourceLineNo">459</span>                property.setParameters(parameters);<a name="line.459"></a>
+<span class="sourceLineNo">460</span>                return property;<a name="line.460"></a>
+<span class="sourceLineNo">461</span>        }<a name="line.461"></a>
+<span class="sourceLineNo">462</span><a name="line.462"></a>
+<span class="sourceLineNo">463</span>        /**<a name="line.463"></a>
+<span class="sourceLineNo">464</span>         * &lt;p&gt;<a name="line.464"></a>
+<span class="sourceLineNo">465</span>         * Unmarshals a property from a JSON data stream (jCard).<a name="line.465"></a>
+<span class="sourceLineNo">466</span>         * &lt;/p&gt;<a name="line.466"></a>
+<span class="sourceLineNo">467</span>         * &lt;p&gt;<a name="line.467"></a>
+<span class="sourceLineNo">468</span>         * This method should be overridden by child classes that wish to support<a name="line.468"></a>
+<span class="sourceLineNo">469</span>         * jCard. The default implementation of this method will convert the jCard<a name="line.469"></a>
+<span class="sourceLineNo">470</span>         * property value to a string and pass it into the {@link #_parseText}<a name="line.470"></a>
+<span class="sourceLineNo">471</span>         * method.<a name="line.471"></a>
+<span class="sourceLineNo">472</span>         * &lt;/p&gt;<a name="line.472"></a>
+<span class="sourceLineNo">473</span>         * <a name="line.473"></a>
+<span class="sourceLineNo">474</span>         * &lt;hr&gt;<a name="line.474"></a>
+<span class="sourceLineNo">475</span>         * <a name="line.475"></a>
+<span class="sourceLineNo">476</span>         * &lt;p&gt;<a name="line.476"></a>
+<span class="sourceLineNo">477</span>         * The following paragraphs describe the way in which this method's default<a name="line.477"></a>
+<span class="sourceLineNo">478</span>         * implementation converts a jCard value to a string:<a name="line.478"></a>
+<span class="sourceLineNo">479</span>         * &lt;/p&gt;<a name="line.479"></a>
+<span class="sourceLineNo">480</span>         * &lt;p&gt;<a name="line.480"></a>
+<span class="sourceLineNo">481</span>         * If the jCard value consists of a single, non-array, non-object value,<a name="line.481"></a>
+<span class="sourceLineNo">482</span>         * then the value is converted to a string. Special characters (backslashes,<a name="line.482"></a>
+<span class="sourceLineNo">483</span>         * commas, and semicolons) are escaped in order to simulate what the value<a name="line.483"></a>
+<span class="sourceLineNo">484</span>         * might look like in a plain-text vCard.&lt;br&gt;<a name="line.484"></a>
+<span class="sourceLineNo">485</span>         * &lt;code&gt;["x-foo", {}, "text", "the;value"] --&amp;gt; "the\;value"&lt;/code&gt;&lt;br&gt;<a name="line.485"></a>
+<span class="sourceLineNo">486</span>         * &lt;code&gt;["x-foo", {}, "text", 2] --&amp;gt; "2"&lt;/code&gt;<a name="line.486"></a>
+<span class="sourceLineNo">487</span>         * &lt;/p&gt;<a name="line.487"></a>
+<span class="sourceLineNo">488</span>         * &lt;p&gt;<a name="line.488"></a>
+<span class="sourceLineNo">489</span>         * If the jCard value consists of multiple, non-array, non-object values,<a name="line.489"></a>
+<span class="sourceLineNo">490</span>         * then all the values are appended together in a single string, separated<a name="line.490"></a>
+<span class="sourceLineNo">491</span>         * by commas. Special characters (backslashes, commas, and semicolons) are<a name="line.491"></a>
+<span class="sourceLineNo">492</span>         * escaped for each value in order to prevent commas from being treated as<a name="line.492"></a>
+<span class="sourceLineNo">493</span>         * delimiters, and to simulate what the value might look like in a<a name="line.493"></a>
+<span class="sourceLineNo">494</span>         * plain-text vCard.&lt;br&gt;<a name="line.494"></a>
+<span class="sourceLineNo">495</span>         * &lt;code&gt;["x-foo", {}, "text", "one", "two,three"] --&amp;gt;<a name="line.495"></a>
+<span class="sourceLineNo">496</span>         * "one,two\,three"&lt;/code&gt;<a name="line.496"></a>
+<span class="sourceLineNo">497</span>         * &lt;/p&gt;<a name="line.497"></a>
+<span class="sourceLineNo">498</span>         * &lt;p&gt;<a name="line.498"></a>
+<span class="sourceLineNo">499</span>         * If the jCard value is a single array, then this array is treated as a<a name="line.499"></a>
+<span class="sourceLineNo">500</span>         * "structured value", and converted its plain-text representation. Special<a name="line.500"></a>
+<span class="sourceLineNo">501</span>         * characters (backslashes, commas, and semicolons) are escaped for each<a name="line.501"></a>
+<span class="sourceLineNo">502</span>         * value in order to prevent commas and semicolons from being treated as<a name="line.502"></a>
+<span class="sourceLineNo">503</span>         * delimiters.&lt;br&gt;<a name="line.503"></a>
+<span class="sourceLineNo">504</span>         * &lt;code&gt;["x-foo", {}, "text", ["one", ["two", "three"], "four;five"]]<a name="line.504"></a>
+<span class="sourceLineNo">505</span>         * --&amp;gt; "one;two,three;four\;five"&lt;/code&gt;<a name="line.505"></a>
+<span class="sourceLineNo">506</span>         * &lt;/p&gt;<a name="line.506"></a>
+<span class="sourceLineNo">507</span>         * &lt;p&gt;<a name="line.507"></a>
+<span class="sourceLineNo">508</span>         * If the jCard value starts with a JSON object, then it is converted to an<a name="line.508"></a>
+<span class="sourceLineNo">509</span>         * empty string (JSON objects are not supported by this method).&lt;br&gt;<a name="line.509"></a>
+<span class="sourceLineNo">510</span>         * &lt;code&gt;["x-foo", , "text", {"one": 1}] --&amp;gt; ""}&lt;/code&gt;<a name="line.510"></a>
+<span class="sourceLineNo">511</span>         * &lt;/p&gt;<a name="line.511"></a>
+<span class="sourceLineNo">512</span>         * &lt;p&gt;<a name="line.512"></a>
+<span class="sourceLineNo">513</span>         * For all other cases, behavior is undefined.<a name="line.513"></a>
+<span class="sourceLineNo">514</span>         * &lt;/p&gt;<a name="line.514"></a>
+<span class="sourceLineNo">515</span>         * @param value the property's JSON value<a name="line.515"></a>
+<span class="sourceLineNo">516</span>         * @param dataType the data type<a name="line.516"></a>
+<span class="sourceLineNo">517</span>         * @param parameters the parsed parameters. These parameters will be<a name="line.517"></a>
+<span class="sourceLineNo">518</span>         * assigned to the property object once this method returns. Therefore, do<a name="line.518"></a>
+<span class="sourceLineNo">519</span>         * not assign any parameters to the property object itself whilst inside of<a name="line.519"></a>
+<span class="sourceLineNo">520</span>         * this method, or else they will be overwritten.<a name="line.520"></a>
+<span class="sourceLineNo">521</span>         * @param context the parse context<a name="line.521"></a>
+<span class="sourceLineNo">522</span>         * @return the unmarshalled property object<a name="line.522"></a>
+<span class="sourceLineNo">523</span>         * @throws CannotParseException if the marshaller could not parse the<a name="line.523"></a>
+<span class="sourceLineNo">524</span>         * property's value<a name="line.524"></a>
+<span class="sourceLineNo">525</span>         * @throws SkipMeException if the property should not be added to the final<a name="line.525"></a>
+<span class="sourceLineNo">526</span>         * {@link VCard} object<a name="line.526"></a>
+<span class="sourceLineNo">527</span>         */<a name="line.527"></a>
+<span class="sourceLineNo">528</span>        protected T _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {<a name="line.528"></a>
+<span class="sourceLineNo">529</span>                String valueStr = jcardValueToString(value);<a name="line.529"></a>
+<span class="sourceLineNo">530</span>                return _parseText(valueStr, dataType, parameters, context);<a name="line.530"></a>
+<span class="sourceLineNo">531</span>        }<a name="line.531"></a>
+<span class="sourceLineNo">532</span><a name="line.532"></a>
+<span class="sourceLineNo">533</span>        /**<a name="line.533"></a>
+<span class="sourceLineNo">534</span>         * Converts a jCard value to its plain-text format representation.<a name="line.534"></a>
+<span class="sourceLineNo">535</span>         * @param value the jCard value<a name="line.535"></a>
+<span class="sourceLineNo">536</span>         * @return the plain-text format representation (for example, "1,2,3" for a<a name="line.536"></a>
+<span class="sourceLineNo">537</span>         * list of values)<a name="line.537"></a>
+<span class="sourceLineNo">538</span>         */<a name="line.538"></a>
+<span class="sourceLineNo">539</span>        private static String jcardValueToString(JCardValue value) {<a name="line.539"></a>
+<span class="sourceLineNo">540</span>                List&lt;JsonValue&gt; values = value.getValues();<a name="line.540"></a>
+<span class="sourceLineNo">541</span>                if (values.size() &gt; 1) {<a name="line.541"></a>
+<span class="sourceLineNo">542</span>                        List&lt;String&gt; multi = value.asMulti();<a name="line.542"></a>
+<span class="sourceLineNo">543</span>                        if (!multi.isEmpty()) {<a name="line.543"></a>
+<span class="sourceLineNo">544</span>                                return VObjectPropertyValues.writeList(multi);<a name="line.544"></a>
+<span class="sourceLineNo">545</span>                        }<a name="line.545"></a>
+<span class="sourceLineNo">546</span>                }<a name="line.546"></a>
+<span class="sourceLineNo">547</span><a name="line.547"></a>
+<span class="sourceLineNo">548</span>                if (!values.isEmpty() &amp;&amp; values.get(0).getArray() != null) {<a name="line.548"></a>
+<span class="sourceLineNo">549</span>                        List&lt;List&lt;String&gt;&gt; structured = value.asStructured();<a name="line.549"></a>
+<span class="sourceLineNo">550</span>                        if (!structured.isEmpty()) {<a name="line.550"></a>
+<span class="sourceLineNo">551</span>                                return VObjectPropertyValues.writeStructured(structured, true);<a name="line.551"></a>
+<span class="sourceLineNo">552</span>                        }<a name="line.552"></a>
+<span class="sourceLineNo">553</span>                }<a name="line.553"></a>
+<span class="sourceLineNo">554</span><a name="line.554"></a>
+<span class="sourceLineNo">555</span>                return VObjectPropertyValues.escape(value.asSingle());<a name="line.555"></a>
+<span class="sourceLineNo">556</span>        }<a name="line.556"></a>
+<span class="sourceLineNo">557</span><a name="line.557"></a>
+<span class="sourceLineNo">558</span>        /**<a name="line.558"></a>
+<span class="sourceLineNo">559</span>         * Parses a date string.<a name="line.559"></a>
+<span class="sourceLineNo">560</span>         * @param value the date string<a name="line.560"></a>
+<span class="sourceLineNo">561</span>         * @return the parsed date<a name="line.561"></a>
+<span class="sourceLineNo">562</span>         * @throws IllegalArgumentException if the date cannot be parsed<a name="line.562"></a>
+<span class="sourceLineNo">563</span>         */<a name="line.563"></a>
+<span class="sourceLineNo">564</span>        protected static Date date(String value) {<a name="line.564"></a>
+<span class="sourceLineNo">565</span>                return VCardDateFormat.parse(value);<a name="line.565"></a>
+<span class="sourceLineNo">566</span>        }<a name="line.566"></a>
+<span class="sourceLineNo">567</span><a name="line.567"></a>
+<span class="sourceLineNo">568</span>        /**<a name="line.568"></a>
+<span class="sourceLineNo">569</span>         * Parses a date string.<a name="line.569"></a>
+<span class="sourceLineNo">570</span>         * @param value the date string<a name="line.570"></a>
+<span class="sourceLineNo">571</span>         * @return the parsed date<a name="line.571"></a>
+<span class="sourceLineNo">572</span>         * @throws IllegalArgumentException if the date cannot be parsed<a name="line.572"></a>
+<span class="sourceLineNo">573</span>         */<a name="line.573"></a>
+<span class="sourceLineNo">574</span>        protected static Calendar calendar(String value) {<a name="line.574"></a>
+<span class="sourceLineNo">575</span>                return VCardDateFormat.parseAsCalendar(value);<a name="line.575"></a>
+<span class="sourceLineNo">576</span>        }<a name="line.576"></a>
+<span class="sourceLineNo">577</span><a name="line.577"></a>
+<span class="sourceLineNo">578</span>        /**<a name="line.578"></a>
+<span class="sourceLineNo">579</span>         * Formats a {@link Date} object as a string.<a name="line.579"></a>
+<span class="sourceLineNo">580</span>         * @param date the date<a name="line.580"></a>
+<span class="sourceLineNo">581</span>         * @return a helper object for customizing the write operation<a name="line.581"></a>
+<span class="sourceLineNo">582</span>         */<a name="line.582"></a>
+<span class="sourceLineNo">583</span>        protected static DateWriter date(Date date) {<a name="line.583"></a>
+<span class="sourceLineNo">584</span>                return new DateWriter(date);<a name="line.584"></a>
+<span class="sourceLineNo">585</span>        }<a name="line.585"></a>
+<span class="sourceLineNo">586</span>        <a name="line.586"></a>
+<span class="sourceLineNo">587</span>        /**<a name="line.587"></a>
+<span class="sourceLineNo">588</span>         * Formats a {@link Calendar} object as a string.<a name="line.588"></a>
+<span class="sourceLineNo">589</span>         * @param calendar the date<a name="line.589"></a>
+<span class="sourceLineNo">590</span>         * @return a helper object for customizing the write operation<a name="line.590"></a>
+<span class="sourceLineNo">591</span>         */<a name="line.591"></a>
+<span class="sourceLineNo">592</span>        protected static DateWriter date(Calendar calendar) {<a name="line.592"></a>
+<span class="sourceLineNo">593</span>                return date(calendar.getTime());<a name="line.593"></a>
+<span class="sourceLineNo">594</span>        }<a name="line.594"></a>
+<span class="sourceLineNo">595</span><a name="line.595"></a>
+<span class="sourceLineNo">596</span>        /**<a name="line.596"></a>
+<span class="sourceLineNo">597</span>         * A helper class for writing date values.<a name="line.597"></a>
+<span class="sourceLineNo">598</span>         */<a name="line.598"></a>
+<span class="sourceLineNo">599</span>        protected static class DateWriter {<a name="line.599"></a>
+<span class="sourceLineNo">600</span>                private Date date;<a name="line.600"></a>
+<span class="sourceLineNo">601</span>                private boolean hasTime = true;<a name="line.601"></a>
+<span class="sourceLineNo">602</span>                private boolean extended = false;<a name="line.602"></a>
+<span class="sourceLineNo">603</span>                private boolean utc = true;<a name="line.603"></a>
+<span class="sourceLineNo">604</span><a name="line.604"></a>
+<span class="sourceLineNo">605</span>                /**<a name="line.605"></a>
+<span class="sourceLineNo">606</span>                 * Creates a new date writer object.<a name="line.606"></a>
+<span class="sourceLineNo">607</span>                 * @param date the date to format<a name="line.607"></a>
+<span class="sourceLineNo">608</span>                 */<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                public DateWriter(Date date) {<a name="line.609"></a>
+<span class="sourceLineNo">610</span>                        this.date = date;<a name="line.610"></a>
+<span class="sourceLineNo">611</span>                }<a name="line.611"></a>
+<span class="sourceLineNo">612</span><a name="line.612"></a>
+<span class="sourceLineNo">613</span>                /**<a name="line.613"></a>
+<span class="sourceLineNo">614</span>                 * Sets whether to output the date's time component.<a name="line.614"></a>
+<span class="sourceLineNo">615</span>                 * @param hasTime true include the time, false if it's strictly a date<a name="line.615"></a>
+<span class="sourceLineNo">616</span>                 * (defaults to "true")<a name="line.616"></a>
+<span class="sourceLineNo">617</span>                 * @return this<a name="line.617"></a>
+<span class="sourceLineNo">618</span>                 */<a name="line.618"></a>
+<span class="sourceLineNo">619</span>                public DateWriter time(boolean hasTime) {<a name="line.619"></a>
+<span class="sourceLineNo">620</span>                        this.hasTime = hasTime;<a name="line.620"></a>
+<span class="sourceLineNo">621</span>                        return this;<a name="line.621"></a>
+<span class="sourceLineNo">622</span>                }<a name="line.622"></a>
+<span class="sourceLineNo">623</span><a name="line.623"></a>
+<span class="sourceLineNo">624</span>                /**<a name="line.624"></a>
+<span class="sourceLineNo">625</span>                 * Sets whether to use extended format or basic.<a name="line.625"></a>
+<span class="sourceLineNo">626</span>                 * @param extended true to use extended format, false to use basic<a name="line.626"></a>
+<span class="sourceLineNo">627</span>                 * (defaults to "false")<a name="line.627"></a>
+<span class="sourceLineNo">628</span>                 * @return this<a name="line.628"></a>
+<span class="sourceLineNo">629</span>                 */<a name="line.629"></a>
+<span class="sourceLineNo">630</span>                public DateWriter extended(boolean extended) {<a name="line.630"></a>
+<span class="sourceLineNo">631</span>                        this.extended = extended;<a name="line.631"></a>
+<span class="sourceLineNo">632</span>                        return this;<a name="line.632"></a>
+<span class="sourceLineNo">633</span>                }<a name="line.633"></a>
+<span class="sourceLineNo">634</span><a name="line.634"></a>
+<span class="sourceLineNo">635</span>                /**<a name="line.635"></a>
+<span class="sourceLineNo">636</span>                 * Sets whether to format the date in UTC time, or to include a UTC<a name="line.636"></a>
+<span class="sourceLineNo">637</span>                 * offset.<a name="line.637"></a>
+<span class="sourceLineNo">638</span>                 * @param utc true to format in UTC time, false to include the local<a name="line.638"></a>
+<span class="sourceLineNo">639</span>                 * timezone's UTC offset (defaults to "true")<a name="line.639"></a>
+<span class="sourceLineNo">640</span>                 * @return this<a name="line.640"></a>
+<span class="sourceLineNo">641</span>                 */<a name="line.641"></a>
+<span class="sourceLineNo">642</span>                public DateWriter utc(boolean utc) {<a name="line.642"></a>
+<span class="sourceLineNo">643</span>                        this.utc = utc;<a name="line.643"></a>
+<span class="sourceLineNo">644</span>                        return this;<a name="line.644"></a>
+<span class="sourceLineNo">645</span>                }<a name="line.645"></a>
+<span class="sourceLineNo">646</span><a name="line.646"></a>
+<span class="sourceLineNo">647</span>                /**<a name="line.647"></a>
+<span class="sourceLineNo">648</span>                 * Creates the date string.<a name="line.648"></a>
+<span class="sourceLineNo">649</span>                 * @return the date string<a name="line.649"></a>
+<span class="sourceLineNo">650</span>                 */<a name="line.650"></a>
+<span class="sourceLineNo">651</span>                public String write() {<a name="line.651"></a>
+<span class="sourceLineNo">652</span>                        VCardDateFormat format;<a name="line.652"></a>
+<span class="sourceLineNo">653</span>                        if (hasTime) {<a name="line.653"></a>
+<span class="sourceLineNo">654</span>                                if (utc) {<a name="line.654"></a>
+<span class="sourceLineNo">655</span>                                        format = extended ? VCardDateFormat.UTC_DATE_TIME_EXTENDED : VCardDateFormat.UTC_DATE_TIME_BASIC;<a name="line.655"></a>
+<span class="sourceLineNo">656</span>                                } else {<a name="line.656"></a>
+<span class="sourceLineNo">657</span>                                        format = extended ? VCardDateFormat.DATE_TIME_EXTENDED : VCardDateFormat.DATE_TIME_BASIC;<a name="line.657"></a>
+<span class="sourceLineNo">658</span>                                }<a name="line.658"></a>
+<span class="sourceLineNo">659</span>                        } else {<a name="line.659"></a>
+<span class="sourceLineNo">660</span>                                format = extended ? VCardDateFormat.DATE_EXTENDED : VCardDateFormat.DATE_BASIC;<a name="line.660"></a>
+<span class="sourceLineNo">661</span>                        }<a name="line.661"></a>
+<span class="sourceLineNo">662</span><a name="line.662"></a>
+<span class="sourceLineNo">663</span>                        return format.format(date);<a name="line.663"></a>
+<span class="sourceLineNo">664</span>                }<a name="line.664"></a>
+<span class="sourceLineNo">665</span>        }<a name="line.665"></a>
+<span class="sourceLineNo">666</span><a name="line.666"></a>
+<span class="sourceLineNo">667</span>        /**<a name="line.667"></a>
+<span class="sourceLineNo">668</span>         * Creates a {@link CannotParseException} to indicate that a scribe could<a name="line.668"></a>
+<span class="sourceLineNo">669</span>         * not find the necessary XML elements required in order to successfully<a name="line.669"></a>
+<span class="sourceLineNo">670</span>         * parse a property (xCards only).<a name="line.670"></a>
+<span class="sourceLineNo">671</span>         * @param dataTypes the expected data types (null for "unknown")<a name="line.671"></a>
+<span class="sourceLineNo">672</span>         * @return the exception object (note that the exception is NOT thrown!)<a name="line.672"></a>
+<span class="sourceLineNo">673</span>         */<a name="line.673"></a>
+<span class="sourceLineNo">674</span>        protected static CannotParseException missingXmlElements(VCardDataType... dataTypes) {<a name="line.674"></a>
+<span class="sourceLineNo">675</span>                String[] elements = new String[dataTypes.length];<a name="line.675"></a>
+<span class="sourceLineNo">676</span>                for (int i = 0; i &lt; dataTypes.length; i++) {<a name="line.676"></a>
+<span class="sourceLineNo">677</span>                        VCardDataType dataType = dataTypes[i];<a name="line.677"></a>
+<span class="sourceLineNo">678</span>                        elements[i] = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();<a name="line.678"></a>
+<span class="sourceLineNo">679</span>                }<a name="line.679"></a>
+<span class="sourceLineNo">680</span>                return missingXmlElements(elements);<a name="line.680"></a>
+<span class="sourceLineNo">681</span>        }<a name="line.681"></a>
+<span class="sourceLineNo">682</span><a name="line.682"></a>
+<span class="sourceLineNo">683</span>        /**<a name="line.683"></a>
+<span class="sourceLineNo">684</span>         * Creates a {@link CannotParseException} to indicate that a scribe could<a name="line.684"></a>
+<span class="sourceLineNo">685</span>         * not find the necessary XML elements required in order to successfully<a name="line.685"></a>
+<span class="sourceLineNo">686</span>         * parse a property (xCards only).<a name="line.686"></a>
+<span class="sourceLineNo">687</span>         * @param elements the names of the expected XML elements.<a name="line.687"></a>
+<span class="sourceLineNo">688</span>         * @return the exception object (note that the exception is NOT thrown!)<a name="line.688"></a>
+<span class="sourceLineNo">689</span>         */<a name="line.689"></a>
+<span class="sourceLineNo">690</span>        protected static CannotParseException missingXmlElements(String... elements) {<a name="line.690"></a>
+<span class="sourceLineNo">691</span>                return new CannotParseException(0, Arrays.toString(elements));<a name="line.691"></a>
+<span class="sourceLineNo">692</span>        }<a name="line.692"></a>
+<span class="sourceLineNo">693</span><a name="line.693"></a>
+<span class="sourceLineNo">694</span>        /**<a name="line.694"></a>
+<span class="sourceLineNo">695</span>         * A utility method for switching between the "PREF" and "TYPE=PREF"<a name="line.695"></a>
+<span class="sourceLineNo">696</span>         * parameters when marshalling a property (version 4.0 vCards use "PREF=1",<a name="line.696"></a>
+<span class="sourceLineNo">697</span>         * while version 3.0 vCards use "TYPE=PREF"). This method is meant to be<a name="line.697"></a>
+<span class="sourceLineNo">698</span>         * called from a scribe's {@link #_prepareParameters} method.<a name="line.698"></a>
+<span class="sourceLineNo">699</span>         * @param property the property that is being marshalled<a name="line.699"></a>
+<span class="sourceLineNo">700</span>         * @param parameters the parameters that are being marshalled (this should<a name="line.700"></a>
+<span class="sourceLineNo">701</span>         * be a copy of the property's parameters so that changes can be made to<a name="line.701"></a>
+<span class="sourceLineNo">702</span>         * them without affecting the original object)<a name="line.702"></a>
+<span class="sourceLineNo">703</span>         * @param version the vCard version that the vCard is being marshalled to<a name="line.703"></a>
+<span class="sourceLineNo">704</span>         * @param vcard the vCard that's being marshalled<a name="line.704"></a>
+<span class="sourceLineNo">705</span>         */<a name="line.705"></a>
+<span class="sourceLineNo">706</span>        protected static void handlePrefParam(VCardProperty property, VCardParameters parameters, VCardVersion version, VCard vcard) {<a name="line.706"></a>
+<span class="sourceLineNo">707</span>                switch (version) {<a name="line.707"></a>
+<span class="sourceLineNo">708</span>                case V2_1:<a name="line.708"></a>
+<span class="sourceLineNo">709</span>                case V3_0:<a name="line.709"></a>
+<span class="sourceLineNo">710</span>                        parameters.setPref(null);<a name="line.710"></a>
+<span class="sourceLineNo">711</span><a name="line.711"></a>
+<span class="sourceLineNo">712</span>                        //find the property with the lowest PREF value in the vCard<a name="line.712"></a>
+<span class="sourceLineNo">713</span>                        VCardProperty mostPreferred = null;<a name="line.713"></a>
+<span class="sourceLineNo">714</span>                        Integer lowestPref = null;<a name="line.714"></a>
+<span class="sourceLineNo">715</span>                        for (VCardProperty p : vcard.getProperties(property.getClass())) {<a name="line.715"></a>
+<span class="sourceLineNo">716</span>                                Integer pref;<a name="line.716"></a>
+<span class="sourceLineNo">717</span>                                try {<a name="line.717"></a>
+<span class="sourceLineNo">718</span>                                        pref = p.getParameters().getPref();<a name="line.718"></a>
+<span class="sourceLineNo">719</span>                                } catch (IllegalStateException e) {<a name="line.719"></a>
+<span class="sourceLineNo">720</span>                                        continue;<a name="line.720"></a>
+<span class="sourceLineNo">721</span>                                }<a name="line.721"></a>
+<span class="sourceLineNo">722</span><a name="line.722"></a>
+<span class="sourceLineNo">723</span>                                if (pref == null) {<a name="line.723"></a>
+<span class="sourceLineNo">724</span>                                        continue;<a name="line.724"></a>
+<span class="sourceLineNo">725</span>                                }<a name="line.725"></a>
+<span class="sourceLineNo">726</span><a name="line.726"></a>
+<span class="sourceLineNo">727</span>                                if (lowestPref == null || pref &lt; lowestPref) {<a name="line.727"></a>
+<span class="sourceLineNo">728</span>                                        mostPreferred = p;<a name="line.728"></a>
+<span class="sourceLineNo">729</span>                                        lowestPref = pref;<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                                }<a name="line.730"></a>
+<span class="sourceLineNo">731</span>                        }<a name="line.731"></a>
+<span class="sourceLineNo">732</span><a name="line.732"></a>
+<span class="sourceLineNo">733</span>                        if (property == mostPreferred) {<a name="line.733"></a>
+<span class="sourceLineNo">734</span>                                parameters.put(VCardParameters.TYPE, "pref");<a name="line.734"></a>
+<span class="sourceLineNo">735</span>                        }<a name="line.735"></a>
+<span class="sourceLineNo">736</span><a name="line.736"></a>
+<span class="sourceLineNo">737</span>                        break;<a name="line.737"></a>
+<span class="sourceLineNo">738</span>                case V4_0:<a name="line.738"></a>
+<span class="sourceLineNo">739</span>                        for (String type : property.getParameters().get(VCardParameters.TYPE)) {<a name="line.739"></a>
+<span class="sourceLineNo">740</span>                                if ("pref".equalsIgnoreCase(type)) {<a name="line.740"></a>
+<span class="sourceLineNo">741</span>                                        parameters.remove(VCardParameters.TYPE, type);<a name="line.741"></a>
+<span class="sourceLineNo">742</span>                                        parameters.setPref(1);<a name="line.742"></a>
+<span class="sourceLineNo">743</span>                                        break;<a name="line.743"></a>
+<span class="sourceLineNo">744</span>                                }<a name="line.744"></a>
+<span class="sourceLineNo">745</span>                        }<a name="line.745"></a>
+<span class="sourceLineNo">746</span>                        break;<a name="line.746"></a>
+<span class="sourceLineNo">747</span>                }<a name="line.747"></a>
+<span class="sourceLineNo">748</span>        }<a name="line.748"></a>
+<span class="sourceLineNo">749</span><a name="line.749"></a>
+<span class="sourceLineNo">750</span>        /**<a name="line.750"></a>
+<span class="sourceLineNo">751</span>         * &lt;p&gt;<a name="line.751"></a>
+<span class="sourceLineNo">752</span>         * Escapes special characters in a property value for writing to a<a name="line.752"></a>
+<span class="sourceLineNo">753</span>         * plain-text output stream.<a name="line.753"></a>
+<span class="sourceLineNo">754</span>         * &lt;/p&gt;<a name="line.754"></a>
+<span class="sourceLineNo">755</span>         * &lt;p&gt;<a name="line.755"></a>
+<span class="sourceLineNo">756</span>         * If the target version is 2.1, then the value will be returned unchanged.<a name="line.756"></a>
+<span class="sourceLineNo">757</span>         * 2.1 only requires special characters to be escaped within properties that<a name="line.757"></a>
+<span class="sourceLineNo">758</span>         * make use of those special characters.<a name="line.758"></a>
+<span class="sourceLineNo">759</span>         * &lt;/p&gt;<a name="line.759"></a>
+<span class="sourceLineNo">760</span>         * @param value the value to escape<a name="line.760"></a>
+<span class="sourceLineNo">761</span>         * @param context the write context<a name="line.761"></a>
+<span class="sourceLineNo">762</span>         * @return the escaped value<a name="line.762"></a>
+<span class="sourceLineNo">763</span>         */<a name="line.763"></a>
+<span class="sourceLineNo">764</span>        protected static String escape(String value, WriteContext context) {<a name="line.764"></a>
+<span class="sourceLineNo">765</span>                if (context.getVersion() == VCardVersion.V2_1) {<a name="line.765"></a>
+<span class="sourceLineNo">766</span>                        return value;<a name="line.766"></a>
+<span class="sourceLineNo">767</span>                }<a name="line.767"></a>
+<span class="sourceLineNo">768</span><a name="line.768"></a>
+<span class="sourceLineNo">769</span>                return VObjectPropertyValues.escape(value);<a name="line.769"></a>
+<span class="sourceLineNo">770</span>        }<a name="line.770"></a>
+<span class="sourceLineNo">771</span>}<a name="line.771"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
