@@ -1,7 +1,6 @@
 package ezvcard.util;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 /*
@@ -30,12 +29,20 @@ import java.util.Locale;
  */
 
 /**
+ * <p>
  * Formats floating-point values for vCards. This ensures that numbers are
  * rendered the same, no matter the default locale.
+ * </p>
+ * <ul>
+ * <li>Decimal separator can differ by locale (e.g. Germany uses ",")</li>
+ * <li>Number characters can differ by locale (e.g. "1.0" is "۱٫۰" in Iran)</li>
+ * </ul>
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
-public class VCardFloatFormatter extends DecimalFormat {
+public class VCardFloatFormatter {
+	private final NumberFormat nf = NumberFormat.getNumberInstance(Locale.ROOT);
+
 	/**
 	 * Creates a new formatter with a max of 6 decimals.
 	 */
@@ -48,15 +55,18 @@ public class VCardFloatFormatter extends DecimalFormat {
 	 * @param decimals the max number of decimal places
 	 */
 	public VCardFloatFormatter(int decimals) {
-		setMaximumFractionDigits(decimals);
+		nf.setMaximumFractionDigits(decimals);
 		if (decimals > 0) {
-			setMinimumFractionDigits(1);
+			nf.setMinimumFractionDigits(1);
 		}
+	}
 
-		/*
-		 * Decimal separator can differ by locale (e.g. Germany uses ",").
-		 * Number characters can differ by locale (e.g. "1.0" is "۱٫۰" in Iran).
-		 */
-		setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+	/**
+	 * Formats a number for inclusion in a vCard.
+	 * @param number the number
+	 * @return the formatted number
+	 */
+	public String format(double number) {
+		return nf.format(number);
 	}
 }
