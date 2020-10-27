@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
 
-import org.junit.After;
 import org.junit.Test;
 
 /*
@@ -36,26 +35,27 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class VCardFloatFormatterTest {
-	private final Locale defaultLocale = Locale.getDefault();
-	private final VCardFloatFormatter formatter = new VCardFloatFormatter();
-
-	@After
-	public void after() {
-		Locale.setDefault(defaultLocale);
-	}
-
 	@Test
 	public void format_truncate() {
+		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.888889", formatter.format(12.8888888));
 	}
 
 	@Test
 	public void format_no_truncate() {
+		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.88", formatter.format(12.88));
 	}
 
 	@Test
+	public void format_negative() {
+		VCardFloatFormatter formatter = new VCardFloatFormatter();
+		assertEquals("-12.88", formatter.format(-12.88));
+	}
+
+	@Test
 	public void format_no_decimals() {
+		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.0", formatter.format(12d));
 	}
 
@@ -69,9 +69,17 @@ public class VCardFloatFormatterTest {
 	}
 
 	@Test
-	public void format_other_locale() {
-		//Germany uses "," as the decimal separator, but "." should still be used
-		Locale.setDefault(Locale.GERMANY);
-		assertEquals("-12.388889", formatter.format(-12.3888888));
+	public void format_different_locales() {
+		Locale defaultLocale = Locale.getDefault();
+
+		try {
+			for (Locale locale : Locale.getAvailableLocales()) {
+				Locale.setDefault(locale);
+				VCardFloatFormatter formatter = new VCardFloatFormatter();
+				assertEquals("-12.388889", formatter.format(-12.3888888));
+			}
+		} finally {
+			Locale.setDefault(defaultLocale);
+		}
 	}
 }

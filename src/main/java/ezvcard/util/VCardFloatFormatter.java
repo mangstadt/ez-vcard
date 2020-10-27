@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /*
  Copyright (c) 2012-2020, Michael Angstadt
@@ -29,8 +30,8 @@ import java.text.DecimalFormatSymbols;
  */
 
 /**
- * Formats floating-point values for vCards. Notably, this ensures that a "." is
- * used as decimal separator, no matter the locale.
+ * Formats floating-point values for vCards. This ensures that numbers are
+ * rendered the same, no matter the default locale.
  * @author Michael Angstadt
  */
 @SuppressWarnings("serial")
@@ -52,10 +53,10 @@ public class VCardFloatFormatter extends DecimalFormat {
 			setMinimumFractionDigits(1);
 		}
 
-		//decimal separator differs by locale (e.g. Germany uses ",")
-		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-		symbols.setMinusSign('-');
-		setDecimalFormatSymbols(symbols);
+		/*
+		 * Decimal separator can differ by locale (e.g. Germany uses ",").
+		 * Number characters can differ by locale (e.g. "1.0" is "۱٫۰" in Iran).
+		 */
+		setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
 	}
 }
