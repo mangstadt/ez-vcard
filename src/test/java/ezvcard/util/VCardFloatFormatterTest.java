@@ -76,7 +76,7 @@ public class VCardFloatFormatterTest {
 			for (Locale locale : Locale.getAvailableLocales()) {
 				Locale.setDefault(locale);
 				VCardFloatFormatter formatter = new VCardFloatFormatter();
-				assertEquals("-12.388889", formatter.format(-12.3888888));
+				assertEquals("Test failed for locale: " + locale, "-12.388889", formatter.format(-12.3888888));
 			}
 		} finally {
 			Locale.setDefault(defaultLocale);
