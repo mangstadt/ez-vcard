@@ -208,11 +208,11 @@ public enum VCardDateFormat {
 	 * string.
 	 * </p>
 	 * <p>
-	 * Use {@link Calendar#isSet} to determine if a field was included in the
+	 * Use {@link Calendar#isSet(int)} to determine if a field was included in the
 	 * original timestamp string. Calls to this method should be made before
 	 * calling {@link Calendar#get} because calling latter method can cause
 	 * unset fields to become populated (as mentioned in the
-	 * {@link Calendar#isSet isSet} Javadocs).
+	 * {@link Calendar#isSet(int) isSet} Javadocs).
 	 * </p>
 	 * <p>
 	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
