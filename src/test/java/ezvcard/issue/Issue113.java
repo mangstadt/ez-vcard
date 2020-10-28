@@ -5,11 +5,16 @@ import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.property.Geo;
 import ezvcard.util.DefaultLocaleRule;
+
+import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -23,7 +28,7 @@ public class Issue113 {
 	public final DefaultLocaleRule defaultLocaleRule = new DefaultLocaleRule(nonWesternLocale);
 
 	@Test
-	public void issue113() {
+	public void submitter_unit_test() {
 		VCard vcard = new VCard(VCardVersion.V4_0);
 		vcard.setGeo(new Geo(1.0, 2.0));
 
@@ -37,21 +42,34 @@ public class Issue113 {
 	}
 
 	/**
-	 * ez-vcard uses {@link Double#parseDouble} to parse floating-point numbers.
+	 * Will Java parse Western numerals if the default locale is non-Western?
 	 */
 	@Test
-	public void parse_western_digits_in_non_western_locales() {
+	public void parseDouble_other_locales() {
 		for (Locale locale : Locale.getAvailableLocales()) {
 			Locale.setDefault(locale);
-			double actual = Double.parseDouble("1.0");
+			double actual = Double.parseDouble("1.0"); //ez-vcard uses this method when parsing numbers
 			double expected = 1.0;
 			assertEquals(expected, actual, 0);
 		}
 	}
 
 	@Test
-	public void can_root_locale_be_used() {
-		assertEquals("۱٫۲۳۰۰۰۰", String.format("%f", 1.23));
-		assertEquals("1.230000", String.format(Locale.ROOT, "%f", 1.23));
+	public void root_locale_numbers() {
+		double number = 1.23;
+		assertEquals("۱٫۲۳۰۰۰۰", String.format("%f", number));
+		assertEquals("1.230000", String.format(Locale.ROOT, "%f", number));
+	}
+
+	@Test
+	public void root_locale_dates() {
+		Date date = date("2020-10-28 12:00:00");
+		String pattern = "yyyy-MM-dd HH:mm";
+
+		DateFormat df = new SimpleDateFormat(pattern);
+		assertEquals("۲۰۲۰-۱۰-۲۸ ۱۲:۰۰", df.format(date));
+
+		df = new SimpleDateFormat(pattern, Locale.ROOT);
+		assertEquals("2020-10-28 12:00", df.format(date));
 	}
 }
