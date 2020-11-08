@@ -39,7 +39,6 @@ import java.util.Locale;
  * </ul>
  * @author Michael Angstadt
  */
-@SuppressWarnings("serial")
 public class VCardFloatFormatter {
 	private final NumberFormat nf = NumberFormat.getNumberInstance(Locale.ROOT);
 
