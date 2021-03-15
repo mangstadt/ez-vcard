@@ -1,0 +1,14 @@
+BEGIN:VCARD
+VERSION:4.0
+FN:Dummy\, Dummy
+N:Dummy;Dummy;;;
+ORG:Dummy GmbH
+TEL;TYPE=cell;PREF=1:+49 1234 56789
+TEL;TYPE=work:+49 9876 54321
+EMAIL;TYPE=home:dummy.dummy@dummy.com
+ADR;TYPE=work;LABEL=Dummy-Dummy-Strasse 1 61352 Bad Homburg^nGERMANY^': BH
+ G01:^n61352 Bad Homburg^nGERMANY:61352 Bad Homburg\nGERMANY:;BHG01:;Dumm
+ y-Dummy-Strasse 1;Bad Homburg;;61352;Germany
+REV;VALUE=DATE-AND-OR-TIME:20210314T092838Z
+UID:8b574c60-fd7f-4e99-b584-c5db131ae687
+END:VCARD
