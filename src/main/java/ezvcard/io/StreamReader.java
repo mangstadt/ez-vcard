@@ -16,7 +16,7 @@ import ezvcard.property.Label;
 import ezvcard.property.VCardProperty;
 
 /*
- Copyright (c) 2012-2020, Michael Angstadt
+ Copyright (c) 2012-2021, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
