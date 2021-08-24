@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import ezvcard.SupportedVersions;
@@ -174,7 +175,7 @@ public class Agent extends VCardProperty {
 		}
 
 		if (this.vcard != null) {
-			NumberFormat nf = NumberFormat.getIntegerInstance();
+			NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
 			nf.setMinimumIntegerDigits(2);
 
 			ValidationWarnings validationWarnings = this.vcard.validate(version);

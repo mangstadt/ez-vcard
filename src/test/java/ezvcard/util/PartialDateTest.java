@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Locale;
+
 import nl.jqno.equalsverifier.EqualsVerifier;
 
 import org.junit.Test;
@@ -211,6 +214,22 @@ public class PartialDateTest {
 
 		//date and time
 		assertToISO8601(builder().month(4).date(20).hour(5).offset(new UtcOffset(false, -5, 0)), "--0420T05-0500", "--04-20T05-05:00");
+	}
+
+	@Test
+	public void toISO8601_different_locales() {
+		Locale defaultLocale = Locale.getDefault();
+		PartialDate partialDate = PartialDate.builder().hour(5).minute(20).second(32).build();
+		try {
+			for (Locale locale : Locale.getAvailableLocales()) {
+				Locale.setDefault(locale);
+				String expected = "T052032";
+				String actual = partialDate.toISO8601(false);
+				assertEquals("Test failed for locale: " + locale, expected, actual);
+			}
+		} finally {
+			Locale.setDefault(defaultLocale);
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)

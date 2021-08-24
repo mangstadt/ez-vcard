@@ -13,6 +13,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -71,5 +74,14 @@ public class Issue113 {
 
 		df = new SimpleDateFormat(pattern, Locale.ROOT);
 		assertEquals("2020-10-28 12:00", df.format(date));
+	}
+
+	@Test
+	public void decimal_format() {
+		NumberFormat nf = new DecimalFormat("00");
+		assertEquals("۰۸", nf.format(8));
+
+		nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
+		assertEquals("08", nf.format(8));
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -154,7 +155,7 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 */
 	@Override
 	public String toString() {
-		NumberFormat nf = NumberFormat.getIntegerInstance();
+		NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
 		nf.setMinimumIntegerDigits(2);
 
 		StringBuilder sb = new StringBuilder();

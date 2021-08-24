@@ -1,8 +1,10 @@
 package ezvcard.util;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -318,7 +320,7 @@ public final class PartialDate {
 	 */
 	public String toISO8601(boolean extended) {
 		StringBuilder sb = new StringBuilder();
-		NumberFormat nf = new DecimalFormat("00");
+		NumberFormat nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
 		String yearStr = hasYear() ? getYear().toString() : null;
 		String monthStr = hasMonth() ? nf.format(getMonth()) : null;
