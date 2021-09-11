@@ -53,6 +53,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**September 11, 2021**
+
+[Version 0.11.3](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes several issues, including a security vulnerability.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **November 8, 2020**
 
 [Version 0.11.2](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a locale-specific issue related to number formatting.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -60,14 +64,6 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 **October 24, 2020**
 
 [Version 0.11.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a vCard compatibility issue and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**July 24, 2020**
-
-[Version 0.11.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds some small improvements and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**March 16, 2020**
-
-[Version 0.10.6](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release adds a couple small improvements and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
@@ -79,14 +75,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.11.2</version>
+   <version>0.11.3</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.11.2'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.11.3'
 ```
 
 # Build Instructions
@@ -157,7 +153,7 @@ knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](h
 [Alexander Myltsev](https://github.com/alexander-myltsev) ([Issue with folding quoted printable values](https://github.com/mangstadt/ez-vcard/issues/80))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
 [NeverWise](https://github.com/NeverWise) ([chaining parser & custom scribes issue](https://github.com/mangstadt/ez-vcard/issues/81))  
-[rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32), [trailing semicolons issue](https://github.com/mangstadt/ez-vcard/issues/57))  
+[rfc2822](https://github.com/rfc2822) ([folding line issue](https://github.com/mangstadt/ez-vcard/issues/30), [IMPP issue](https://github.com/mangstadt/ez-vcard/issues/32), [trailing semicolons issue](https://github.com/mangstadt/ez-vcard/issues/57), [non-Western digits](https://github.com/mangstadt/ez-vcard/issues/113))  
 [Steven Ruppert](https://github.com/blendmaster) ([folding surrogate character pairs](https://github.com/mangstadt/ez-vcard/pull/36), [parsing tel URIs](https://github.com/mangstadt/ez-vcard/pull/38))  
 Melchin Sapir (README suggestion)  
 Matt Siegel ([base64 property value bug](https://github.com/mangstadt/ez-vcard/issues/21), [unit test bug](https://github.com/mangstadt/ez-vcard/issues/22))  
