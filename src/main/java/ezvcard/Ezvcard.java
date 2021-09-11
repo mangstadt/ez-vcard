@@ -1,13 +1,11 @@
 package ezvcard;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.w3c.dom.Document;
 
@@ -32,7 +30,6 @@ import ezvcard.io.text.VCardWriter;
 import ezvcard.io.xml.XCardDocument;
 import ezvcard.io.xml.XCardReader;
 import ezvcard.io.xml.XCardWriter;
-import ezvcard.util.IOUtils;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -102,40 +99,22 @@ public final class Ezvcard {
 	/**
 	 * The version of the library.
 	 */
-	public static final String VERSION;
+	public static final String VERSION = "0.11.3-SNAPSHOT";
 
 	/**
 	 * The Maven group ID.
 	 */
-	public static final String GROUP_ID;
+	public static final String GROUP_ID = "com.googlecode.ez-vcard";
 
 	/**
 	 * The Maven artifact ID.
 	 */
-	public static final String ARTIFACT_ID;
+	public static final String ARTIFACT_ID = "ez-vcard";
 
 	/**
 	 * The project webpage.
 	 */
-	public static final String URL;
-
-	static {
-		InputStream in = null;
-		Properties props = new Properties();
-		try {
-			in = Ezvcard.class.getResourceAsStream("ez-vcard.properties");
-			props.load(in);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			IOUtils.closeQuietly(in);
-		}
-
-		VERSION = props.getProperty("version");
-		GROUP_ID = props.getProperty("groupId");
-		ARTIFACT_ID = props.getProperty("artifactId");
-		URL = props.getProperty("url");
-	}
+	public static final String URL = "https://github.com/mangstadt/ez-vcard";
 
 	/**
 	 * <p>

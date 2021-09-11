@@ -127,17 +127,10 @@
 	<build>
 		<resources>
 			<!--
-			Copy all resources into the JAR, but only filter "ez-vcard.properties"
+			Copy all resources into the JAR.
 			-->
 			<resource>
 				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>ezvcard/ez-vcard.properties</include>
-				</includes>
 			</resource>
 			
 			<!--
@@ -157,12 +150,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<!--
-						The plugin must be instructed to retrieve the filtered files from the "target/classes" directory.
-						Otherwise, it will copy the unfiltered versions in "src/main/resources" to the JAR.
-						-->
-						<Include-Resource>{maven-resources}, {ezvcard/ez-vcard.properties=target/classes/ezvcard/ez-vcard.properties}</Include-Resource>
-						
 						<!-- Define optional dependencies -->
 						<Import-Package>
 							com.fasterxml.jackson.*;resolution:=optional,
