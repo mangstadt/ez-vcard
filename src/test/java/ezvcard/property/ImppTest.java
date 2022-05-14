@@ -199,6 +199,12 @@ public class ImppTest {
 		Impp impp = new Impp((String) null);
 		assertNull(impp.getHandle());
 	}
+	
+	@Test
+	public void case_insensitive_protocol_comparison() {
+		Impp impp = new Impp("AIM:theuser");
+		assertTrue(impp.isAim());
+	}
 
 	@Test
 	public void toStringValues() {

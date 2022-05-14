@@ -269,7 +269,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	}
 
 	private boolean isProtocol(String protocol) {
-		return uri != null && protocol.equals(uri.getScheme());
+		return uri != null && protocol.equalsIgnoreCase(uri.getScheme());
 	}
 
 	/**
