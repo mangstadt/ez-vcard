@@ -4,10 +4,10 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
-import static ezvcard.util.TestUtils.utc;
-import static org.junit.Assert.assertEquals;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.junit.Test;
 
@@ -46,7 +46,6 @@ import ezvcard.property.Url;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -444,14 +443,12 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1980-03-22")
+			.date(LocalDate.of(1980, 3, 22))
 		.noMore();
 
 		asserter.simpleProperty(Revision.class)
-			.value(utc("2012-03-05 13:32:54"))
+			.value(LocalDateTime.of(2012, 3, 5, 13, 32, 54).toInstant(ZoneOffset.UTC))
 		.noMore();
-		Revision rev = asserter.getVCard().getRevision();
-		assertEquals(utc(2012, Calendar.MARCH, 5, 13, 32, 54), rev.getCalendar());
 		
 		asserter.rawProperty("X-COUCHDB-APPLICATION-ANNOTATIONS")
 			.value("{\"Evolution\":{\"revision\":\"2012-03-05T13:32:54Z\"}}")
@@ -578,7 +575,7 @@ public class SampleVCardsTest {
 		
 		asserter.dateProperty(Birthday.class)
 			.param("ALTID", "1")
-			.date("2016-08-01")
+			.date(LocalDate.of(2016, 8, 1))
 		.next()
 			.param("ALTID", "1")
 			.text("2016-08-01")
@@ -809,7 +806,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1980-03-22")
+			.date(LocalDate.of(1980, 3, 22))
 		.noMore();
 
 		asserter.simpleProperty(Url.class)
@@ -982,7 +979,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1960-09-10")
+			.date(LocalDate.of(1960, 9, 10))
 		.noMore();
 
 		asserter.simpleProperty(Url.class)
@@ -1156,7 +1153,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.dateProperty(Birthday.class)
-			.date("1912-06-23")
+			.date(LocalDate.of(1912, 6, 23))
 		.noMore();
 		
 		asserter.simpleProperty(Url.class)
@@ -1447,7 +1444,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("2012-06-06")
+			.date(LocalDate.of(2012, 6, 6))
 		.noMore();
 		
 		asserter.binaryProperty(Photo.class)
@@ -1549,7 +1546,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1980-05-21")
+			.date(LocalDate.of(1980, 5, 21))
 		.noMore();
 		
 		asserter.binaryProperty(Photo.class)
@@ -1577,7 +1574,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.timezone()
-			.offset(new UtcOffset(true, 1, 0))
+			.offset(ZoneOffset.ofHours(1))
 		.noMore();
 
 		asserter.simpleProperty(Label.class)
@@ -1705,7 +1702,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1980-03-22")
+			.date(LocalDate.of(1980, 3, 22))
 		.noMore();
 
 		asserter.email()
@@ -1721,10 +1718,8 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.simpleProperty(Revision.class)
-			.value(utc("2012-03-05 13:19:33"))
+			.value(LocalDateTime.of(2012, 3, 5, 13, 19, 33).toInstant(ZoneOffset.UTC))
 		.noMore();
-		Revision rev = asserter.getVCard().getRevision();
-		assertEquals(utc(2012, Calendar.MARCH, 5, 13, 19, 33), rev.getCalendar());
 		
 		asserter.rawProperty("X-MS-OL-DEFAULT-POSTAL-ADDRESS")
 			.value("2")
@@ -1834,7 +1829,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1922-03-10")
+			.date(LocalDate.of(1922, 3, 10))
 		.noMore();
 		
 		asserter.binaryProperty(Key.class)
@@ -1861,10 +1856,8 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.simpleProperty(Revision.class)
-			.value(utc("2012-08-01 18:46:31"))
+			.value(LocalDateTime.of(2012, 8, 1, 18, 46, 31).toInstant(ZoneOffset.UTC))
 		.noMore();
-		Revision rev = asserter.getVCard().getRevision();
-		assertEquals(utc(2012, Calendar.AUGUST, 1, 18, 46, 31), rev.getCalendar());
 
 		asserter.rawProperty("X-MS-TEL")
 			.value("(111) 555-4444")
@@ -1997,7 +1990,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("2012-06-06")
+			.date(LocalDate.of(2012, 6, 6))
 		.noMore();
 		
 		asserter.binaryProperty(Photo.class)
@@ -2121,7 +2114,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1980-03-21")
+			.date(LocalDate.of(1980, 3, 21))
 		.noMore();
 		
 		asserter.binaryProperty(Key.class)
@@ -2146,11 +2139,9 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.simpleProperty(Revision.class)
-			.value(utc("2012-10-12 21:05:25"))
+			.value(LocalDateTime.of(2012, 10, 12, 21, 5, 25).toInstant(ZoneOffset.UTC))
 		.noMore();
-		Revision rev = asserter.getVCard().getRevision();
-		assertEquals(utc(2012, Calendar.OCTOBER, 12, 21, 5, 25), rev.getCalendar());
-		
+
 		VCard vcard = asserter.getVCard();
 		asserter.validate()
 			.prop(vcard.getNickname(), 2) //not supported in 2.1
@@ -2261,7 +2252,7 @@ public class SampleVCardsTest {
 		.noMore();
 
 		asserter.dateProperty(Birthday.class)
-			.date("1970-09-21")
+			.date(LocalDate.of(1970, 9, 21))
 		.noMore();
 
 		asserter.simpleProperty(Note.class)
@@ -2322,7 +2313,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.dateProperty(Anniversary.class)
-			.partialDate(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build())
+			.partialDate(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build())
 		.noMore();
 		
 		asserter.property(Gender.class)
@@ -2378,7 +2369,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.timezone()
-			.offset(new UtcOffset(false, -5, 0))
+			.offset(ZoneOffset.ofHours(-5))
 		.noMore();
 
 		asserter.simpleProperty(Url.class)

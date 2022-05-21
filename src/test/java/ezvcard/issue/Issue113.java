@@ -6,7 +6,6 @@ import ezvcard.VCardVersion;
 import ezvcard.property.Geo;
 import ezvcard.util.DefaultLocaleRule;
 
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
@@ -65,9 +64,9 @@ public class Issue113 {
 	}
 
 	@Test
-	public void root_locale_dates() {
-		Date date = date("2020-10-28 12:00:00");
+	public void root_locale_dates() throws Exception {
 		String pattern = "yyyy-MM-dd HH:mm";
+		Date date = new SimpleDateFormat(pattern).parse("2020-10-28 12:00");
 
 		DateFormat df = new SimpleDateFormat(pattern);
 		assertEquals("۲۰۲۰-۱۰-۲۸ ۱۲:۰۰", df.format(date));

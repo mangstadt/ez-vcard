@@ -1,20 +1,20 @@
 package ezvcard.util;
 
-import static ezvcard.util.TestUtils.buildTimezone;
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
-import org.junit.ClassRule;
 import org.junit.Test;
 
 /*
@@ -46,182 +46,143 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class VCardDateFormatTest {
-	@ClassRule
-	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
-
 	@Test
-	public void format() {
-		Date date = date("2006-01-02 10:20:30");
-
-		assertEquals("20060102", VCardDateFormat.DATE_BASIC.format(date));
-		assertEquals("2006-01-02", VCardDateFormat.DATE_EXTENDED.format(date));
-		assertEquals("20060102T102030+0100", VCardDateFormat.DATE_TIME_BASIC.format(date));
-		assertEquals("2006-01-02T10:20:30+01:00", VCardDateFormat.DATE_TIME_EXTENDED.format(date));
-		assertEquals("2006-01-02T10:20:30+0100", VCardDateFormat.HCARD_DATE_TIME.format(date));
-		assertEquals("20060102T092030Z", VCardDateFormat.UTC_DATE_TIME_BASIC.format(date));
-		assertEquals("2006-01-02T09:20:30Z", VCardDateFormat.UTC_DATE_TIME_EXTENDED.format(date));
+	public void format_date() {
+		LocalDate date = LocalDate.of(2006, 1, 2);
+		assertEquals("20060102", VCardDateFormat.BASIC.format(date));
+		assertEquals("2006-01-02", VCardDateFormat.EXTENDED.format(date));
 	}
 
 	@Test
-	public void format_timezone() {
-		TimeZone timezone = buildTimezone(-2, 0);
+	public void format_datetime() {
+		LocalDateTime dateTime = LocalDateTime.of(2006, 1, 2, 10, 20, 30);
+		assertEquals("20060102T102030", VCardDateFormat.BASIC.format(dateTime));
+		assertEquals("2006-01-02T10:20:30", VCardDateFormat.EXTENDED.format(dateTime));
+	}
 
-		Date datetime = date("2006-01-02 10:20:30");
+	@Test
+	public void format_offset_positive() {
+		OffsetDateTime offsetPositive = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(1));
+		assertEquals("20060102T102030+0100", VCardDateFormat.BASIC.format(offsetPositive));
+		assertEquals("2006-01-02T10:20:30+01:00", VCardDateFormat.EXTENDED.format(offsetPositive));
+	}
 
-		assertEquals("20060102T072030-0200", VCardDateFormat.DATE_TIME_BASIC.format(datetime, timezone));
-		assertEquals("2006-01-02T07:20:30-02:00", VCardDateFormat.DATE_TIME_EXTENDED.format(datetime, timezone));
-		assertEquals("2006-01-02T07:20:30-0200", VCardDateFormat.HCARD_DATE_TIME.format(datetime, timezone));
+	@Test
+	public void format_offset_positive_minutes() {
+		OffsetDateTime offsetPositiveMinutes = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHoursMinutes(1, 30));
+		assertEquals("20060102T102030+0130", VCardDateFormat.BASIC.format(offsetPositiveMinutes));
+		assertEquals("2006-01-02T10:20:30+01:30", VCardDateFormat.EXTENDED.format(offsetPositiveMinutes));
+	}
+
+	@Test
+	public void format_offset_negative() {
+		OffsetDateTime offsetNegative = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(-1));
+		assertEquals("20060102T102030-0100", VCardDateFormat.BASIC.format(offsetNegative));
+		assertEquals("2006-01-02T10:20:30-01:00", VCardDateFormat.EXTENDED.format(offsetNegative));
+	}
+
+	@Test
+	public void format_offset_negative_minutes() {
+		OffsetDateTime offsetNegativeMinutes = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHoursMinutes(-1, -30));
+		assertEquals("20060102T102030-0130", VCardDateFormat.BASIC.format(offsetNegativeMinutes));
+		assertEquals("2006-01-02T10:20:30-01:30", VCardDateFormat.EXTENDED.format(offsetNegativeMinutes));
+	}
+
+	@Test
+	public void format_instant() {
+		Instant instant = LocalDateTime.of(2006, 1, 2, 10, 20, 30).toInstant(ZoneOffset.UTC);
+		assertEquals("20060102T102030Z", VCardDateFormat.BASIC.format(instant));
+		assertEquals("2006-01-02T10:20:30Z", VCardDateFormat.EXTENDED.format(instant));
+	}
+
+	@Test
+	public void format_zoned_datetime() {
+		ZonedDateTime zonedDateTime = ZonedDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneId.of("America/New_York"));
+		assertEquals("20060102T102030-0500", VCardDateFormat.BASIC.format(zonedDateTime));
+		assertEquals("2006-01-02T10:20:30-05:00", VCardDateFormat.EXTENDED.format(zonedDateTime));
 	}
 
 	@Test
 	public void format_different_locales() {
-		Date date = date("2020-10-28 12:00:00");
+		OffsetDateTime date = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(1));
 
 		Locale defaultLocale = Locale.getDefault();
 		try {
 			for (Locale locale : Locale.getAvailableLocales()) {
 				Locale.setDefault(locale);
-				assertLocale(locale, VCardDateFormat.DATE_BASIC, date, "20201028");
-				assertLocale(locale, VCardDateFormat.DATE_EXTENDED, date, "2020-10-28");
-				assertLocale(locale, VCardDateFormat.DATE_TIME_BASIC, date, "20201028T120000+0100");
-				assertLocale(locale, VCardDateFormat.DATE_TIME_EXTENDED, date, "2020-10-28T12:00:00+01:00");
-				assertLocale(locale, VCardDateFormat.UTC_DATE_TIME_BASIC, date, "20201028T110000Z");
-				assertLocale(locale, VCardDateFormat.UTC_DATE_TIME_EXTENDED, date, "2020-10-28T11:00:00Z");
-				assertLocale(locale, VCardDateFormat.HCARD_DATE_TIME, date, "2020-10-28T12:00:00+0100");
+				assertLocale(locale, VCardDateFormat.BASIC, date, "20060102T102030+0100");
+				assertLocale(locale, VCardDateFormat.EXTENDED, date, "2006-01-02T10:20:30+01:00");
 			}
 		} finally {
 			Locale.setDefault(defaultLocale);
 		}
 	}
 
-	private static void assertLocale(Locale locale, VCardDateFormat df, Date date, String expected) {
+	private static void assertLocale(Locale locale, VCardDateFormat df, OffsetDateTime date, String expected) {
 		String actual = df.format(date);
 		String message = "Test failed for " + df.name() + " with locale \"" + locale + "\".";
 		assertEquals(message, expected, actual);
 	}
 
 	@Test
-	public void parse() throws Exception {
-		Date date = date("2012-07-01");
-		Date datetime = date("2012-07-01 08:01:30");
-
-		//basic, date
+	public void parse_date() {
+		LocalDate date = LocalDate.of(2012, 7, 1);
 		assertEquals(date, VCardDateFormat.parse("20120701"));
-
-		//extended, date
 		assertEquals(date, VCardDateFormat.parse("2012-07-01"));
-
-		//basic, datetime, GMT
-		assertEquals(datetime, VCardDateFormat.parse("20120701T070130Z"));
-
-		//extended, datetime, GMT
-		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30Z"));
-
-		//basic, datetime, timezone
-		assertEquals(datetime, VCardDateFormat.parse("20120701T100130+0300"));
-		assertEquals(datetime, VCardDateFormat.parse("20120701T100130+03"));
-		assertEquals(datetime, VCardDateFormat.parse("20120701T040130-0300"));
-
-		//extended, datetime, timezone
-		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+03:00"));
-
-		//hCard, datetime, timezone
-		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T10:01:30+0300"));
-
-		//no offset
-		assertEquals(datetime, VCardDateFormat.parse("20120701T080130"));
-
-		//with milliseconds
-		Calendar c = Calendar.getInstance();
-		c.setTime(datetime);
-		c.set(Calendar.MILLISECOND, 100);
-		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1Z"));
-		c.set(Calendar.MILLISECOND, 124);
-		assertEquals(c.getTime(), VCardDateFormat.parse("20120701T070130.1239Z")); //round
 	}
 
 	@Test
-	public void parseAsCalendar_date() throws Exception {
-		Calendar actual = VCardDateFormat.parseAsCalendar("20120701");
-
-		/*
-		 * "isSet()" should be called before any calls to "get()" are made
-		 * because some unset fields get computed when other fields are
-		 * retrieved using "get()". See the Javadoc for "isSet()".
-		 */
-		assertFalse(actual.isSet(Calendar.HOUR_OF_DAY));
-		assertFalse(actual.isSet(Calendar.MINUTE));
-		assertFalse(actual.isSet(Calendar.SECOND));
-		assertFalse(actual.isSet(Calendar.ZONE_OFFSET));
-
-		assertEquals(TimeZone.getDefault().getID(), actual.getTimeZone().getID());
-		assertEquals(2012, actual.get(Calendar.YEAR));
-		assertEquals(6, actual.get(Calendar.MONTH));
-		assertEquals(1, actual.get(Calendar.DAY_OF_MONTH));
-
-		assertEquals(date("2012-07-01"), actual.getTime());
+	public void parse_datetime() {
+		LocalDateTime datetime = LocalDateTime.of(2012, 7, 1, 7, 1, 30);
+		assertEquals(datetime, VCardDateFormat.parse("20120701T070130"));
+		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30"));
 	}
 
 	@Test
-	public void parseAsCalendar_with_offset() throws Exception {
-		Calendar actual = VCardDateFormat.parseAsCalendar("20120701T100130+0300");
-
-		assertEquals(TimeUnit.HOURS.toMillis(3), actual.get(Calendar.ZONE_OFFSET));
-		assertEquals("GMT+03:00", actual.getTimeZone().getID());
-		assertEquals(2012, actual.get(Calendar.YEAR));
-		assertEquals(6, actual.get(Calendar.MONTH));
-		assertEquals(1, actual.get(Calendar.DAY_OF_MONTH));
-		assertEquals(10, actual.get(Calendar.HOUR_OF_DAY));
-		assertEquals(1, actual.get(Calendar.MINUTE));
-		assertEquals(30, actual.get(Calendar.SECOND));
-
-		assertEquals(date("2012-07-01 08:01:30"), actual.getTime());
+	public void parse_instant() {
+		Instant instant = LocalDateTime.of(2012, 7, 1, 7, 1, 30).toInstant(ZoneOffset.UTC);
+		assertEquals(instant, VCardDateFormat.parse("20120701T070130Z"));
+		assertEquals(instant, VCardDateFormat.parse("2012-07-01T07:01:30Z"));
 	}
 
 	@Test
-	public void parseAsCalendar_with_z() throws Exception {
-		Calendar actual = VCardDateFormat.parseAsCalendar("20120701T100130Z");
+	public void parse_offset() {
+		LocalDateTime datetime = LocalDateTime.of(2012, 7, 1, 7, 1, 30);
+		OffsetDateTime positiveOffset = OffsetDateTime.of(datetime, ZoneOffset.ofHours(3));
+		OffsetDateTime negativeOffset = OffsetDateTime.of(datetime, ZoneOffset.ofHours(-3));
 
-		/*
-		 * "isSet()" should be called before any calls to "get()" are made
-		 * because some unset fields get computed when other fields are
-		 * retrieved using "get()". See the Javadoc for "isSet()".
-		 */
-		assertFalse(actual.isSet(Calendar.ZONE_OFFSET));
+		assertEquals(positiveOffset, VCardDateFormat.parse("20120701T070130+0300"));
+		assertEquals(positiveOffset, VCardDateFormat.parse("20120701T070130+03"));
+		assertEquals(negativeOffset, VCardDateFormat.parse("20120701T070130-0300"));
+		assertEquals(negativeOffset, VCardDateFormat.parse("20120701T070130-03"));
 
-		assertEquals("GMT", actual.getTimeZone().getID());
-		assertEquals(2012, actual.get(Calendar.YEAR));
-		assertEquals(6, actual.get(Calendar.MONTH));
-		assertEquals(1, actual.get(Calendar.DAY_OF_MONTH));
-		assertEquals(10, actual.get(Calendar.HOUR_OF_DAY));
-		assertEquals(1, actual.get(Calendar.MINUTE));
-		assertEquals(30, actual.get(Calendar.SECOND));
-		assertEquals(0, actual.get(Calendar.ZONE_OFFSET));
+		assertEquals(positiveOffset, VCardDateFormat.parse("2012-07-01T07:01:30+03:00"));
+		assertEquals(positiveOffset, VCardDateFormat.parse("2012-07-01T07:01:30+03"));
+		assertEquals(negativeOffset, VCardDateFormat.parse("2012-07-01T07:01:30-03:00"));
+		assertEquals(negativeOffset, VCardDateFormat.parse("2012-07-01T07:01:30-03"));
+	}
 
-		assertEquals(date("2012-07-01 11:01:30"), actual.getTime());
+	/*
+	 * hCard uses extended format, but does not put a colon in the offset.
+	 */
+	@Test
+	public void parse_hcard() {
+		OffsetDateTime datetime = OffsetDateTime.of(LocalDateTime.of(2012, 7, 1, 7, 1, 30), ZoneOffset.ofHours(3));
+		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30+0300"));
 	}
 
 	@Test
-	public void parseAsCalendar_without_offset() throws Exception {
-		Calendar actual = VCardDateFormat.parseAsCalendar("20120701T100130");
-
-		/*
-		 * "isSet()" should be called before any calls to "get()" are made
-		 * because some unset fields get computed when other fields are
-		 * retrieved using "get()". See the Javadoc for "isSet()".
-		 */
-		assertFalse(actual.isSet(Calendar.ZONE_OFFSET));
-
-		assertEquals(TimeZone.getDefault().getID(), actual.getTimeZone().getID());
-		assertEquals(2012, actual.get(Calendar.YEAR));
-		assertEquals(6, actual.get(Calendar.MONTH));
-		assertEquals(1, actual.get(Calendar.DAY_OF_MONTH));
-		assertEquals(10, actual.get(Calendar.HOUR_OF_DAY));
-		assertEquals(1, actual.get(Calendar.MINUTE));
-		assertEquals(30, actual.get(Calendar.SECOND));
-		assertEquals(TimeZone.getDefault().getRawOffset(), actual.get(Calendar.ZONE_OFFSET));
-
-		assertEquals(date("2012-07-01 10:01:30"), actual.getTime());
+	public void parse_datetime_nanoseconds() {
+		Instant instant = LocalDateTime.of(2012, 7, 1, 7, 1, 30).toInstant(ZoneOffset.UTC);
+		
+		Instant instantWithNanos = instant.plus(100_000_000, ChronoUnit.NANOS);
+		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1Z"));
+		
+		instantWithNanos = instant.plus(123_900_000, ChronoUnit.NANOS);
+		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1239Z"));
+		
+		instantWithNanos = instant.plus(123_456_789, ChronoUnit.NANOS);
+		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1234567888Z")); //round
 	}
 
 	/**
@@ -230,7 +191,7 @@ public class VCardDateFormatTest {
 	@Test
 	public void parse_single_digit_month_and_date() throws Exception {
 		{
-			Date date = date("2012-07-01");
+			LocalDate date = LocalDate.of(2012, 7, 1);
 
 			assertEquals(date, VCardDateFormat.parse("2012-07-1"));
 			assertEquals(date, VCardDateFormat.parse("2012-7-01"));
@@ -239,21 +200,19 @@ public class VCardDateFormatTest {
 			try {
 				VCardDateFormat.parse("201271");
 				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
+			} catch (IllegalArgumentException expected) {
 			}
 		}
 
 		{
-			Date ambiguous = date("2012-11-03");
+			LocalDate ambiguous = LocalDate.of(2012, 11, 3);
 
 			assertEquals(ambiguous, VCardDateFormat.parse("2012-11-3"));
 
 			try {
 				VCardDateFormat.parse("2012113"); //Jan 13 or Nov 3?
 				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
+			} catch (IllegalArgumentException expected) {
 			}
 		}
 	}
@@ -262,29 +221,12 @@ public class VCardDateFormatTest {
 	public void parse_invalid() {
 		VCardDateFormat.parse("invalid");
 	}
-
+	
 	@Test
-	public void dateHasTime() {
-		assertFalse(VCardDateFormat.dateHasTime("20130601"));
-		assertTrue(VCardDateFormat.dateHasTime("20130601T120000"));
-	}
-
-	@Test
-	public void dateHasTimezone() {
-		assertFalse(VCardDateFormat.dateHasTimezone("20130601T120000"));
-		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000Z"));
-		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000+0100"));
-		assertTrue(VCardDateFormat.dateHasTimezone("20130601T120000-0100"));
-		assertTrue(VCardDateFormat.dateHasTimezone("2013-06-01T12:00:00+01:00"));
-		assertTrue(VCardDateFormat.dateHasTimezone("2013-06-01T12:00:00-01:00"));
-	}
-
-	@Test
-	public void parseTimezoneId() {
-		TimeZone tz = VCardDateFormat.parseTimeZoneId("America/New_York");
-		assertEquals("America/New_York", tz.getID());
-
-		tz = VCardDateFormat.parseTimeZoneId("Bogus/Timezone");
-		assertNull(tz);
+	public void hasTime() {
+		assertFalse(VCardDateFormat.hasTime(LocalDate.now()));
+		assertTrue(VCardDateFormat.hasTime(LocalDateTime.now()));
+		assertTrue(VCardDateFormat.hasTime(OffsetDateTime.now()));
+		assertTrue(VCardDateFormat.hasTime(Instant.now()));
 	}
 }

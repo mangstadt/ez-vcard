@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.time.Instant;
+import java.time.temporal.Temporal;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -2049,7 +2050,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code REV}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param rev the last modified time or null to remove
+	 * @param rev the last modified time ({@link Instant} recommended) or null
+	 * to remove
 	 * @return the property object that was created
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-45">RFC 6350
 	 * p.45</a>
@@ -2057,7 +2059,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * p.22</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
-	public Revision setRevision(Date rev) {
+	public Revision setRevision(Temporal rev) {
 		Revision type = (rev == null) ? null : new Revision(rev);
 		setRevision(type);
 		return type;
@@ -2364,8 +2366,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code TEL}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
-	 * @param telephoneNumber the telephone number to add (e.g.
-	 * "+1 555-555-5555")
+	 * @param telephoneNumber the telephone number to add (e.g. "+1
+	 * 555-555-5555")
 	 * @param types the type(s) to assign to the telephone number (e.g. "cell",
 	 * "work", etc)
 	 * @return the property object that was created

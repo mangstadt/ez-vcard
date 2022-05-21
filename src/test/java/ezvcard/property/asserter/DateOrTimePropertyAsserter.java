@@ -2,12 +2,11 @@ package ezvcard.property.asserter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.PartialDate;
-import ezvcard.util.TestUtils;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -42,7 +41,7 @@ import ezvcard.util.TestUtils;
  * @author Michael Angstadt
  */
 public class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends PropertyAsserter<DateOrTimePropertyAsserter<T>, T> {
-	private Date date;
+	private Temporal date;
 	private PartialDate partialDate;
 	private String text;
 
@@ -50,8 +49,8 @@ public class DateOrTimePropertyAsserter<T extends DateOrTimeProperty> extends Pr
 		super(properties, asserter);
 	}
 
-	public DateOrTimePropertyAsserter<T> date(String dateStr) {
-		this.date = TestUtils.date(dateStr);
+	public DateOrTimePropertyAsserter<T> date(Temporal date) {
+		this.date = date;
 		return this_;
 	}
 

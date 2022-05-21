@@ -7,6 +7,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +24,7 @@ import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
+import ezvcard.util.VCardDateFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -195,6 +201,25 @@ public class HCardPage {
 
 		public String lineBreaks(String value) {
 			return newlineRegex.matcher(value).replaceAll("<br />");
+		}
+
+		public String format(Temporal temporal, String format) {
+			return format(temporal, format, ZoneOffset.UTC);
+		}
+
+		public String formatLocal(Temporal temporal, String format) {
+			return format(temporal, format, ZoneId.systemDefault());
+		}
+
+		private String format(Temporal temporal, String format, ZoneId offset) {
+			if (temporal instanceof Instant) {
+				temporal = ((Instant) temporal).atZone(offset);
+			}
+			return DateTimeFormatter.ofPattern(format).format(temporal);
+		}
+
+		public String format(ZoneOffset offset) {
+			return VCardDateFormat.BASIC.format(offset);
 		}
 	}
 }

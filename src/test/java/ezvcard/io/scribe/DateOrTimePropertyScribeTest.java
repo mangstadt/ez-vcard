@@ -6,12 +6,13 @@ import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -60,11 +61,11 @@ public class DateOrTimePropertyScribeTest {
 	private final DateOrTimeScribeImpl scribe = new DateOrTimeScribeImpl();
 	private final Sensei<DateOrTimePropertyImpl> sensei = new Sensei<DateOrTimePropertyImpl>(scribe);
 
-	private final Date date = date("1980-06-05");
+	private final LocalDate date = LocalDate.of(1980, 6, 5);
 	private final String dateStr = "19800605";
 	private final String dateExtendedStr = "1980-06-05";
 
-	private final Calendar dateTime = date(1980, Calendar.JUNE, 5, 13, 10, 20, 1);
+	private final OffsetDateTime dateTime = OffsetDateTime.of(1980, 6, 5, 13, 10, 20, 0, ZoneOffset.ofHours(1));
 	private final String dateTimeStr = dateStr + "T131020+0100";
 	private final String dateTimeExtendedStr = dateExtendedStr + "T13:10:20+01:00";
 
@@ -77,11 +78,11 @@ public class DateOrTimePropertyScribeTest {
 
 	private final DateOrTimePropertyImpl withDate = new DateOrTimePropertyImpl();
 	{
-		withDate.setDate(date, false);
+		withDate.setDate(date);
 	}
 	private final DateOrTimePropertyImpl withDateTime = new DateOrTimePropertyImpl();
 	{
-		withDateTime.setDate(dateTime, true);
+		withDateTime.setDate(dateTime);
 	}
 	private final DateOrTimePropertyImpl withPartialDate = new DateOrTimePropertyImpl();
 	{
@@ -223,9 +224,9 @@ public class DateOrTimePropertyScribeTest {
 		}
 
 		@Override
-		protected DateOrTimePropertyImpl newInstance(Calendar date, boolean hasTime) {
+		protected DateOrTimePropertyImpl newInstance(Temporal date) {
 			DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
-			property.setDate(date, hasTime);
+			property.setDate(date);
 			return property;
 		}
 
@@ -239,7 +240,7 @@ public class DateOrTimePropertyScribeTest {
 
 	private static class DateOrTimePropertyImpl extends DateOrTimeProperty {
 		public DateOrTimePropertyImpl() {
-			super((Date) null);
+			super((Temporal) null);
 		}
 	}
 

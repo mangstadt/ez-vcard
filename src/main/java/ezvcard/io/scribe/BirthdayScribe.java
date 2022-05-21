@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.Calendar;
+import java.time.temporal.Temporal;
 
 import ezvcard.property.Birthday;
 import ezvcard.util.PartialDate;
@@ -45,8 +45,8 @@ public class BirthdayScribe extends DateOrTimePropertyScribe<Birthday> {
 	}
 
 	@Override
-	protected Birthday newInstance(Calendar date, boolean hasTime) {
-		return new Birthday(date, hasTime);
+	protected Birthday newInstance(Temporal date) {
+		return new Birthday(date);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.Calendar;
+import java.time.temporal.Temporal;
 
 import ezvcard.property.Deathdate;
 import ezvcard.util.PartialDate;
@@ -45,8 +45,8 @@ public class DeathdateScribe extends DateOrTimePropertyScribe<Deathdate> {
 	}
 
 	@Override
-	protected Deathdate newInstance(Calendar date, boolean hasTime) {
-		return new Deathdate(date, hasTime);
+	protected Deathdate newInstance(Temporal date) {
+		return new Deathdate(date);
 	}
 
 	@Override

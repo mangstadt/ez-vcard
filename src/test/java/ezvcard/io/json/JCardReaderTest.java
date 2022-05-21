@@ -9,6 +9,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.Writer;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +43,6 @@ import ezvcard.property.VCardProperty;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 import ezvcard.util.Utf8Writer;
 
 /*
@@ -442,9 +443,9 @@ public class JCardReaderTest {
 		asserter.dateProperty(Birthday.class)
 			.partialDate(PartialDate.builder().month(2).date(3).build())
 		.noMore();
-		
+
 		asserter.dateProperty(Anniversary.class)
-			.date("2009-08-08 19:30:00 +0000")
+			.date(OffsetDateTime.of(2009, 8, 8, 14, 30, 0, 0, ZoneOffset.ofHours(-5)))
 		.noMore();
 		
 		asserter.property(Gender.class)
@@ -500,7 +501,7 @@ public class JCardReaderTest {
 		.noMore();
 		
 		asserter.timezone()
-			.offset(new UtcOffset(false, -5, 0))
+			.offset(ZoneOffset.ofHours(-5))
 		.noMore();
 		
 		asserter.simpleProperty(Url.class)

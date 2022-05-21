@@ -1,7 +1,6 @@
 package ezvcard.property;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.Temporal;
 
 import ezvcard.util.PartialDate;
 
@@ -47,12 +46,8 @@ import ezvcard.util.PartialDate;
  * VCard vcard = new VCard();
  * 
  * //date
- * Calendar c = Calendar.getInstance();
- * c.clear();
- * c.set(Calendar.YEAR, 1912);
- * c.set(Calendar.MONTH, Calendar.JUNE);
- * c.set(Calendar.DAY_OF_MONTH, 23);
- * Birthday bday = new Birthday(c.getTime());
+ * LocalDate date = LocalDate.of(1912, 6, 23);
+ * Birthday bday = new Birthday(date);
  * vcard.setBirthday(bday);
  * 
  * //partial date (e.g. just the month and date, vCard 4.0 only)
@@ -72,7 +67,7 @@ import ezvcard.util.PartialDate;
  * VCard vcard = ...
  * Birthday bday = vcard.getBirthday();
  * 
- * Date date = bday.getDate();
+ * Temporal date = bday.getDate();
  * if (date != null) {
  *   //property value is a date
  * }
@@ -104,38 +99,11 @@ import ezvcard.util.PartialDate;
 public class Birthday extends DateOrTimeProperty {
 	/**
 	 * Creates a birthday property.
-	 * @param date the birthday
+	 * @param date the birthday (can be a date, date/time, or date/time with
+	 * offset value)
 	 */
-	public Birthday(Date date) {
+	public Birthday(Temporal date) {
 		super(date);
-	}
-
-	/**
-	 * Creates a birthday property.
-	 * @param date the birthday
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Birthday(Date date, boolean hasTime) {
-		super(date, hasTime);
-	}
-	
-	/**
-	 * Creates a birthday property.
-	 * @param date the birthday
-	 */
-	public Birthday(Calendar date) {
-		super(date);
-	}
-
-	/**
-	 * Creates a birthday property.
-	 * @param date the birthday
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Birthday(Calendar date, boolean hasTime) {
-		super(date, hasTime);
 	}
 
 	/**

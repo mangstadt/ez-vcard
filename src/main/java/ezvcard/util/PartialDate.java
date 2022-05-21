@@ -3,6 +3,7 @@ package ezvcard.util;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -71,8 +72,8 @@ public final class PartialDate {
 	private static final int HOUR = 3;
 	private static final int MINUTE = 4;
 	private static final int SECOND = 5;
-	private static final int TIMEZONE_HOUR = 6;
-	private static final int TIMEZONE_MINUTE = 7;
+	private static final int OFFSET_HOUR = 6;
+	private static final int OFFSET_MINUTE = 7;
 
 	//@formatter:off
 	private static final Format dateFormats[] = new Format[] {
@@ -85,29 +86,26 @@ public final class PartialDate {
 	};
 	//@formatter:on
 
-	private static final String timezoneRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";
+	private static final String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";
 
 	//@formatter:off
 	private static final Format timeFormats[] = new Format[] {
-		new Format("(\\d{2})" + timezoneRegex, HOUR, null, TIMEZONE_HOUR, TIMEZONE_MINUTE),
-		new Format("(\\d{2}):?(\\d{2})" + timezoneRegex, HOUR, MINUTE, null, TIMEZONE_HOUR, TIMEZONE_MINUTE),
-		new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + timezoneRegex, HOUR, MINUTE, SECOND, null, TIMEZONE_HOUR, TIMEZONE_MINUTE),
-		new Format("-(\\d{2}):?(\\d{2})" + timezoneRegex, MINUTE, SECOND, null, TIMEZONE_HOUR, TIMEZONE_MINUTE),
-		new Format("-(\\d{2})" + timezoneRegex, MINUTE, null, TIMEZONE_HOUR, TIMEZONE_MINUTE),
-		new Format("--(\\d{2})" + timezoneRegex, SECOND, null, TIMEZONE_HOUR, TIMEZONE_MINUTE)
+		new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),
+		new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
+		new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
+		new Format("-(\\d{2}):?(\\d{2})" + offsetRegex, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
+		new Format("-(\\d{2})" + offsetRegex, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
+		new Format("--(\\d{2})" + offsetRegex, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE)
 	};
 	//@formatter:on
 
 	private final Integer[] components;
-	private final UtcOffset offset;
 
 	/**
 	 * @param components the date/time components array
-	 * @param offset the UTC offset or null if not set
 	 */
-	private PartialDate(Integer[] components, UtcOffset offset) {
+	private PartialDate(Integer[] components) {
 		this.components = components;
-		this.offset = offset;
 	}
 
 	/**
@@ -281,16 +279,18 @@ public final class PartialDate {
 	 * Gets the UTC offset.
 	 * @return the UTC offset or null if not set
 	 */
-	public UtcOffset getUtcOffset() {
-		return offset;
-	}
+	public ZoneOffset getUtcOffset() {
+		Integer hour = components[OFFSET_HOUR];
+		if (hour == null) {
+			return null;
+		}
 
-	/**
-	 * Determines if this date has a timezone component.
-	 * @return true if the component is set, false if not
-	 */
-	private boolean hasUtcOffset() {
-		return offset != null;
+		Integer minute = components[OFFSET_MINUTE];
+		if (minute == null) {
+			return ZoneOffset.ofHours(hour);
+		}
+
+		return ZoneOffset.ofHoursMinutes(hour, minute);
 	}
 
 	/**
@@ -319,7 +319,13 @@ public final class PartialDate {
 	 * {@link #builder()} method
 	 */
 	public String toISO8601(boolean extended) {
-		StringBuilder sb = new StringBuilder();
+		/*
+		 * Micro-optimization: The max length a timestamp string can possibly be
+		 * is 25. Example: 2012-07-01T14:21:10-05:00
+		 */
+		final int maxPossibleLength = 25;
+
+		StringBuilder sb = new StringBuilder(maxPossibleLength);
 		NumberFormat nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
 		String yearStr = hasYear() ? getYear().toString() : null;
@@ -338,6 +344,7 @@ public final class PartialDate {
 		} else if (!hasYear() && hasMonth() && hasDate()) {
 			sb.append("--").append(monthStr).append(dash).append(dateStr);
 		} else if (hasYear() && !hasMonth() && hasDate()) {
+			//this is checked for in the builder and should never be thrown here
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));
 		} else if (hasYear() && hasMonth() && hasDate()) {
 			sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);
@@ -362,13 +369,23 @@ public final class PartialDate {
 			} else if (!hasHour() && hasMinute() && hasSecond()) {
 				sb.append("-").append(minuteStr).append(dash).append(secondStr);
 			} else if (hasHour() && !hasMinute() && hasSecond()) {
+				//this is checked for in the builder and should never be thrown here
 				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));
 			} else if (hasHour() && hasMinute() && hasSecond()) {
 				sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
 			}
 
-			if (hasUtcOffset()) {
-				sb.append(offset.toString(extended));
+			if (components[OFFSET_HOUR] != null) {
+				String offsetHourStr = nf.format(components[OFFSET_HOUR]);
+				if (components[OFFSET_HOUR] >= 0) {
+					sb.append('+');
+				}
+				sb.append(offsetHourStr);
+
+				if (components[OFFSET_MINUTE] != null) {
+					String offsetMinuteStr = nf.format(components[OFFSET_MINUTE]);
+					sb.append(dash).append(offsetMinuteStr);
+				}
 			}
 		}
 
@@ -380,7 +397,6 @@ public final class PartialDate {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Arrays.hashCode(components);
-		result = prime * result + ((offset == null) ? 0 : offset.hashCode());
 		return result;
 	}
 
@@ -391,9 +407,6 @@ public final class PartialDate {
 		if (getClass() != obj.getClass()) return false;
 		PartialDate other = (PartialDate) obj;
 		if (!Arrays.equals(components, other.components)) return false;
-		if (offset == null) {
-			if (other.offset != null) return false;
-		} else if (!offset.equals(other.offset)) return false;
 		return true;
 	}
 
@@ -432,8 +445,6 @@ public final class PartialDate {
 				return false;
 			}
 
-			boolean offsetPositive = false;
-			Integer offsetHour = null, offsetMinute = null;
 			for (int i = 0; i < componentIndexes.length; i++) {
 				Integer index = componentIndexes[i];
 				if (index == null) {
@@ -449,25 +460,10 @@ public final class PartialDate {
 					}
 
 					int component = Integer.parseInt(groupStr);
-					if (index == TIMEZONE_HOUR) {
-						offsetHour = component;
-						offsetPositive = startsWithPlus;
-						continue;
-					}
-					if (index == TIMEZONE_MINUTE) {
-						offsetMinute = component;
-						continue;
-					}
 					builder.components[index] = component;
 				}
 			}
 
-			if (offsetHour != null) {
-				if (offsetMinute == null) {
-					offsetMinute = 0;
-				}
-				builder.offset = new UtcOffset(offsetPositive, offsetHour, offsetMinute);
-			}
 			return true;
 		}
 	}
@@ -478,10 +474,9 @@ public final class PartialDate {
 	 */
 	public static class Builder {
 		private final Integer[] components;
-		private UtcOffset offset;
 
 		public Builder() {
-			components = new Integer[6];
+			components = new Integer[8];
 		}
 
 		/**
@@ -489,7 +484,6 @@ public final class PartialDate {
 		 */
 		public Builder(PartialDate original) {
 			components = original.components.clone();
-			offset = original.offset;
 		}
 
 		/**
@@ -584,11 +578,30 @@ public final class PartialDate {
 
 		/**
 		 * Sets the timezone offset.
-		 * @param offset the timezone offset
+		 * @param hour the hours
 		 * @return this
 		 */
-		public Builder offset(UtcOffset offset) {
-			this.offset = offset;
+		public Builder offset(Integer hour) {
+			components[OFFSET_HOUR] = hour;
+			if (hour == null) {
+				components[OFFSET_MINUTE] = null;
+			}
+			return this;
+		}
+
+		/**
+		 * Sets the timezone offset.
+		 * @param hour the hours
+		 * @param minute the minutes
+		 * @return this
+		 */
+		public Builder offset(int hour, int minute) {
+			if (minute < 0 || minute > 59) {
+				throw Messages.INSTANCE.getIllegalArgumentException(37, "Offset minute", 0, 59);
+			}
+
+			offset(hour);
+			components[OFFSET_MINUTE] = minute;
 			return this;
 		}
 
@@ -607,7 +620,7 @@ public final class PartialDate {
 				throw Messages.INSTANCE.getIllegalArgumentException(39);
 			}
 
-			return new PartialDate(components, offset);
+			return new PartialDate(components);
 		}
 	}
 }

@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import ezvcard.parameter.Encoding;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +37,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.TelephoneType;
@@ -57,10 +57,9 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
-import ezvcard.util.PartialDate;
 import ezvcard.util.Gobble;
+import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -730,7 +729,7 @@ public class XCardWriterTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());

@@ -6,9 +6,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.time.ZoneOffset;
 
-import ezvcard.parameter.Encoding;
-import ezvcard.property.FormattedName;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -21,6 +20,7 @@ import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
@@ -29,6 +29,7 @@ import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
@@ -40,10 +41,9 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.PartialDate;
 import ezvcard.util.Gobble;
+import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -702,7 +702,7 @@ public class VCardWriterTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());
@@ -747,7 +747,7 @@ public class VCardWriterTest {
 		key.setType("work");
 		vcard.addKey(key);
 
-		vcard.setTimezone(new Timezone(new UtcOffset(false, -5, 0)));
+		vcard.setTimezone(new Timezone(ZoneOffset.ofHours(-5)));
 
 		vcard.addUrl("http://nomis80.org").setType("home");
 

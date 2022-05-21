@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.Date;
+import java.time.temporal.Temporal;
 
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -106,21 +106,21 @@ public class RevisionScribe extends VCardPropertyScribe<Revision> {
 	}
 
 	private String write(Revision property, boolean extended) {
-		Date timestamp = property.getValue();
+		Temporal timestamp = property.getValue();
 		if (timestamp == null) {
 			return "";
 		}
 
-		return date(timestamp).time(true).utc(true).extended(extended).write();
+		return date(timestamp).extended(extended).write();
 	}
 
 	private Revision parse(String value) {
 		if (value == null || value.isEmpty()) {
-			return new Revision((Date) null);
+			return new Revision((Temporal)null);
 		}
 
 		try {
-			return new Revision(calendar(value));
+			return new Revision(date(value));
 		} catch (IllegalArgumentException e) {
 			throw new CannotParseException(5);
 		}

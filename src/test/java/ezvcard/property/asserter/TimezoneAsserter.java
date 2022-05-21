@@ -1,9 +1,9 @@
 package ezvcard.property.asserter;
 
+import java.time.ZoneOffset;
 import java.util.List;
 
 import ezvcard.property.Timezone;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -42,7 +42,7 @@ public class TimezoneAsserter extends PropertyImplAsserter<TimezoneAsserter, Tim
 		super(properties, asserter);
 	}
 
-	public TimezoneAsserter offset(UtcOffset offset) {
+	public TimezoneAsserter offset(ZoneOffset offset) {
 		expected.setOffset(offset);
 		return this_;
 	}

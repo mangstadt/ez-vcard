@@ -1,6 +1,9 @@
 package ezvcard.io.scribe;
 
-import java.util.TimeZone;
+import java.time.DateTimeException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
@@ -14,7 +17,7 @@ import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Timezone;
-import ezvcard.util.UtcOffset;
+import ezvcard.util.VCardDateFormat;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -115,7 +118,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	@Override
 	protected VCardDataType _dataType(Timezone property, VCardVersion version) {
 		String text = property.getText();
-		UtcOffset offset = property.getOffset();
+		ZoneOffset offset = property.getOffset();
 
 		switch (version) {
 		case V2_1:
@@ -144,26 +147,32 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 	@Override
 	protected String _writeText(Timezone property, WriteContext context) {
 		String text = property.getText();
-		UtcOffset offset = property.getOffset();
+		ZoneOffset offset = property.getOffset();
 
 		switch (context.getVersion()) {
 		case V2_1:
 			if (offset != null) {
-				return offset.toString(false); //2.1 allows either basic or extended
+				return VCardDateFormat.BASIC.format(offset); //2.1 allows either basic or extended
 			}
 
 			if (text != null) {
-				//attempt to find the offset by treating the text as a timezone ID, like "America/New_York"
-				TimeZone timezone = timezoneFromId(text);
-				if (timezone != null) {
-					UtcOffset tzOffset = offsetFromTimezone(timezone);
-					return tzOffset.toString(false);
+				/*
+				 * Attempt to find the offset by treating the text as a timezone
+				 * ID, like "America/New_York", and then computing what the
+				 * offset for that timezone is at the current moment in time.
+				 */
+				try {
+					ZoneId zoneId = ZoneId.of(text);
+					ZoneOffset offsetNow = OffsetDateTime.now(zoneId).getOffset();
+					return VCardDateFormat.BASIC.format(offsetNow);
+				} catch (DateTimeException ignore) {
+					//not a recognized timezone ID
 				}
 			}
 			break;
 		case V3_0:
 			if (offset != null) {
-				return offset.toString(true); //3.0 only allows extended
+				return VCardDateFormat.EXTENDED.format(offset); //3.0 only allows extended
 			}
 
 			if (text != null) {
@@ -176,7 +185,7 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			}
 
 			if (offset != null) {
-				return offset.toString(false); //4.0 only allows basic
+				return VCardDateFormat.BASIC.format(offset); //4.0 only allows basic
 			}
 			break;
 		}
@@ -198,9 +207,9 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			return;
 		}
 
-		UtcOffset offset = property.getOffset();
+		ZoneOffset offset = property.getOffset();
 		if (offset != null) {
-			parent.append(VCardDataType.UTC_OFFSET, offset.toString(false));
+			parent.append(VCardDataType.UTC_OFFSET, VCardDateFormat.BASIC.format(offset));
 			return;
 		}
 
@@ -217,8 +226,8 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 		String utcOffset = element.first(VCardDataType.UTC_OFFSET);
 		if (utcOffset != null) {
 			try {
-				return new Timezone(UtcOffset.parse(utcOffset));
-			} catch (IllegalArgumentException e) {
+				return new Timezone(ZoneOffset.of(utcOffset));
+			} catch (DateTimeException e) {
 				throw new CannotParseException(19);
 			}
 		}
@@ -238,9 +247,9 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			return JCardValue.single(text);
 		}
 
-		UtcOffset offset = property.getOffset();
+		ZoneOffset offset = property.getOffset();
 		if (offset != null) {
-			return JCardValue.single(offset.toString(true));
+			return JCardValue.single(VCardDateFormat.EXTENDED.format(offset));
 		}
 
 		return JCardValue.single("");
@@ -261,15 +270,15 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 		case V2_1:
 			//e.g. "-05:00"
 			try {
-				return new Timezone(UtcOffset.parse(value));
-			} catch (IllegalArgumentException e) {
+				return new Timezone(ZoneOffset.of(value));
+			} catch (DateTimeException e) {
 				throw new CannotParseException(19);
 			}
 		case V3_0:
 		case V4_0:
 			try {
-				return new Timezone(UtcOffset.parse(value));
-			} catch (IllegalArgumentException e) {
+				return new Timezone(ZoneOffset.of(value));
+			} catch (DateTimeException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
 					context.addWarning(20);
 				}
@@ -278,15 +287,5 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 		}
 
 		return new Timezone((String) null);
-	}
-
-	private UtcOffset offsetFromTimezone(TimeZone timezone) {
-		long offsetMs = timezone.getOffset(System.currentTimeMillis());
-		return new UtcOffset(offsetMs);
-	}
-
-	private TimeZone timezoneFromId(String id) {
-		TimeZone timezone = TimeZone.getTimeZone(id);
-		return "GMT".equals(timezone.getID()) ? null : timezone;
 	}
 }

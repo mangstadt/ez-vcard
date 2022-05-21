@@ -55,7 +55,6 @@ import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
@@ -788,7 +787,7 @@ public class XCardReaderTest {
 				.date(8)
 				.hour(14)
 				.minute(30)
-				.offset(new UtcOffset(false, -5, 0))
+				.offset(-5)
 				.build()
 			)
 		.noMore();

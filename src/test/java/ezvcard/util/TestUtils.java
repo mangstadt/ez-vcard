@@ -8,14 +8,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -290,111 +284,6 @@ public class TestUtils {
 		assertEquals(expectedSet, actualSet);
 	}
 
-	//@formatter:off
-	private static DateFormat dfs[] = new DateFormat[]{
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z"),
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-		new SimpleDateFormat("yyyy-MM-dd")
-	};
-	//@formatter:on
-
-	/**
-	 * <p>
-	 * Creates a {@link Date} object.
-	 * </p>
-	 * <p>
-	 * The following date string formats are accepted.
-	 * </p>
-	 * <ul>
-	 * <li>yyyy-MM-dd</li>
-	 * <li>yyyy-MM-dd HH:mm:ss</li>
-	 * <li>yyyy-MM-dd HH:mm:ss Z</li>
-	 * </ul>
-	 * <p>
-	 * If no UTC offset is specified, the default timezone will be used.
-	 * </p>
-	 * @param text the date string to parse
-	 * @return the parsed date
-	 * @throws IllegalArgumentException if it couldn't be parsed
-	 */
-	public static Date date(String text) {
-		return date(text, TimeZone.getDefault());
-	}
-
-	/**
-	 * <p>
-	 * Creates a {@link Date} object.
-	 * </p>
-	 * <p>
-	 * The following date string formats are accepted.
-	 * </p>
-	 * <ul>
-	 * <li>yyyy-MM-dd</li>
-	 * <li>yyyy-MM-dd HH:mm:ss</li>
-	 * <li>yyyy-MM-dd HH:mm:ss Z</li>
-	 * </ul>
-	 * @param text the date string
-	 * @param timezone the timezone the date string is in (ignored if the date
-	 * string contains a UTC offset)
-	 * @return the parsed date
-	 * @throws IllegalArgumentException if it couldn't be parsed
-	 */
-	public static Date date(String text, TimeZone timezone) {
-		for (DateFormat df : dfs) {
-			try {
-				df.setTimeZone(timezone);
-				return df.parse(text);
-			} catch (ParseException e) {
-				//try the next date formatter
-			}
-		}
-		throw new IllegalArgumentException("Invalid date string: " + text);
-	}
-
-	/**
-	 * Creates a {@link Calendar} object using the local system's default
-	 * timezone.
-	 * @param year the year
-	 * @param month the month (0-11)
-	 * @param dayOfMonth the day of month
-	 * @param hourOfDay the hour of day (0-23)
-	 * @param minute the minute
-	 * @param second the second
-	 * @return the calendar
-	 */
-	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-		return date(year, month, dayOfMonth, hourOfDay, minute, second, TimeZone.getDefault());
-	}
-
-	/**
-	 * Creates a {@link Calendar} object with UTC timezone.
-	 * @param year the year
-	 * @param month the month (0-11)
-	 * @param dayOfMonth the day of month
-	 * @param hourOfDay the hour of day (0-23)
-	 * @param minute the minute
-	 * @param second the second
-	 * @return the calendar
-	 */
-	public static Calendar utc(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-		return date(year, month, dayOfMonth, hourOfDay, minute, second, TimeZone.getTimeZone("GMT"));
-	}
-
-	/**
-	 * Creates a {@link Calendar} object.
-	 * @param year the year
-	 * @param month the month (0-11)
-	 * @param dayOfMonth the day of month
-	 * @param hourOfDay the hour of day (0-23)
-	 * @param minute the minute
-	 * @param second the second
-	 * @param hourOffset the timezone's offset in hours
-	 * @return the calendar
-	 */
-	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second, int hourOffset) {
-		return date(year, month, dayOfMonth, hourOfDay, minute, second, gmtTz(TimeUnit.HOURS.toMillis(hourOffset)));
-	}
-
 	/**
 	 * Creates a GMT timezone.
 	 * @param offsetMillis the offset in milliseconds
@@ -421,50 +310,6 @@ public class TestUtils {
 		tzid.append(minutes);
 
 		return TimeZone.getTimeZone(tzid.toString());
-	}
-
-	/**
-	 * Creates a {@link Calendar} object.
-	 * @param year the year
-	 * @param month the month (0-11)
-	 * @param dayOfMonth the day of month
-	 * @param hourOfDay the hour of day (0-23)
-	 * @param minute the minute
-	 * @param second the second
-	 * @param tz the timezone
-	 * @return the calendar
-	 */
-	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second, TimeZone tz) {
-		Calendar c = Calendar.getInstance(tz);
-		c.clear();
-		c.set(year, month, dayOfMonth, hourOfDay, minute, second);
-		return c;
-	}
-
-	/**
-	 * Creates a {@link Calendar} object.
-	 * @param year the year
-	 * @param month the month (0-11)
-	 * @param dayOfMonth the day of month
-	 * @return the calendar
-	 */
-	public static Calendar date(int year, int month, int dayOfMonth) {
-		Calendar c = Calendar.getInstance();
-		c.clear();
-		c.set(year, month, dayOfMonth);
-		return c;
-	}
-
-	/**
-	 * Creates a {@link Date} object.
-	 * @param text the date string (e.g. "2000-01-30 02:21:00", see code for
-	 * acceptable formats)
-	 * @return the parsed date in the UTC timezone or null if it couldn't be
-	 * parsed
-	 * @throws IllegalArgumentException if it couldn't be parsed
-	 */
-	public static Date utc(String text) {
-		return date(text + " +0000");
 	}
 
 	/**

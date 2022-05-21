@@ -1,7 +1,6 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -11,7 +10,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,7 +47,6 @@ import ezvcard.property.Title;
 import ezvcard.property.Uid;
 import ezvcard.property.Url;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -445,7 +445,7 @@ public class HCardPageTest {
 
 		vcard.setOrganization("Google", "GMail");
 
-		Birthday bday = new Birthday(date("1970-03-08"), false);
+		Birthday bday = new Birthday(LocalDate.of(1970, 3, 8));
 		vcard.setBirthday(bday);
 
 		vcard.addUrl("http://company.com");
@@ -459,7 +459,7 @@ public class HCardPageTest {
 
 		vcard.setGeo(123.456, -98.123);
 
-		vcard.setTimezone(new Timezone(new UtcOffset(false, -6, 0), "America/Chicago"));
+		vcard.setTimezone(new Timezone(ZoneOffset.ofHours(-6), "America/Chicago"));
 
 		InputStream in = getClass().getResourceAsStream("hcard-portrait.jpg");
 		Photo photo = new Photo(in, ImageType.JPEG);
@@ -471,7 +471,7 @@ public class HCardPageTest {
 
 		vcard.setUid(new Uid("urn:uuid:ffce1595-cbe9-4418-9d0d-b015655d45f6"));
 
-		vcard.setRevision(new Revision(date(2000, Calendar.MARCH, 15, 13, 22, 44, -5)));
+		vcard.setRevision(new Revision(LocalDateTime.of(2000, 3, 15, 13, 22, 44).toInstant(ZoneOffset.UTC)));
 
 		return vcard;
 	}

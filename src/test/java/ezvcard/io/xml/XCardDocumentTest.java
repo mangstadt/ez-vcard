@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import ezvcard.parameter.Encoding;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -39,6 +38,7 @@ import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardDocument.XCardDocumentStreamWriter;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.TelephoneType;
@@ -63,10 +63,9 @@ import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
-import ezvcard.util.PartialDate;
 import ezvcard.util.Gobble;
+import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.UtcOffset;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -792,7 +791,7 @@ public class XCardDocumentTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(new UtcOffset(false, -5, 0)).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());
@@ -876,7 +875,7 @@ public class XCardDocumentTest {
 				.date(8)
 				.hour(14)
 				.minute(30)
-				.offset(new UtcOffset(false, -5, 0))
+				.offset(-5, 0)
 				.build()
 			)
 		.noMore();

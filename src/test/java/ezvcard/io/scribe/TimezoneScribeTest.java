@@ -4,14 +4,14 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import org.junit.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.property.Timezone;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -49,12 +49,12 @@ public class TimezoneScribeTest {
 	private final TimezoneScribe scribe = new TimezoneScribe();
 	private final Sensei<Timezone> sensei = new Sensei<Timezone>(scribe);
 
-	private final UtcOffset offset = new UtcOffset(false, -5, 0);
+	private final ZoneOffset offset = ZoneOffset.ofHours(-5);
 	private final String offsetStrExtended = "-05:00";
 	private final String offsetStrBasic = "-0500";
 	private final String timezoneIdStr = "America/New_York";
 	private final String textStr = "some text";
-	private final TimeZone newYork = TimeZone.getTimeZone(timezoneIdStr);
+	private final ZoneId newYork = ZoneId.of(timezoneIdStr);
 
 	private final Timezone withOffset = new Timezone(offset);
 	private final Timezone withTimezoneId = new Timezone(timezoneIdStr);
@@ -84,7 +84,8 @@ public class TimezoneScribeTest {
 		sensei.assertWriteText(withOffset).versions(V2_1, V4_0).run(offsetStrBasic);
 		sensei.assertWriteText(withOffset).versions(V3_0).run(offsetStrExtended);
 
-		sensei.assertWriteText(withTimezoneId).versions(V2_1).run(newYork.inDaylightTime(new Date()) ? "-0400" : "-0500");
+		boolean daylightSavings = newYork.getRules().isDaylightSavings(Instant.now());
+		sensei.assertWriteText(withTimezoneId).versions(V2_1).run(daylightSavings ? "-0400" : "-0500");
 		sensei.assertWriteText(withTimezoneId).versions(V3_0, V4_0).run(timezoneIdStr);
 
 		sensei.assertWriteText(withText).versions(V2_1).run("");

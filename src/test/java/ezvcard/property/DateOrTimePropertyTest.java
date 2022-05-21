@@ -4,23 +4,19 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.junit.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
-import ezvcard.util.TestUtils;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -58,49 +54,25 @@ public class DateOrTimePropertyTest {
 	@Test
 	public void constructors() throws Exception {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
-		assertNull(property.getCalendar());
 		assertNull(property.getDate());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 
-		Calendar calendar = date(2016, Calendar.JANUARY, 14);
-		Date date = date("2016-01-14");
-		property = new DateOrTimePropertyImpl(calendar, true);
-		assertEquals(calendar, property.getCalendar());
+		LocalDate date = LocalDate.of(2016, 1, 14);
+		property = new DateOrTimePropertyImpl(date);
 		assertEquals(date, property.getDate());
-		assertTrue(property.hasTime());
-		assertNull(property.getPartialDate());
-		assertNull(property.getText());
-
-		property = new DateOrTimePropertyImpl(calendar, false);
-		assertEquals(calendar, property.getCalendar());
-		assertEquals(date, property.getDate());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 
 		PartialDate partialDate = new PartialDate.Builder().month(1).date(14).build();
 		property = new DateOrTimePropertyImpl(partialDate);
-		assertNull(property.getCalendar());
 		assertNull(property.getDate());
-		assertFalse(property.hasTime());
-		assertEquals(partialDate, property.getPartialDate());
-		assertNull(property.getText());
-
-		partialDate = new PartialDate.Builder().month(1).date(14).hour(12).build();
-		property = new DateOrTimePropertyImpl(partialDate);
-		assertNull(property.getCalendar());
-		assertNull(property.getDate());
-		assertTrue(property.hasTime());
 		assertEquals(partialDate, property.getPartialDate());
 		assertNull(property.getText());
 
 		String text = "text";
 		property = new DateOrTimePropertyImpl(text);
-		assertNull(property.getCalendar());
 		assertNull(property.getDate());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertEquals(text, property.getText());
 	}
@@ -109,48 +81,36 @@ public class DateOrTimePropertyTest {
 	public void set_value() {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 
-		Date date = date("2016-01-14");
-		property.setDate(date, true);
+		LocalDate date = LocalDate.of(2016, 1, 14);
+		property.setDate(date);
 		assertEquals(date, property.getDate());
-		assertEquals(date, property.getCalendar().getTime());
-		assertTrue(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 
-		property.setDate((Date) null, true);
+		property.setDate(null);
 		assertNull(property.getDate());
-		assertNull(property.getCalendar());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 
 		PartialDate partialDate = new PartialDate.Builder().month(1).date(14).build();
 		property.setPartialDate(partialDate);
 		assertNull(property.getDate());
-		assertNull(property.getCalendar());
-		assertFalse(property.hasTime());
 		assertEquals(partialDate, property.getPartialDate());
 		assertNull(property.getText());
 
 		String text = "text";
 		property.setText(text);
 		assertNull(property.getDate());
-		assertNull(property.getCalendar());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertEquals(text, property.getText());
 
-		property.setDate(date, true);
+		property.setDate(date);
 		assertEquals(date, property.getDate());
-		assertEquals(date, property.getCalendar().getTime());
-		assertTrue(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 
 		property.setPartialDate(null);
 		assertNull(property.getDate());
-		assertNull(property.getCalendar());
-		assertFalse(property.hasTime());
 		assertNull(property.getPartialDate());
 		assertNull(property.getText());
 	}
@@ -161,8 +121,8 @@ public class DateOrTimePropertyTest {
 		assertValidate(empty).run(8);
 
 		DateOrTimePropertyImpl withDate = new DateOrTimePropertyImpl();
-		Date date = date("1980-06-05");
-		withDate.setDate(date, false);
+		LocalDate date = LocalDate.of(1980, 6, 5);
+		withDate.setDate(date);
 		assertValidate(withDate).run();
 
 		DateOrTimePropertyImpl withPartialDate = new DateOrTimePropertyImpl();
@@ -188,9 +148,8 @@ public class DateOrTimePropertyTest {
 		assertCopy(original);
 
 		original = new DateOrTimePropertyImpl();
-		original.setDate(new Date(), true);
-		assertCopy(original).notSame("getDate");
-		assertCopy(original).notSame("getCalendar");
+		original.setDate(LocalDate.now());
+		assertCopy(original);
 
 		original = new DateOrTimePropertyImpl();
 		original.setPartialDate(new PartialDate.Builder().month(1).date(14).build());
@@ -199,23 +158,19 @@ public class DateOrTimePropertyTest {
 
 	@Test
 	public void equals() {
-		Date date1 = date("2016-01-14");
-		Date date2 = date("2016-01-15");
+		LocalDate date1 = LocalDate.of(2016, 1, 14);
+		LocalDate date2 = LocalDate.of(2016, 1, 15);
 		List<VCardProperty> properties = new ArrayList<VCardProperty>();
 
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 		properties.add(property);
 
 		property = new DateOrTimePropertyImpl();
-		property.setDate(date1, true);
+		property.setDate(date1);
 		properties.add(property);
 
 		property = new DateOrTimePropertyImpl();
-		property.setDate(date1, false);
-		properties.add(property);
-
-		property = new DateOrTimePropertyImpl();
-		property.setDate(date2, true);
+		property.setDate(date2);
 		properties.add(property);
 
 		property = new DateOrTimePropertyImpl();
@@ -239,40 +194,19 @@ public class DateOrTimePropertyTest {
 		//@formatter:off
 		assertEqualsMethod(DateOrTimePropertyImpl.class)
 		.constructor().test()
-		.constructor(date1, true).test()
-		.constructor(date1, false).test()
+		.constructor(date1).test()
 		.constructor(new PartialDate.Builder().year(2016).month(1).date(14).build()).test()
 		.constructor("text").test();
 		//@formatter:on
 	}
 
-	/*
-	 * Calendar object should not be compared; only its computed date value
-	 * should be compared.
-	 */
-	@Test
-	public void equals_only_compare_computed_date_object() {
-		//created a Calendar object with the default timezone
-		Date date = date("2016-01-14 12:23:34");
-
-		//creates a Calendar object with GMT offset timezone
-		long offsetMillis = TimeZone.getDefault().getOffset(date.getTime());
-		Calendar cal = date(2016, Calendar.JANUARY, 14, 12, 23, 34, TestUtils.gmtTz(offsetMillis));
-
-		assertEquals(new DateOrTimePropertyImpl(date, true), new DateOrTimePropertyImpl(cal, true));
-	}
-
 	public static class DateOrTimePropertyImpl extends DateOrTimeProperty {
 		public DateOrTimePropertyImpl() {
-			super((Calendar) null);
+			super((Temporal) null);
 		}
 
-		public DateOrTimePropertyImpl(Calendar date, Boolean hasTime) {
-			super(date, hasTime);
-		}
-
-		public DateOrTimePropertyImpl(Date date, Boolean hasTime) {
-			super(date, hasTime);
+		public DateOrTimePropertyImpl(LocalDate date) {
+			super(date);
 		}
 
 		public DateOrTimePropertyImpl(PartialDate partialDate) {

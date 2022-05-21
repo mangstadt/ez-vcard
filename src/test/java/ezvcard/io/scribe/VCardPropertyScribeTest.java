@@ -4,15 +4,18 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static ezvcard.util.TestUtils.date;
 import static ezvcard.util.TestUtils.each;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Date;
 
 import javax.xml.namespace.QName;
 
@@ -65,49 +68,42 @@ public class VCardPropertyScribeTest {
 	private final VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
 
-	private final Date datetime = date("2013-06-11 14:43:02");
-
 	@Test
 	public void date_parse_utc() {
 		String value = "20130611T134302Z";
+		Temporal expected = LocalDateTime.of(2013, 6, 11, 13, 43, 2).toInstant(ZoneOffset.UTC);
+		Temporal actual = VCardPropertyScribe.date(value);
 
-		Date actual = VCardPropertyScribe.date(value);
-
-		assertEquals(datetime, actual);
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void date_parse_offset() {
-		String value = "20130611T144302+0100";
+		String value = "20130611T134302+0100";
+		Temporal expected = OffsetDateTime.of(2013, 6, 11, 13, 43, 2, 0, ZoneOffset.ofHours(1));
+		Temporal actual = VCardPropertyScribe.date(value);
 
-		Date actual = VCardPropertyScribe.date(value);
-
-		assertEquals(datetime, actual);
+		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void date_parse_local() {
-		String value = "20130611T144302";
+		String value = "20130611T134302";
+		Temporal expected = LocalDateTime.of(2013, 6, 11, 13, 43, 2);
+		Temporal actual = VCardPropertyScribe.date(value);
 
-		Date actual = VCardPropertyScribe.date(value);
-
-		assertEquals(datetime, actual);
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void date_write_datetime() {
-		assert_date_write_datetime("20130611", false, false, false);
-		assert_date_write_datetime("20130611T144302+0100", true, false, false);
-		assert_date_write_datetime("2013-06-11", false, true, false);
-		assert_date_write_datetime("20130611", false, false, true);
-		assert_date_write_datetime("2013-06-11T14:43:02+01:00", true, true, false);
-		assert_date_write_datetime("2013-06-11", false, true, true);
-		assert_date_write_datetime("20130611T134302Z", true, false, true);
-		assert_date_write_datetime("2013-06-11T13:43:02Z", true, true, true);
+	public void date_write() {
+		LocalDate date = LocalDate.of(2013, 6, 11);
+		assert_date_write(date, "20130611", false);
+		assert_date_write(date, "2013-06-11", true);
 	}
 
-	private void assert_date_write_datetime(String expected, boolean time, boolean extended, boolean utc) {
-		String actual = VCardPropertyScribe.date(datetime).time(time).extended(extended).utc(utc).write();
+	private void assert_date_write(Temporal temporal, String expected, boolean extended) {
+		String actual = VCardPropertyScribe.date(temporal).extended(extended).write();
 		assertEquals(expected, actual);
 	}
 

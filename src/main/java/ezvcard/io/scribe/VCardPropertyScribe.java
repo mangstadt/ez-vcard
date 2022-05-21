@@ -1,8 +1,7 @@
 package ezvcard.io.scribe;
 
+import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -561,64 +560,32 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the date cannot be parsed
 	 */
-	protected static Date date(String value) {
+	protected static Temporal date(String value) {
 		return VCardDateFormat.parse(value);
 	}
 
 	/**
-	 * Parses a date string.
-	 * @param value the date string
-	 * @return the parsed date
-	 * @throws IllegalArgumentException if the date cannot be parsed
-	 */
-	protected static Calendar calendar(String value) {
-		return VCardDateFormat.parseAsCalendar(value);
-	}
-
-	/**
-	 * Formats a {@link Date} object as a string.
+	 * Formats a {@link Temporal} object as a string.
 	 * @param date the date
 	 * @return a helper object for customizing the write operation
 	 */
-	protected static DateWriter date(Date date) {
+	protected static DateWriter date(Temporal date) {
 		return new DateWriter(date);
-	}
-	
-	/**
-	 * Formats a {@link Calendar} object as a string.
-	 * @param calendar the date
-	 * @return a helper object for customizing the write operation
-	 */
-	protected static DateWriter date(Calendar calendar) {
-		return date(calendar.getTime());
 	}
 
 	/**
 	 * A helper class for writing date values.
 	 */
 	protected static class DateWriter {
-		private Date date;
-		private boolean hasTime = true;
+		private Temporal date;
 		private boolean extended = false;
-		private boolean utc = true;
 
 		/**
 		 * Creates a new date writer object.
 		 * @param date the date to format
 		 */
-		public DateWriter(Date date) {
+		public DateWriter(Temporal date) {
 			this.date = date;
-		}
-
-		/**
-		 * Sets whether to output the date's time component.
-		 * @param hasTime true include the time, false if it's strictly a date
-		 * (defaults to "true")
-		 * @return this
-		 */
-		public DateWriter time(boolean hasTime) {
-			this.hasTime = hasTime;
-			return this;
 		}
 
 		/**
@@ -633,33 +600,11 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		}
 
 		/**
-		 * Sets whether to format the date in UTC time, or to include a UTC
-		 * offset.
-		 * @param utc true to format in UTC time, false to include the local
-		 * timezone's UTC offset (defaults to "true")
-		 * @return this
-		 */
-		public DateWriter utc(boolean utc) {
-			this.utc = utc;
-			return this;
-		}
-
-		/**
 		 * Creates the date string.
 		 * @return the date string
 		 */
 		public String write() {
-			VCardDateFormat format;
-			if (hasTime) {
-				if (utc) {
-					format = extended ? VCardDateFormat.UTC_DATE_TIME_EXTENDED : VCardDateFormat.UTC_DATE_TIME_BASIC;
-				} else {
-					format = extended ? VCardDateFormat.DATE_TIME_EXTENDED : VCardDateFormat.DATE_TIME_BASIC;
-				}
-			} else {
-				format = extended ? VCardDateFormat.DATE_EXTENDED : VCardDateFormat.DATE_BASIC;
-			}
-
+			VCardDateFormat format = extended ? VCardDateFormat.EXTENDED : VCardDateFormat.BASIC;
 			return format.format(date);
 		}
 	}

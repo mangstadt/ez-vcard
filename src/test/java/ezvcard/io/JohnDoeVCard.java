@@ -2,6 +2,8 @@ package ezvcard.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -12,6 +14,7 @@ import ezvcard.parameter.ImageType;
 import ezvcard.parameter.SoundType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
+import ezvcard.property.Birthday;
 import ezvcard.property.Gender;
 import ezvcard.property.Kind;
 import ezvcard.property.Photo;
@@ -20,7 +23,6 @@ import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Timezone;
 import ezvcard.property.Uid;
-import ezvcard.util.UtcOffset;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -59,6 +61,11 @@ public class JohnDoeVCard {
 	public static void main(String[] args) throws Throwable {
 		VCard vcard = createVCard();
 
+		//validate vCard for version 2.1
+		System.out.println("Version 2.1 validation warnings:");
+		System.out.println(vcard.validate(VCardVersion.V2_1));
+		System.out.println();
+
 		//validate vCard for version 3.0
 		System.out.println("Version 3.0 validation warnings:");
 		System.out.println(vcard.validate(VCardVersion.V3_0));
@@ -69,9 +76,17 @@ public class JohnDoeVCard {
 		System.out.println(vcard.validate(VCardVersion.V4_0));
 
 		//write vCard
-		File file = new File("john-doe.vcf");
+		File file = new File("john-doe.21.vcf");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.write(vcard).version(VCardVersion.V2_1).go(file);
+
+		file = new File("john-doe.3.vcf");
 		System.out.println("Writing " + file.getName() + "...");
 		Ezvcard.write(vcard).version(VCardVersion.V3_0).go(file);
+
+		file = new File("john-doe.4.vcf");
+		System.out.println("Writing " + file.getName() + "...");
+		Ezvcard.write(vcard).version(VCardVersion.V4_0).go(file);
 
 		//write xCard
 		file = new File("john-doe.xml");
@@ -86,7 +101,7 @@ public class JohnDoeVCard {
 		//write jCard
 		file = new File("john-doe.json");
 		System.out.println("Writing " + file.getName() + "...");
-		Ezvcard.writeJson(vcard).go(file);
+		Ezvcard.writeJson(vcard).prettyPrint(true).go(file);
 	}
 
 	private static VCard createVCard() throws IOException {
@@ -107,6 +122,8 @@ public class JohnDoeVCard {
 		vcard.setFormattedName("Jonathan Doe");
 
 		vcard.setNickname("John", "Jonny");
+		
+		vcard.setBirthday(new Birthday(LocalDate.of(1980, 1, 1)));
 
 		vcard.addTitle("Widget Engineer");
 
@@ -144,7 +161,7 @@ public class JohnDoeVCard {
 
 		vcard.setGeo(37.6, -95.67);
 
-		vcard.setTimezone(new Timezone(new UtcOffset(false, -5, 0), "America/New_York"));
+		vcard.setTimezone(new Timezone(ZoneOffset.ofHours(-5), "America/New_York"));
 
 		File file = new File("portrait.jpg");
 		Photo photo = new Photo(file, ImageType.JPEG);

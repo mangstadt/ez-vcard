@@ -1,17 +1,17 @@
 package ezvcard.property;
 
+import java.time.DateTimeException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
-import ezvcard.util.UtcOffset;
-import ezvcard.util.VCardDateFormat;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -54,12 +54,12 @@ import ezvcard.util.VCardDateFormat;
  * <pre class="brush:java">
  * VCard vcard = new VCard();
  * 
- * Timezone tz = new Timezone(-5, 0, "America/New_York");
+ * Timezone tz = new Timezone(ZoneOffset.ofHours(-5), "America/New_York");
  * vcard.addTimezone(tz);
  * 
- * //using a Java "TimeZone" object
- * java.util.TimeZone javaTz = java.util.TimeZone.getTimeZone("America/New_York");
- * tz = new Timezone(javaTz);
+ * //using a Java "ZoneId" object
+ * ZoneId zoneId = ZoneId.of("America/New_York");
+ * tz = new Timezone(zoneId);
  * vcard.addTimezone(tz);
  * </pre>
  * 
@@ -76,7 +76,7 @@ import ezvcard.util.VCardDateFormat;
  * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.16</a>
  */
 public class Timezone extends VCardProperty implements HasAltId {
-	private UtcOffset offset;
+	private ZoneOffset offset;
 	private String text;
 
 	/**
@@ -94,7 +94,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 * Creates a timezone property.
 	 * @param offset the UTC offset
 	 */
-	public Timezone(UtcOffset offset) {
+	public Timezone(ZoneOffset offset) {
 		this(offset, null);
 	}
 
@@ -106,7 +106,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 * href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">Olson
 	 * Database</a> (e.g. "America/New_York")
 	 */
-	public Timezone(UtcOffset offset, String text) {
+	public Timezone(ZoneOffset offset, String text) {
 		setOffset(offset);
 		setText(text);
 	}
@@ -115,8 +115,8 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 * Creates a timezone property.
 	 * @param timezone the timezone
 	 */
-	public Timezone(TimeZone timezone) {
-		this(UtcOffset.parse(timezone), timezone.getID());
+	public Timezone(ZoneId timezone) {
+		this(OffsetDateTime.now(timezone).getOffset(), timezone.getId());
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 * Gets the UTC offset.
 	 * @return the UTC offset or null if not set
 	 */
-	public UtcOffset getOffset() {
+	public ZoneOffset getOffset() {
 		return offset;
 	}
 
@@ -141,7 +141,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	 * Sets the UTC offset.
 	 * @param offset the UTC offset
 	 */
-	public void setOffset(UtcOffset offset) {
+	public void setOffset(ZoneOffset offset) {
 		this.offset = offset;
 	}
 
@@ -168,21 +168,21 @@ public class Timezone extends VCardProperty implements HasAltId {
 	}
 
 	/**
-	 * Creates a {@link java.util.TimeZone} representation of this class.
-	 * @return a {@link TimeZone} object or null if this object contains no
+	 * Creates a {@link ZoneId} representation of this class.
+	 * @return a {@link ZoneId} object or null if this object contains no
 	 * offset data
 	 */
-	public TimeZone toTimeZone() {
+	public ZoneId toTimeZone() {
 		if (text != null) {
-			TimeZone timezone = VCardDateFormat.parseTimeZoneId(text);
-			if (timezone != null) {
-				return timezone;
+			try {
+				return ZoneId.of(text);
+			} catch (DateTimeException ignore) {
+				//not a recognized timezone
 			}
 		}
 
 		if (offset != null) {
-			String id = (text == null) ? "" : text;
-			return new SimpleTimeZone((int) offset.getMillis(), id);
+			return offset;
 		}
 
 		return null;

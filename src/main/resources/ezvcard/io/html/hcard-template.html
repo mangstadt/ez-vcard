@@ -149,7 +149,7 @@
 					
 					<#if v.birthday?? && v.birthday.date??>
 						<span class="l">Birthday: </span>
-						<time class="bday" datetime="${v.birthday.date?string("yyyy-MM-dd")}">${v.birthday.date?string("MMMM d, yyyy")}</time>
+						<time class="bday" datetime="${utils.format(v.birthday.date, "yyyy-MM-dd")}">${utils.format(v.birthday.date, "MMMM d, yyyy")}</time>
 						<br />
 					</#if>
 					
@@ -196,7 +196,7 @@
 		
 		<#if v.revision?? && v.revision.value??>
 			<span class="l">vCard last updated: </span>
-			<time class="rev" datetime="${v.revision.value?string("yyyy-MM-dd'T'HH:mm:ssZ")}">${v.revision.value?string("MMMM d, yyyy h:mm aa z")}</time>
+			<time class="rev" datetime="${utils.format(v.revision.value, "yyyy-MM-dd'T'HH:mm:ssX")}">${utils.formatLocal(v.revision.value, "MMMM d, yyyy h:m a Z")}</time>
 			<br />
 		</#if>
 
@@ -394,7 +394,7 @@
 					<#if v.timezone?? && v.timezone.offset??>
 						<span class="l">Timezone: </span>
 						<span class="tz">
-							${v.timezone.offset.toString(false)}
+							${utils.format(v.timezone.offset)}
 						</span>
 						<br />
 					</#if>

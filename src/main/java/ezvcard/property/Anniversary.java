@@ -1,7 +1,6 @@
 package ezvcard.property;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.Temporal;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
@@ -49,12 +48,8 @@ import ezvcard.util.PartialDate;
  * VCard vcard = new VCard();
  * 
  * //date
- * Calendar c = Calendar.getInstance();
- * c.clear();
- * c.set(Calendar.YEAR, 1970);
- * c.set(Calendar.MONTH, Calendar.MARCH);
- * c.set(Calendar.DAY_OF_MONTH, 21);
- * Anniversary anniversary = new Anniversary(c.getTime());
+ * LocalDate date = LocalDate.of(1970, 3, 21);
+ * Anniversary anniversary = new Anniversary(date);
  * vcard.setAnniversary(anniversary);
  * 
  * //partial date (e.g. just the month and date)
@@ -75,7 +70,7 @@ import ezvcard.util.PartialDate;
  * VCard vcard = ...
  * Anniversary anniversary = vcard.getAnniversary();
  * 
- * Date date = anniversary.getDate();
+ * Temporal date = anniversary.getDate();
  * if (date != null) {
  *   //property value is a date
  * }
@@ -108,36 +103,8 @@ public class Anniversary extends DateOrTimeProperty {
 	 * Creates an anniversary property.
 	 * @param date the anniversary date
 	 */
-	public Anniversary(Date date) {
+	public Anniversary(Temporal date) {
 		super(date);
-	}
-
-	/**
-	 * Creates an anniversary property.
-	 * @param date the anniversary date
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Anniversary(Date date, boolean hasTime) {
-		super(date, hasTime);
-	}
-	
-	/**
-	 * Creates an anniversary property.
-	 * @param date the anniversary date
-	 */
-	public Anniversary(Calendar date) {
-		super(date);
-	}
-
-	/**
-	 * Creates an anniversary property.
-	 * @param date the anniversary date
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Anniversary(Calendar date, boolean hasTime) {
-		super(date, hasTime);
 	}
 
 	/**

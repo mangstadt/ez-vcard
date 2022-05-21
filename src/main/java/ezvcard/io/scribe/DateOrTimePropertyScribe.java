@@ -1,7 +1,6 @@
 package ezvcard.io.scribe;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.Temporal;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
@@ -16,6 +15,7 @@ import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.DateOrTimeProperty;
 import ezvcard.util.PartialDate;
+import ezvcard.util.VCardDateFormat;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -74,8 +74,11 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 			if (property.getText() != null) {
 				return VCardDataType.TEXT;
 			}
-			if (property.getDate() != null || property.getPartialDate() != null) {
-				return property.hasTime() ? VCardDataType.DATE_TIME : VCardDataType.DATE;
+			if (property.getDate() != null) {
+				return VCardDateFormat.hasTime(property.getDate()) ? VCardDataType.DATE_TIME : VCardDataType.DATE;
+			}
+			if (property.getPartialDate() != null) {
+				return property.getPartialDate().hasTimeComponent() ? VCardDataType.DATE_TIME : VCardDataType.DATE;
 			}
 			return VCardDataType.DATE_AND_OR_TIME;
 		}
@@ -85,10 +88,10 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	@Override
 	protected String _writeText(T property, WriteContext context) {
 		VCardVersion version = context.getVersion();
-		Date date = property.getDate();
+		Temporal date = property.getDate();
 		if (date != null) {
 			boolean extended = (version == VCardVersion.V3_0);
-			return date(date).time(property.hasTime()).extended(extended).utc(false).write();
+			return date(date).extended(extended).write();
 		}
 
 		if (version == VCardVersion.V4_0) {
@@ -118,13 +121,10 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	@Override
 	protected void _writeXml(T property, XCardElement parent) {
-		Date date = property.getDate();
+		Temporal date = property.getDate();
 		if (date != null) {
-			boolean hasTime = property.hasTime();
-			String value = date(date).time(hasTime).extended(false).utc(false).write();
-
-			VCardDataType dataType = hasTime ? VCardDataType.DATE_TIME : VCardDataType.DATE;
-
+			String value = date(date).extended(false).write();
+			VCardDataType dataType = VCardDateFormat.hasTime(date) ? VCardDataType.DATE_TIME : VCardDataType.DATE;
 			parent.append(dataType, value);
 			return;
 		}
@@ -187,10 +187,9 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	@Override
 	protected JCardValue _writeJson(T property) {
-		Date date = property.getDate();
+		Temporal date = property.getDate();
 		if (date != null) {
-			boolean hasTime = property.hasTime();
-			String value = date(date).time(hasTime).extended(true).utc(false).write();
+			String value = date(date).extended(true).write();
 			return JCardValue.single(value);
 		}
 
@@ -220,8 +219,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	private T parse(String value, ParseContext context) {
 		try {
-			boolean hasTime = value.contains("T");
-			return newInstance(calendar(value), hasTime);
+			return newInstance(date(value));
 		} catch (IllegalArgumentException e) {
 			if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
 				throw new CannotParseException(5);
@@ -238,7 +236,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 
 	protected abstract T newInstance(String text);
 
-	protected abstract T newInstance(Calendar date, boolean hasTime);
+	protected abstract T newInstance(Temporal date);
 
 	protected abstract T newInstance(PartialDate partialDate);
 }

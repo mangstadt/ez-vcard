@@ -3,10 +3,11 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static ezvcard.util.TestUtils.utc;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -53,12 +54,12 @@ public class RevisionScribeTest {
 	private final RevisionScribe scribe = new RevisionScribe();
 	private final Sensei<Revision> sensei = new Sensei<Revision>(scribe);
 
-	private final Calendar datetime = utc(1980, Calendar.JUNE, 5, 12, 10, 20);
+	private final Instant datetime = LocalDateTime.of(1980, 6, 5, 12, 10, 20).toInstant(ZoneOffset.UTC);
 	private final String datetimeStr = "19800605T121020Z";
 	private final String datetimeStrExt = "1980-06-05T12:10:20Z";
 
 	private final Revision withValue = new Revision(datetime);
-	private final Revision empty = new Revision((Date) null);
+	private final Revision empty = new Revision((Temporal) null);
 
 	@Test
 	public void writeText() {

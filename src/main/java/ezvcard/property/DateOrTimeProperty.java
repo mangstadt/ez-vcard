@@ -1,10 +1,14 @@
 package ezvcard.property;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.Temporal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -12,7 +16,6 @@ import ezvcard.ValidationWarning;
 import ezvcard.parameter.Calscale;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.PartialDate;
-import ezvcard.util.VCardDateFormat;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -44,49 +47,23 @@ import ezvcard.util.VCardDateFormat;
  */
 
 /**
- * Represents a property with a date and/or time value.
+ * Represents a property that typically contains a date/time value, but can also
+ * contain a partial date or free-text value.
  * @author Michael Angstadt
  */
 public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	private String text;
-	private Calendar date;
+	private Temporal date;
 	private PartialDate partialDate;
-	private boolean dateHasTime;
 
 	/**
 	 * Creates a date-and-or-time property.
-	 * @param date the date value
+	 * @param date the date value (should be one of the following:
+	 * {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},
+	 * {@link Instant})
 	 */
-	public DateOrTimeProperty(Date date) {
-		this(VCardDateFormat.toCalendar(date));
-	}
-
-	/**
-	 * Creates a date-and-or-time property.
-	 * @param date the date value
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public DateOrTimeProperty(Date date, boolean hasTime) {
-		setDate(date, hasTime);
-	}
-
-	/**
-	 * Creates a date-and-or-time property.
-	 * @param date the date value
-	 */
-	public DateOrTimeProperty(Calendar date) {
-		this(date, false);
-	}
-
-	/**
-	 * Creates a date-and-or-time property.
-	 * @param date the date value
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public DateOrTimeProperty(Calendar date, boolean hasTime) {
-		setDate(date, hasTime);
+	public DateOrTimeProperty(Temporal date) {
+		this.date = date;
 	}
 
 	/**
@@ -112,65 +89,30 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	public DateOrTimeProperty(DateOrTimeProperty original) {
 		super(original);
 		text = original.text;
-		date = (original.date == null) ? null : (Calendar) original.date.clone();
+		date = original.date;
 		partialDate = original.partialDate;
-		dateHasTime = original.dateHasTime;
 	}
 
 	/**
-	 * Gets the date value.
+	 * Gets the date value. It should be an instance of one of the following
+	 * classes: {@link LocalDate}, {@link LocalDateTime},
+	 * {@link OffsetDateTime}, {@link Instant}.
 	 * @return the date value or null if not set
 	 */
-	public Date getDate() {
-		return (date == null) ? null : date.getTime();
+	public Temporal getDate() {
+		return date;
 	}
 
 	/**
-	 * Sets the value of this property to a complete date.
+	 * Sets the value of this property to a date. It should be an instance of
+	 * one of the following classes: {@link LocalDate}, {@link LocalDateTime},
+	 * {@link OffsetDateTime}, {@link Instant}.
 	 * @param date the date
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
 	 */
-	public void setDate(Date date, boolean hasTime) {
-		setDate(VCardDateFormat.toCalendar(date), hasTime);
-	}
-
-	/**
-	 * Sets the value of this property to a complete date.
-	 * @param date the date
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public void setDate(Calendar date, boolean hasTime) {
+	public void setDate(Temporal date) {
 		this.date = date;
-		this.dateHasTime = (date != null) && hasTime;
 		text = null;
 		partialDate = null;
-	}
-
-	/**
-	 * <p>
-	 * Gets the date value as a {@link Calendar} object. This is useful for
-	 * retrieving the components of the original timestamp string from the
-	 * source vCard data.
-	 * </p>
-	 * <p>
-	 * Use {@link Calendar#isSet} to determine if a field was included in the
-	 * original timestamp string. Calls to this method should be made before
-	 * calling {@link Calendar#get} because calling latter method can cause
-	 * unset fields to become populated (as mentioned in the
-	 * {@link Calendar#isSet isSet} Javadocs).
-	 * </p>
-	 * <p>
-	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
-	 * in the timestamp string. If a numeric offset was used, the timezone will
-	 * look like "GMT-05:00". If no offset was specified, the timezone will be
-	 * set to the local system's default timezone.
-	 * </p>
-	 * @return the date value or null if not set
-	 */
-	public Calendar getCalendar() {
-		return (date == null) ? null : (Calendar) date.clone();
 	}
 
 	/**
@@ -193,12 +135,12 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	 * Birthday bday = new Birthday();
 	 * bday.setPartialDate(PartialDate.date(null, 4, 20)); //April 20
 	 * </pre>
+	 * 
 	 * @param partialDate the reduced accuracy or truncated date
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 p.12-14</a>
 	 */
 	public void setPartialDate(PartialDate partialDate) {
 		this.partialDate = partialDate;
-		dateHasTime = (partialDate != null) && partialDate.hasTimeComponent();
 		text = null;
 		date = null;
 	}
@@ -214,23 +156,12 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	/**
 	 * Sets the value of this property to a text string. This is only supported
 	 * by vCard 4.0.
-	 * @param text the text value
+	 * @param text the text value or null if not set
 	 */
 	public void setText(String text) {
 		this.text = text;
 		date = null;
 		partialDate = null;
-		dateHasTime = false;
-	}
-
-	/**
-	 * Determines whether the "date" or "partialDate" fields have a time
-	 * component.
-	 * @return true if the date has a time component, false if it's strictly a
-	 * date, and false if a text value is defined
-	 */
-	public boolean hasTime() {
-		return dateHasTime;
 	}
 
 	/**
@@ -303,8 +234,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	protected Map<String, Object> toStringValues() {
 		Map<String, Object> values = new LinkedHashMap<String, Object>();
 		values.put("text", text);
-		values.put("date", getDate());
-		values.put("dateHasTime", dateHasTime);
+		values.put("date", date);
 		values.put("partialDate", partialDate);
 		return values;
 	}
@@ -313,16 +243,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-
-		/*
-		 * Call getDate() method to compare the actual timestamp of the calendar
-		 * object.
-		 */
-		result = prime * result + ((getDate() == null) ? 0 : getDate().hashCode());
-
-		result = prime * result + (dateHasTime ? 1231 : 1237);
-		result = prime * result + ((partialDate == null) ? 0 : partialDate.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + Objects.hash(date, partialDate, text);
 		return result;
 	}
 
@@ -330,23 +251,8 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		DateOrTimeProperty other = (DateOrTimeProperty) obj;
-
-		/*
-		 * Call getDate() method to compare the actual timestamp of the calendar
-		 * object.
-		 */
-		if (getDate() == null) {
-			if (other.getDate() != null) return false;
-		} else if (!getDate().equals(other.getDate())) return false;
-
-		if (dateHasTime != other.dateHasTime) return false;
-		if (partialDate == null) {
-			if (other.partialDate != null) return false;
-		} else if (!partialDate.equals(other.partialDate)) return false;
-		if (text == null) {
-			if (other.text != null) return false;
-		} else if (!text.equals(other.text)) return false;
-		return true;
+		return Objects.equals(date, other.date) && Objects.equals(partialDate, other.partialDate) && Objects.equals(text, other.text);
 	}
 }

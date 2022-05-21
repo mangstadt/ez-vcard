@@ -1,7 +1,6 @@
 package ezvcard.property;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.Temporal;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
@@ -49,12 +48,8 @@ import ezvcard.util.PartialDate;
  * VCard vcard = new VCard();
  * 
  * //date
- * Calendar c = Calendar.getInstance();
- * c.clear();
- * c.set(Calendar.YEAR, 1954);
- * c.set(Calendar.MONTH, Calendar.JUNE);
- * c.set(Calendar.DAY_OF_MONTH, 7);
- * Deathdate deathdate = new Deathdate(c.getTime());
+ * LocalDate date = LocalDate.of(1954, 6, 7);
+ * Deathdate deathdate = new Deathdate(date);
  * vcard.setDeathdate(deathdate);
  * 
  * //partial date (e.g. just the month and date)
@@ -74,7 +69,7 @@ import ezvcard.util.PartialDate;
  * VCard vcard = ...
  * Deathdate deathdate = vcard.getDeathdate();
  * 
- * Date date = deathdate.getDate();
+ * Temporal date = deathdate.getDate();
  * if (date != null) {
  *   //property value is a date
  * }
@@ -107,36 +102,8 @@ public class Deathdate extends DateOrTimeProperty {
 	 * Creates a deathdate property.
 	 * @param date the deathdate
 	 */
-	public Deathdate(Date date) {
+	public Deathdate(Temporal date) {
 		super(date);
-	}
-
-	/**
-	 * Creates a deathdate property.
-	 * @param date the deathdate
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Deathdate(Date date, boolean hasTime) {
-		super(date, hasTime);
-	}
-	
-	/**
-	 * Creates a deathdate property.
-	 * @param date the deathdate
-	 */
-	public Deathdate(Calendar date) {
-		super(date);
-	}
-
-	/**
-	 * Creates a deathdate property.
-	 * @param date the deathdate
-	 * @param hasTime true to include the date's time component, false if it's
-	 * strictly a date
-	 */
-	public Deathdate(Calendar date, boolean hasTime) {
-		super(date, hasTime);
 	}
 
 	/**

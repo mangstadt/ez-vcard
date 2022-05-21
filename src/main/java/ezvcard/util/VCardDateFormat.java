@@ -1,12 +1,17 @@
 package ezvcard.util;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
-import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,210 +47,140 @@ import ezvcard.Messages;
  */
 
 /**
- * Defines all of the date formats that are used in vCards, and also
- * parses/formats vCard dates. These date formats are defined in the ISO8601
- * specification.
+ * Parses and formats vCard timestamp values. These date formats are defined in
+ * the ISO8601 specification.
  * @author Michael Angstadt
  */
 public enum VCardDateFormat {
-	//@formatter:off
 	/**
-	 * Example: 20120701
+	 * <p>
+	 * Formats dates using "extended" format. In this format, dashes separate
+	 * the date components, and colons separate the time components.
+	 * </p>
+	 * <p>
+	 * Examples:
+	 * </p>
+	 * <ul>
+	 * <li>2012-07-01 ({@link LocalDate})</li>
+	 * <li>2012-07-01T14:21:10 ({@link LocalDateTime})</li>
+	 * <li>2012-07-01T14:21:10-05:00 ({@link OffsetDateTime})</li>
+	 * <li>2012-07-01T14:21:10Z ({@link Instant})</li>
+	 * </ul>
 	 */
-	DATE_BASIC(
-	"yyyyMMdd"),
-	
-	/**
-	 * Example: 2012-07-01
-	 */
-	DATE_EXTENDED(
-	"yyyy-MM-dd"),
-	
-	/**
-	 * Example: 20120701T142110-0500
-	 */
-	DATE_TIME_BASIC(
-	"yyyyMMdd'T'HHmmssZ"),
-	
-	/**
-	 * Example: 2012-07-01T14:21:10-05:00
-	 */
-	DATE_TIME_EXTENDED(
-	"yyyy-MM-dd'T'HH:mm:ssZ"){
-		@SuppressWarnings("serial")
+	EXTENDED {
 		@Override
-		public DateFormat getDateFormat(TimeZone timezone) {
-			DateFormat df = new SimpleDateFormat(formatStr, Locale.ROOT){
-				@Override
-				public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition){
-					StringBuffer sb = super.format(date, toAppendTo, fieldPosition);
-					
-					//add a colon between the hour and minute offsets
-					sb.insert(sb.length()-2, ':');
-					
-					return sb;
-				}
-			};
-			
-			if (timezone != null){
-				df.setTimeZone(timezone);
+		String getPattern(TemporalAccessor temporal) {
+			if (temporal instanceof ZoneOffset) {
+				return "xxx";
 			}
-			
-			return df;
+			if (temporal instanceof Instant) {
+				return "yyyy-MM-dd'T'HH:mm:ssX";
+			}
+			if (hasOffset(temporal)) {
+				return "yyyy-MM-dd'T'HH:mm:ssxxx";
+			}
+			if (hasTime(temporal)) {
+				return "yyyy-MM-dd'T'HH:mm:ss";
+			}
+			return "yyyy-MM-dd";
 		}
 	},
-	
+
 	/**
-	 * Example: 20120701T192110Z
+	 * <p>
+	 * Formats dates using "basic" format. In this format, nothing separates the
+	 * date and time components from each other.
+	 * </p>
+	 * <p>
+	 * Examples:
+	 * </p>
+	 * <ul>
+	 * <li>20120701 ({@link LocalDate})</li>
+	 * <li>20120701T142110 ({@link LocalDateTime})</li>
+	 * <li>20120701T142110-0500 ({@link OffsetDateTime})</li>
+	 * <li>20120701T142110Z ({@link Instant})</li>
+	 * </ul>
 	 */
-	UTC_DATE_TIME_BASIC(
-	"yyyyMMdd'T'HHmmss'Z'"){
+	BASIC {
 		@Override
-		public DateFormat getDateFormat(TimeZone timezone) {
-			//always use the UTC timezone
-			TimeZone utc = TimeZone.getTimeZone("UTC");
-			return super.getDateFormat(utc);
+		String getPattern(TemporalAccessor temporal) {
+			if (temporal instanceof ZoneOffset) {
+				return "xx";
+			}
+			if (temporal instanceof Instant) {
+				return "yyyyMMdd'T'HHmmssX";
+			}
+			if (hasOffset(temporal)) {
+				return "yyyyMMdd'T'HHmmssxx";
+			}
+			if (hasTime(temporal)) {
+				return "yyyyMMdd'T'HHmmss";
+			}
+			return "yyyyMMdd";
 		}
-	},
-	
+	};
+
 	/**
-	 * Example: 2012-07-01T19:21:10Z
+	 * Formats a date (also accepts {@link ZoneOffset}).
+	 * @param temporalAccessor the date
+	 * @return the formatted date
 	 */
-	UTC_DATE_TIME_EXTENDED(
-	"yyyy-MM-dd'T'HH:mm:ss'Z'"){
-		@Override
-		public DateFormat getDateFormat(TimeZone timezone) {
-			//always use the UTC timezone
-			TimeZone utc = TimeZone.getTimeZone("UTC");
-			return super.getDateFormat(utc);
+	public String format(TemporalAccessor temporalAccessor) {
+		String pattern = getPattern(temporalAccessor);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern, Locale.ROOT);
+
+		/*
+		 * Instants must be converted to OffsetDateTime in order to be formatted
+		 * using a format pattern.
+		 */
+		if (temporalAccessor instanceof Instant) {
+			temporalAccessor = ((Instant) temporalAccessor).atOffset(ZoneOffset.UTC);
 		}
-	},
-	
-	/**
-	 * Example: 2012-07-01T14:21:10-0500
-	 */
-	HCARD_DATE_TIME(
-	"yyyy-MM-dd'T'HH:mm:ssZ")
-	
-	;
-	//@formatter:on
 
-	/**
-	 * The {@link SimpleDateFormat} format string used for parsing dates.
-	 */
-	protected final String formatStr;
-
-	/**
-	 * @param formatStr the {@link SimpleDateFormat} format string used for
-	 * formatting dates.
-	 */
-	VCardDateFormat(String formatStr) {
-		this.formatStr = formatStr;
+		return df.format(temporalAccessor);
 	}
 
-	/**
-	 * Builds a {@link DateFormat} object for parsing and formating dates in
-	 * this format.
-	 * @return the {@link DateFormat} object
-	 */
-	public DateFormat getDateFormat() {
-		return getDateFormat(null);
-	}
+	abstract String getPattern(TemporalAccessor temporal);
 
 	/**
-	 * Builds a {@link DateFormat} object for parsing and formating dates in
-	 * this format.
-	 * @param timezone the timezone the date is in or null for the default
-	 * timezone
-	 * @return the {@link DateFormat} object
-	 */
-	public DateFormat getDateFormat(TimeZone timezone) {
-		DateFormat df = new SimpleDateFormat(formatStr, Locale.ROOT);
-		if (timezone != null) {
-			df.setTimeZone(timezone);
-		}
-		return df;
-	}
-
-	/**
-	 * Formats a date in this vCard date format.
-	 * @param date the date to format
-	 * @return the date string
-	 */
-	public String format(Date date) {
-		return format(date, null);
-	}
-
-	/**
-	 * Formats a date in this vCard date format.
-	 * @param date the date to format
-	 * @param timezone the timezone to format the date in or null for the
-	 * default timezone
-	 * @return the date string
-	 */
-	public String format(Date date, TimeZone timezone) {
-		DateFormat df = getDateFormat(timezone);
-		return df.format(date);
-	}
-
-	/**
-	 * Parses a date string.
-	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
+	 * <p>
+	 * Parses a date string. String can be in basic or extended formats.
+	 * </p>
+	 * <p>
+	 * Examples:
+	 * </p>
+	 * <ul>
+	 * <li>"2012-07-01" returns {@link LocalDate}</li>
+	 * <li>"2012-07-01T14:21:10" returns {@link LocalDateTime}</li>
+	 * <li>"2012-07-01T14:21:10-05:00" returns {@link OffsetDateTime}</li>
+	 * <li>"2012-07-01T14:21:10Z" returns {@link Instant}</li>
+	 * </ul>
+	 * @param string the string to parse
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the date string isn't in one of the
 	 * accepted ISO8601 formats
 	 */
-	public static Date parse(String dateStr) {
-		return parseAsCalendar(dateStr).getTime();
-	}
-
-	/**
-	 * <p>
-	 * Parses a date string as a {@link Calendar} object. This allows the caller
-	 * to retrieve the individual components of the original date string, which
-	 * get lost with {@link Calendar#getTime}. This method was added at the
-	 * request of a user who needed the UTC offset from the original timestamp
-	 * string.
-	 * </p>
-	 * <p>
-	 * Use {@link Calendar#isSet(int)} to determine if a field was included in the
-	 * original timestamp string. Calls to this method should be made before
-	 * calling {@link Calendar#get} because calling latter method can cause
-	 * unset fields to become populated (as mentioned in the
-	 * {@link Calendar#isSet(int) isSet} Javadocs).
-	 * </p>
-	 * <p>
-	 * The calendar's timezone will be set to "GMT" if the "Z" suffix was used
-	 * in the timestamp string. If a numeric offset was used, the timezone will
-	 * look like "GMT-05:00". If no offset was specified, the timezone will be
-	 * set to the local system's default timezone.
-	 * </p>
-	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
-	 * @return the parsed date
-	 * @throws IllegalArgumentException if the date string isn't in one of the
-	 * accepted ISO8601 formats
-	 */
-	public static Calendar parseAsCalendar(String dateStr) {
-		TimestampPattern p = new TimestampPattern(dateStr);
-		if (!p.matches()) {
-			throw Messages.INSTANCE.getIllegalArgumentException(41, dateStr);
+	public static Temporal parse(String string) {
+		TimestampPattern p = TimestampPattern.parse(string);
+		if (p == null) {
+			throw Messages.INSTANCE.getIllegalArgumentException(41, string);
 		}
 
-		Calendar c = Calendar.getInstance(p.timezone());
-		c.clear();
-
-		c.set(Calendar.YEAR, p.year());
-		c.set(Calendar.MONTH, p.month() - 1);
-		c.set(Calendar.DATE, p.date());
-
-		if (p.hasTime()) {
-			c.set(Calendar.HOUR_OF_DAY, p.hour());
-			c.set(Calendar.MINUTE, p.minute());
-			c.set(Calendar.SECOND, p.second());
-			c.set(Calendar.MILLISECOND, p.millisecond());
+		LocalDate date = LocalDate.of(p.year(), p.month(), p.date());
+		if (!p.hasTime()) {
+			return date;
 		}
 
-		return c;
+		LocalTime time = LocalTime.of(p.hour(), p.minute(), p.second(), p.nanosecond());
+		LocalDateTime datetime = LocalDateTime.of(date, time);
+
+		ZoneOffset offset = p.offset();
+		if (offset == null) {
+			return datetime;
+		}
+
+		OffsetDateTime offsetDateTime = OffsetDateTime.of(datetime, offset);
+		return "Z".equals(offset.getId()) ? Instant.from(offsetDateTime) : offsetDateTime;
 	}
 
 	/**
@@ -268,16 +203,21 @@ public enum VCardDateFormat {
 		);
 		//@formatter:on
 
-		private final Matcher m;
-		private final boolean matches;
+		private final Matcher matcher;
 
-		public TimestampPattern(String str) {
-			m = regex.matcher(str);
-			matches = m.find();
+		private TimestampPattern(Matcher matcher) {
+			this.matcher = matcher;
 		}
 
-		public boolean matches() {
-			return matches;
+		/**
+		 * Attempts to match the given string against the timestamp regex.
+		 * @param string the string to parse
+		 * @return the matched pattern or null if the string did not match the
+		 * pattern
+		 */
+		public static TimestampPattern parse(String string) {
+			Matcher m = regex.matcher(string);
+			return m.find() ? new TimestampPattern(m) : null;
 		}
 
 		public int year() {
@@ -293,7 +233,7 @@ public enum VCardDateFormat {
 		}
 
 		public boolean hasTime() {
-			return m.group(8) != null;
+			return matcher.group(8) != null;
 		}
 
 		public int hour() {
@@ -308,42 +248,24 @@ public enum VCardDateFormat {
 			return parseInt(10);
 		}
 
-		public int millisecond() {
-			String s = m.group(11);
+		public int nanosecond() {
+			String s = matcher.group(11);
 			if (s == null) {
 				return 0;
 			}
 
-			double ms = Double.parseDouble(s) * 1000;
-			return (int) Math.round(ms);
+			double nanos = Double.parseDouble(s) * TimeUnit.SECONDS.toNanos(1);
+			return (int) Math.round(nanos);
 		}
 
-		public TimeZone timezone() {
-			String offsetStr = m.group(12);
-			if (offsetStr == null) {
-				return TimeZone.getDefault();
-			}
-
-			/*
-			 * Use the naked "GMT" timezone when "Z" is specified. This allows
-			 * the user to differentiate from when an offset of "00:00" is
-			 * explicitly specified (they refer to the same timezone, though).
-			 */
-			if (offsetStr.equals("Z")) {
-				return TimeZone.getTimeZone("GMT");
-			}
-
-			/*
-			 * Java is lenient regarding the format of the offset string. For
-			 * example, all of the following resolve to the same "GMT+03:00"
-			 * timezone: "GMT+3", "GMT+03", "GMT+3:00", "GMT+300"
-			 */
-			return TimeZone.getTimeZone("GMT" + offsetStr);
+		public ZoneOffset offset() {
+			String offsetStr = matcher.group(12);
+			return (offsetStr == null) ? null : ZoneOffset.of(offsetStr);
 		}
 
 		private int parseInt(int... group) {
 			for (int g : group) {
-				String s = m.group(g);
+				String s = matcher.group(g);
 				if (s != null) {
 					return Integer.parseInt(s);
 				}
@@ -353,46 +275,15 @@ public enum VCardDateFormat {
 	}
 
 	/**
-	 * Determines whether a date string has a time component.
-	 * @param dateStr the date string (e.g. "20130601T120000")
+	 * Determines if the given date has a time component
+	 * @param temporalAccessor the date
 	 * @return true if it has a time component, false if not
 	 */
-	public static boolean dateHasTime(String dateStr) {
-		return dateStr.contains("T");
+	public static boolean hasTime(TemporalAccessor temporalAccessor) {
+		return temporalAccessor instanceof Instant || temporalAccessor.isSupported(ChronoField.HOUR_OF_DAY);
 	}
 
-	/**
-	 * Determines whether a date string is in UTC time or has a timezone offset.
-	 * @param dateStr the date string (e.g. "20130601T120000Z",
-	 * "20130601T120000-0400")
-	 * @return true if it has a timezone, false if not
-	 */
-	public static boolean dateHasTimezone(String dateStr) {
-		return dateStr.endsWith("Z") || dateStr.matches(".*?[-+]\\d\\d:?\\d\\d");
-	}
-
-	/**
-	 * Gets the {@link TimeZone} object that corresponds to the given ID.
-	 * @param timezoneId the timezone ID (e.g. "America/New_York")
-	 * @return the timezone object or null if not found
-	 */
-	public static TimeZone parseTimeZoneId(String timezoneId) {
-		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
-		return "GMT".equals(timezone.getID()) ? null : timezone;
-	}
-
-	/**
-	 * Converts a {@link Date} object to a {@link Calendar} object.
-	 * @param date the date (can be null)
-	 * @return the calendar or null if the date is null
-	 */
-	public static Calendar toCalendar(Date date) {
-		if (date == null) {
-			return null;
-		}
-
-		Calendar c = Calendar.getInstance();
-		c.setTime(date);
-		return c;
+	private static boolean hasOffset(TemporalAccessor temporalAccessor) {
+		return temporalAccessor.isSupported(ChronoField.OFFSET_SECONDS);
 	}
 }
