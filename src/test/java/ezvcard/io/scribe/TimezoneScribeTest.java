@@ -50,13 +50,16 @@ public class TimezoneScribeTest {
 	private final Sensei<Timezone> sensei = new Sensei<Timezone>(scribe);
 
 	private final ZoneOffset offset = ZoneOffset.ofHours(-5);
+	private final ZoneOffset offsetPositive = ZoneOffset.ofHours(5);
 	private final String offsetStrExtended = "-05:00";
 	private final String offsetStrBasic = "-0500";
+	private final String offsetStrLotusNotes = "5:00";
 	private final String timezoneIdStr = "America/New_York";
 	private final String textStr = "some text";
 	private final ZoneId newYork = ZoneId.of(timezoneIdStr);
 
 	private final Timezone withOffset = new Timezone(offset);
+	private final Timezone withOffsetPositive = new Timezone(offsetPositive);
 	private final Timezone withTimezoneId = new Timezone(timezoneIdStr);
 	private final Timezone withText = new Timezone(textStr);
 	private final Timezone withOffsetAndTimezoneId = new Timezone(offset, timezoneIdStr);
@@ -117,6 +120,7 @@ public class TimezoneScribeTest {
 	@Test
 	public void parseText() {
 		sensei.assertParseText(offsetStrExtended).run(withOffset);
+		sensei.assertParseText(offsetStrLotusNotes).run(withOffsetPositive);
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.UTC_OFFSET).run(withOffset);
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.TEXT).run(withOffset);
 

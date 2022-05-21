@@ -787,7 +787,7 @@ public class XCardReaderTest {
 				.date(8)
 				.hour(14)
 				.minute(30)
-				.offset(-5)
+				.offset(-5, 0)
 				.build()
 			)
 		.noMore();

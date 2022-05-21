@@ -791,7 +791,7 @@ public class XCardDocumentTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());

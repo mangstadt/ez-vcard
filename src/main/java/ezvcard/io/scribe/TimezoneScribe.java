@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
+import ezvcard.Messages;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -270,15 +271,15 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 		case V2_1:
 			//e.g. "-05:00"
 			try {
-				return new Timezone(ZoneOffset.of(value));
-			} catch (DateTimeException e) {
+				return new Timezone(parse(value));
+			} catch (IllegalArgumentException e) {
 				throw new CannotParseException(19);
 			}
 		case V3_0:
 		case V4_0:
 			try {
-				return new Timezone(ZoneOffset.of(value));
-			} catch (DateTimeException e) {
+				return new Timezone(parse(value));
+			} catch (IllegalArgumentException e) {
 				if (dataType == VCardDataType.UTC_OFFSET) {
 					context.addWarning(20);
 				}
@@ -287,5 +288,68 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 		}
 
 		return new Timezone((String) null);
+	}
+
+	/**
+	 * <p>
+	 * Parses a UTC offset from a string.
+	 * </p>
+	 * <p>
+	 * {@link ZoneOffset#of(String)} cannot be used because we need to be able
+	 * to parse inputs that lack a sign and two-digit hour (e.g. "1:00").
+	 * </p>
+	 * @param text the text to parse (e.g. "-0500")
+	 * @return the parsed UTC offset
+	 * @throws IllegalArgumentException if the text cannot be parsed
+	 */
+	private ZoneOffset parse(String text) {
+		int i = 0;
+		char sign = text.charAt(i);
+		boolean negative = false;
+		if (sign == '-') {
+			negative = true;
+			i++;
+		} else if (sign == '+') {
+			i++;
+		}
+
+		int maxLength = i + 4;
+		int colon = text.indexOf(':', i);
+		if (colon >= 0) {
+			maxLength++;
+		}
+		if (text.length() > maxLength) {
+			throw Messages.INSTANCE.getIllegalArgumentException(40, text);
+		}
+
+		String hourStr, minuteStr = null;
+		if (colon < 0) {
+			hourStr = text.substring(i);
+			int minutePos = hourStr.length() - 2;
+			if (minutePos > 0) {
+				minuteStr = hourStr.substring(minutePos);
+				hourStr = hourStr.substring(0, minutePos);
+			}
+		} else {
+			hourStr = text.substring(i, colon);
+			if (colon < text.length() - 1) {
+				minuteStr = text.substring(colon + 1);
+			}
+		}
+
+		int hour, minute;
+		try {
+			hour = Integer.parseInt(hourStr);
+			minute = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
+		} catch (NumberFormatException e) {
+			throw Messages.INSTANCE.getIllegalArgumentException(40, text);
+		}
+
+		if (negative) {
+			hour *= -1;
+			minute *= -1;
+		}
+
+		return ZoneOffset.ofHoursMinutes(hour, minute);
 	}
 }
