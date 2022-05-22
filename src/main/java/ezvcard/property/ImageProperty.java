@@ -1,8 +1,8 @@
 package ezvcard.property;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import ezvcard.parameter.ImageType;
 
@@ -74,7 +74,7 @@ public class ImageProperty extends BinaryProperty<ImageType> {
 	 * @param type the content type (e.g. JPEG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public ImageProperty(File file, ImageType type) throws IOException {
+	public ImageProperty(Path file, ImageType type) throws IOException {
 		super(file, type);
 	}
 

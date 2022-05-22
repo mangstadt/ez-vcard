@@ -1,15 +1,13 @@
 package ezvcard.io.text;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,9 +135,9 @@ public class VCardReader extends StreamReader {
 	/**
 	 * Creates a new vCard reader.
 	 * @param file the file to read from
-	 * @throws FileNotFoundException if the file doesn't exist
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public VCardReader(File file) throws FileNotFoundException {
+	public VCardReader(Path file) throws IOException {
 		this(file, VCardVersion.V2_1);
 	}
 
@@ -148,10 +146,10 @@ public class VCardReader extends StreamReader {
 	 * @param file the file to read from
 	 * @param defaultVersion the version to assume the vCard is in until a
 	 * VERSION property is encountered (defaults to 2.1)
-	 * @throws FileNotFoundException if the file doesn't exist
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public VCardReader(File file, VCardVersion defaultVersion) throws FileNotFoundException {
-		this(new BufferedReader(new FileReader(file)), defaultVersion);
+	public VCardReader(Path file, VCardVersion defaultVersion) throws IOException {
+		this(Files.newBufferedReader(file), defaultVersion);
 	}
 
 	/**

@@ -1,9 +1,9 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Path;
 
 import org.w3c.dom.Document;
 
@@ -39,7 +39,7 @@ import ezvcard.io.xml.XCardReader;
 /**
  * Chainer class for parsing xCards (XML-encoded vCards).
  * @see Ezvcard#parseXml(InputStream)
- * @see Ezvcard#parseXml(File)
+ * @see Ezvcard#parseXml(Path)
  * @see Ezvcard#parseXml(Reader)
  * @author Michael Angstadt
  */
@@ -54,7 +54,7 @@ public class ChainingXmlParser<T extends ChainingXmlParser<?>> extends ChainingP
 		super(in);
 	}
 
-	public ChainingXmlParser(File file) {
+	public ChainingXmlParser(Path file) {
 		super(file);
 	}
 

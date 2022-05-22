@@ -1,9 +1,9 @@
 package ezvcard;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.AbstractList;
@@ -187,7 +187,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public void write(File file) throws IOException {
+	public void write(Path file) throws IOException {
 		Ezvcard.write(this).go(file);
 	}
 
@@ -269,7 +269,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see XCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public void writeXml(File file) throws IOException, TransformerException {
+	public void writeXml(Path file) throws IOException, TransformerException {
 		Ezvcard.writeXml(this).indent(2).go(file);
 	}
 
@@ -337,7 +337,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see HCardPage
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public void writeHtml(File file) throws IOException {
+	public void writeHtml(Path file) throws IOException {
 		Ezvcard.writeHtml(this).go(file);
 	}
 
@@ -404,7 +404,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see JCardWriter
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
-	public void writeJson(File file) throws IOException {
+	public void writeJson(Path file) throws IOException {
 		Ezvcard.writeJson(this).go(file);
 	}
 

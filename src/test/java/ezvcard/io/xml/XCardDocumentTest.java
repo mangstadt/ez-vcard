@@ -7,9 +7,10 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
@@ -671,10 +672,10 @@ public class XCardDocumentTest {
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
 
-		File file = tempFolder.newFile();
+		Path file = tempFolder.newFile().toPath();
 		xcard.write(file);
 
-		String xml = new Gobble(file).asString("UTF-8");
+		String xml = new Gobble(file).asString(StandardCharsets.UTF_8);
 		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
 		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
 	}

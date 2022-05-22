@@ -1,10 +1,10 @@
 package ezvcard.property;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,8 +105,8 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @param type the content type
 	 * @throws IOException if there is a problem reading from the file
 	 */
-	public BinaryProperty(File file, T type) throws IOException {
-		this(new BufferedInputStream(new FileInputStream(file)), type);
+	public BinaryProperty(Path file, T type) throws IOException {
+		this(new BufferedInputStream(Files.newInputStream(file)), type);
 	}
 
 	/**

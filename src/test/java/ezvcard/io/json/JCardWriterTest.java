@@ -4,9 +4,10 @@ import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 
 import org.junit.Rule;
@@ -333,7 +334,7 @@ public class JCardWriterTest {
 		VCard vcard = new VCard();
 		vcard.addNote("\u019dote");
 
-		File file = tempFolder.newFile();
+		Path file = tempFolder.newFile().toPath();
 		JCardWriter writer = new JCardWriter(file);
 		writer.setAddProdId(false);
 		writer.write(vcard);
@@ -348,7 +349,7 @@ public class JCardWriterTest {
 			"]" +
 		"]";
 		//@formatter:on
-		String actual = new Gobble(file).asString("UTF-8");
+		String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
 		assertEquals(expected, actual);
 	}
 

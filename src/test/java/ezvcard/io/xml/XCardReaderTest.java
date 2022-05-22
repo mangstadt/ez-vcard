@@ -11,9 +11,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import javax.xml.transform.TransformerException;
@@ -55,7 +57,6 @@ import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
-import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -735,8 +736,8 @@ public class XCardReaderTest {
 			"</vcard>" +
 		"</vcards>";
 
-		File file = tempFolder.newFile();
-		Writer writer = new Utf8Writer(file);
+		Path file = tempFolder.newFile().toPath();
+		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
 		writer.write(xml);
 		writer.close();
 

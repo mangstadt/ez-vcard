@@ -9,8 +9,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -547,9 +548,9 @@ public class EzvcardTest {
 	@Test
 	public void write_file() throws Exception {
 		VCard vcard = new VCard();
-		File file = folder.newFile();
+		Path file = folder.newFile().toPath();
 		Ezvcard.write(vcard).go(file);
-		assertTrue(file.length() > 0);
+		assertTrue(Files.size(file) > 0);
 	}
 
 	@Test
@@ -780,8 +781,8 @@ public class EzvcardTest {
 	public void writeJson_does_not_close_stream() throws Exception {
 		VCard vcard = new VCard();
 
-		File file = folder.newFile();
-		FileWriter writer = new FileWriter(file);
+		Path file = folder.newFile().toPath();
+		Writer writer = Files.newBufferedWriter(file);
 		try {
 			Ezvcard.writeJson(vcard).go(writer);
 			writer.write("test"); //an exception will be thrown if the writer is closed

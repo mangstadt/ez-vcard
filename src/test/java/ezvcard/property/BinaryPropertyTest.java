@@ -9,9 +9,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -67,11 +69,11 @@ public class BinaryPropertyTest {
 		assertEquals("one", property.getUrl());
 		assertNull(property.getData());
 
-		File file = new File("pom.xml");
+		Path file = Paths.get("pom.xml");
 		property = new BinaryPropertyImpl(file, ImageType.JPEG);
 		assertEquals(ImageType.JPEG, property.getContentType());
 		assertNull(property.getUrl());
-		assertEquals(file.length(), property.getData().length);
+		assertEquals(Files.size(file), property.getData().length);
 
 		InputStream in = new ByteArrayInputStream("data".getBytes());
 		property = new BinaryPropertyImpl(in, ImageType.JPEG);
@@ -173,7 +175,7 @@ public class BinaryPropertyTest {
 			super(in, type);
 		}
 
-		public BinaryPropertyImpl(File file, ImageType type) throws IOException {
+		public BinaryPropertyImpl(Path file, ImageType type) throws IOException {
 			super(file, type);
 		}
 

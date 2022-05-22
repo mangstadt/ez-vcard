@@ -3,9 +3,10 @@ package ezvcard.io.text;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.ZoneOffset;
 
 import org.junit.Rule;
@@ -297,7 +298,7 @@ public class VCardWriterTest {
 		VCard vcard = new VCard();
 		vcard.addNote("\u019dote");
 
-		File file = tempFolder.newFile();
+		Path file = tempFolder.newFile().toPath();
 
 		//should be written as UTF-8
 		{
@@ -314,7 +315,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			String actual = new Gobble(file).asString("UTF-8");
+			String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
 			assertEquals(expected, actual);
 		}
 
@@ -333,7 +334,7 @@ public class VCardWriterTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			String actual = new Gobble(file).asString("UTF-8");
+			String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
 			assertEquals(expected, actual);
 		}
 	}

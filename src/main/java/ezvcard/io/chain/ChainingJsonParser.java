@@ -1,9 +1,9 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Path;
 
 import ezvcard.Ezvcard;
 import ezvcard.io.StreamReader;
@@ -37,7 +37,7 @@ import ezvcard.io.json.JCardReader;
 /**
  * Chainer class for parsing jCards (JSON-encoded vCards).
  * @see Ezvcard#parseJson(InputStream)
- * @see Ezvcard#parseJson(File)
+ * @see Ezvcard#parseJson(Path)
  * @see Ezvcard#parseJson(Reader)
  * @author Michael Angstadt
  */
@@ -54,7 +54,7 @@ public class ChainingJsonParser<T extends ChainingJsonParser<?>> extends Chainin
 		super(reader);
 	}
 
-	public ChainingJsonParser(File file) {
+	public ChainingJsonParser(Path file) {
 		super(file);
 	}
 

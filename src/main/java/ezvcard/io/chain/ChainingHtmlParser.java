@@ -1,10 +1,10 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.file.Path;
 
 import ezvcard.Ezvcard;
 import ezvcard.io.StreamReader;
@@ -38,7 +38,7 @@ import ezvcard.io.html.HCardParser;
 /**
  * Chainer class for parsing hCards (HTML-encoded vCards).
  * @see Ezvcard#parseHtml(InputStream)
- * @see Ezvcard#parseHtml(File)
+ * @see Ezvcard#parseHtml(Path)
  * @see Ezvcard#parseHtml(Reader)
  * @author Michael Angstadt
  */
@@ -58,7 +58,7 @@ public class ChainingHtmlParser<T extends ChainingHtmlParser<?>> extends Chainin
 		super(reader);
 	}
 
-	public ChainingHtmlParser(File file) {
+	public ChainingHtmlParser(Path file) {
 		super(file);
 	}
 

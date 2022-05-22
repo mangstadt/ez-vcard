@@ -6,10 +6,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -241,7 +242,7 @@ public class HCardPageTest {
 		String html = template.write();
 
 		//write to file for manual inspection
-		FileWriter writer = new FileWriter(new File("target", "vcard.html"));
+		Writer writer = Files.newBufferedWriter(Paths.get("target", "vcard.html"));
 		writer.write(html);
 		writer.close();
 

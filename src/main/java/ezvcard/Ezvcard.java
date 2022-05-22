@@ -1,9 +1,9 @@
 package ezvcard;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -148,7 +148,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426 (3.0)</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
-	public static ChainingTextParser<ChainingTextParser<?>> parse(File file) {
+	public static ChainingTextParser<ChainingTextParser<?>> parse(Path file) {
 		return new ChainingTextParser<ChainingTextParser<?>>(file);
 	}
 
@@ -220,7 +220,7 @@ public final class Ezvcard {
 	 * @see XCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
-	public static ChainingXmlParser<ChainingXmlParser<?>> parseXml(File file) {
+	public static ChainingXmlParser<ChainingXmlParser<?>> parseXml(Path file) {
 		return new ChainingXmlParser<ChainingXmlParser<?>>(file);
 	}
 
@@ -314,7 +314,7 @@ public final class Ezvcard {
 	 * @see HCardParser
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
-	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(File file) {
+	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(Path file) {
 		return new ChainingHtmlParser<ChainingHtmlParser<?>>(file);
 	}
 
@@ -394,7 +394,7 @@ public final class Ezvcard {
 	 * @see JCardReader
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
-	public static ChainingJsonParser<ChainingJsonParser<?>> parseJson(File file) {
+	public static ChainingJsonParser<ChainingJsonParser<?>> parseJson(Path file) {
 		return new ChainingJsonParser<ChainingJsonParser<?>>(file);
 	}
 

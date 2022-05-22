@@ -1,8 +1,8 @@
 package ezvcard.property;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -156,7 +156,7 @@ public class Key extends BinaryProperty<KeyType> {
 	 * @param type the content type (e.g. PGP)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Key(File file, KeyType type) throws IOException {
+	public Key(Path file, KeyType type) throws IOException {
 		super(file, type);
 	}
 

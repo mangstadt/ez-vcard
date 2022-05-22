@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,8 +56,8 @@ public class GobbleTest {
 	public void file() throws Exception {
 		String data = "one two three";
 
-		File file = folder.newFile();
-		Writer writer = new FileWriter(file);
+		Path file = folder.newFile().toPath();
+		Writer writer = Files.newBufferedWriter(file);
 		writer.write(data);
 		writer.close();
 

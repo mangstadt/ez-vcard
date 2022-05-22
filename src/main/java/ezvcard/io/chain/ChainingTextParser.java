@@ -1,9 +1,9 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Path;
 
 import ezvcard.Ezvcard;
 import ezvcard.io.StreamReader;
@@ -37,7 +37,7 @@ import ezvcard.io.text.VCardReader;
 /**
  * Chainer class for parsing traditional, plain-text vCards.
  * @see Ezvcard#parse(InputStream)
- * @see Ezvcard#parse(File)
+ * @see Ezvcard#parse(Path)
  * @see Ezvcard#parse(Reader)
  * @author Michael Angstadt
  */
@@ -56,7 +56,7 @@ public class ChainingTextParser<T extends ChainingTextParser<?>> extends Chainin
 		super(reader);
 	}
 
-	public ChainingTextParser(File file) {
+	public ChainingTextParser(Path file) {
 		super(file);
 	}
 

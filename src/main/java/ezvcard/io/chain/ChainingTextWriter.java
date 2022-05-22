@@ -1,11 +1,11 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import ezvcard.Ezvcard;
@@ -200,7 +200,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void go(File file) throws IOException {
+	public void go(Path file) throws IOException {
 		go(file, false);
 	}
 
@@ -211,7 +211,7 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * it
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void go(File file, boolean append) throws IOException {
+	public void go(Path file, boolean append) throws IOException {
 		VCardWriter writer = new VCardWriter(file, append, getVCardWriterConstructorVersion());
 		try {
 			go(writer);

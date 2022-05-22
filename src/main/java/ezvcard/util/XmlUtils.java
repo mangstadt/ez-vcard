@@ -1,8 +1,6 @@
 package ezvcard.util;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -10,6 +8,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,8 +105,8 @@ public final class XmlUtils {
 	 * @throws SAXException if the XML is not valid
 	 * @throws IOException if there is a problem reading from the file
 	 */
-	public static Document toDocument(File file) throws SAXException, IOException {
-		InputStream in = new BufferedInputStream(new FileInputStream(file));
+	public static Document toDocument(Path file) throws SAXException, IOException {
+		InputStream in = new BufferedInputStream(Files.newInputStream(file));
 		try {
 			return XmlUtils.toDocument(in);
 		} finally {

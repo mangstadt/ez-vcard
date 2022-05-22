@@ -1,9 +1,9 @@
 package ezvcard.io.chain;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import ezvcard.Ezvcard;
@@ -84,7 +84,7 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void go(File file) throws IOException {
+	public void go(Path file) throws IOException {
 		buildPage().write(file);
 	}
 

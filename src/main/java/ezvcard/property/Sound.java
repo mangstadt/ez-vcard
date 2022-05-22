@@ -1,8 +1,8 @@
 package ezvcard.property;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import ezvcard.parameter.SoundType;
 
@@ -126,7 +126,7 @@ public class Sound extends BinaryProperty<SoundType> {
 	 * @param type the content type (e.g. OGG)
 	 * @throws IOException if there's a problem reading from the file
 	 */
-	public Sound(File file, SoundType type) throws IOException {
+	public Sound(Path file, SoundType type) throws IOException {
 		super(file, type);
 	}
 

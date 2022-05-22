@@ -5,10 +5,13 @@ import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,6 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
-import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -144,14 +146,14 @@ public class XCardWriter extends XCardWriterBase {
 	 * {@link Transformer#setOutputProperty})
 	 */
 	public XCardWriter(OutputStream out, Map<String, String> outputProperties) {
-		this(new Utf8Writer(out), outputProperties);
+		this(new OutputStreamWriter(out, StandardCharsets.UTF_8), outputProperties);
 	}
 
 	/**
 	 * @param file the file to write to (UTF-8 encoding will be used)
-	 * @throws IOException if there's a problem opening the file
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public XCardWriter(File file) throws IOException {
+	public XCardWriter(Path file) throws IOException {
 		this(file, (Integer) null);
 	}
 
@@ -159,9 +161,9 @@ public class XCardWriter extends XCardWriterBase {
 	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @param indent the number of indent spaces to use for pretty-printing or
 	 * null to disable pretty-printing (disabled by default)
-	 * @throws IOException if there's a problem opening the file
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public XCardWriter(File file, Integer indent) throws IOException {
+	public XCardWriter(Path file, Integer indent) throws IOException {
 		this(file, indent, null);
 	}
 
@@ -174,9 +176,9 @@ public class XCardWriter extends XCardWriterBase {
 	 * like <a href=
 	 * "http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22xalan%22%20AND%20a%3A%22xalan%22"
 	 * >xalan</a> to your project)
-	 * @throws IOException if there's a problem opening the file
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public XCardWriter(File file, Integer indent, String xmlVersion) throws IOException {
+	public XCardWriter(Path file, Integer indent, String xmlVersion) throws IOException {
 		this(file, new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -184,10 +186,10 @@ public class XCardWriter extends XCardWriterBase {
 	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @param outputProperties properties to assign to the JAXP transformer (see
 	 * {@link Transformer#setOutputProperty})
-	 * @throws IOException if there's a problem opening the file
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public XCardWriter(File file, Map<String, String> outputProperties) throws IOException {
-		this(new Utf8Writer(file), outputProperties);
+	public XCardWriter(Path file, Map<String, String> outputProperties) throws IOException {
+		this(Files.newBufferedWriter(file, StandardCharsets.UTF_8), outputProperties);
 	}
 
 	/**

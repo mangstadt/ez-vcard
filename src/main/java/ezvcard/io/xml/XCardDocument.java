@@ -5,14 +5,17 @@ import static ezvcard.io.xml.XCardQNames.PARAMETERS;
 import static ezvcard.io.xml.XCardQNames.VCARD;
 import static ezvcard.io.xml.XCardQNames.VCARDS;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -51,7 +54,6 @@ import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
-import ezvcard.util.Utf8Writer;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -172,7 +174,7 @@ public class XCardDocument {
 	 * @throws IOException if there's a problem reading from the file
 	 * @throws SAXException if there's a problem parsing the XML
 	 */
-	public XCardDocument(File file) throws SAXException, IOException {
+	public XCardDocument(Path file) throws SAXException, IOException {
 		this(XmlUtils.toDocument(file));
 	}
 
@@ -364,7 +366,7 @@ public class XCardDocument {
 	 * stream
 	 */
 	public void write(OutputStream out, Map<String, String> outputProperties) throws TransformerException {
-		write(new Utf8Writer(out), outputProperties);
+		write(new OutputStreamWriter(out, StandardCharsets.UTF_8), outputProperties);
 	}
 
 	/**
@@ -373,7 +375,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file) throws TransformerException, IOException {
+	public void write(Path file) throws TransformerException, IOException {
 		write(file, (Integer) null);
 	}
 
@@ -385,7 +387,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file, Integer indent) throws TransformerException, IOException {
+	public void write(Path file, Integer indent) throws TransformerException, IOException {
 		write(file, indent, null);
 	}
 
@@ -402,7 +404,7 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file, Integer indent, String xmlVersion) throws TransformerException, IOException {
+	public void write(Path file, Integer indent, String xmlVersion) throws TransformerException, IOException {
 		write(file, new XCardOutputProperties(indent, xmlVersion));
 	}
 
@@ -414,8 +416,8 @@ public class XCardDocument {
 	 * @throws TransformerException if there's a problem writing to the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file, Map<String, String> outputProperties) throws TransformerException, IOException {
-		Writer writer = new Utf8Writer(file);
+	public void write(Path file, Map<String, String> outputProperties) throws TransformerException, IOException {
+		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
 		try {
 			write(writer, outputProperties);
 		} finally {

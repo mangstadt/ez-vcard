@@ -7,9 +7,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
@@ -658,7 +659,7 @@ public class XCardWriterTest {
 
 	@Test
 	public void write_utf8() throws Exception {
-		File file = tempFolder.newFile();
+		Path file = tempFolder.newFile().toPath();
 		XCardWriter writer = new XCardWriter(file);
 		writer.setAddProdId(false);
 
@@ -668,7 +669,7 @@ public class XCardWriterTest {
 
 		writer.close();
 
-		String xml = new Gobble(file).asString("UTF-8");
+		String xml = new Gobble(file).asString(StandardCharsets.UTF_8);
 		assertTrue(xml.matches("(?i)<\\?xml.*?encoding=\"utf-8\".*?\\?>.*"));
 		assertTrue(xml.matches(".*?<note><text>\u019dote</text></note>.*"));
 	}

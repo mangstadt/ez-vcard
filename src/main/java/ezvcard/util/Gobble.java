@@ -2,13 +2,13 @@ package ezvcard.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -44,7 +44,7 @@ import java.nio.charset.Charset;
  * @author Michael Angstadt
  */
 public class Gobble {
-	private final File file;
+	private final Path file;
 	private final InputStream in;
 	private final Reader reader;
 
@@ -52,7 +52,7 @@ public class Gobble {
 	 * Gets the contents of a file.
 	 * @param file the file
 	 */
-	public Gobble(File file) {
+	public Gobble(Path file) {
 		this(file, null, null);
 	}
 
@@ -72,7 +72,7 @@ public class Gobble {
 		this(null, null, reader);
 	}
 
-	private Gobble(File file, InputStream in, Reader reader) {
+	private Gobble(Path file, InputStream in, Reader reader) {
 		this.file = file;
 		this.in = in;
 		this.reader = reader;
@@ -86,7 +86,7 @@ public class Gobble {
 	 * @throws IOException if there was a problem reading from the stream
 	 */
 	public String asString() throws IOException {
-		return asString(Charset.defaultCharset().name());
+		return asString(Charset.defaultCharset());
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class Gobble {
 	 * @return the string
 	 * @throws IOException if there was a problem reading from the stream
 	 */
-	public String asString(String charset) throws IOException {
+	public String asString(Charset charset) throws IOException {
 		Reader reader = buildReader(charset);
 		return consumeReader(reader);
 	}
@@ -118,12 +118,12 @@ public class Gobble {
 		return consumeInputStream(in);
 	}
 
-	private Reader buildReader(String charset) throws IOException {
+	private Reader buildReader(Charset charset) throws IOException {
 		return (reader == null) ? new InputStreamReader(buildInputStream(), charset) : reader;
 	}
 
 	private InputStream buildInputStream() throws IOException {
-		return (in == null) ? new BufferedInputStream(new FileInputStream(file)) : in;
+		return (in == null) ? new BufferedInputStream(Files.newInputStream(file)) : in;
 	}
 
 	private String consumeReader(Reader reader) throws IOException {

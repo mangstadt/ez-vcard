@@ -6,9 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,12 +117,12 @@ public class XmlUtilsTest {
 		"<root><child>\u1e08hild</child></root>";
 		//@formatter:on
 
-		File file = tempFolder.newFile();
-		Writer writer = new Utf8Writer(file);
+		Path file = tempFolder.newFile().toPath();
+		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
 		writer.write(xml);
 		writer.close();
 
-		Document document = XmlUtils.toDocument(new FileInputStream(file));
+		Document document = XmlUtils.toDocument(file);
 		Element root = (Element) document.getFirstChild();
 		NodeList nodes = root.getChildNodes();
 		Element child = (Element) nodes.item(0);

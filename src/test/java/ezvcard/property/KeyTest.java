@@ -10,8 +10,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,11 +81,11 @@ public class KeyTest {
 		assertNull(property.getData());
 		assertNull(property.getText());
 
-		File file = new File("pom.xml");
+		Path file = Paths.get("pom.xml");
 		property = new Key(file, KeyType.GPG);
 		assertEquals(KeyType.GPG, property.getContentType());
 		assertNull(property.getUrl());
-		assertEquals(file.length(), property.getData().length);
+		assertEquals(Files.size(file), property.getData().length);
 		assertNull(property.getText());
 
 		InputStream in = new ByteArrayInputStream("data".getBytes());

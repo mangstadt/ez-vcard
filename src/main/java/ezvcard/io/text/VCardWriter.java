@@ -2,14 +2,17 @@ package ezvcard.io.text;
 
 import static com.github.mangstadt.vinnie.Utils.escapeNewlines;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,6 @@ import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
-import ezvcard.util.Utf8Writer;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -119,7 +121,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
-		this((targetVersion == VCardVersion.V4_0) ? new Utf8Writer(out) : new OutputStreamWriter(out), targetVersion);
+		this(new OutputStreamWriter(out, (targetVersion == VCardVersion.V4_0) ? StandardCharsets.UTF_8 : Charset.defaultCharset()), targetVersion);
 	}
 
 	/**
@@ -128,7 +130,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public VCardWriter(File file, VCardVersion targetVersion) throws IOException {
+	public VCardWriter(Path file, VCardVersion targetVersion) throws IOException {
 		this(file, false, targetVersion);
 	}
 
@@ -140,8 +142,17 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * set to "4.0", vCards will be written in UTF-8 encoding)
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public VCardWriter(File file, boolean append, VCardVersion targetVersion) throws IOException {
-		this((targetVersion == VCardVersion.V4_0) ? new Utf8Writer(file, append) : new FileWriter(file, append), targetVersion);
+	public VCardWriter(Path file, boolean append, VCardVersion targetVersion) throws IOException {
+		//@formatter:off
+		this(
+			Files.newBufferedWriter(
+				file,
+				(targetVersion == VCardVersion.V4_0) ? StandardCharsets.UTF_8 : Charset.defaultCharset(),
+				append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING
+			),
+			targetVersion
+		);
+		//@formatter:on
 	}
 
 	/**

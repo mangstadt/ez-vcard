@@ -1,10 +1,13 @@
 package ezvcard.io.json;
 
-import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,7 +22,6 @@ import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.Utf8Writer;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -84,7 +86,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * @param out the output stream to write to (UTF-8 encoding will be used)
 	 */
 	public JCardWriter(OutputStream out) {
-		this(new Utf8Writer(out));
+		this(new OutputStreamWriter(out, StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -93,15 +95,15 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * false not to
 	 */
 	public JCardWriter(OutputStream out, boolean wrapInArray) {
-		this(new Utf8Writer(out), wrapInArray);
+		this(new OutputStreamWriter(out, StandardCharsets.UTF_8), wrapInArray);
 	}
 
 	/**
 	 * @param file the file to write to (UTF-8 encoding will be used)
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public JCardWriter(File file) throws IOException {
-		this(new Utf8Writer(file));
+	public JCardWriter(Path file) throws IOException {
+		this(Files.newBufferedWriter(file, StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -110,8 +112,8 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * false not to
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public JCardWriter(File file, boolean wrapInArray) throws IOException {
-		this(new Utf8Writer(file), wrapInArray);
+	public JCardWriter(Path file, boolean wrapInArray) throws IOException {
+		this(Files.newBufferedWriter(file, StandardCharsets.UTF_8), wrapInArray);
 	}
 
 	/**

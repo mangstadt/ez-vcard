@@ -2,13 +2,13 @@ package ezvcard.io.html;
 
 import static ezvcard.util.HtmlUtils.isChildOf;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -136,7 +136,7 @@ public class HCardParser extends StreamReader {
 	 * @param file the HTML file
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
-	public HCardParser(File file) throws IOException {
+	public HCardParser(Path file) throws IOException {
 		this(file, null);
 	}
 
@@ -147,8 +147,8 @@ public class HCardParser extends StreamReader {
 	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
-	public HCardParser(File file, String pageUrl) throws IOException {
-		this((pageUrl == null) ? Jsoup.parse(file, null, "") : Jsoup.parse(file, null, pageUrl), pageUrl);
+	public HCardParser(Path file, String pageUrl) throws IOException {
+		this((pageUrl == null) ? Jsoup.parse(file.toFile(), null, "") : Jsoup.parse(file.toFile(), null, pageUrl), pageUrl);
 	}
 
 	/**

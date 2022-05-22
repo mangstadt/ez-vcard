@@ -1,12 +1,13 @@
 package ezvcard.io.json;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonParser;
 
@@ -23,7 +24,6 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.Utf8Reader;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -92,15 +92,15 @@ public class JCardReader extends StreamReader {
 	 * @param in the input stream to read from
 	 */
 	public JCardReader(InputStream in) {
-		this(new Utf8Reader(in));
+		this(new InputStreamReader(in, StandardCharsets.UTF_8));
 	}
 
 	/**
 	 * @param file the file to read from
-	 * @throws FileNotFoundException if the file doesn't exist
+	 * @throws IOException if there is a problem reading the file
 	 */
-	public JCardReader(File file) throws FileNotFoundException {
-		this(new BufferedReader(new Utf8Reader(file)));
+	public JCardReader(Path file) throws IOException {
+		this(Files.newBufferedReader(file, StandardCharsets.UTF_8));
 	}
 
 	/**

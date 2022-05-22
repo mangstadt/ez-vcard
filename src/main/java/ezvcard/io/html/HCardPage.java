@@ -1,13 +1,13 @@
 package ezvcard.io.html;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -148,8 +148,8 @@ public class HCardPage {
 	 * @param file the file
 	 * @throws IOException if there's a problem writing to the file
 	 */
-	public void write(File file) throws IOException {
-		FileWriter writer = new FileWriter(file);
+	public void write(Path file) throws IOException {
+		Writer writer = Files.newBufferedWriter(file);
 		try {
 			write(writer);
 		} finally {

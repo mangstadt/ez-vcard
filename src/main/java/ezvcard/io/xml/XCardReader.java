@@ -7,13 +7,12 @@ import static ezvcard.io.xml.XCardQNames.VCARDS;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -137,10 +136,10 @@ public class XCardReader extends StreamReader {
 
 	/**
 	 * @param file the file to read from
-	 * @throws FileNotFoundException if the file doesn't exist
+	 * @throws IOException if there is a problem opening the file
 	 */
-	public XCardReader(File file) throws FileNotFoundException {
-		this(new BufferedInputStream(new FileInputStream(file)));
+	public XCardReader(Path file) throws IOException {
+		this(new BufferedInputStream(Files.newInputStream(file)));
 	}
 
 	/**

@@ -1,7 +1,8 @@
 package ezvcard.io;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 
@@ -76,31 +77,31 @@ public class JohnDoeVCard {
 		System.out.println(vcard.validate(VCardVersion.V4_0));
 
 		//write vCard
-		File file = new File("john-doe.21.vcf");
-		System.out.println("Writing " + file.getName() + "...");
+		Path file = Paths.get("john-doe.21.vcf");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.write(vcard).version(VCardVersion.V2_1).go(file);
 
-		file = new File("john-doe.3.vcf");
-		System.out.println("Writing " + file.getName() + "...");
+		file = Paths.get("john-doe.3.vcf");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.write(vcard).version(VCardVersion.V3_0).go(file);
 
-		file = new File("john-doe.4.vcf");
-		System.out.println("Writing " + file.getName() + "...");
+		file = Paths.get("john-doe.4.vcf");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.write(vcard).version(VCardVersion.V4_0).go(file);
 
 		//write xCard
-		file = new File("john-doe.xml");
-		System.out.println("Writing " + file.getName() + "...");
+		file = Paths.get("john-doe.xml");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.writeXml(vcard).indent(2).go(file);
 
 		//write hCard
-		file = new File("john-doe.html");
-		System.out.println("Writing " + file.getName() + "...");
+		file = Paths.get("john-doe.html");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.writeHtml(vcard).go(file);
 
 		//write jCard
-		file = new File("john-doe.json");
-		System.out.println("Writing " + file.getName() + "...");
+		file = Paths.get("john-doe.json");
+		System.out.println("Writing " + file + "...");
 		Ezvcard.writeJson(vcard).prettyPrint(true).go(file);
 	}
 
@@ -163,11 +164,11 @@ public class JohnDoeVCard {
 
 		vcard.setTimezone(new Timezone(ZoneOffset.ofHours(-5), "America/New_York"));
 
-		File file = new File("portrait.jpg");
+		Path file = Paths.get("portrait.jpg");
 		Photo photo = new Photo(file, ImageType.JPEG);
 		vcard.addPhoto(photo);
 
-		file = new File("pronunciation.ogg");
+		file = Paths.get("pronunciation.ogg");
 		Sound sound = new Sound(file, SoundType.OGG);
 		vcard.addSound(sound);
 
