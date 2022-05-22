@@ -361,7 +361,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			agentWriter.setVersionStrict(versionStrict);
 			try {
 				agentWriter.write(nestedVCard);
-			} catch (IOException e) {
+			} catch (IOException ignore) {
 				//should never be thrown because we're writing to a string
 			} finally {
 				IOUtils.closeQuietly(agentWriter);

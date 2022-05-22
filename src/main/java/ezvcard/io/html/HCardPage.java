@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -96,7 +97,7 @@ public class HCardPage {
 			template = cfg.getTemplate("hcard-template.html");
 		} catch (IOException e) {
 			//should never be thrown because it's always on the classpath
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -128,7 +129,7 @@ public class HCardPage {
 			write(sw);
 		} catch (IOException e) {
 			//should never thrown because we're writing to a string
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 		return sw.toString();
 	}

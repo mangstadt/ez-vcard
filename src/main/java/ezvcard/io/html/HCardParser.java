@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -254,7 +255,7 @@ public class HCardParser extends StreamReader {
 			return super.readNext();
 		} catch (IOException e) {
 			//will not be thrown because reading from DOM
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 

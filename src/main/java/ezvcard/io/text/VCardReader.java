@@ -392,7 +392,7 @@ public class VCardReader extends StreamReader {
 				if (nestedVCard != null) {
 					exception.injectVCard(nestedVCard);
 				}
-			} catch (IOException e) {
+			} catch (IOException ignore) {
 				//shouldn't be thrown because we're reading from a string
 			} finally {
 				warnings.addAll(agentReader.getWarnings());

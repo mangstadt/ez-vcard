@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +94,7 @@ public final class XmlUtils {
 			return toDocument(new StringReader(xml));
 		} catch (IOException e) {
 			//should never be thrown because we're reading from a string
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 

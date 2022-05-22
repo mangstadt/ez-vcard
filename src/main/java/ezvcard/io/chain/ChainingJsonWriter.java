@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Collection;
 
@@ -90,7 +91,7 @@ public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
 			go(sw);
 		} catch (IOException e) {
 			//should never be thrown because we're writing to a string
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 		return sw.toString();
 	}

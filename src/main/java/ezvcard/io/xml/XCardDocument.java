@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -251,7 +252,7 @@ public class XCardDocument {
 			return reader().readAll();
 		} catch (IOException e) {
 			//not thrown because we're reading from a DOM
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -507,7 +508,7 @@ public class XCardDocument {
 				return super.readNext();
 			} catch (IOException e) {
 				//will not be thrown
-				throw new RuntimeException(e);
+				throw new UncheckedIOException(e);
 			}
 		}
 
@@ -641,7 +642,7 @@ public class XCardDocument {
 		public void write(VCard vcard) {
 			try {
 				super.write(vcard);
-			} catch (IOException e) {
+			} catch (IOException ignore) {
 				//won't be thrown because we're writing to a DOM
 			}
 		}
