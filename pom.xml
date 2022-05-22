@@ -220,8 +220,8 @@
 					<links>
 						<link>https://mangstadt.github.io/vinnie/javadocs/latest/</link>
 						<link>https://freemarker.apache.org/docs/api</link>
-						<link>http://jsoup.org/apidocs/</link>
-						<link>http://fasterxml.github.io/jackson-core/javadoc/2.10</link>
+						<link>https://jsoup.org/apidocs/</link>
+						<link>https://fasterxml.github.io/jackson-databind/javadoc/2.13/</link>
 					</links>
 					<quiet>true</quiet>
 					
