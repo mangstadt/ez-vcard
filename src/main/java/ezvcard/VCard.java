@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -1835,6 +1836,25 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code DEATHDATE}<br>
 	 * <b>Supported versions:</b> {@code 4.0}
 	 * </p>
+	 * @param date the death date or null to remove
+	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
+	 */
+	public Deathdate setDeathdate(LocalDate date) {
+		Deathdate type = (date == null) ? null : new Deathdate(date);
+		setDeathdate(type);
+		return type;
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's time of death.
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code DEATHDATE}<br>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
 	 * @param deathdate the death date property or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6474">RFC 6474</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc6474#page-4">RFC 6474 p.4</a>
@@ -1920,6 +1940,28 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <b>Property name:</b> {@code BDAY}<br>
 	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
 	 * </p>
+	 * @param date the birthday or null to remove
+	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
+	 * p.30</a>
+	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-11">RFC 2426
+	 * p.11</a>
+	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.11</a>
+	 */
+	public Birthday setBirthday(LocalDate date) {
+		Birthday type = (date == null) ? null : new Birthday(date);
+		setBirthday(type);
+		return type;
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's birthday.
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code BDAY}<br>
+	 * <b>Supported versions:</b> {@code 2.1, 3.0, 4.0}
+	 * </p>
 	 * @param birthday the birthday or null to remove
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-30">RFC 6350
 	 * p.30</a>
@@ -1988,6 +2030,25 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public void setAnniversaryAlt(Anniversary... altRepresentations) {
 		setPropertyAlt(Anniversary.class, altRepresentations);
+	}
+
+	/**
+	 * <p>
+	 * Sets the person's anniversary.
+	 * </p>
+	 * <p>
+	 * <b>Property name:</b> {@code ANNIVERSARY}<br>
+	 * <b>Supported versions:</b> {@code 4.0}
+	 * </p>
+	 * @param date the date of the anniversary or null to remove
+	 * @return the property object that was created
+	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-31">RFC 6350
+	 * p.31</a>
+	 */
+	public Anniversary setAnniversary(LocalDate date) {
+		Anniversary type = (date == null) ? null : new Anniversary(date);
+		setAnniversary(type);
+		return type;
 	}
 
 	/**
