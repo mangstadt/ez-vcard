@@ -782,12 +782,9 @@ public class EzvcardTest {
 		VCard vcard = new VCard();
 
 		Path file = folder.newFile().toPath();
-		Writer writer = Files.newBufferedWriter(file);
-		try {
+		try (Writer writer = Files.newBufferedWriter(file)) {
 			Ezvcard.writeJson(vcard).go(writer);
 			writer.write("test"); //an exception will be thrown if the writer is closed
-		} finally {
-			writer.close();
 		}
 	}
 }

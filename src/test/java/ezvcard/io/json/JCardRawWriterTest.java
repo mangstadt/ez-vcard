@@ -48,15 +48,14 @@ public class JCardRawWriterTest {
 	@Test
 	public void write_multiple() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, true);
-
-		writer.writeStartVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
-		writer.writeEndVCard();
-		writer.writeStartVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
-		writer.writeEndVCard();
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
+			writer.writeStartVCard();
+			writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
+			writer.writeEndVCard();
+			writer.writeStartVCard();
+			writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
+			writer.writeEndVCard();
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -80,11 +79,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void writeProperty() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value\nvalue"));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value\nvalue"));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -101,11 +99,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void writeProperty_null_value() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single(null));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single(null));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -122,15 +119,14 @@ public class JCardRawWriterTest {
 	@Test
 	public void parameters() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		VCardParameters parameters = new VCardParameters();
-		parameters.put("a", "value1");
-		parameters.put("b", "value2");
-		parameters.put("b", "value3");
-		writer.writeProperty(null, "prop", parameters, VCardDataType.TEXT, JCardValue.single("value"));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			VCardParameters parameters = new VCardParameters();
+			parameters.put("a", "value1");
+			parameters.put("b", "value2");
+			parameters.put("b", "value3");
+			writer.writeProperty(null, "prop", parameters, VCardDataType.TEXT, JCardValue.single("value"));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -147,11 +143,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void group() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeProperty("one", "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			writer.writeProperty("one", "prop", new VCardParameters(), VCardDataType.TEXT, JCardValue.single("value"));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -168,20 +163,19 @@ public class JCardRawWriterTest {
 	@Test
 	public void complex_value() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		List<JsonValue> jsonValues = new ArrayList<JsonValue>();
-		Map<String, JsonValue> m = new LinkedHashMap<String, JsonValue>();
-		m.put("a", new JsonValue(Arrays.asList(new JsonValue("one"), new JsonValue("two"))));
-		Map<String, JsonValue> m2 = new LinkedHashMap<String, JsonValue>();
-		m2.put("c", new JsonValue(Arrays.asList(new JsonValue("three"))));
-		m2.put("d", new JsonValue(new LinkedHashMap<String, JsonValue>()));
-		m.put("b", new JsonValue(m2));
-		jsonValues.add(new JsonValue(m));
-		jsonValues.add(new JsonValue("four"));
-		writer.writeProperty("prop", VCardDataType.TEXT, new JCardValue(jsonValues));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			List<JsonValue> jsonValues = new ArrayList<JsonValue>();
+			Map<String, JsonValue> m = new LinkedHashMap<String, JsonValue>();
+			m.put("a", new JsonValue(Arrays.asList(new JsonValue("one"), new JsonValue("two"))));
+			Map<String, JsonValue> m2 = new LinkedHashMap<String, JsonValue>();
+			m2.put("c", new JsonValue(Arrays.asList(new JsonValue("three"))));
+			m2.put("d", new JsonValue(new LinkedHashMap<String, JsonValue>()));
+			m.put("b", new JsonValue(m2));
+			jsonValues.add(new JsonValue(m));
+			jsonValues.add(new JsonValue("four"));
+			writer.writeProperty("prop", VCardDataType.TEXT, new JCardValue(jsonValues));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -204,11 +198,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void data_type_unknown() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeProperty("prop", null, JCardValue.single("value"));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			writer.writeProperty("prop", null, JCardValue.single("value"));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -225,11 +218,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void different_value_types() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.multi(false, true, 1.1, 1, null, "text"));
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+			writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.multi(false, true, 1.1, 1, null, "text"));
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -246,9 +238,8 @@ public class JCardRawWriterTest {
 	@Test
 	public void empty() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+		}
 
 		String actual = sw.toString();
 		String expected = "";
@@ -284,10 +275,9 @@ public class JCardRawWriterTest {
 	@Test
 	public void write_empty_vcard() throws Exception {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
+			writer.writeStartVCard();
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -303,11 +293,10 @@ public class JCardRawWriterTest {
 	@Test
 	public void writeStartVCard_multiple_calls() throws Exception {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, true);
-
-		writer.writeStartVCard();
-		writer.writeStartVCard();
-		writer.close();
+		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
+			writer.writeStartVCard();
+			writer.writeStartVCard();
+		}
 
 		String actual = sw.toString();
 		//@formatter:off
@@ -329,19 +318,19 @@ public class JCardRawWriterTest {
 	@Test
 	public void indent() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, true);
-		writer.setPrettyPrint(true);
+		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
+			writer.setPrettyPrint(true);
 
-		//@formatter:off
-		writer.writeStartVCard();
-			writer.writeProperty("prop1", VCardDataType.TEXT, JCardValue.single("value1"));
-			writer.writeProperty("prop2", VCardDataType.TEXT, JCardValue.single("value2"));
-		writer.writeEndVCard();
-		writer.writeStartVCard();
-			writer.writeProperty("prop3", VCardDataType.TEXT, JCardValue.single("value3"));
-		writer.writeEndVCard();
-		//@formatter:on
-		writer.close();
+			//@formatter:off
+			writer.writeStartVCard();
+				writer.writeProperty("prop1", VCardDataType.TEXT, JCardValue.single("value1"));
+				writer.writeProperty("prop2", VCardDataType.TEXT, JCardValue.single("value2"));
+			writer.writeEndVCard();
+			writer.writeStartVCard();
+				writer.writeProperty("prop3", VCardDataType.TEXT, JCardValue.single("value3"));
+			writer.writeEndVCard();
+			//@formatter:on
+		}
 
 		String actual = sw.toString();
 		//@formatter:off

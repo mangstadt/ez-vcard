@@ -417,11 +417,8 @@ public class XCardDocument {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(Path file, Map<String, String> outputProperties) throws TransformerException, IOException {
-		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
-		try {
+		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
 			write(writer, outputProperties);
-		} finally {
-			writer.close();
 		}
 	}
 

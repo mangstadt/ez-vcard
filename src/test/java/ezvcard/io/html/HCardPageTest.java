@@ -227,9 +227,9 @@ public class HCardPageTest {
 		template.add(vcard);
 		String html = template.write();
 
-		HCardParser reader = new HCardParser(html);
-		vcard = reader.readNext();
-		reader.close();
+		try (HCardParser reader = new HCardParser(html)) {
+			vcard = reader.readNext();
+		}
 		assertEquals("one" + NEWLINE + "two" + NEWLINE + "three" + NEWLINE + "four", vcard.getNotes().get(0).getValue());
 	}
 
@@ -242,14 +242,15 @@ public class HCardPageTest {
 		String html = template.write();
 
 		//write to file for manual inspection
-		Writer writer = Files.newBufferedWriter(Paths.get("target", "vcard.html"));
-		writer.write(html);
-		writer.close();
+		try (Writer writer = Files.newBufferedWriter(Paths.get("target", "vcard.html"))) {
+			writer.write(html);
+		}
 
 		//parse template
-		HCardParser reader = new HCardParser(html);
-		VCard actual = reader.readNext();
-		reader.close();
+		VCard actual;
+		try (HCardParser reader = new HCardParser(html)) {
+			actual = reader.readNext();
+		}
 
 		assertEquals("Claus", actual.getSortString().getValue());
 

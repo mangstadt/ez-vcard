@@ -81,14 +81,13 @@ public class JCardWriterTest {
 	@Test
 	public void write_single_vcard() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		writer.close();
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -105,18 +104,17 @@ public class JCardWriterTest {
 	@Test
 	public void write_multiple_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw, true);
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw, true)) {
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
 
-		vcard = new VCard();
-		vcard.setFormattedName("Jane Doe");
-		writer.write(vcard);
-
-		writer.close();
+			vcard = new VCard();
+			vcard.setFormattedName("Jane Doe");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -141,19 +139,18 @@ public class JCardWriterTest {
 	@Test
 	public void setPrettyPrint() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw, true);
-		writer.setAddProdId(false);
-		writer.setPrettyPrint(true);
+		try (JCardWriter writer = new JCardWriter(sw, true)) {
+			writer.setAddProdId(false);
+			writer.setPrettyPrint(true);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
 
-		vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		writer.close();
+			vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -180,19 +177,18 @@ public class JCardWriterTest {
 	@Test
 	public void setPrettyPrinter() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw, true);
-		writer.setAddProdId(false);
-		writer.setPrettyPrinter(new JCardPrettyPrinter());
+		try (JCardWriter writer = new JCardWriter(sw, true)) {
+			writer.setAddProdId(false);
+			writer.setPrettyPrinter(new JCardPrettyPrinter());
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
 
-		vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		writer.write(vcard);
-
-		writer.close();
+			vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -219,23 +215,22 @@ public class JCardWriterTest {
 	@Test
 	public void write_no_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.close();
+		try (JCardWriter writer = new JCardWriter(sw)) {
+		}
 		assertEquals("", sw.toString());
 	}
 
 	@Test
 	public void write_raw_property() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addExtendedProperty("x-type", "value");
-		writer.write(vcard);
-
-		writer.close();
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			vcard.addExtendedProperty("x-type", "value");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -253,16 +248,15 @@ public class JCardWriterTest {
 	@Test
 	public void write_extended_property() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.registerScribe(new TestScribe());
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.registerScribe(new TestScribe());
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addProperty(new TestProperty(JCardValue.single("value")));
-		writer.write(vcard);
-
-		writer.close();
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			vcard.addProperty(new TestProperty(JCardValue.single("value")));
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -280,16 +274,15 @@ public class JCardWriterTest {
 	@Test
 	public void write_quoted_printable_encoding_not_supported() throws Exception {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		FormattedName fn = vcard.setFormattedName("Ömür Öde");
-		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
-		fn.getParameters().setCharset("UTF-8");
-		writer.write(vcard);
-
-		writer.close();
+			VCard vcard = new VCard();
+			FormattedName fn = vcard.setFormattedName("Ömür Öde");
+			fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
+			fn.getParameters().setCharset("UTF-8");
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -306,16 +299,15 @@ public class JCardWriterTest {
 	@Test
 	public void skipMeException() throws Throwable {
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.registerScribe(new SkipMeScribe());
-		writer.setAddProdId(false);
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.registerScribe(new SkipMeScribe());
+			writer.setAddProdId(false);
 
-		VCard vcard = new VCard();
-		vcard.setFormattedName("John Doe");
-		vcard.addProperty(new SkipMeProperty());
-		writer.write(vcard);
-
-		writer.close();
+			VCard vcard = new VCard();
+			vcard.setFormattedName("John Doe");
+			vcard.addProperty(new SkipMeProperty());
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -335,10 +327,10 @@ public class JCardWriterTest {
 		vcard.addNote("\u019dote");
 
 		Path file = tempFolder.newFile().toPath();
-		JCardWriter writer = new JCardWriter(file);
-		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
+		try (JCardWriter writer = new JCardWriter(file)) {
+			writer.setAddProdId(false);
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected =
@@ -359,10 +351,10 @@ public class JCardWriterTest {
 
 		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 		StringWriter sw = new StringWriter();
-		JCardWriter writer = new JCardWriter(sw);
-		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
+		try (JCardWriter writer = new JCardWriter(sw)) {
+			writer.setAddProdId(false);
+			writer.write(vcard);
+		}
 		String actual = sw.toString();
 
 		assertExample(actual, "jcard-example.json");

@@ -57,9 +57,9 @@ public class GobbleTest {
 		String data = "one two three";
 
 		Path file = folder.newFile().toPath();
-		Writer writer = Files.newBufferedWriter(file);
-		writer.write(data);
-		writer.close();
+		try (Writer writer = Files.newBufferedWriter(file)) {
+			writer.write(data);
+		}
 
 		Gobble stream = new Gobble(file);
 		assertEquals(data, stream.asString());

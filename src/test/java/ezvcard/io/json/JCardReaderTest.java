@@ -366,9 +366,9 @@ public class JCardReaderTest {
 		"]";
 
 		Path file = tempFolder.newFile().toPath();
-		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
-		writer.write(json);
-		writer.close();
+		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+			writer.write(json);
+		}
 
 		JCardReader reader = new JCardReader(file);
 		VCardAsserter asserter = new VCardAsserter(reader);

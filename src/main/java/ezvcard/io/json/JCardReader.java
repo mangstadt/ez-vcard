@@ -63,16 +63,12 @@ import ezvcard.property.VCardProperty;
  * </p>
  * 
  * <pre class="brush:java">
- * File file = new File("vcards.json");
- * JCardReader reader = null;
- * try {
- *   reader = new JCardReader(file);
+ * Path file = Paths.get("vcards.json");
+ * try (JCardReader reader = new JCardReader(file)) {
  *   VCard vcard;
  *   while ((vcard = reader.readNext()) != null) {
  *     //...
  *   }
- * } finally {
- *   if (reader != null) reader.close();
  * }
  * </pre>
  * @author Michael Angstadt

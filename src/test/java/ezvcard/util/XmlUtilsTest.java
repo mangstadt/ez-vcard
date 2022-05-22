@@ -118,9 +118,9 @@ public class XmlUtilsTest {
 		//@formatter:on
 
 		Path file = tempFolder.newFile().toPath();
-		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
-		writer.write(xml);
-		writer.close();
+		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+			writer.write(xml);
+		}
 
 		Document document = XmlUtils.toDocument(file);
 		Element root = (Element) document.getFirstChild();

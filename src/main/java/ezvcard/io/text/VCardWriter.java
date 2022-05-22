@@ -33,7 +33,6 @@ import ezvcard.property.Address;
 import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.IOUtils;
 
 /*
  Copyright (c) 2012-2021, Michael Angstadt
@@ -75,14 +74,10 @@ import ezvcard.util.IOUtils;
  * <pre class="brush:java">
  * VCard vcard1 = ...
  * VCard vcard2 = ...
- * File file = new File("vcard.vcf");
- * VCardWriter writer = null;
- * try {
- *   writer = new VCardWriter(file, VCardVersion.V3_0);
+ * Path file = Paths.get("vcard.vcf");
+ * try (VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0)) {
  *   writer.write(vcard1);
  *   writer.write(vcard2);
- * } finally {
- *   if (writer != null) writer.close();
  * }
  * </pre>
  * 
@@ -362,20 +357,17 @@ public class VCardWriter extends StreamWriter implements Flushable {
 		} else {
 			//write an embedded vCard (3.0 style)
 			StringWriter sw = new StringWriter();
-			VCardWriter agentWriter = new VCardWriter(sw, targetVersion);
-			agentWriter.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
-			agentWriter.setAddProdId(false);
-			agentWriter.setCaretEncodingEnabled(isCaretEncodingEnabled());
-			agentWriter.setIncludeTrailingSemicolons(this.includeTrailingSemicolons);
-			agentWriter.setScribeIndex(index);
-			agentWriter.setTargetApplication(targetApplication);
-			agentWriter.setVersionStrict(versionStrict);
-			try {
+			try (VCardWriter agentWriter = new VCardWriter(sw, targetVersion)) {
+				agentWriter.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+				agentWriter.setAddProdId(false);
+				agentWriter.setCaretEncodingEnabled(isCaretEncodingEnabled());
+				agentWriter.setIncludeTrailingSemicolons(this.includeTrailingSemicolons);
+				agentWriter.setScribeIndex(index);
+				agentWriter.setTargetApplication(targetApplication);
+				agentWriter.setVersionStrict(versionStrict);
 				agentWriter.write(nestedVCard);
 			} catch (IOException ignore) {
 				//should never be thrown because we're writing to a string
-			} finally {
-				IOUtils.closeQuietly(agentWriter);
 			}
 
 			String vcardStr = sw.toString();

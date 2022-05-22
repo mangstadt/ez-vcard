@@ -17,11 +17,8 @@ public class Issue114 {
 	@Test
 	public void test() throws Exception {
 		VCard vcard;
-		InputStream in = getClass().getResourceAsStream("issue114.vcf");
-		try {
+		try (InputStream in = getClass().getResourceAsStream("issue114.vcf")) {
 			vcard = Ezvcard.parse(in).first();
-		} finally {
-			in.close();
 		}
 
 		try {

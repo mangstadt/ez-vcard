@@ -87,14 +87,10 @@ import ezvcard.util.XmlUtils;
  * <pre class="brush:java">
  * VCard vcard1 = ...
  * VCard vcard2 = ...
- * File file = new File("vcards.xml");
- * XCardWriter writer = null;
- * try {
- *   writer = new XCardWriter(file);
+ * Path file = Paths.get("vcards.xml");
+ * try (XCardWriter writer = new XCardWriter(file)) {
  *   writer.write(vcard1);
  *   writer.write(vcard2);
- * } finally {
- *   if (writer != null) writer.close();
  * }
  * </pre>
  * @author Michael Angstadt

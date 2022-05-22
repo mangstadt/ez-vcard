@@ -111,11 +111,8 @@ public class ChainingJsonWriter extends ChainingWriter<ChainingJsonWriter> {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void go(Path file) throws IOException {
-		JCardWriter writer = new JCardWriter(file, wrapInArray());
-		try {
+		try (JCardWriter writer = new JCardWriter(file, wrapInArray())) {
 			go(writer);
-		} finally {
-			writer.close();
 		}
 	}
 

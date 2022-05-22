@@ -54,22 +54,22 @@ import ezvcard.property.Xml;
  * index.register(new AnotherCustomPropertyScribe());
  * 
  * //inject the ScribeIndex into a plain-text vCard reader class and read the vCard data stream
- * VCardReader vcardReader = new VCardReader(...);
- * vcardReader.setScribeIndex(index);
- * List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
- * VCard vcard;
- * while ((vcards = vcardReader.readNext()) != null) {
- *   vcards.add(vcard);
+ * try (VCardReader vcardReader = new VCardReader(...)) {
+ *   vcardReader.setScribeIndex(index);
+ *   List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
+ *   VCard vcard;
+ *   while ((vcards = vcardReader.readNext()) != null) {
+ *     vcards.add(vcard);
+ *   }
  * }
- * vcardReader.close();
  * 
  * //inject the same ScribeIndex instance into a jCard writer and write the vCards
- * JCardWriter jcardWriter = new JCardWriter(...);
- * jcardWriter.setScribeIndex(index);
- * for (VCard vcard : vcards) {
- *   jcardWriter.write(vcard);
+ * try (JCardWriter jcardWriter = new JCardWriter(...)) {
+ *   jcardWriter.setScribeIndex(index);
+ *   for (VCard vcard : vcards) {
+ *     jcardWriter.write(vcard);
+ *   }
  * }
- * jcardWriter.close();
  * </pre>
  * @author Michael Angstadt
  */

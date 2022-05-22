@@ -212,11 +212,8 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void go(Path file, boolean append) throws IOException {
-		VCardWriter writer = new VCardWriter(file, append, getVCardWriterConstructorVersion());
-		try {
+		try (VCardWriter writer = new VCardWriter(file, append, getVCardWriterConstructorVersion())) {
 			go(writer);
-		} finally {
-			writer.close();
 		}
 	}
 

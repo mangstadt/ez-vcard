@@ -149,11 +149,8 @@ public class HCardPage {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void write(Path file) throws IOException {
-		Writer writer = Files.newBufferedWriter(file);
-		try {
+		try (Writer writer = Files.newBufferedWriter(file)) {
 			write(writer);
-		} finally {
-			writer.close();
 		}
 	}
 

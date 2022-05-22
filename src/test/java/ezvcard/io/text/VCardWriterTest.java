@@ -302,10 +302,10 @@ public class VCardWriterTest {
 
 		//should be written as UTF-8
 		{
-			VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try (VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0)) {
+				writer.setAddProdId(false);
+				writer.write(vcard);
+			}
 
 			//@formatter:off
 			String expected = 
@@ -321,10 +321,10 @@ public class VCardWriterTest {
 
 		//should be written using default encoding
 		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
-			VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try (VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0)) {
+				writer.setAddProdId(false);
+				writer.write(vcard);
+			}
 
 			//@formatter:off
 			String expected = 
@@ -635,10 +635,10 @@ public class VCardWriterTest {
 		VCardVersion version = VCardVersion.V2_1;
 		{
 			StringWriter sw = new StringWriter();
-			VCardWriter writer = new VCardWriter(sw, version);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try (VCardWriter writer = new VCardWriter(sw, version)) {
+				writer.setAddProdId(false);
+				writer.write(vcard);
+			}
 			String actual = sw.toString();
 
 			String expected = //@formatter:off
@@ -653,10 +653,10 @@ public class VCardWriterTest {
 		version = VCardVersion.V3_0;
 		{
 			StringWriter sw = new StringWriter();
-			VCardWriter writer = new VCardWriter(sw, version);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try (VCardWriter writer = new VCardWriter(sw, version)) {
+				writer.setAddProdId(false);
+				writer.write(vcard);
+			}
 			String actual = sw.toString();
 
 			String expected = //@formatter:off
@@ -671,10 +671,10 @@ public class VCardWriterTest {
 		version = VCardVersion.V4_0;
 		{
 			StringWriter sw = new StringWriter();
-			VCardWriter writer = new VCardWriter(sw, version);
-			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try (VCardWriter writer = new VCardWriter(sw, version)) {
+				writer.setAddProdId(false);
+				writer.write(vcard);
+			}
 			String actual = sw.toString();
 
 			String expected = //@formatter:off
@@ -755,10 +755,10 @@ public class VCardWriterTest {
 		assertValidate(vcard).versions(VCardVersion.V4_0).run();
 
 		StringWriter sw = new StringWriter();
-		VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0);
-		writer.setAddProdId(false);
-		writer.write(vcard);
-		writer.close();
+		try (VCardWriter writer = new VCardWriter(sw, VCardVersion.V4_0)) {
+			writer.setAddProdId(false);
+			writer.write(vcard);
+		}
 
 		//@formatter:off
 		String expected = 
@@ -791,68 +791,67 @@ public class VCardWriterTest {
 	@Test
 	public void rfc2426_example() throws Throwable {
 		StringWriter sw = new StringWriter();
-		VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0);
-		writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
-		writer.setAddProdId(false);
+		try (VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0)) {
+			writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+			writer.setAddProdId(false);
 
-		{
-			VCard vcard = new VCard();
+			{
+				VCard vcard = new VCard();
 
-			vcard.setFormattedName("Frank Dawson");
+				vcard.setFormattedName("Frank Dawson");
 
-			vcard.setOrganization("Lotus Development Corporation");
+				vcard.setOrganization("Lotus Development Corporation");
 
-			Address adr = new Address();
-			adr.setStreetAddress("6544 Battleford Drive");
-			adr.setLocality("Raleigh");
-			adr.setRegion("NC");
-			adr.setPostalCode("27613-3502");
-			adr.setCountry("U.S.A.");
-			adr.getTypes().add(AddressType.WORK);
-			adr.getTypes().add(AddressType.POSTAL);
-			adr.getTypes().add(AddressType.PARCEL);
-			vcard.addAddress(adr);
+				Address adr = new Address();
+				adr.setStreetAddress("6544 Battleford Drive");
+				adr.setLocality("Raleigh");
+				adr.setRegion("NC");
+				adr.setPostalCode("27613-3502");
+				adr.setCountry("U.S.A.");
+				adr.getTypes().add(AddressType.WORK);
+				adr.getTypes().add(AddressType.POSTAL);
+				adr.getTypes().add(AddressType.PARCEL);
+				vcard.addAddress(adr);
 
-			vcard.addTelephoneNumber("+1-919-676-9515", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
-			vcard.addTelephoneNumber("+1-919-676-9564", TelephoneType.FAX, TelephoneType.WORK);
+				vcard.addTelephoneNumber("+1-919-676-9515", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
+				vcard.addTelephoneNumber("+1-919-676-9564", TelephoneType.FAX, TelephoneType.WORK);
 
-			vcard.addEmail("Frank_Dawson@Lotus.com", EmailType.INTERNET, EmailType.PREF);
-			vcard.addEmail("fdawson@earthlink.net", EmailType.INTERNET);
+				vcard.addEmail("Frank_Dawson@Lotus.com", EmailType.INTERNET, EmailType.PREF);
+				vcard.addEmail("fdawson@earthlink.net", EmailType.INTERNET);
 
-			vcard.addUrl("http://home.earthlink.net/�fdawson");
+				vcard.addUrl("http://home.earthlink.net/�fdawson");
 
-			assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
+				assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
 
-			writer.write(vcard);
+				writer.write(vcard);
+			}
+
+			{
+				VCard vcard = new VCard();
+
+				vcard.setFormattedName("Tim Howes");
+
+				vcard.setOrganization("Netscape Communications Corp.");
+
+				Address adr = new Address();
+				adr.setStreetAddress("501 E. Middlefield Rd.");
+				adr.setLocality("Mountain View");
+				adr.setRegion("CA");
+				adr.setPostalCode("94043");
+				adr.setCountry("U.S.A.");
+				adr.getTypes().add(AddressType.WORK);
+				vcard.addAddress(adr);
+
+				vcard.addTelephoneNumber("+1-415-937-3419", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
+				vcard.addTelephoneNumber("+1-415-528-4164", TelephoneType.FAX, TelephoneType.WORK);
+
+				vcard.addEmail("howes@netscape.com", EmailType.INTERNET);
+
+				assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
+
+				writer.write(vcard);
+			}
 		}
-
-		{
-			VCard vcard = new VCard();
-
-			vcard.setFormattedName("Tim Howes");
-
-			vcard.setOrganization("Netscape Communications Corp.");
-
-			Address adr = new Address();
-			adr.setStreetAddress("501 E. Middlefield Rd.");
-			adr.setLocality("Mountain View");
-			adr.setRegion("CA");
-			adr.setPostalCode("94043");
-			adr.setCountry("U.S.A.");
-			adr.getTypes().add(AddressType.WORK);
-			vcard.addAddress(adr);
-
-			vcard.addTelephoneNumber("+1-415-937-3419", TelephoneType.VOICE, TelephoneType.MSG, TelephoneType.WORK);
-			vcard.addTelephoneNumber("+1-415-528-4164", TelephoneType.FAX, TelephoneType.WORK);
-
-			vcard.addEmail("howes@netscape.com", EmailType.INTERNET);
-
-			assertValidate(vcard).versions(VCardVersion.V3_0).prop(null, 0).run();
-
-			writer.write(vcard);
-		}
-
-		writer.close();
 
 		//@formatter:off
 		String expected = 

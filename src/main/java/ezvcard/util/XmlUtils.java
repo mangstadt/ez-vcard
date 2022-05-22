@@ -106,11 +106,8 @@ public final class XmlUtils {
 	 * @throws IOException if there is a problem reading from the file
 	 */
 	public static Document toDocument(Path file) throws SAXException, IOException {
-		InputStream in = new BufferedInputStream(Files.newInputStream(file));
-		try {
+		try (InputStream in = new BufferedInputStream(Files.newInputStream(file))) {
 			return XmlUtils.toDocument(in);
-		} finally {
-			in.close();
 		}
 	}
 

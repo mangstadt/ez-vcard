@@ -737,9 +737,9 @@ public class XCardReaderTest {
 		"</vcards>";
 
 		Path file = tempFolder.newFile().toPath();
-		Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
-		writer.write(xml);
-		writer.close();
+		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+			writer.write(xml);
+		}
 
 		XCardReader reader = new XCardReader(file);
 		VCardAsserter asserter = new VCardAsserter(reader);

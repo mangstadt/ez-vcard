@@ -88,16 +88,12 @@ import ezvcard.util.XmlUtils;
  * </p>
  * 
  * <pre class="brush:java">
- * File file = new File("vcards.xml");
- * XCardReader reader = null;
- * try {
- *   reader = new XCardReader(file);
+ * Path file = Paths.get("vcards.xml");
+ * try (XCardReader reader = new XCardReader(file)) {
  *   VCard vcard;
  *   while ((vcard = reader.readNext()) != null) {
  *     //...
  *   }
- * } finally {
- *   if (reader != null) reader.close();
  * }
  * </pre>
  * 

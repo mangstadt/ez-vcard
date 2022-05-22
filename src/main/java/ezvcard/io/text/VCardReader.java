@@ -75,16 +75,12 @@ import ezvcard.util.StringUtils;
  * </p>
  * 
  * <pre class="brush:java">
- * File file = new File("vcards.vcf");
- * VCardReader reader = null;
- * try {
- *   reader = new VCardReader(file);
+ * Path file = Paths.get("vcards.vcf");
+ * try (VCardReader reader = new VCardReader(file)) {
  *   VCard vcard;
  *   while ((vcard = reader.readNext()) != null) {
  *     //...
  *   }
- * } finally {
- *   if (reader != null) reader.close();
  * }
  * </pre>
  * @author Michael Angstadt
