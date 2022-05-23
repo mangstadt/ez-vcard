@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Rule;
@@ -375,7 +376,7 @@ public class JCardWriterTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).second(0).offset(-5, 0).build());
+		Anniversary anniversary = new Anniversary(OffsetDateTime.of(2009, 8, 8, 14, 30, 0, 0, ZoneOffset.ofHours(-5)));
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());
