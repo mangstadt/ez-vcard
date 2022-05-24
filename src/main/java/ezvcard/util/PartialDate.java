@@ -607,8 +607,7 @@ public final class PartialDate {
 
 		/**
 		 * Sets the timezone offset.
-		 * @param hour the hours
-		 * @param minute the minutes
+		 * @param offset the offset
 		 * @return this
 		 */
 		public Builder offset(ZoneOffset offset) {
