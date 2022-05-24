@@ -16,6 +16,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZoneOffset;
 import java.util.Iterator;
 
 import javax.xml.transform.TransformerException;
@@ -788,7 +789,7 @@ public class XCardReaderTest {
 				.date(8)
 				.hour(14)
 				.minute(30)
-				.offset(-5, 0)
+				.offset(ZoneOffset.ofHours(-5))
 				.build()
 			)
 		.noMore();

@@ -6,6 +6,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -157,31 +160,9 @@ public class PartialDateTest {
 	
 	@Test
 	public void builder_offset_null() {
-		PartialDate d1 = builder().year(2020).month(5).date(21).offset(1, 30).offset(null).build();
+		PartialDate d1 = builder().year(2020).month(5).date(21).offset(ZoneOffset.ofHoursMinutes(1, 30)).offset(null).build();
 		PartialDate d2 = builder().year(2020).month(5).date(21).build();
 		assertEquals(d1, d2);
-	}
-
-	@Test
-	public void builder_offset_minute() {
-		PartialDate.Builder builder = builder();
-		final int start = -1, end = 60;
-
-		try {
-			builder.offset(0, start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
-
-		for (int i = start + 1; i < end; i++) {
-			builder.offset(0, i);
-		}
-
-		try {
-			builder.offset(0, end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
 	}
 
 	@Test
@@ -201,7 +182,7 @@ public class PartialDateTest {
 
 	@Test
 	public void builder_copy() {
-		PartialDate orig = builder().year(2015).month(3).date(5).hour(12).minute(1).second(20).offset(-5, 0).build();
+		PartialDate orig = builder().year(2015).month(3).date(5).hour(12).minute(1).second(20).offset(ZoneOffset.ofHours(-5)).build();
 		PartialDate copy = builder(orig).build();
 		assertEquals(orig, copy);
 	}
@@ -225,12 +206,14 @@ public class PartialDateTest {
 		assertToISO8601(builder().minute(20).second(32), "T-2032", "T-20:32");
 		assertToISO8601(builder().hour(5).minute(20).second(32), "T052032", "T05:20:32");
 		assertToISO8601(builder(), "", "");
-		assertToISO8601(builder().minute(20).second(32).offset(-5, 30), "T-2032-0530", "T-20:32-05:30");
-		assertToISO8601(builder().minute(20).second(32).offset(-5, 0), "T-2032-0500", "T-20:32-05:00");
-		assertToISO8601(builder().minute(20).second(32).offset(5, 30), "T-2032+0530", "T-20:32+05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, -30)), "T-2032-0530", "T-20:32-05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, 0)), "T-2032-0500", "T-20:32-05:00");
+		assertToISO8601(builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(5, 30)), "T-2032+0530", "T-20:32+05:30");
+		assertToISO8601(builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(0, -30)), "T-2032-0030", "T-20:32-00:30");
+		assertToISO8601(builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(0, 30)), "T-2032+0030", "T-20:32+00:30");
 
 		//date and time
-		assertToISO8601(builder().month(4).date(20).hour(5).offset(-5, 0), "--0420T05-0500", "--04-20T05-05:00");
+		assertToISO8601(builder().month(4).date(20).hour(5).offset(ZoneOffset.ofHoursMinutes(-5, 0)), "--0420T05-0500", "--04-20T05-05:00");
 	}
 
 	@Test
@@ -281,17 +264,36 @@ public class PartialDateTest {
 		assertParse("T-20:32", builder().minute(20).second(32));
 		assertParse("T052032", builder().hour(5).minute(20).second(32));
 		assertParse("T05:20:32", builder().hour(5).minute(20).second(32));
-		assertParse("T-2032-0530", builder().minute(20).second(32).offset(-5, 30));
-		assertParse("T-20:32-05:30", builder().minute(20).second(32).offset(-5, 30));
-		assertParse("T-2032-0500", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-20:32-05:00", builder().minute(20).second(32).offset(-5, 0));
-		assertParse("T-2032-05", builder().minute(20).second(32).offset(-5));
-		assertParse("T-20:32-05", builder().minute(20).second(32).offset(-5));
-		assertParse("T-20:32+05:30", builder().minute(20).second(32).offset(5, 30));
-		assertParse("T-20:32+00:30", builder().minute(20).second(32).offset(0, 30));
-		assertParse("T-20:32-00:30", builder().minute(20).second(32).offset(0, 30));
-		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(-5, 0));
-		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(-5, 0));
+		assertParse("T-2032-0530", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, -30)));
+		assertParse("T-20:32-05:30", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, -30)));
+		assertParse("T-2032-0500", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+		assertParse("T-20:32-05:00", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+		assertParse("T-2032-05", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+		assertParse("T-20:32-05", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+		assertParse("T-20:32+05:30", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(5, 30)));
+		assertParse("T-20:32+00:30", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(0, 30)));
+		assertParse("T-20:32-00:30", builder().minute(20).second(32).offset(ZoneOffset.ofHoursMinutes(0, -30)));
+		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
+	}
+	
+	@Test
+	public void getUtcOffset() {
+		//@formatter:off
+		List<ZoneOffset> offsets = Arrays.asList(
+			ZoneOffset.ofHoursMinutes(-5, 0),
+			ZoneOffset.ofHoursMinutes(-5, -30),
+			ZoneOffset.ofHoursMinutes(0, 30),
+			ZoneOffset.ofHoursMinutes(0, -30),
+			ZoneOffset.ofHoursMinutes(5, 0),
+			ZoneOffset.ofHoursMinutes(5, 30)
+		);
+		//@formatter:on
+		
+		for (ZoneOffset offset : offsets) {
+			PartialDate date = builder().offset(offset).build();
+			assertEquals(offset, date.getUtcOffset());
+		}
 	}
 
 	@Test

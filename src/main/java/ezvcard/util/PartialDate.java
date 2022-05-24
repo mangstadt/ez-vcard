@@ -375,17 +375,14 @@ public final class PartialDate {
 				sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
 			}
 
-			if (components[OFFSET_HOUR] != null) {
-				String offsetHourStr = nf.format(components[OFFSET_HOUR]);
-				if (components[OFFSET_HOUR] >= 0) {
-					sb.append('+');
-				}
-				sb.append(offsetHourStr);
+			Integer offsetHour = components[OFFSET_HOUR];
+			if (offsetHour != null) {
+				Integer offsetMinute = components[OFFSET_MINUTE];
+				String offsetHourStr = nf.format(Math.abs(offsetHour));
+				String offsetMinuteStr = nf.format(Math.abs(offsetMinute));
 
-				if (components[OFFSET_MINUTE] != null) {
-					String offsetMinuteStr = nf.format(components[OFFSET_MINUTE]);
-					sb.append(dash).append(offsetMinuteStr);
-				}
+				sb.append((offsetHour < 0 || offsetMinute < 0) ? '-' : '+');
+				sb.append(offsetHourStr).append(dash).append(offsetMinuteStr);
 			}
 		}
 
@@ -426,7 +423,7 @@ public final class PartialDate {
 		 * @param regex the regular expression that describes the format
 		 * @param componentIndexes the indexes of the
 		 * {@link PartialDate#components} array to assign the value of each
-		 * regex group to, or -1 to ignore the group
+		 * regex group to, or null to ignore the group
 		 */
 		public Format(String regex, Integer... componentIndexes) {
 			this.regex = Pattern.compile('^' + regex + '$');
@@ -445,6 +442,18 @@ public final class PartialDate {
 				return false;
 			}
 
+			/*
+			 * All this complicated handling of the offset is due to:
+			 * 
+			 * The hour portion can be zero, and zero can't be negative (e.g.
+			 * "-00:30").
+			 * 
+			 * There is no positive or negative sign next to the minute portion
+			 * in the string.
+			 */
+			boolean offsetPositive = false;
+			Integer offsetHour = null, offsetMinute = null;
+
 			for (int i = 0; i < componentIndexes.length; i++) {
 				Integer index = componentIndexes[i];
 				if (index == null) {
@@ -460,8 +469,28 @@ public final class PartialDate {
 					}
 
 					int component = Integer.parseInt(groupStr);
+					if (index == OFFSET_HOUR) {
+						offsetHour = component;
+						offsetPositive = startsWithPlus;
+						continue;
+					}
+					if (index == OFFSET_MINUTE) {
+						offsetMinute = component;
+						continue;
+					}
 					builder.components[index] = component;
 				}
+			}
+
+			if (offsetHour != null) {
+				if (offsetMinute == null) {
+					offsetMinute = 0;
+				}
+				if (!offsetPositive) {
+					offsetMinute *= -1;
+				}
+				builder.components[OFFSET_HOUR] = offsetHour;
+				builder.components[OFFSET_MINUTE] = offsetMinute;
 			}
 
 			return true;
@@ -579,29 +608,17 @@ public final class PartialDate {
 		/**
 		 * Sets the timezone offset.
 		 * @param hour the hours
-		 * @return this
-		 */
-		public Builder offset(Integer hour) {
-			components[OFFSET_HOUR] = hour;
-			if (hour == null) {
-				components[OFFSET_MINUTE] = null;
-			}
-			return this;
-		}
-
-		/**
-		 * Sets the timezone offset.
-		 * @param hour the hours
 		 * @param minute the minutes
 		 * @return this
 		 */
-		public Builder offset(int hour, int minute) {
-			if (minute < 0 || minute > 59) {
-				throw Messages.INSTANCE.getIllegalArgumentException(37, "Offset minute", 0, 59);
+		public Builder offset(ZoneOffset offset) {
+			if (offset == null) {
+				components[OFFSET_HOUR] = null;
+				components[OFFSET_MINUTE] = null;
+			} else {
+				components[OFFSET_HOUR] = offset.getTotalSeconds() / 3600;
+				components[OFFSET_MINUTE] = (offset.getTotalSeconds() % 3600) / 60;
 			}
-
-			offset(hour);
-			components[OFFSET_MINUTE] = minute;
 			return this;
 		}
 

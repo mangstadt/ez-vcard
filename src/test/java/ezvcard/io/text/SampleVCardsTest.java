@@ -2313,7 +2313,7 @@ public class SampleVCardsTest {
 		.noMore();
 		
 		asserter.dateProperty(Anniversary.class)
-			.partialDate(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build())
+			.partialDate(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(ZoneOffset.ofHours(-5)).build())
 		.noMore();
 		
 		asserter.property(Gender.class)

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.ZoneOffset;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
@@ -730,7 +731,7 @@ public class XCardWriterTest {
 		Birthday bday = new Birthday(PartialDate.builder().month(2).date(3).build());
 		vcard.setBirthday(bday);
 
-		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(-5, 0).build());
+		Anniversary anniversary = new Anniversary(PartialDate.builder().year(2009).month(8).date(8).hour(14).minute(30).offset(ZoneOffset.ofHours(-5)).build());
 		vcard.setAnniversary(anniversary);
 
 		vcard.setGender(Gender.male());
