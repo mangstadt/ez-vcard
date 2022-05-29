@@ -160,7 +160,7 @@ public class DateOrTimePropertyTest {
 	public void equals() {
 		LocalDate date1 = LocalDate.of(2016, 1, 14);
 		LocalDate date2 = LocalDate.of(2016, 1, 15);
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 		properties.add(property);

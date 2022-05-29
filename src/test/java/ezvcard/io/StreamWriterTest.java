@@ -334,7 +334,7 @@ public class StreamWriterTest {
 		@Override
 		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
 			propertiesList = properties;
-			this.properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+			this.properties = new ListMultimap<>();
 			for (VCardProperty property : properties) {
 				this.properties.put(property.getClass(), property);
 			}
@@ -350,7 +350,7 @@ public class StreamWriterTest {
 
 		public <T extends VCardProperty> List<T> get(Class<T> clazz) {
 			List<VCardProperty> props = properties.get(clazz);
-			List<T> casted = new ArrayList<T>(props.size());
+			List<T> casted = new ArrayList<>(props.size());
 			for (VCardProperty property : props) {
 				casted.add(clazz.cast(property));
 			}

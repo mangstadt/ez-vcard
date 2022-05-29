@@ -45,7 +45,7 @@ import ezvcard.property.StructuredName;
  */
 public class StructuredNameScribeTest {
 	private final StructuredNameScribe scribe = new StructuredNameScribe();
-	private final Sensei<StructuredName> sensei = new Sensei<StructuredName>(scribe);
+	private final Sensei<StructuredName> sensei = new Sensei<>(scribe);
 
 	private final StructuredName withAllValues = new StructuredName();
 	{

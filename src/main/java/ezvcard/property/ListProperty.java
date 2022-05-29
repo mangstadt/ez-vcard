@@ -47,7 +47,7 @@ public class ListProperty<T> extends VCardProperty {
 	protected final List<T> values;
 
 	public ListProperty() {
-		values = new ArrayList<T>();
+		values = new ArrayList<>();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class ListProperty<T> extends VCardProperty {
 	 */
 	public ListProperty(ListProperty<T> original) {
 		super(original);
-		values = new ArrayList<T>(original.values);
+		values = new ArrayList<>(original.values);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class ListProperty<T> extends VCardProperty {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("values", this.values);
 		return values;
 	}

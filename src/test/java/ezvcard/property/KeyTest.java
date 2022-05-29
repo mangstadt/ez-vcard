@@ -156,7 +156,7 @@ public class KeyTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		Key property = new Key();
 		properties.add(property);

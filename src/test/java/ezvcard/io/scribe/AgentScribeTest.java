@@ -51,7 +51,7 @@ import ezvcard.property.Agent;
  */
 public class AgentScribeTest {
 	private final AgentScribe scribe = new AgentScribe();
-	private final Sensei<Agent> sensei = new Sensei<Agent>(scribe);
+	private final Sensei<Agent> sensei = new Sensei<>(scribe);
 
 	private final VCard vcard = new VCard();
 	private final String url = "http://mi5.co.uk/007";

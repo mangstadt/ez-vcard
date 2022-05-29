@@ -391,10 +391,10 @@ public class VCardWriterTest {
 
 		StringWriter sw = new StringWriter();
 		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V4_0);
-		vcw.registerScribe(new DateTestScribe<DateProperty>(DateProperty.class, "DATE", VCardDataType.DATE));
-		vcw.registerScribe(new DateTestScribe<DateTimeProperty>(DateTimeProperty.class, "DATETIME", VCardDataType.DATE_TIME));
-		vcw.registerScribe(new DateTestScribe<TimeProperty>(TimeProperty.class, "TIME", VCardDataType.TIME));
-		vcw.registerScribe(new DateTestScribe<DateAndOrTimeProperty>(DateAndOrTimeProperty.class, "DATEANDORTIME", VCardDataType.DATE_AND_OR_TIME));
+		vcw.registerScribe(new DateTestScribe<>(DateProperty.class, "DATE", VCardDataType.DATE));
+		vcw.registerScribe(new DateTestScribe<>(DateTimeProperty.class, "DATETIME", VCardDataType.DATE_TIME));
+		vcw.registerScribe(new DateTestScribe<>(TimeProperty.class, "TIME", VCardDataType.TIME));
+		vcw.registerScribe(new DateTestScribe<>(DateAndOrTimeProperty.class, "DATEANDORTIME", VCardDataType.DATE_AND_OR_TIME));
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 

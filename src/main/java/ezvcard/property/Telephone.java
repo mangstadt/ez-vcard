@@ -210,7 +210,7 @@ public class Telephone extends VCardProperty implements HasAltId {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("uri", uri);
 		values.put("text", text);
 		return values;

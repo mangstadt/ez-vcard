@@ -112,13 +112,13 @@ public class Address extends VCardProperty implements HasAltId {
 	private final List<String> countries;
 
 	public Address() {
-		poBoxes = new ArrayList<String>(1);
-		extendedAddresses = new ArrayList<String>(1);
-		streetAddresses = new ArrayList<String>(1);
-		localities = new ArrayList<String>(1);
-		regions = new ArrayList<String>(1);
-		postalCodes = new ArrayList<String>(1);
-		countries = new ArrayList<String>(1);
+		poBoxes = new ArrayList<>(1);
+		extendedAddresses = new ArrayList<>(1);
+		streetAddresses = new ArrayList<>(1);
+		localities = new ArrayList<>(1);
+		regions = new ArrayList<>(1);
+		postalCodes = new ArrayList<>(1);
+		countries = new ArrayList<>(1);
 	}
 
 	/**
@@ -127,13 +127,13 @@ public class Address extends VCardProperty implements HasAltId {
 	 */
 	public Address(Address original) {
 		super(original);
-		poBoxes = new ArrayList<String>(original.poBoxes);
-		extendedAddresses = new ArrayList<String>(original.extendedAddresses);
-		streetAddresses = new ArrayList<String>(original.streetAddresses);
-		localities = new ArrayList<String>(original.localities);
-		regions = new ArrayList<String>(original.regions);
-		postalCodes = new ArrayList<String>(original.postalCodes);
-		countries = new ArrayList<String>(original.countries);
+		poBoxes = new ArrayList<>(original.poBoxes);
+		extendedAddresses = new ArrayList<>(original.extendedAddresses);
+		streetAddresses = new ArrayList<>(original.streetAddresses);
+		localities = new ArrayList<>(original.localities);
+		regions = new ArrayList<>(original.regions);
+		postalCodes = new ArrayList<>(original.postalCodes);
+		countries = new ArrayList<>(original.countries);
 	}
 
 	/**
@@ -488,7 +488,7 @@ public class Address extends VCardProperty implements HasAltId {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("poBoxes", poBoxes);
 		values.put("extendedAddresses", extendedAddresses);
 		values.put("streetAddresses", streetAddresses);

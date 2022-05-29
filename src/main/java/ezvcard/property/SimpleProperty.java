@@ -87,7 +87,7 @@ public class SimpleProperty<T> extends VCardProperty {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("value", value);
 		return values;
 	}

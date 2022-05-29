@@ -101,8 +101,8 @@ public class TestUtils {
 	 * use "null" for warnings that do not have a code)
 	 */
 	public static void assertParseWarnings(List<ParseWarning> warnings, Integer... expectedCodes) {
-		List<Integer> expectedWarnings = new ArrayList<Integer>(Arrays.asList(expectedCodes));
-		List<Integer> actualWarnings = new ArrayList<Integer>(warnings.size());
+		List<Integer> expectedWarnings = new ArrayList<>(Arrays.asList(expectedCodes));
+		List<Integer> actualWarnings = new ArrayList<>(warnings.size());
 		for (ParseWarning warning : warnings) {
 			actualWarnings.add(warning.getCode());
 		}
@@ -143,7 +143,7 @@ public class TestUtils {
 		 * Don't use a Set because there can be multiple warnings with the same
 		 * code.
 		 */
-		List<Integer> expected = new ArrayList<Integer>(Arrays.asList(expectedCodes));
+		List<Integer> expected = new ArrayList<>(Arrays.asList(expectedCodes));
 
 		for (ValidationWarning warning : warnings) {
 			Integer code = warning.getCode();
@@ -169,7 +169,7 @@ public class TestUtils {
 	public static class VCardValidateChecker {
 		private final VCard vcard;
 		private VCardVersion versions[] = VCardVersion.values();
-		private Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<VCardProperty, Integer[]>();
+		private Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<>();
 
 		public VCardValidateChecker(VCard vcard) {
 			this.vcard = vcard;
@@ -201,7 +201,7 @@ public class TestUtils {
 		 */
 		public void run() {
 			for (VCardVersion version : versions) {
-				Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<VCardProperty, Integer[]>(this.expectedPropCodes);
+				Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<>(this.expectedPropCodes);
 				ValidationWarnings warnings = vcard.validate(version);
 				for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
 					VCardProperty property = entry.getKey();
@@ -220,7 +220,7 @@ public class TestUtils {
 				}
 
 				if (!expectedPropCodes.isEmpty()) {
-					List<String> lines = new ArrayList<String>();
+					List<String> lines = new ArrayList<>();
 					for (Map.Entry<VCardProperty, Integer[]> entry : expectedPropCodes.entrySet()) {
 						VCardProperty property = entry.getKey();
 						String className = (property == null) ? null : property.getClass().getSimpleName();
@@ -251,7 +251,7 @@ public class TestUtils {
 	public static <T> void assertCollectionContains(Collection<T> actual, T... expectedElements) {
 		assertEquals(expectedElements.length, actual.size());
 
-		Collection<T> actualCopy = new ArrayList<T>(actual);
+		Collection<T> actualCopy = new ArrayList<>(actual);
 		for (T expectedElement : expectedElements) {
 			assertTrue("Collection did not contain: " + expectedElement, actualCopy.remove(expectedElement));
 		}
@@ -280,7 +280,7 @@ public class TestUtils {
 	 * @param expectedElements the elements that are expected to be in the set
 	 */
 	public static <T> void assertSetEquals(Set<T> actualSet, T... expectedElements) {
-		Set<T> expectedSet = new HashSet<T>(expectedElements.length);
+		Set<T> expectedSet = new HashSet<>(expectedElements.length);
 		expectedSet.addAll(Arrays.asList(expectedElements));
 		assertEquals(expectedSet, actualSet);
 	}

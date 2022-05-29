@@ -43,7 +43,7 @@ import ezvcard.property.Related;
  */
 public class RelatedScribeTest {
 	private final RelatedScribe scribe = new RelatedScribe();
-	private final Sensei<Related> sensei = new Sensei<Related>(scribe);
+	private final Sensei<Related> sensei = new Sensei<>(scribe);
 
 	private final String text = "New York, NY";
 	private final String textEscaped = "New York\\, NY";

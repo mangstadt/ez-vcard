@@ -280,8 +280,8 @@ public class JCardRawReaderTest {
 
 		reader.readNext(listener);
 
-		List<JsonValue> expectedValues = new ArrayList<JsonValue>();
-		Map<String, JsonValue> m = new HashMap<String, JsonValue>();
+		List<JsonValue> expectedValues = new ArrayList<>();
+		Map<String, JsonValue> m = new HashMap<>();
 		{
 			//@formatter:off
 			m.put("a", new JsonValue(Arrays.asList(
@@ -289,12 +289,12 @@ public class JCardRawReaderTest {
 				new JsonValue("two")
 			)));
 			
-			Map<String, JsonValue> m2 = new HashMap<String, JsonValue>();
+			Map<String, JsonValue> m2 = new HashMap<>();
 			{
 				m2.put("c", new JsonValue(Arrays.asList(
 					new JsonValue("three")
 				)));
-				m2.put("d", new JsonValue(new HashMap<String, JsonValue>()));
+				m2.put("d", new JsonValue(new HashMap<>()));
 			}
 			m.put("b", new JsonValue(m2));
 			//@formatter:on

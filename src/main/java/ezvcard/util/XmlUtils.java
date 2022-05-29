@@ -171,7 +171,7 @@ public final class XmlUtils {
 	 * XXE Cheat Sheet</a>
 	 */
 	public static void applyXXEProtection(DocumentBuilderFactory factory) {
-		Map<String, Boolean> features = new HashMap<String, Boolean>();
+		Map<String, Boolean> features = new HashMap<>();
 		features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
 		features.put("http://xml.org/sax/features/external-general-entities", false);
 		features.put("http://xml.org/sax/features/external-parameter-entities", false);
@@ -225,7 +225,7 @@ public final class XmlUtils {
 	 * @return the string
 	 */
 	public static String toString(Node node) {
-		return toString(node, new HashMap<String, String>());
+		return toString(node, new HashMap<>());
 	}
 
 	/**
@@ -252,7 +252,7 @@ public final class XmlUtils {
 	 * @throws TransformerException if there's a problem writing to the writer
 	 */
 	public static void toWriter(Node node, Writer writer) throws TransformerException {
-		toWriter(node, writer, new HashMap<String, String>());
+		toWriter(node, writer, new HashMap<>());
 	}
 
 	/**
@@ -303,7 +303,7 @@ public final class XmlUtils {
 	 * @return the elements
 	 */
 	public static List<Element> toElementList(NodeList nodeList) {
-		List<Element> elements = new ArrayList<Element>();
+		List<Element> elements = new ArrayList<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			if (node instanceof Element) {

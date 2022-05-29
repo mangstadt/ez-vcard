@@ -43,7 +43,7 @@ import ezvcard.property.Organization;
  */
 public class OrganizationScribeTest {
 	private final OrganizationScribe scribe = new OrganizationScribe();
-	private final Sensei<Organization> sensei = new Sensei<Organization>(scribe);
+	private final Sensei<Organization> sensei = new Sensei<>(scribe);
 
 	private final Organization withOneValue = new Organization();
 	{

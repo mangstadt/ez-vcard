@@ -234,7 +234,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("data", (data == null) ? "null" : "length: " + data.length);
 		values.put("url", url);
 		values.put("contentType", contentType);

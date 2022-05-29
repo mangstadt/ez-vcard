@@ -117,7 +117,7 @@ public class VCardAsserter {
 	 * @return the asserter object
 	 */
 	public <T extends VCardProperty> PropertyImplAsserterImpl<T> property(Class<T> clazz) {
-		return new PropertyImplAsserterImpl<T>(vcard.getProperties(clazz), this);
+		return new PropertyImplAsserterImpl<>(vcard.getProperties(clazz), this);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class VCardAsserter {
 	 */
 	@SuppressWarnings("rawtypes")
 	public <T extends SimpleProperty> SimplePropertyAsserter<T> simpleProperty(Class<T> clazz) {
-		return new SimplePropertyAsserter<T>(vcard.getProperties(clazz), this);
+		return new SimplePropertyAsserter<>(vcard.getProperties(clazz), this);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class VCardAsserter {
 	 * @return the asserter object
 	 */
 	public <T extends ListProperty<String>> ListPropertyAsserter<T> listProperty(Class<T> clazz) {
-		return new ListPropertyAsserter<T>(vcard.getProperties(clazz), this);
+		return new ListPropertyAsserter<>(vcard.getProperties(clazz), this);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class VCardAsserter {
 	 * @return the asserter object
 	 */
 	public <T extends DateOrTimeProperty> DateOrTimePropertyAsserter<T> dateProperty(Class<T> clazz) {
-		return new DateOrTimePropertyAsserter<T>(vcard.getProperties(clazz), this);
+		return new DateOrTimePropertyAsserter<>(vcard.getProperties(clazz), this);
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class VCardAsserter {
 	 */
 	@SuppressWarnings("rawtypes")
 	public <T extends BinaryProperty> BinaryPropertyAsserter<T> binaryProperty(Class<T> clazz) {
-		return new BinaryPropertyAsserter<T>(vcard.getProperties(clazz), this);
+		return new BinaryPropertyAsserter<>(vcard.getProperties(clazz), this);
 	}
 
 	/**

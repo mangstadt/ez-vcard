@@ -197,7 +197,7 @@ public class Agent extends VCardProperty {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("url", url);
 		values.put("vcard", vcard);
 		return values;

@@ -294,7 +294,7 @@ public class XCardWriter extends XCardWriterBase {
 				started = true;
 			}
 
-			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>(); //group the types by group name (null = no group name)
+			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<>(); //group the types by group name (null = no group name)
 			for (VCardProperty property : properties) {
 				propertiesByGroup.put(property.getGroup(), property);
 			}

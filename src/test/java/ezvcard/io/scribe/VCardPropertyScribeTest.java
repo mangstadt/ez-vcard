@@ -66,7 +66,7 @@ public class VCardPropertyScribeTest {
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl();
-	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
+	private final Sensei<TestProperty> sensei = new Sensei<>(scribe);
 
 	@Test
 	public void date_parse_utc() {
@@ -122,7 +122,7 @@ public class VCardPropertyScribeTest {
 			}
 		};
 		TestProperty property = new TestProperty("value");
-		new Sensei<TestProperty>(scribe).assertDataType(property).run(VCardDataType.URI);
+		new Sensei<>(scribe).assertDataType(property).run(VCardDataType.URI);
 	}
 
 	@Test

@@ -169,7 +169,7 @@ public class ClientPidMap extends VCardProperty {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("pid", pid);
 		values.put("uri", uri);
 		return values;

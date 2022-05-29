@@ -160,7 +160,7 @@ public class Xml extends VCardProperty implements HasAltId {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("value", (value == null) ? "null" : XmlUtils.toString(value));
 		return values;
 	}

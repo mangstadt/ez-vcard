@@ -74,7 +74,7 @@ public class EncoderException extends Exception {
     }
 
     /**
-     * Constructs a new exception with the specified cause and a detail message of <code>(cause==null ?
+     * Constructs a new exception with the specified cause and a detail message of <>(cause==null ?
      * null : cause.toString())</code> (which typically contains the class and detail message of <code>cause</code>).
      * This constructor is useful for exceptions that are little more than wrappers for other throwables.
      *

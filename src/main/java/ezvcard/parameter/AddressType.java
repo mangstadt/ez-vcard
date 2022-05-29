@@ -47,7 +47,7 @@ import ezvcard.property.Label;
  * @author Michael Angstadt
  */
 public class AddressType extends VCardParameter {
-	private static final VCardParameterCaseClasses<AddressType> enums = new VCardParameterCaseClasses<AddressType>(AddressType.class);
+	private static final VCardParameterCaseClasses<AddressType> enums = new VCardParameterCaseClasses<>(AddressType.class);
 
 	public static final AddressType HOME = new AddressType("home");
 

@@ -163,7 +163,7 @@ public class RelatedTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		Related property = new Related();
 		properties.add(property);

@@ -42,7 +42,7 @@ import ezvcard.property.ClientPidMap;
  */
 public class ClientPidMapScribeTest {
 	private final ClientPidMapScribe scribe = new ClientPidMapScribe();
-	private final Sensei<ClientPidMap> sensei = new Sensei<ClientPidMap>(scribe);
+	private final Sensei<ClientPidMap> sensei = new Sensei<>(scribe);
 
 	private final int pid = 1;
 	private final String uri = "urn:uuid:1234";

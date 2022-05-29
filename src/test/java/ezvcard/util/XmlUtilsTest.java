@@ -146,7 +146,7 @@ public class XmlUtilsTest {
 	@Test
 	public void toString_output_properties() throws Exception {
 		Document expected = XmlUtils.toDocument(xml);
-		Map<String, String> outputProperties = new HashMap<String, String>();
+		Map<String, String> outputProperties = new HashMap<>();
 		outputProperties.put(OutputKeys.STANDALONE, "no");
 		String string = XmlUtils.toString(expected, outputProperties);
 		Document actual = XmlUtils.toDocument(string);

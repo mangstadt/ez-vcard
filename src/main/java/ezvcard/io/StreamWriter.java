@@ -166,8 +166,8 @@ public abstract class StreamWriter implements Closeable {
 	 */
 	private List<VCardProperty> prepare(VCard vcard) {
 		VCardVersion targetVersion = getTargetVersion();
-		List<VCardProperty> propertiesToAdd = new ArrayList<VCardProperty>();
-		Set<Class<? extends VCardProperty>> unregistered = new HashSet<Class<? extends VCardProperty>>();
+		List<VCardProperty> propertiesToAdd = new ArrayList<>();
+		Set<Class<? extends VCardProperty>> unregistered = new HashSet<>();
 		VCardProperty prodIdProperty = null;
 		for (VCardProperty property : vcard) {
 			if (versionStrict && !property.isSupportedBy(targetVersion)) {
@@ -204,7 +204,7 @@ public abstract class StreamWriter implements Closeable {
 		}
 
 		if (!unregistered.isEmpty()) {
-			List<String> classes = new ArrayList<String>(unregistered.size());
+			List<String> classes = new ArrayList<>(unregistered.size());
 			for (Class<? extends VCardProperty> clazz : unregistered) {
 				classes.add(clazz.getName());
 			}

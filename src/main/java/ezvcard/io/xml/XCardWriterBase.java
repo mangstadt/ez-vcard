@@ -48,7 +48,7 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * Defines the names (data types) of the XML elements that are used to hold
 	 * each parameter's value.
 	 */
-	protected final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>();
+	protected final Map<String, VCardDataType> parameterDataTypes = new HashMap<>();
 	{
 		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);

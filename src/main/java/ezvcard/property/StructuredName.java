@@ -77,9 +77,9 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	private final List<String> suffixes;
 
 	public StructuredName() {
-		additional = new ArrayList<String>();
-		prefixes = new ArrayList<String>();
-		suffixes = new ArrayList<String>();
+		additional = new ArrayList<>();
+		prefixes = new ArrayList<>();
+		suffixes = new ArrayList<>();
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class StructuredName extends VCardProperty implements HasAltId {
 		super(original);
 		family = original.family;
 		given = original.given;
-		additional = new ArrayList<String>(original.additional);
-		prefixes = new ArrayList<String>(original.prefixes);
-		suffixes = new ArrayList<String>(original.suffixes);
+		additional = new ArrayList<>(original.additional);
+		prefixes = new ArrayList<>(original.prefixes);
+		suffixes = new ArrayList<>(original.suffixes);
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("family", family);
 		values.put("given", given);
 		values.put("additional", additional);

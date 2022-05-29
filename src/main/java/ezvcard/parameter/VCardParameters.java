@@ -339,7 +339,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	private static final Map<String, Set<VCardVersion>> supportedVersions;
 	static {
-		Map<String, Set<VCardVersion>> m = new HashMap<String, Set<VCardVersion>>();
+		Map<String, Set<VCardVersion>> m = new HashMap<>();
 		m.put(ALTID, EnumSet.of(VCardVersion.V4_0));
 		m.put(CALSCALE, EnumSet.of(VCardVersion.V4_0));
 		m.put(CHARSET, EnumSet.of(VCardVersion.V2_1));
@@ -1336,7 +1336,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
 	public List<ValidationWarning> validate(VCardVersion version) {
-		List<ValidationWarning> warnings = new ArrayList<ValidationWarning>(0);
+		List<ValidationWarning> warnings = new ArrayList<>(0);
 
 		/*
 		 * Check for invalid characters in names and values.
@@ -1588,13 +1588,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 				return false;
 			}
 
-			List<String> valueLower = new ArrayList<String>(value.size());
+			List<String> valueLower = new ArrayList<>(value.size());
 			for (String v : value) {
 				valueLower.add(v.toLowerCase());
 			}
 			Collections.sort(valueLower);
 
-			List<String> otherValueLower = new ArrayList<String>(otherValue.size());
+			List<String> otherValueLower = new ArrayList<>(otherValue.size());
 			for (String v : otherValue) {
 				otherValueLower.add(v.toLowerCase());
 			}

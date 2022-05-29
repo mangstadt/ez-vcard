@@ -72,7 +72,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * Creates an empty multimap.
 	 */
 	public ListMultimap() {
-		this(new LinkedHashMap<K, List<V>>());
+		this(new LinkedHashMap<>());
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @param initialCapacity the initial capacity of the underlying map.
 	 */
 	public ListMultimap(int initialCapacity) {
-		this(new LinkedHashMap<K, List<V>>(initialCapacity));
+		this(new LinkedHashMap<>(initialCapacity));
 	}
 
 	/**
@@ -92,9 +92,9 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	}
 
 	private static <K, V> Map<K, List<V>> copy(Map<K, List<V>> orig) {
-		Map<K, List<V>> map = new LinkedHashMap<K, List<V>>(orig.size());
+		Map<K, List<V>> map = new LinkedHashMap<>(orig.size());
 		for (Map.Entry<K, List<V>> entry : orig.entrySet()) {
-			List<V> values = new ArrayList<V>(entry.getValue());
+			List<V> values = new ArrayList<>(entry.getValue());
 			map.put(entry.getKey(), values);
 		}
 		return map;
@@ -125,7 +125,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 		key = sanitizeKey(key);
 		List<V> list = map.get(key);
 		if (list == null) {
-			list = new ArrayList<V>();
+			list = new ArrayList<>();
 			map.put(key, list);
 		}
 		list.add(value);
@@ -144,7 +144,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 		key = sanitizeKey(key);
 		List<V> list = map.get(key);
 		if (list == null) {
-			list = new ArrayList<V>();
+			list = new ArrayList<>();
 			map.put(key, list);
 		}
 		list.addAll(values);
@@ -160,7 +160,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 		key = sanitizeKey(key);
 		List<V> value = map.get(key);
 		if (value == null) {
-			value = new ArrayList<V>(0);
+			value = new ArrayList<>(0);
 		}
 		return new WrappedList(key, value, null);
 	}
@@ -224,7 +224,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 			return Collections.emptyList();
 		}
 
-		List<V> unmodifiableCopy = Collections.unmodifiableList(new ArrayList<V>(removed));
+		List<V> unmodifiableCopy = Collections.unmodifiableList(new ArrayList<>(removed));
 		removed.clear();
 		return unmodifiableCopy;
 	}
@@ -280,7 +280,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @return the values (this list is immutable)
 	 */
 	public List<V> values() {
-		List<V> list = new ArrayList<V>();
+		List<V> list = new ArrayList<>();
 		for (List<V> value : map.values()) {
 			list.addAll(value);
 		}
@@ -312,7 +312,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @return an immutable map
 	 */
 	public Map<K, List<V>> asMap() {
-		Map<K, List<V>> view = new LinkedHashMap<K, List<V>>(map.size());
+		Map<K, List<V>> view = new LinkedHashMap<>(map.size());
 		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
 			K key = entry.getKey();
 			List<V> value = entry.getValue();

@@ -250,7 +250,7 @@ public class AddressTest {
 		assertValidate(new Address()).run();
 
 		//one value
-		List<Address> properties = new ArrayList<Address>();
+		List<Address> properties = new ArrayList<>();
 		{
 			Address property = new Address();
 			property.getPoBoxes().add("one");
@@ -285,7 +285,7 @@ public class AddressTest {
 		}
 
 		//multiple values
-		properties = new ArrayList<Address>();
+		properties = new ArrayList<>();
 		{
 			Address property = new Address();
 			property.getPoBoxes().addAll(Arrays.asList("one", "two"));
@@ -352,7 +352,7 @@ public class AddressTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		Address property = new Address();
 		properties.add(property);

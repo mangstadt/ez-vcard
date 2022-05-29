@@ -46,7 +46,7 @@ import ezvcard.property.Email;
  * @author Michael Angstadt
  */
 public class EmailType extends VCardParameter {
-	private static final VCardParameterCaseClasses<EmailType> enums = new VCardParameterCaseClasses<EmailType>(EmailType.class);
+	private static final VCardParameterCaseClasses<EmailType> enums = new VCardParameterCaseClasses<>(EmailType.class);
 
 	@SupportedVersions({ V2_1, V3_0 })
 	public static final EmailType INTERNET = new EmailType("internet");

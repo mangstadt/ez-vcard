@@ -45,7 +45,7 @@ import ezvcard.util.DataUri;
  */
 public class ImagePropertyScribeTest {
 	private final ImagePropertyScribeImpl scribe = new ImagePropertyScribeImpl();
-	private final Sensei<ImagePropertyImpl> sensei = new Sensei<ImagePropertyImpl>(scribe);
+	private final Sensei<ImagePropertyImpl> sensei = new Sensei<>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
 	private final String urlWithoutExtension = "http://example.com/image";

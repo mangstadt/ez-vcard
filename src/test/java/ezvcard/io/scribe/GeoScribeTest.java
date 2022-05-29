@@ -43,7 +43,7 @@ import ezvcard.util.GeoUri;
  */
 public class GeoScribeTest {
 	private final GeoScribe scribe = new GeoScribe();
-	private final Sensei<Geo> sensei = new Sensei<Geo>(scribe);
+	private final Sensei<Geo> sensei = new Sensei<>(scribe);
 
 	private final Geo withBoth = new Geo(-12.34, 56.78);
 	private final Geo withLatitude = new Geo(-12.34, null);

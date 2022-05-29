@@ -85,7 +85,7 @@ import ezvcard.util.StringUtils;
  * @see VCard#validate
  */
 public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, List<ValidationWarning>>> {
-	private final ListMultimap<VCardProperty, ValidationWarning> warnings = new ListMultimap<VCardProperty, ValidationWarning>(new IdentityHashMap<VCardProperty, List<ValidationWarning>>());
+	private final ListMultimap<VCardProperty, ValidationWarning> warnings = new ListMultimap<>(new IdentityHashMap<>());
 
 	/**
 	 * Adds a validation warning.
@@ -130,7 +130,7 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 * @return the validation warnings
 	 */
 	public List<ValidationWarning> getByProperty(Class<? extends VCardProperty> propertyClass) {
-		List<ValidationWarning> propWarnings = new ArrayList<ValidationWarning>();
+		List<ValidationWarning> propWarnings = new ArrayList<>();
 		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
 			VCardProperty property = entry.getKey();
 

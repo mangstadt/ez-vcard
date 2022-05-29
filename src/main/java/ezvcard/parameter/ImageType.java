@@ -73,7 +73,7 @@ import ezvcard.property.Photo;
  * @author Michael Angstadt
  */
 public class ImageType extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<ImageType> enums = new MediaTypeCaseClasses<ImageType>(ImageType.class);
+	private static final MediaTypeCaseClasses<ImageType> enums = new MediaTypeCaseClasses<>(ImageType.class);
 
 	public static final ImageType GIF = new ImageType("GIF", "image/gif", "gif");
 	public static final ImageType JPEG = new ImageType("JPEG", "image/jpeg", "jpg");

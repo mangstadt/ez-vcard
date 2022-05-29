@@ -73,7 +73,7 @@ public class ListPropertyTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		ListPropertyImpl property = new ListPropertyImpl();
 		properties.add(property);

@@ -52,7 +52,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  */
 public class KeyScribeTest {
 	private final KeyScribe scribe = new KeyScribe();
-	private final Sensei<Key> sensei = new Sensei<Key>(scribe);
+	private final Sensei<Key> sensei = new Sensei<>(scribe);
 
 	private final String url = "http://example.com/key.pgp";
 	private final byte[] data = "data".getBytes();

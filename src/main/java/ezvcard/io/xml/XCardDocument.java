@@ -626,7 +626,7 @@ public class XCardDocument {
 		}
 
 		private List<Element> getChildElements(Element parent, QName qname) {
-			List<Element> elements = new ArrayList<Element>();
+			List<Element> elements = new ArrayList<>();
 			for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {
 				if (XmlUtils.hasQName(child, qname)) {
 					elements.add(child);
@@ -649,7 +649,7 @@ public class XCardDocument {
 		@Override
 		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
 			//group properties by group name (null = no group name)
-			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<String, VCardProperty>();
+			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<>();
 			for (VCardProperty property : properties) {
 				propertiesByGroup.put(property.getGroup(), property);
 			}

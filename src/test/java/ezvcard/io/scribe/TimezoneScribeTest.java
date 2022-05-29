@@ -47,7 +47,7 @@ import ezvcard.property.Timezone;
  */
 public class TimezoneScribeTest {
 	private final TimezoneScribe scribe = new TimezoneScribe();
-	private final Sensei<Timezone> sensei = new Sensei<Timezone>(scribe);
+	private final Sensei<Timezone> sensei = new Sensei<>(scribe);
 
 	private final ZoneOffset offset = ZoneOffset.ofHours(-5);
 	private final ZoneOffset offsetPositive = ZoneOffset.ofHours(5);

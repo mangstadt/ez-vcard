@@ -105,7 +105,7 @@ import ezvcard.property.VCardProperty;
  */
 public class VCardWriter extends StreamWriter implements Flushable {
 	private final VObjectWriter writer;
-	private final List<Boolean> prodIdStack = new ArrayList<Boolean>();
+	private final List<Boolean> prodIdStack = new ArrayList<>();
 	private VCardVersion targetVersion;
 	private TargetApplication targetApplication;
 	private Boolean includeTrailingSemicolons;

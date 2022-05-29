@@ -39,7 +39,7 @@ import ezvcard.property.Gender;
  */
 public class GenderScribeTest {
 	private final GenderScribe scribe = new GenderScribe();
-	private final Sensei<Gender> sensei = new Sensei<Gender>(scribe);
+	private final Sensei<Gender> sensei = new Sensei<>(scribe);
 
 	private final String gender = "M";
 	private final String text = "te;xt";

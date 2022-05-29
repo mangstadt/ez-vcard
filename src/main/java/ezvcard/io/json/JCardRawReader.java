@@ -194,7 +194,7 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private List<JsonValue> parseValues() throws IOException {
-		List<JsonValue> values = new ArrayList<JsonValue>();
+		List<JsonValue> values = new ArrayList<>();
 		while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end of the property array
 			JsonValue value = parseValue();
 			values.add(value);
@@ -219,7 +219,7 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private List<JsonValue> parseValueArray() throws IOException {
-		List<JsonValue> array = new ArrayList<JsonValue>();
+		List<JsonValue> array = new ArrayList<>();
 
 		while (parser.nextToken() != JsonToken.END_ARRAY) {
 			JsonValue value = parseValue();
@@ -230,7 +230,7 @@ public class JCardRawReader implements Closeable {
 	}
 
 	private Map<String, JsonValue> parseValueObject() throws IOException {
-		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		Map<String, JsonValue> object = new HashMap<>();
 
 		while (parser.nextToken() != JsonToken.END_OBJECT) {
 			checkCurrent(JsonToken.FIELD_NAME);

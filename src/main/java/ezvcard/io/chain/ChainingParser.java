@@ -147,7 +147,7 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 		}
 
 		try {
-			List<VCard> vcards = new ArrayList<VCard>();
+			List<VCard> vcards = new ArrayList<>();
 			VCard vcard;
 			while ((vcard = reader.readNext()) != null) {
 				if (warnings != null) {

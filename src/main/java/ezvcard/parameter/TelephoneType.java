@@ -46,7 +46,7 @@ import ezvcard.property.Telephone;
  * @author Michael Angstadt
  */
 public class TelephoneType extends VCardParameter {
-	private static final VCardParameterCaseClasses<TelephoneType> enums = new VCardParameterCaseClasses<TelephoneType>(TelephoneType.class);
+	private static final VCardParameterCaseClasses<TelephoneType> enums = new VCardParameterCaseClasses<>(TelephoneType.class);
 
 	@SupportedVersions({ V2_1, V3_0 })
 	public static final TelephoneType BBS = new TelephoneType("bbs");

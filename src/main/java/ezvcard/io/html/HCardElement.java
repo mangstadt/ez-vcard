@@ -133,7 +133,7 @@ public class HCardElement {
 	 */
 	public List<String> allValues(String cssClass) {
 		Elements elements = element.getElementsByClass(cssClass);
-		List<String> values = new ArrayList<String>(elements.size());
+		List<String> values = new ArrayList<>(elements.size());
 		for (Element element : elements) {
 			values.add(value(element));
 		}
@@ -146,7 +146,7 @@ public class HCardElement {
 	 */
 	public List<String> types() {
 		List<String> types = allValues("type");
-		List<String> lowerCaseTypes = new ArrayList<String>(types.size());
+		List<String> lowerCaseTypes = new ArrayList<>(types.size());
 		for (String type : types) {
 			lowerCaseTypes.add(type.toLowerCase());
 		}

@@ -477,7 +477,7 @@ public final class GeoUri {
 		 * @param coordB the second coordinate (i.e. longitude)
 		 */
 		public Builder(Double coordA, Double coordB) {
-			parameters = new LinkedHashMap<String, String>(0); //set initial size to 0 because parameters are rarely used
+			parameters = new LinkedHashMap<>(0); //set initial size to 0 because parameters are rarely used
 			coordA(coordA);
 			coordB(coordB);
 		}
@@ -492,7 +492,7 @@ public final class GeoUri {
 			this.coordC = original.coordC;
 			this.crs = original.crs;
 			this.uncertainty = original.uncertainty;
-			this.parameters = new LinkedHashMap<String, String>(original.parameters);
+			this.parameters = new LinkedHashMap<>(original.parameters);
 		}
 
 		/**

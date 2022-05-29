@@ -131,7 +131,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @return a list of warnings or an empty list if no problems were found
 	 */
 	public final List<ValidationWarning> validate(VCardVersion version, VCard vcard) {
-		List<ValidationWarning> warnings = new ArrayList<ValidationWarning>(0);
+		List<ValidationWarning> warnings = new ArrayList<>(0);
 
 		//check the supported versions
 		if (!isSupportedBy(version)) {

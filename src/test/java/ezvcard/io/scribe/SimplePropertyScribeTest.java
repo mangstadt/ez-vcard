@@ -45,7 +45,7 @@ import ezvcard.property.VCardProperty;
  */
 public class SimplePropertyScribeTest {
 	private final SimplePropertyScribeImpl scribe = new SimplePropertyScribeImpl();
-	private final Sensei<TestProperty> sensei = new Sensei<TestProperty>(scribe);
+	private final Sensei<TestProperty> sensei = new Sensei<>(scribe);
 
 	private final String value = "One, two\nthree; four\\.";
 	private final String valueEscaped = "One\\, two\nthree\\; four\\\\.";

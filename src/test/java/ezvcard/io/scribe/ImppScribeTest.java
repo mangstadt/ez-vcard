@@ -44,7 +44,7 @@ import ezvcard.property.Impp;
  */
 public class ImppScribeTest {
 	private final ImppScribe scribe = new ImppScribe();
-	private final Sensei<Impp> sensei = new Sensei<Impp>(scribe);
+	private final Sensei<Impp> sensei = new Sensei<>(scribe);
 
 	private final String uri = "aim:johndoe";
 	private final String badUri = ":::";

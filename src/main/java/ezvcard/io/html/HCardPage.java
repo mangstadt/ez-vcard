@@ -84,7 +84,7 @@ import freemarker.template.TemplateException;
  */
 public class HCardPage {
 	private final Template template;
-	private final List<VCard> vcards = new ArrayList<VCard>();
+	private final List<VCard> vcards = new ArrayList<>();
 
 	/**
 	 * Creates a new hCard page that uses the default template.
@@ -160,7 +160,7 @@ public class HCardPage {
 	 * @throws IOException if there's a problem writing to the writer
 	 */
 	public void write(Writer writer) throws IOException {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("vcards", vcards);
 		map.put("utils", new TemplateUtils());
 		map.put("translucentBg", readImage("translucent-bg.png", ImageType.PNG));

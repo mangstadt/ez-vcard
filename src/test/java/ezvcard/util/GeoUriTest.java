@@ -61,7 +61,7 @@ public class GeoUriTest {
 		assertEquals("wgs84", uri.getCrs());
 		assertEquals(12, uri.getUncertainty().doubleValue(), 0.01);
 		assertEquals("value", uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		params.put("param", "value");
 		assertEquals(params, uri.getParameters());
 	}
@@ -75,7 +75,7 @@ public class GeoUriTest {
 		assertEquals("wgs84", uri.getCrs());
 		assertEquals(12, uri.getUncertainty().doubleValue(), 0.01);
 		assertNull(uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		assertEquals(params, uri.getParameters());
 	}
 
@@ -88,7 +88,7 @@ public class GeoUriTest {
 		assertEquals("wgs84", uri.getCrs());
 		assertNull(uri.getUncertainty());
 		assertNull(uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		assertEquals(params, uri.getParameters());
 	}
 
@@ -101,7 +101,7 @@ public class GeoUriTest {
 		assertNull(uri.getCrs());
 		assertEquals(12, uri.getUncertainty().doubleValue(), 0.01);
 		assertNull(uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		assertEquals(params, uri.getParameters());
 	}
 
@@ -114,7 +114,7 @@ public class GeoUriTest {
 		assertNull(uri.getCrs());
 		assertNull(uri.getUncertainty());
 		assertNull(uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		assertEquals(params, uri.getParameters());
 	}
 
@@ -127,7 +127,7 @@ public class GeoUriTest {
 		assertNull(uri.getCrs());
 		assertNull(uri.getUncertainty());
 		assertNull(uri.getParameter("param"));
-		Map<String, String> params = new LinkedHashMap<String, String>();
+		Map<String, String> params = new LinkedHashMap<>();
 		assertEquals(params, uri.getParameters());
 	}
 
@@ -140,7 +140,7 @@ public class GeoUriTest {
 		assertNull(uri.getCrs());
 		assertNull(uri.getUncertainty());
 
-		Map<String, String> expectedParams = new HashMap<String, String>();
+		Map<String, String> expectedParams = new HashMap<>();
 		expectedParams.put("u", "invalid");
 		assertEquals(expectedParams, uri.getParameters());
 	}
@@ -192,7 +192,7 @@ public class GeoUriTest {
 		assertEquals("2", uri.getParameter("two"));
 		assertNull(uri.getParameter("three"));
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put("two", "2");
 		assertEquals(expected, uri.getParameters());
 	}

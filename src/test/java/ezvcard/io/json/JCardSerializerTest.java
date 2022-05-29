@@ -111,7 +111,7 @@ public class JCardSerializerTest {
 
 	@Test
 	public void serialize_multiple() throws Exception {
-		List<VCard> vcards = new ArrayList<VCard>();
+		List<VCard> vcards = new ArrayList<>();
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcards.add(vcard);
@@ -148,7 +148,7 @@ public class JCardSerializerTest {
 
 	@Test
 	public void serialize_multiple_prettyPrint() throws Exception {
-		List<VCard> vcards = new ArrayList<VCard>();
+		List<VCard> vcards = new ArrayList<>();
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcards.add(vcard);

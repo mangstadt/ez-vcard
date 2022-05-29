@@ -68,7 +68,7 @@ public class Sensei<T extends VCardProperty> {
 	 * @return the new instance
 	 */
 	public static <T extends VCardProperty> Sensei<T> create(VCardPropertyScribe<T> scribe) {
-		return new Sensei<T>(scribe);
+		return new Sensei<>(scribe);
 	}
 
 	/**

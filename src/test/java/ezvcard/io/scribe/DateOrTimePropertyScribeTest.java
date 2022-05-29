@@ -59,7 +59,7 @@ public class DateOrTimePropertyScribeTest {
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final DateOrTimeScribeImpl scribe = new DateOrTimeScribeImpl();
-	private final Sensei<DateOrTimePropertyImpl> sensei = new Sensei<DateOrTimePropertyImpl>(scribe);
+	private final Sensei<DateOrTimePropertyImpl> sensei = new Sensei<>(scribe);
 
 	private final LocalDate date = LocalDate.of(1980, 6, 5);
 	private final String dateStr = "19800605";

@@ -51,7 +51,7 @@ public class StructuredNameTest {
 		assertValidate(new StructuredName()).versions().run();
 
 		//single values
-		List<StructuredName> properties = new ArrayList<StructuredName>();
+		List<StructuredName> properties = new ArrayList<>();
 		{
 			StructuredName property = new StructuredName();
 			property.getAdditionalNames().add("one");
@@ -70,7 +70,7 @@ public class StructuredNameTest {
 		}
 
 		//multiple values
-		properties = new ArrayList<StructuredName>();
+		properties = new ArrayList<>();
 		{
 			StructuredName property = new StructuredName();
 			property.getAdditionalNames().addAll(Arrays.asList("one", "two"));

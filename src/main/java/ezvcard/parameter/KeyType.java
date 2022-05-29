@@ -70,7 +70,7 @@ import ezvcard.property.Key;
  * @author Michael Angstadt Jul 06, 2012
  */
 public class KeyType extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<KeyType> enums = new MediaTypeCaseClasses<KeyType>(KeyType.class);
+	private static final MediaTypeCaseClasses<KeyType> enums = new MediaTypeCaseClasses<>(KeyType.class);
 
 	public static final KeyType PGP = new KeyType("PGP", "application/pgp-keys", "pgp");
 	public static final KeyType GPG = new KeyType("GPG", "application/gpg", "gpg");

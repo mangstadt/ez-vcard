@@ -90,7 +90,7 @@ public class JCardValueTest {
 
 	@Test
 	public void asSingle_object() {
-		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals("", value.asSingle());
@@ -126,7 +126,7 @@ public class JCardValueTest {
 
 	@Test
 	public void asMulti_object() {
-		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals(Arrays.asList(), value.asMulti());
@@ -170,7 +170,7 @@ public class JCardValueTest {
 
 	@Test
 	public void asStructured_object() {
-		Map<String, JsonValue> object = new HashMap<String, JsonValue>();
+		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));
 		assertEquals(Arrays.asList(), value.asStructured());

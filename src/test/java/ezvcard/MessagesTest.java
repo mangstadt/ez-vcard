@@ -107,7 +107,7 @@ public class MessagesTest {
 
 	@Test
 	public void duplicate_keys() throws Exception {
-		Set<String> keys = new HashSet<String>();
+		Set<String> keys = new HashSet<>();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream()))) {
 			String line;
 			while ((line = reader.readLine()) != null) {

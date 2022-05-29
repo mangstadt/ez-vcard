@@ -31,7 +31,7 @@ public class Issue119 {
 		ScribeIndex index = new ScribeIndex();
 		WriteContext context = new WriteContext(VCardVersion.V3_0, null, true);
 		
-		List<String> actual = new ArrayList<String>();
+		List<String> actual = new ArrayList<>();
 		for (VCardProperty property : vcard) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(property); //compiler: raw type warning
 			String name = scribe.getPropertyName();

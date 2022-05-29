@@ -53,7 +53,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  */
 public class BinaryPropertyScribeTest {
 	private final BinaryPropertyScribeImpl scribe = new BinaryPropertyScribeImpl();
-	private final Sensei<BinaryPropertyImpl> sensei = new Sensei<BinaryPropertyImpl>(scribe);
+	private final Sensei<BinaryPropertyImpl> sensei = new Sensei<>(scribe);
 
 	private final String url = "http://example.com/image.jpg";
 	private final String urlUnknownExtension = "http://example.com/image.aaa";

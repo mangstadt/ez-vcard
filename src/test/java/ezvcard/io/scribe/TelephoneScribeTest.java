@@ -51,7 +51,7 @@ import ezvcard.util.TelUri;
  */
 public class TelephoneScribeTest {
 	private final TelephoneScribe scribe = new TelephoneScribe();
-	private final Sensei<Telephone> sensei = new Sensei<Telephone>(scribe);
+	private final Sensei<Telephone> sensei = new Sensei<>(scribe);
 
 	private final String text = "(555) 555-1234";
 	private final String textWithExt = "+1-555-555-1234 x101";

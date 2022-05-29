@@ -182,7 +182,7 @@ public class GenderTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		Gender property = new Gender((String) null);
 		properties.add(property);

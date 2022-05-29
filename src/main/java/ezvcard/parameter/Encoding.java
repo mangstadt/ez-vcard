@@ -44,7 +44,7 @@ import ezvcard.SupportedVersions;
  * @author Michael Angstadt
  */
 public class Encoding extends VCardParameter {
-	private static final VCardParameterCaseClasses<Encoding> enums = new VCardParameterCaseClasses<Encoding>(Encoding.class);
+	private static final VCardParameterCaseClasses<Encoding> enums = new VCardParameterCaseClasses<>(Encoding.class);
 
 	/**
 	 * Note: This specific parameter value is in upper-case in order to resolve

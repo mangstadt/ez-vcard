@@ -380,7 +380,7 @@ public final class TelUri {
 			 * TreeMap is used because parameters should appear in
 			 * lexicographical (alphabetical) order (see RFC 3966 p.5)
 			 */
-			parameters = new TreeMap<String, String>();
+			parameters = new TreeMap<>();
 		}
 
 		/**
@@ -460,7 +460,7 @@ public final class TelUri {
 			extension = original.extension;
 			isdnSubaddress = original.isdnSubaddress;
 			phoneContext = original.phoneContext;
-			parameters = new TreeMap<String, String>(original.parameters);
+			parameters = new TreeMap<>(original.parameters);
 		}
 
 		/**

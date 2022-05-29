@@ -67,7 +67,7 @@ public class ValidationWarningsTest {
 		warnings.add(new TestProperty2(), v2);
 		warnings.add(null, v3);
 
-		assertSetEquals(new HashSet<ValidationWarning>(warnings.getByProperty(TestProperty1.class)), v0, v1);
+		assertSetEquals(new HashSet<>(warnings.getByProperty(TestProperty1.class)), v0, v1);
 		assertEquals(Arrays.asList(v2), warnings.getByProperty(TestProperty2.class));
 		assertEquals(Arrays.asList(v3), warnings.getByProperty(null));
 		assertEquals(Arrays.asList(), warnings.getByProperty(TestProperty3.class));

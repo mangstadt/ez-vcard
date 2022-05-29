@@ -194,8 +194,8 @@ public class PropertySensei {
 		private final Class<? extends VCardProperty> clazz;
 		private Constructor<? extends VCardProperty> constructor;
 		private Object[] constructorValues;
-		private List<Method> methods = new ArrayList<Method>();
-		private List<Object[]> methodValues = new ArrayList<Object[]>();
+		private List<Method> methods = new ArrayList<>();
+		private List<Object[]> methodValues = new ArrayList<>();
 
 		public EqualsMethodAsserter(Class<? extends VCardProperty> clazz, Object... constructorValues) {
 			this.clazz = clazz;

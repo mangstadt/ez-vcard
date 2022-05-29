@@ -40,7 +40,7 @@ public class VCardParameterCaseClassesTest {
 
 	@Before
 	public void before() {
-		caseClasses = new VCardParameterCaseClasses<Pet>(Pet.class);
+		caseClasses = new VCardParameterCaseClasses<>(Pet.class);
 	}
 
 	@Test

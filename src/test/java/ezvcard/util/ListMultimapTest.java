@@ -56,7 +56,7 @@ import org.junit.Test;
 public class ListMultimapTest {
 	@Test
 	public void first() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "11");
 		map.put("one", "111");
@@ -67,7 +67,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void get() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("two", "22");
 		map.put("two", "2");
@@ -79,7 +79,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void containsKey() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("two", "22");
 		map.put("two", "2");
@@ -91,7 +91,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void put() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 		map.put("one", "11");
@@ -103,7 +103,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void putAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.putAll("one", Arrays.asList("111", "11"));
 		map.put("two", "2");
@@ -111,14 +111,14 @@ public class ListMultimapTest {
 		assertEquals(Arrays.asList("1", "111", "11"), map.get("one"));
 		assertEquals(Arrays.asList("2"), map.get("two"));
 
-		map.putAll("one", new ArrayList<String>());
+		map.putAll("one", new ArrayList<>());
 		assertEquals(Arrays.asList("1", "111", "11"), map.get("one"));
 		assertEquals(Arrays.asList("2"), map.get("two"));
 	}
 
 	@Test
 	public void replace_string() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 
@@ -128,7 +128,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void replace_collection() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 
@@ -138,7 +138,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void replace_null_value_string() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 
@@ -148,7 +148,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void remove() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("two", "22");
 		map.put("two", "2");
@@ -167,7 +167,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void removeAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("two", "22");
 		map.put("two", "2");
@@ -192,7 +192,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void keySet() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 		map.put("one", "11");
@@ -217,7 +217,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void values() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		map.put("one", "111");
 		map.put("one", "11");
@@ -235,7 +235,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void isEmpty() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 
 		assertTrue(map.isEmpty());
 		map.put("one", "1");
@@ -246,7 +246,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void size() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 
 		assertEquals(0, map.size());
 
@@ -265,7 +265,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void copy_constructor() {
-		ListMultimap<String, String> original = new ListMultimap<String, String>();
+		ListMultimap<String, String> original = new ListMultimap<>();
 		original.put("one", "1");
 		original.put("one", "111");
 		original.put("one", "11");
@@ -273,7 +273,7 @@ public class ListMultimapTest {
 		original.put("three", "3");
 
 		//make sure the copy was successful
-		ListMultimap<String, String> copy = new ListMultimap<String, String>(original);
+		ListMultimap<String, String> copy = new ListMultimap<>(original);
 		assertEquals(Arrays.asList("1", "111", "11"), copy.get("one"));
 		assertEquals(Arrays.asList("2"), copy.get("two"));
 		assertEquals(Arrays.asList("3"), copy.get("three"));
@@ -301,7 +301,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void clear() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("one", "1");
 		assertEquals(1, map.size());
 		map.clear();
@@ -332,7 +332,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void asMap() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("foo", "1");
 		map.put("foo", "2");
 		map.put("bar", "1");
@@ -350,7 +350,7 @@ public class ListMultimapTest {
 		}
 
 		try {
-			m.put("foo", new ArrayList<String>());
+			m.put("foo", new ArrayList<>());
 			fail();
 		} catch (UnsupportedOperationException e) {
 			//expected
@@ -359,7 +359,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void iterator() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("foo", "1");
 		map.put("foo", "2");
 		map.put("bar", "1");
@@ -376,7 +376,7 @@ public class ListMultimapTest {
 			//expected
 		}
 		try {
-			entry.setValue(new ArrayList<String>());
+			entry.setValue(new ArrayList<>());
 			fail();
 		} catch (UnsupportedOperationException e) {
 			//expected
@@ -398,7 +398,7 @@ public class ListMultimapTest {
 			//expected
 		}
 		try {
-			entry.setValue(new ArrayList<String>());
+			entry.setValue(new ArrayList<>());
 			fail();
 		} catch (UnsupportedOperationException e) {
 			//expected
@@ -415,11 +415,11 @@ public class ListMultimapTest {
 
 	@Test
 	public void equals() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		assertEqualsMethodEssentials(map);
 
-		ListMultimap<String, String> one = new ListMultimap<String, String>();
-		ListMultimap<String, String> two = new ListMultimap<String, String>();
+		ListMultimap<String, String> one = new ListMultimap<>();
+		ListMultimap<String, String> two = new ListMultimap<>();
 		two.put("foo", "1");
 		assertNotEqualsBothWays(one, two);
 
@@ -430,10 +430,10 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_addAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
-		assertFalse(list.addAll(new ArrayList<String>()));
+		assertFalse(list.addAll(new ArrayList<>()));
 
 		assertTrue(list.addAll(Arrays.asList("1", "2")));
 		assertEquals(Arrays.asList("1", "2"), list);
@@ -446,10 +446,10 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_addAll_index() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
-		assertFalse(list.addAll(0, new ArrayList<String>()));
+		assertFalse(list.addAll(0, new ArrayList<>()));
 
 		assertTrue(list.addAll(0, Arrays.asList("1", "2")));
 		assertEquals(Arrays.asList("1", "2"), list);
@@ -462,7 +462,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_get() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
 		map.put("foo", "1");
@@ -471,7 +471,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_set() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
 		map.put("foo", "1");
@@ -482,7 +482,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_add() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
 		list.add("1");
@@ -492,7 +492,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_add_index() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
 		list.add(0, "1");
@@ -502,7 +502,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_remove() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 
@@ -516,7 +516,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_removeAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -541,7 +541,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_retainAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -562,7 +562,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_clear() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -579,7 +579,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_indexOf() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "1");
@@ -591,7 +591,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_lastIndexOf() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "1");
@@ -603,7 +603,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_subList() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.putAll("foo", Arrays.asList("1", "2", "3", "4"));
 
 		List<String> list = map.get("foo");
@@ -635,7 +635,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_subSubList() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		map.putAll("foo", Arrays.asList("1", "2", "3", "4"));
 
 		List<String> list = map.get("foo");
@@ -663,7 +663,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_equals() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 
@@ -674,7 +674,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_hashCode() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("bar", "1");
@@ -684,7 +684,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_contains() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 
@@ -694,7 +694,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_containsAll() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -706,7 +706,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_listIterator() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -795,7 +795,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_listIterator_empty_add() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 
 		ListIterator<String> it = list.listIterator();
@@ -816,7 +816,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_listIterator_index() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -834,7 +834,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_iterator() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> list = map.get("foo");
 		map.put("foo", "1");
 		map.put("foo", "2");
@@ -856,7 +856,7 @@ public class ListMultimapTest {
 
 	@Test
 	public void WrappedList_two_instances() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>();
+		ListMultimap<String, String> map = new ListMultimap<>();
 		List<String> one = map.get("foo");
 		List<String> two = map.get("foo");
 

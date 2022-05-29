@@ -232,7 +232,7 @@ public class DateOrTimeProperty extends VCardProperty implements HasAltId {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("text", text);
 		values.put("date", date);
 		values.put("partialDate", partialDate);

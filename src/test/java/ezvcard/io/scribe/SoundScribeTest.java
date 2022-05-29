@@ -45,7 +45,7 @@ import ezvcard.util.DataUri;
  */
 public class SoundScribeTest {
 	private final SoundScribe scribe = new SoundScribe();
-	private final Sensei<Sound> sensei = new Sensei<Sound>(scribe);
+	private final Sensei<Sound> sensei = new Sensei<>(scribe);
 
 	private final String url = "http://example.com/song.mp3";
 	private final String urlUnknownExtension = "http://example.com/song.abc";

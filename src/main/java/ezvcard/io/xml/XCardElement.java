@@ -118,7 +118,7 @@ public class XCardElement {
 	 * @return the values of the child elements
 	 */
 	public List<String> all(String localName) {
-		List<String> childrenText = new ArrayList<String>();
+		List<String> childrenText = new ArrayList<>();
 		for (Element child : children()) {
 			if (localName.equals(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
 				String text = child.getTextContent();
@@ -166,7 +166,7 @@ public class XCardElement {
 			return Collections.singletonList(element);
 		}
 
-		List<Element> elements = new ArrayList<Element>(values.size());
+		List<Element> elements = new ArrayList<>(values.size());
 		for (String value : values) {
 			elements.add(append(name, value));
 		}

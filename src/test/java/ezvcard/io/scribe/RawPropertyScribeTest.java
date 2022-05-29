@@ -41,7 +41,7 @@ import ezvcard.property.RawProperty;
  */
 public class RawPropertyScribeTest {
 	private final RawPropertyScribe scribe = new RawPropertyScribe("RAW");
-	private final Sensei<RawProperty> sensei = new Sensei<RawProperty>(scribe);
+	private final Sensei<RawProperty> sensei = new Sensei<>(scribe);
 
 	private final RawProperty withValue = new RawProperty("RAW", "value");
 	private final RawProperty withEscapedChar = new RawProperty("RAW", "one\\,two");

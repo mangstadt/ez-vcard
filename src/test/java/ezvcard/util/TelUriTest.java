@@ -94,7 +94,7 @@ public class TelUriTest {
 		assertNull(uri.getIsdnSubaddress());
 		assertEquals("value1", uri.getParameter("param1"));
 		assertEquals("value2", uri.getParameter("param2"));
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("param1", "value1");
 		params.put("param2", "value2");
 		assertEquals(params, uri.getParameters());
@@ -110,7 +110,7 @@ public class TelUriTest {
 		assertEquals("", uri.getParameter("param1"));
 		assertEquals("", uri.getParameter("param2"));
 		assertEquals("", uri.getParameter("param3"));
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("param1", "");
 		params.put("param2", "");
 		params.put("param3", "");
@@ -126,7 +126,7 @@ public class TelUriTest {
 		assertNull(uri.getIsdnSubaddress());
 		assertEquals("value1", uri.getParameter("param1"));
 		assertEquals("value2", uri.getParameter("param2"));
-		Map<String, String> params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<>();
 		params.put("param1", "value1");
 		params.put("param2", "value2");
 		assertEquals(params, uri.getParameters());
@@ -205,7 +205,7 @@ public class TelUriTest {
 		assertEquals("2", uri.getParameter("two"));
 		assertNull(uri.getParameter("three"));
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put("two", "2");
 		assertEquals(expected, uri.getParameters());
 	}

@@ -41,7 +41,7 @@ import ezvcard.property.Related;
  * @author Michael Angstadt
  */
 public class RelatedType extends VCardParameter {
-	private static final VCardParameterCaseClasses<RelatedType> enums = new VCardParameterCaseClasses<RelatedType>(RelatedType.class);
+	private static final VCardParameterCaseClasses<RelatedType> enums = new VCardParameterCaseClasses<>(RelatedType.class);
 
 	public static final RelatedType ACQUAINTANCE = new RelatedType("acquaintance");
 	public static final RelatedType AGENT = new RelatedType("agent");

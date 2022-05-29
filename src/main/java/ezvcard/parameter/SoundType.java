@@ -70,7 +70,7 @@ import ezvcard.property.Sound;
  * @author Michael Angstadt
  */
 public class SoundType extends MediaTypeParameter {
-	private static final MediaTypeCaseClasses<SoundType> enums = new MediaTypeCaseClasses<SoundType>(SoundType.class);
+	private static final MediaTypeCaseClasses<SoundType> enums = new MediaTypeCaseClasses<>(SoundType.class);
 
 	public static final SoundType AAC = new SoundType("AAC", "audio/aac", "aac");
 	public static final SoundType MIDI = new SoundType("MIDI", "audio/midi", "mid");

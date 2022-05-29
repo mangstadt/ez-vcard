@@ -62,12 +62,12 @@ public class StringUtilsTest {
 
 	@Test
 	public void toLowerCase() {
-		Map<String, String> input = new HashMap<String, String>();
+		Map<String, String> input = new HashMap<>();
 		input.put("ONE", "TWO");
 		input.put(null, "THREE");
 		input.put("FOUR", null);
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put("one", "two");
 		expected.put(null, "three");
 		expected.put("four", null);

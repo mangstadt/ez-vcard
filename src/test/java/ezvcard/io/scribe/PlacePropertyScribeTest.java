@@ -44,7 +44,7 @@ import ezvcard.util.GeoUri;
  */
 public class PlacePropertyScribeTest {
 	private final PlacePropertyScribeImpl scribe = new PlacePropertyScribeImpl();
-	private final Sensei<PlaceProperty> sensei = new Sensei<PlaceProperty>(scribe);
+	private final Sensei<PlaceProperty> sensei = new Sensei<>(scribe);
 
 	private final String text = "New York, NY";
 	private final String textEscaped = "New York\\, NY";

@@ -105,7 +105,7 @@ public class JCardDeserializerTest {
 		JCardModule module = new JCardModule();
 		mapper.registerModule(module);
 
-		List<VCard> expected = new ArrayList<VCard>();
+		List<VCard> expected = new ArrayList<>();
 
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);

@@ -112,8 +112,8 @@ public class XCardReader extends StreamReader {
 
 	private final ReadThread thread = new ReadThread();
 	private final Object lock = new Object();
-	private final BlockingQueue<Object> readerBlock = new ArrayBlockingQueue<Object>(1);
-	private final BlockingQueue<Object> threadBlock = new ArrayBlockingQueue<Object>(1);
+	private final BlockingQueue<Object> readerBlock = new ArrayBlockingQueue<>(1);
+	private final BlockingQueue<Object> threadBlock = new ArrayBlockingQueue<>(1);
 
 	/**
 	 * @param xml the XML to read from
@@ -488,7 +488,7 @@ public class XCardReader extends StreamReader {
 	 * </p>
 	 */
 	private static class XCardStructure {
-		private final List<ElementType> stack = new ArrayList<ElementType>();
+		private final List<ElementType> stack = new ArrayList<>();
 
 		/**
 		 * Pops the top element type off the stack.

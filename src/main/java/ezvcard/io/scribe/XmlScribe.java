@@ -125,7 +125,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 	}
 
 	private String valueToString(Document document) {
-		Map<String, String> props = new HashMap<String, String>();
+		Map<String, String> props = new HashMap<>();
 		props.put(OutputKeys.OMIT_XML_DECLARATION, "yes");
 		return XmlUtils.toString(document, props);
 	}

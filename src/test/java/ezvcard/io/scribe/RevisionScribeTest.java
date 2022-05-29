@@ -52,7 +52,7 @@ public class RevisionScribeTest {
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final RevisionScribe scribe = new RevisionScribe();
-	private final Sensei<Revision> sensei = new Sensei<Revision>(scribe);
+	private final Sensei<Revision> sensei = new Sensei<>(scribe);
 
 	private final Instant datetime = LocalDateTime.of(1980, 6, 5, 12, 10, 20).toInstant(ZoneOffset.UTC);
 	private final String datetimeStr = "19800605T121020Z";

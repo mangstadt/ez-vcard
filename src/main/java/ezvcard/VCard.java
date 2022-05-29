@@ -117,7 +117,7 @@ import ezvcard.util.StringUtils;
  */
 public class VCard implements Iterable<VCardProperty> {
 	private VCardVersion version;
-	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<Class<? extends VCardProperty>, VCardProperty>();
+	private final ListMultimap<Class<? extends VCardProperty>, VCardProperty> properties = new ListMultimap<>();
 
 	/**
 	 * Creates a new vCard set to version 3.0.
@@ -4219,7 +4219,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * {@link VCard} object and vice versa)
 	 */
 	public <T extends VCardProperty> List<T> getProperties(Class<T> clazz) {
-		return new VCardPropertyList<T>(clazz);
+		return new VCardPropertyList<>(clazz);
 	}
 
 	/**
@@ -4231,8 +4231,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
-		List<T> propertiesWithoutAltIds = new ArrayList<T>();
-		ListMultimap<String, T> propertiesWithAltIds = new ListMultimap<String, T>();
+		List<T> propertiesWithoutAltIds = new ArrayList<>();
+		ListMultimap<String, T> propertiesWithAltIds = new ListMultimap<>();
 		for (T property : getProperties(clazz)) {
 			String altId = property.getAltId();
 			if (altId == null) {
@@ -4243,14 +4243,14 @@ public class VCard implements Iterable<VCardProperty> {
 		}
 
 		int size = propertiesWithoutAltIds.size() + propertiesWithAltIds.size();
-		List<List<T>> listToReturn = new ArrayList<List<T>>(size);
+		List<List<T>> listToReturn = new ArrayList<>(size);
 		for (Map.Entry<String, List<T>> entry : propertiesWithAltIds) {
 			listToReturn.add(Collections.unmodifiableList(entry.getValue()));
 		}
 
 		//put properties without ALTIDs at the end
 		for (T property : propertiesWithoutAltIds) {
-			List<T> list = new ArrayList<T>(1);
+			List<T> list = new ArrayList<>(1);
 			list.add(property);
 			listToReturn.add(Collections.unmodifiableList(list));
 		}
@@ -4338,7 +4338,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties (this list is immutable)
 	 */
 	public List<RawProperty> getExtendedProperties(String name) {
-		List<RawProperty> properties = new ArrayList<RawProperty>();
+		List<RawProperty> properties = new ArrayList<>();
 
 		for (RawProperty raw : getExtendedProperties()) {
 			if (raw.getPropertyName().equalsIgnoreCase(name)) {
@@ -4415,7 +4415,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public List<RawProperty> removeExtendedProperty(String name) {
 		List<RawProperty> all = getExtendedProperties();
-		List<RawProperty> toRemove = new ArrayList<RawProperty>();
+		List<RawProperty> toRemove = new ArrayList<>();
 		for (RawProperty property : all) {
 			if (property.getPropertyName().equalsIgnoreCase(name)) {
 				toRemove.add(property);
@@ -4499,7 +4499,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the new list (this list is immutable)
 	 */
 	private static <T> List<T> castList(List<?> list, Class<T> castTo) {
-		List<T> casted = new ArrayList<T>(list.size());
+		List<T> casted = new ArrayList<>(list.size());
 		for (Object object : list) {
 			casted.add(castTo.cast(object));
 		}
@@ -4583,7 +4583,7 @@ public class VCard implements Iterable<VCardProperty> {
 				return false;
 			}
 
-			List<VCardProperty> otherValueCopy = new ArrayList<VCardProperty>(otherValue);
+			List<VCardProperty> otherValueCopy = new ArrayList<>(otherValue);
 			for (VCardProperty property : value) {
 				if (!otherValueCopy.remove(property)) {
 					return false;
@@ -4602,7 +4602,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return a unique ALTID
 	 */
 	static <T extends HasAltId> String generateAltId(Collection<T> properties) {
-		Set<String> altIds = new HashSet<String>();
+		Set<String> altIds = new HashSet<>();
 		for (T property : properties) {
 			String altId = property.getAltId();
 			if (altId != null) {

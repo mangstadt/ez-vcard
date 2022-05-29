@@ -148,7 +148,7 @@ public class TelephoneTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		Telephone property = new Telephone((String) null);
 		properties.add(property);

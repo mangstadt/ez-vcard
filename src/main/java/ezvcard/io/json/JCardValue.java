@@ -85,7 +85,7 @@ public class JCardValue {
 	 * @return the jCard value
 	 */
 	public static JCardValue multi(List<?> values) {
-		List<JsonValue> multiValues = new ArrayList<JsonValue>(values.size());
+		List<JsonValue> multiValues = new ArrayList<>(values.size());
 		for (Object value : values) {
 			multiValues.add(new JsonValue(value));
 		}
@@ -105,7 +105,7 @@ public class JCardValue {
 	 * @return the jCard value
 	 */
 	public static JCardValue structured(Object... values) {
-		List<List<?>> valuesList = new ArrayList<List<?>>(values.length);
+		List<List<?>> valuesList = new ArrayList<>(values.length);
 		for (Object value : values) {
 			List<?> list = (value instanceof List) ? (List<?>) value : Collections.singletonList(value);
 			valuesList.add(list);
@@ -119,7 +119,7 @@ public class JCardValue {
 	 * @return the jCard value
 	 */
 	public static JCardValue structured(List<List<?>> values) {
-		List<JsonValue> array = new ArrayList<JsonValue>(values.size());
+		List<JsonValue> array = new ArrayList<>(values.size());
 
 		for (List<?> list : values) {
 			if (list.isEmpty()) {
@@ -136,7 +136,7 @@ public class JCardValue {
 				continue;
 			}
 
-			List<JsonValue> subArray = new ArrayList<JsonValue>(list.size());
+			List<JsonValue> subArray = new ArrayList<>(list.size());
 			for (Object value : list) {
 				if (value == null) {
 					value = "";
@@ -202,7 +202,7 @@ public class JCardValue {
 		//["gender", {}, "text", ["M", "text"] ]
 		List<JsonValue> array = first.getArray();
 		if (array != null) {
-			List<List<String>> components = new ArrayList<List<String>>(array.size());
+			List<List<String>> components = new ArrayList<>(array.size());
 			for (JsonValue value : array) {
 				if (value.isNull()) {
 					components.add(Collections.<String>emptyList());
@@ -219,7 +219,7 @@ public class JCardValue {
 
 				List<JsonValue> subArray = value.getArray();
 				if (subArray != null) {
-					List<String> component = new ArrayList<String>(subArray.size());
+					List<String> component = new ArrayList<>(subArray.size());
 					for (JsonValue subArrayValue : subArray) {
 						if (subArrayValue.isNull()) {
 							component.add("");
@@ -246,7 +246,7 @@ public class JCardValue {
 		//["gender", {}, "text", "M"]
 		Object obj = first.getValue();
 		if (obj != null) {
-			List<List<String>> components = new ArrayList<List<String>>(1);
+			List<List<String>> components = new ArrayList<>(1);
 			String s = obj.toString();
 			List<String> component = s.isEmpty() ? Collections.<String>emptyList() : Collections.singletonList(s);
 			components.add(component);
@@ -255,7 +255,7 @@ public class JCardValue {
 
 		//["gender", {}, "text", null]
 		if (first.isNull()) {
-			List<List<String>> components = new ArrayList<List<String>>(1);
+			List<List<String>> components = new ArrayList<>(1);
 			components.add(Collections.<String>emptyList());
 			return components;
 		}
@@ -272,7 +272,7 @@ public class JCardValue {
 			return Collections.emptyList();
 		}
 
-		List<String> multi = new ArrayList<String>(values.size());
+		List<String> multi = new ArrayList<>(values.size());
 		for (JsonValue value : values) {
 			if (value.isNull()) {
 				multi.add("");

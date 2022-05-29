@@ -50,7 +50,7 @@ import ezvcard.property.Address;
  */
 public class AddressScribeTest {
 	private final AddressScribe scribe = new AddressScribe();
-	private final Sensei<Address> sensei = new Sensei<Address>(scribe);
+	private final Sensei<Address> sensei = new Sensei<>(scribe);
 
 	private final Address withAllFields = new Address();
 	{

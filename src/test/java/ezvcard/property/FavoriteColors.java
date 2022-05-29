@@ -47,7 +47,7 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  */
 public class FavoriteColors extends VCardProperty {
-	private List<String> colors = new ArrayList<String>();
+	private List<String> colors = new ArrayList<>();
 
 	public List<String> getColors() {
 		return colors;

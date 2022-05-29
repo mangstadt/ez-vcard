@@ -49,7 +49,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  */
 public abstract class StreamReader implements Closeable {
-	protected final List<ParseWarning> warnings = new ArrayList<ParseWarning>();
+	protected final List<ParseWarning> warnings = new ArrayList<>();
 	protected ScribeIndex index = new ScribeIndex();
 	protected ParseContext context;
 
@@ -59,7 +59,7 @@ public abstract class StreamReader implements Closeable {
 	 * @throws IOException if there's a problem reading from the stream
 	 */
 	public List<VCard> readAll() throws IOException {
-		List<VCard> vcards = new ArrayList<VCard>();
+		List<VCard> vcards = new ArrayList<>();
 		VCard vcard;
 		while ((vcard = readNext()) != null) {
 			vcards.add(vcard);
@@ -96,14 +96,14 @@ public abstract class StreamReader implements Closeable {
 		List<Address> adrs = vcard.getAddresses();
 		for (Label label : labels) {
 			boolean orphaned = true;
-			Set<AddressType> labelTypes = new HashSet<AddressType>(label.getTypes());
+			Set<AddressType> labelTypes = new HashSet<>(label.getTypes());
 			for (Address adr : adrs) {
 				if (adr.getLabel() != null) {
 					//a label has already been assigned to it
 					continue;
 				}
 
-				Set<AddressType> adrTypes = new HashSet<AddressType>(adr.getTypes());
+				Set<AddressType> adrTypes = new HashSet<>(adr.getTypes());
 				if (adrTypes.equals(labelTypes)) {
 					adr.setLabel(label.getValue());
 					orphaned = false;
@@ -151,6 +151,6 @@ public abstract class StreamReader implements Closeable {
 	 * @return the warnings or empty list if there were no warnings
 	 */
 	public List<ParseWarning> getWarnings() {
-		return new ArrayList<ParseWarning>(warnings);
+		return new ArrayList<>(warnings);
 	}
 }

@@ -149,7 +149,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public static ChainingTextParser<ChainingTextParser<?>> parse(Path file) {
-		return new ChainingTextParser<ChainingTextParser<?>>(file);
+		return new ChainingTextParser<>(file);
 	}
 
 	/**
@@ -167,7 +167,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public static ChainingTextParser<ChainingTextParser<?>> parse(InputStream in) {
-		return new ChainingTextParser<ChainingTextParser<?>>(in);
+		return new ChainingTextParser<>(in);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350 (4.0)</a>
 	 */
 	public static ChainingTextParser<ChainingTextParser<?>> parse(Reader reader) {
-		return new ChainingTextParser<ChainingTextParser<?>>(reader);
+		return new ChainingTextParser<>(reader);
 	}
 
 	/**
@@ -221,7 +221,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ChainingXmlParser<ChainingXmlParser<?>> parseXml(Path file) {
-		return new ChainingXmlParser<ChainingXmlParser<?>>(file);
+		return new ChainingXmlParser<>(file);
 	}
 
 	/**
@@ -239,7 +239,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ChainingXmlParser<ChainingXmlParser<?>> parseXml(InputStream in) {
-		return new ChainingXmlParser<ChainingXmlParser<?>>(in);
+		return new ChainingXmlParser<>(in);
 	}
 
 	/**
@@ -265,7 +265,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc6351">RFC 6351</a>
 	 */
 	public static ChainingXmlParser<ChainingXmlParser<?>> parseXml(Reader reader) {
-		return new ChainingXmlParser<ChainingXmlParser<?>>(reader);
+		return new ChainingXmlParser<>(reader);
 	}
 
 	/**
@@ -315,7 +315,7 @@ public final class Ezvcard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(Path file) {
-		return new ChainingHtmlParser<ChainingHtmlParser<?>>(file);
+		return new ChainingHtmlParser<>(file);
 	}
 
 	/**
@@ -331,7 +331,7 @@ public final class Ezvcard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(InputStream in) {
-		return new ChainingHtmlParser<ChainingHtmlParser<?>>(in);
+		return new ChainingHtmlParser<>(in);
 	}
 
 	/**
@@ -347,7 +347,7 @@ public final class Ezvcard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(Reader reader) {
-		return new ChainingHtmlParser<ChainingHtmlParser<?>>(reader);
+		return new ChainingHtmlParser<>(reader);
 	}
 
 	/**
@@ -363,7 +363,7 @@ public final class Ezvcard {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public static ChainingHtmlParser<ChainingHtmlParser<?>> parseHtml(URL url) {
-		return new ChainingHtmlParser<ChainingHtmlParser<?>>(url);
+		return new ChainingHtmlParser<>(url);
 	}
 
 	/**
@@ -395,7 +395,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ChainingJsonParser<ChainingJsonParser<?>> parseJson(Path file) {
-		return new ChainingJsonParser<ChainingJsonParser<?>>(file);
+		return new ChainingJsonParser<>(file);
 	}
 
 	/**
@@ -411,7 +411,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ChainingJsonParser<ChainingJsonParser<?>> parseJson(InputStream in) {
-		return new ChainingJsonParser<ChainingJsonParser<?>>(in);
+		return new ChainingJsonParser<>(in);
 	}
 
 	/**
@@ -427,7 +427,7 @@ public final class Ezvcard {
 	 * @see <a href="http://tools.ietf.org/html/rfc7095">RFC 7095</a>
 	 */
 	public static ChainingJsonParser<ChainingJsonParser<?>> parseJson(Reader reader) {
-		return new ChainingJsonParser<ChainingJsonParser<?>>(reader);
+		return new ChainingJsonParser<>(reader);
 	}
 
 	/**

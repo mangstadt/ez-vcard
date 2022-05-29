@@ -535,14 +535,14 @@ public class VCardReader extends StreamReader {
 	 * Keeps track of the hierarchy of nested vCards.
 	 */
 	private static class VCardStack {
-		private final List<Item> stack = new ArrayList<Item>();
+		private final List<Item> stack = new ArrayList<>();
 
 		/**
 		 * Adds a vCard to the stack.
 		 * @param vcard the vcard to add
 		 */
 		public void push(VCard vcard) {
-			stack.add(new Item(vcard, new ArrayList<Label>()));
+			stack.add(new Item(vcard, new ArrayList<>()));
 		}
 
 		/**

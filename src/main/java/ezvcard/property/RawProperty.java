@@ -130,7 +130,7 @@ public class RawProperty extends TextProperty {
 
 	@Override
 	protected Map<String, Object> toStringValues() {
-		Map<String, Object> values = new LinkedHashMap<String, Object>();
+		Map<String, Object> values = new LinkedHashMap<>();
 		values.put("propertyName", propertyName);
 		values.put("dataType", dataType);
 		values.put("value", value);

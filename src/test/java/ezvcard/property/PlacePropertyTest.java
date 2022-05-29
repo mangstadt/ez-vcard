@@ -165,7 +165,7 @@ public class PlacePropertyTest {
 
 	@Test
 	public void equals() {
-		List<VCardProperty> properties = new ArrayList<VCardProperty>();
+		List<VCardProperty> properties = new ArrayList<>();
 
 		PlaceProperty property = new PlaceProperty();
 		properties.add(property);

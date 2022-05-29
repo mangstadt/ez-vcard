@@ -49,7 +49,7 @@ public class XCardOutputPropertiesTest {
 	public void constructor_empty() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 
 		assertEquals(expected, properties);
@@ -59,7 +59,7 @@ public class XCardOutputPropertiesTest {
 	public void constructor() {
 		XCardOutputProperties properties = new XCardOutputProperties(1, "1.1");
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 		expected.put(OutputKeys.INDENT, "yes");
 		expected.put(INDENT_AMT, "1");
@@ -78,7 +78,7 @@ public class XCardOutputPropertiesTest {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setIndent(1);
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 		expected.put(OutputKeys.INDENT, "yes");
 		expected.put(INDENT_AMT, "1");
@@ -92,7 +92,7 @@ public class XCardOutputPropertiesTest {
 		properties.setIndent(1);
 		properties.setIndent(null);
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 
 		assertEquals(expected, properties);
@@ -142,7 +142,7 @@ public class XCardOutputPropertiesTest {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setXmlVersion("1.1");
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 		expected.put(OutputKeys.VERSION, "1.1");
 
@@ -155,7 +155,7 @@ public class XCardOutputPropertiesTest {
 		properties.setXmlVersion("1.1");
 		properties.setXmlVersion(null);
 
-		Map<String, String> expected = new HashMap<String, String>();
+		Map<String, String> expected = new HashMap<>();
 		expected.put(OutputKeys.METHOD, "xml");
 
 		assertEquals(expected, properties);

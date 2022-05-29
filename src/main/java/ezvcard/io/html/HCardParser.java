@@ -90,7 +90,7 @@ public class HCardParser extends StreamReader {
 	private final String pageUrl;
 	private final Elements vcardElements;
 	private final Iterator<Element> vcardElementsIt;
-	private final List<Label> labels = new ArrayList<Label>();
+	private final List<Label> labels = new ArrayList<>();
 
 	private VCard vcard;
 	private Elements embeddedVCards = new Elements();

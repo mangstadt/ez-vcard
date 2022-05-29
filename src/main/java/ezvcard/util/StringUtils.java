@@ -72,7 +72,7 @@ public final class StringUtils {
 	 * @return the copy with lowercase keys and values
 	 */
 	public static Map<String, String> toLowerCase(Map<String, String> map) {
-		Map<String, String> lowerCaseMap = new HashMap<String, String>(map.size());
+		Map<String, String> lowerCaseMap = new HashMap<>(map.size());
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String key = entry.getKey();
 			key = (key == null) ? null : key.toLowerCase();

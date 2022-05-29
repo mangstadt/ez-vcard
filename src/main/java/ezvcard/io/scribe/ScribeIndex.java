@@ -75,9 +75,9 @@ import ezvcard.property.Xml;
  */
 public class ScribeIndex {
 	//define standard property scribes
-	private static final Map<String, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<String, VCardPropertyScribe<? extends VCardProperty>>();
-	private static final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> standardByClass = new HashMap<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>>();
-	private static final Map<QName, VCardPropertyScribe<? extends VCardProperty>> standardByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardProperty>>();
+	private static final Map<String, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<>();
+	private static final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> standardByClass = new HashMap<>();
+	private static final Map<QName, VCardPropertyScribe<? extends VCardProperty>> standardByQName = new HashMap<>();
 	static {
 		//2.1, RFC 2426, RFC 6350
 		registerStandard(new AddressScribe());
@@ -137,9 +137,9 @@ public class ScribeIndex {
 		registerStandard(new HobbyScribe());
 	}
 
-	private final Map<String, VCardPropertyScribe<? extends VCardProperty>> extendedByName = new HashMap<String, VCardPropertyScribe<? extends VCardProperty>>(0);
-	private final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> extendedByClass = new HashMap<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>>(0);
-	private final Map<QName, VCardPropertyScribe<? extends VCardProperty>> extendedByQName = new HashMap<QName, VCardPropertyScribe<? extends VCardProperty>>(0);
+	private final Map<String, VCardPropertyScribe<? extends VCardProperty>> extendedByName = new HashMap<>(0);
+	private final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> extendedByClass = new HashMap<>(0);
+	private final Map<QName, VCardPropertyScribe<? extends VCardProperty>> extendedByQName = new HashMap<>(0);
 
 	/**
 	 * Gets a property scribe by name.

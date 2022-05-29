@@ -44,7 +44,7 @@ import ezvcard.property.Email;
  */
 public class EmailScribeTest {
 	private final EmailScribe scribe = new EmailScribe();
-	private final Sensei<Email> sensei = new Sensei<Email>(scribe);
+	private final Sensei<Email> sensei = new Sensei<>(scribe);
 
 	@Test
 	public void prepareParameters_type_pref() {

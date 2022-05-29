@@ -152,7 +152,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	 */
 	private static final List<HtmlLinkFormat> htmlLinkFormats;
 	static {
-		List<HtmlLinkFormat> list = new ArrayList<HtmlLinkFormat>();
+		List<HtmlLinkFormat> list = new ArrayList<>();
 
 		//http://en.wikipedia.org/wiki/AOL_Instant_Messenger#URI_scheme
 		list.add(new HtmlLinkFormat(AIM, "(goim|addbuddy)\\?.*?\\bscreenname=(.*?)(&|$)", 2, "goim?screenname=%s"));

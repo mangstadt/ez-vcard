@@ -55,7 +55,7 @@ import ezvcard.property.VCardProperty;
  */
 public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	private final XCardOutputProperties outputProperties = new XCardOutputProperties();
-	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<String, VCardDataType>(0);
+	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<>(0);
 
 	/**
 	 * @param vcards the vCards to write

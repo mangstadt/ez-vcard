@@ -40,7 +40,7 @@ import ezvcard.VCardVersion;
  */
 public class ParseContext {
 	private VCardVersion version;
-	private List<ParseWarning> warnings = new ArrayList<ParseWarning>();
+	private List<ParseWarning> warnings = new ArrayList<>();
 	private Integer lineNumber;
 	private String propertyName;
 

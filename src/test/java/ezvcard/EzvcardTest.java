@@ -89,7 +89,7 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
 		assertVersion(VCardVersion.V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
@@ -112,7 +112,7 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 		List<VCard> vcards = Ezvcard.parse(str).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
@@ -173,7 +173,7 @@ public class EzvcardTest {
 	public void parseXml_first() throws Exception {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("fn", "<text>John Doe</text>");
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		VCard vcard = Ezvcard.parseXml(xb.toString()).warnings(warnings).first();
 		assertVersion(VCardVersion.V4_0, vcard);
@@ -189,7 +189,7 @@ public class EzvcardTest {
 		xb.prop("fn", "<text>John Doe</text>");
 		xb.begin();
 		xb.prop("fn", "<text>Jane Doe</text>");
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		List<VCard> vcards = Ezvcard.parseXml(xb.toString()).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
@@ -230,7 +230,7 @@ public class EzvcardTest {
 		"</div>";
 		//@formatter:on
 
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		VCard vcard = Ezvcard.parseHtml(html).warnings(warnings).first();
 		assertVersion(VCardVersion.V3_0, vcard);
@@ -253,7 +253,7 @@ public class EzvcardTest {
 			"</div>" +
 		"</html>";
 		//@formatter:on
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		List<VCard> vcards = Ezvcard.parseHtml(html).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
@@ -325,7 +325,7 @@ public class EzvcardTest {
 		  "]";
 		//@formatter:on
 
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		VCard vcard = Ezvcard.parseJson(json).warnings(warnings).first();
 		assertVersion(VCardVersion.V4_0, vcard);
@@ -355,7 +355,7 @@ public class EzvcardTest {
 		"]";
 		//@formatter:on
 
-		List<List<ParseWarning>> warnings = new ArrayList<List<ParseWarning>>();
+		List<List<ParseWarning>> warnings = new ArrayList<>();
 
 		List<VCard> vcards = Ezvcard.parseJson(json).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
