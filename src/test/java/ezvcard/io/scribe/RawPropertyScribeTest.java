@@ -87,12 +87,10 @@ public class RawPropertyScribeTest {
 	}
 
 	private Check<RawProperty> has(final String name, final String value, final VCardDataType dataType) {
-		return new Check<RawProperty>() {
-			public void check(RawProperty property) {
-				assertEquals(name, property.getPropertyName());
-				assertEquals(value, property.getValue());
-				assertEquals(dataType, property.getDataType());
-			}
+		return property -> {
+			assertEquals(name, property.getPropertyName());
+			assertEquals(value, property.getValue());
+			assertEquals(dataType, property.getDataType());
 		};
 	}
 }

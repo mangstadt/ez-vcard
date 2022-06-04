@@ -153,35 +153,29 @@ public class KeyScribeTest {
 	}
 
 	private static Check<Key> hasUrl(final String url, final KeyType contentType) {
-		return new Check<Key>() {
-			public void check(Key actual) {
-				assertEquals(url, actual.getUrl());
-				assertNull(actual.getData());
-				assertNull(actual.getText());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertEquals(url, actual.getUrl());
+			assertNull(actual.getData());
+			assertNull(actual.getText());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 
 	private static Check<Key> hasData(final byte[] data, final KeyType contentType) {
-		return new Check<Key>() {
-			public void check(Key actual) {
-				assertNull(actual.getUrl());
-				assertArrayEquals(data, actual.getData());
-				assertNull(actual.getText());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertNull(actual.getUrl());
+			assertArrayEquals(data, actual.getData());
+			assertNull(actual.getText());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 
 	private static Check<Key> hasText(final String text, final KeyType contentType) {
-		return new Check<Key>() {
-			public void check(Key actual) {
-				assertNull(actual.getUrl());
-				assertNull(actual.getData());
-				assertEquals(text, actual.getText());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertNull(actual.getUrl());
+			assertNull(actual.getData());
+			assertEquals(text, actual.getText());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 }

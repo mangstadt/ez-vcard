@@ -332,22 +332,18 @@ public class BinaryPropertyScribeTest {
 	}
 
 	private Check<BinaryPropertyImpl> hasUrl(final String url, final ImageType contentType) {
-		return new Check<BinaryPropertyImpl>() {
-			public void check(BinaryPropertyImpl actual) {
-				assertEquals(url, actual.getUrl());
-				assertNull(actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertEquals(url, actual.getUrl());
+			assertNull(actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 
 	private Check<BinaryPropertyImpl> hasData(final byte[] data, final ImageType contentType) {
-		return new Check<BinaryPropertyImpl>() {
-			public void check(BinaryPropertyImpl actual) {
-				assertNull(actual.getUrl());
-				assertArrayEquals(data, actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertNull(actual.getUrl());
+			assertArrayEquals(data, actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 }

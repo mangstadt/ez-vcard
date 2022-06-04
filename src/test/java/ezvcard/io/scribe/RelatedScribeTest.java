@@ -112,20 +112,16 @@ public class RelatedScribeTest {
 	}
 
 	private Check<Related> hasText(final String text) {
-		return new Check<Related>() {
-			public void check(Related actual) {
-				assertEquals(text, actual.getText());
-				assertNull(actual.getUri());
-			}
+		return actual -> {
+			assertEquals(text, actual.getText());
+			assertNull(actual.getUri());
 		};
 	}
 
 	private Check<Related> hasUri(final String uri) {
-		return new Check<Related>() {
-			public void check(Related actual) {
-				assertNull(actual.getText());
-				assertEquals(uri, actual.getUri());
-			}
+		return actual -> {
+			assertNull(actual.getText());
+			assertEquals(uri, actual.getUri());
 		};
 	}
 }

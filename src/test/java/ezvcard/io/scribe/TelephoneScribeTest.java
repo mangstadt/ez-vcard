@@ -208,11 +208,9 @@ public class TelephoneScribeTest {
 	}
 
 	private Check<Telephone> hasText(final String text) {
-		return new Check<Telephone>() {
-			public void check(Telephone actual) {
-				assertEquals(text, actual.getText());
-				assertNull(actual.getUri());
-			}
+		return actual -> {
+			assertEquals(text, actual.getText());
+			assertNull(actual.getUri());
 		};
 	}
 }

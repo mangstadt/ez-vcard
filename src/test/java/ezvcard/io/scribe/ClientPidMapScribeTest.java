@@ -101,11 +101,9 @@ public class ClientPidMapScribeTest {
 	}
 
 	private Check<ClientPidMap> has(final Integer pid, final String uri) {
-		return new Check<ClientPidMap>() {
-			public void check(ClientPidMap actual) {
-				assertEquals(pid, actual.getPid());
-				assertEquals(uri, actual.getUri());
-			}
+		return actual -> {
+			assertEquals(pid, actual.getPid());
+			assertEquals(uri, actual.getUri());
 		};
 	}
 }

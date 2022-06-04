@@ -122,10 +122,6 @@ public class SimplePropertyScribeTest {
 	}
 
 	private Check<TestProperty> hasText(final String text) {
-		return new Check<TestProperty>() {
-			public void check(TestProperty actual) {
-				assertEquals(text, actual.value);
-			}
-		};
+		return actual -> assertEquals(text, actual.value);
 	}
 }

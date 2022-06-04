@@ -91,22 +91,18 @@ public class ImagePropertyScribeTest {
 	}
 
 	private Check<ImagePropertyImpl> hasUrl(final String url, final ImageType contentType) {
-		return new Check<ImagePropertyImpl>() {
-			public void check(ImagePropertyImpl actual) {
-				assertEquals(url, actual.getUrl());
-				assertNull(actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertEquals(url, actual.getUrl());
+			assertNull(actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 
 	private Check<ImagePropertyImpl> hasData(final byte[] data, final ImageType contentType) {
-		return new Check<ImagePropertyImpl>() {
-			public void check(ImagePropertyImpl actual) {
-				assertNull(actual.getUrl());
-				assertArrayEquals(data, actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertNull(actual.getUrl());
+			assertArrayEquals(data, actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 }

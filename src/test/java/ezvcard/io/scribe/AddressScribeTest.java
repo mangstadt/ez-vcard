@@ -346,16 +346,14 @@ public class AddressScribeTest {
 		sensei.assertParseJson(value).run(empty);
 
 		value = JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin");
-		sensei.assertParseJson(value).run(new Check<Address>() {
-			public void check(Address property) {
-				assertEquals("P.O. Box 1234;", property.getPoBox());
-				assertEquals("Apt, 11", property.getExtendedAddress());
-				assertEquals("123 Main St", property.getStreetAddress());
-				assertEquals("Austin", property.getLocality());
-				assertNull(property.getRegion());
-				assertNull(property.getPostalCode());
-				assertNull(property.getCountry());
-			}
+		sensei.assertParseJson(value).run(property -> {
+			assertEquals("P.O. Box 1234;", property.getPoBox());
+			assertEquals("Apt, 11", property.getExtendedAddress());
+			assertEquals("123 Main St", property.getStreetAddress());
+			assertEquals("Austin", property.getLocality());
+			assertNull(property.getRegion());
+			assertNull(property.getPostalCode());
+			assertNull(property.getCountry());
 		});
 	}
 }

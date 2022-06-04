@@ -464,11 +464,7 @@ public class Sensei<T extends VCardProperty> {
 		 * objects will be compared with the {@code equals()} method.
 		 */
 		public void run(final T expected) {
-			run(new Check<T>() {
-				public void check(T actual) {
-					assertEquals(expected, actual);
-				}
-			}, -1);
+			run(actual -> assertEquals(expected, actual), -1);
 		}
 
 		/**

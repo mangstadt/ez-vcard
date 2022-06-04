@@ -238,12 +238,10 @@ public class VCardPropertyScribeTest {
 	@Test
 	public void parseText() {
 		final VCardParameters params = new VCardParameters();
-		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings((Integer) null).params(params).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value", property.value);
-				assertEquals(VCardDataType.TEXT, property.parsedDataType);
-				assertSame(params, property.getParameters());
-			}
+		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings((Integer) null).params(params).run(property -> {
+			assertEquals("value", property.value);
+			assertEquals(VCardDataType.TEXT, property.parsedDataType);
+			assertSame(params, property.getParameters());
 		});
 	}
 
@@ -273,43 +271,33 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseXml_no_xcard_element() {
-		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><two xmlns=\"http://example.com\">2</two>").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("12", property.value);
-				assertNull(property.parsedDataType);
-			}
+		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><two xmlns=\"http://example.com\">2</two>").warnings((Integer) null).run(property -> {
+			assertEquals("12", property.value);
+			assertNull(property.parsedDataType);
 		});
 	}
 
 	@Test
 	public void parseXml_no_child_elements() {
-		sensei.assertParseXml("value").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value", property.value);
-				assertNull(property.parsedDataType);
-			}
+		sensei.assertParseXml("value").warnings((Integer) null).run(property -> {
+			assertEquals("value", property.value);
+			assertNull(property.parsedDataType);
 		});
 	}
 
 	@Test
 	public void parseXml_unknown() {
-		sensei.assertParseXml("<unknown>value</unknown>").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value", property.value);
-				assertEquals(null, property.parsedDataType);
-			}
+		sensei.assertParseXml("<unknown>value</unknown>").warnings((Integer) null).run(property -> {
+			assertEquals("value", property.value);
+			assertEquals(null, property.parsedDataType);
 		});
-		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><unknown>value</unknown>").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value", property.value);
-				assertEquals(null, property.parsedDataType);
-			}
+		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><unknown>value</unknown>").warnings((Integer) null).run(property -> {
+			assertEquals("value", property.value);
+			assertEquals(null, property.parsedDataType);
 		});
-		sensei.assertParseXml("<unknown />").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("", property.value);
-				assertEquals(null, property.parsedDataType);
-			}
+		sensei.assertParseXml("<unknown />").warnings((Integer) null).run(property -> {
+			assertEquals("", property.value);
+			assertEquals(null, property.parsedDataType);
 		});
 	}
 
@@ -330,11 +318,9 @@ public class VCardPropertyScribeTest {
 
 	@Test
 	public void parseHtml() {
-		sensei.assertParseHtml("<div>value<del>ignore</del>value</div>").warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("valuevalue", property.value);
-				assertNull(property.parsedDataType);
-			}
+		sensei.assertParseHtml("<div>value<del>ignore</del>value</div>").warnings((Integer) null).run(property -> {
+			assertEquals("valuevalue", property.value);
+			assertNull(property.parsedDataType);
 		});
 	}
 
@@ -348,31 +334,25 @@ public class VCardPropertyScribeTest {
 	public void parseJson_single() {
 		final VCardParameters params = new VCardParameters();
 		JCardValue value = JCardValue.single("value");
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value", property.value);
-				assertSame(params, property.getParameters());
-			}
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings((Integer) null).run(property -> {
+			assertEquals("value", property.value);
+			assertSame(params, property.getParameters());
 		});
 	}
 
 	@Test
 	public void parseJson_list() {
 		JCardValue value = JCardValue.multi("value1", "val,;ue2");
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals("value1,val\\,\\;ue2", property.value);
-			}
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(property -> {
+			assertEquals("value1,val\\,\\;ue2", property.value);
 		});
 	}
 
 	@Test
 	public void parseJson_structured() {
 		JCardValue value = JCardValue.structured(null, "value1", "val,;ue2", Arrays.asList("value3", "value4"));
-		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(new Check<TestProperty>() {
-			public void check(TestProperty property) {
-				assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);
-			}
+		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(property -> {
+			assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);
 		});
 	}
 

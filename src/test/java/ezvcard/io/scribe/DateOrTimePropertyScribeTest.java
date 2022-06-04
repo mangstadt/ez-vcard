@@ -245,12 +245,10 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	private Check<DateOrTimePropertyImpl> hasText(final String text) {
-		return new Check<DateOrTimePropertyImpl>() {
-			public void check(DateOrTimePropertyImpl property) {
-				assertNull(property.getDate());
-				assertNull(property.getPartialDate());
-				assertEquals(text, property.getText());
-			}
+		return property -> {
+			assertNull(property.getDate());
+			assertNull(property.getPartialDate());
+			assertEquals(text, property.getText());
 		};
 	}
 }

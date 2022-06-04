@@ -125,33 +125,27 @@ public class PlacePropertyScribeTest {
 	}
 
 	private Check<PlaceProperty> hasText(final String text) {
-		return new Check<PlaceProperty>() {
-			public void check(PlaceProperty actual) {
-				assertEquals(text, actual.getText());
-				assertNull(actual.getUri());
-				assertNull(actual.getGeoUri());
-			}
+		return actual -> {
+			assertEquals(text, actual.getText());
+			assertNull(actual.getUri());
+			assertNull(actual.getGeoUri());
 		};
 	}
 
 	private Check<PlaceProperty> hasUri(final String uri) {
-		return new Check<PlaceProperty>() {
-			public void check(PlaceProperty actual) {
-				assertNull(actual.getText());
-				assertEquals(uri, actual.getUri());
-				assertNull(actual.getGeoUri());
-			}
+		return actual -> {
+			assertNull(actual.getText());
+			assertEquals(uri, actual.getUri());
+			assertNull(actual.getGeoUri());
 		};
 	}
 
 	private Check<PlaceProperty> hasGeoUri(final GeoUri uri) {
-		return new Check<PlaceProperty>() {
-			public void check(PlaceProperty actual) {
-				assertNull(actual.getText());
-				assertNull(actual.getUri());
-				assertEquals(uri.getCoordA(), actual.getGeoUri().getCoordA());
-				assertEquals(uri.getCoordB(), actual.getGeoUri().getCoordB());
-			}
+		return actual -> {
+			assertNull(actual.getText());
+			assertNull(actual.getUri());
+			assertEquals(uri.getCoordA(), actual.getGeoUri().getCoordA());
+			assertEquals(uri.getCoordB(), actual.getGeoUri().getCoordB());
 		};
 	}
 

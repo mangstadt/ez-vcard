@@ -73,22 +73,18 @@ public class SoundScribeTest {
 	}
 
 	private Check<Sound> hasUrl(final String url, final SoundType contentType) {
-		return new Check<Sound>() {
-			public void check(Sound actual) {
-				assertEquals(url, actual.getUrl());
-				assertNull(actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertEquals(url, actual.getUrl());
+			assertNull(actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 
 	private Check<Sound> hasData(final byte[] data, final SoundType contentType) {
-		return new Check<Sound>() {
-			public void check(Sound actual) {
-				assertNull(actual.getUrl());
-				assertArrayEquals(data, actual.getData());
-				assertEquals(contentType, actual.getContentType());
-			}
+		return actual -> {
+			assertNull(actual.getUrl());
+			assertArrayEquals(data, actual.getData());
+			assertEquals(contentType, actual.getContentType());
 		};
 	}
 }
