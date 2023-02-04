@@ -18,7 +18,7 @@
 <span class="sourceLineNo">010</span>import ezvcard.Messages;<a name="line.10"></a>
 <span class="sourceLineNo">011</span><a name="line.11"></a>
 <span class="sourceLineNo">012</span>/*<a name="line.12"></a>
-<span class="sourceLineNo">013</span> Copyright (c) 2012-2021, Michael Angstadt<a name="line.13"></a>
+<span class="sourceLineNo">013</span> Copyright (c) 2012-2023, Michael Angstadt<a name="line.13"></a>
 <span class="sourceLineNo">014</span> All rights reserved.<a name="line.14"></a>
 <span class="sourceLineNo">015</span><a name="line.15"></a>
 <span class="sourceLineNo">016</span> Redistribution and use in source and binary forms, with or without<a name="line.16"></a>
@@ -485,7 +485,7 @@
 <span class="sourceLineNo">477</span>                 * @param coordB the second coordinate (i.e. longitude)<a name="line.477"></a>
 <span class="sourceLineNo">478</span>                 */<a name="line.478"></a>
 <span class="sourceLineNo">479</span>                public Builder(Double coordA, Double coordB) {<a name="line.479"></a>
-<span class="sourceLineNo">480</span>                        parameters = new LinkedHashMap&lt;String, String&gt;(0); //set initial size to 0 because parameters are rarely used<a name="line.480"></a>
+<span class="sourceLineNo">480</span>                        parameters = new LinkedHashMap&lt;&gt;(0); //set initial size to 0 because parameters are rarely used<a name="line.480"></a>
 <span class="sourceLineNo">481</span>                        coordA(coordA);<a name="line.481"></a>
 <span class="sourceLineNo">482</span>                        coordB(coordB);<a name="line.482"></a>
 <span class="sourceLineNo">483</span>                }<a name="line.483"></a>
@@ -500,7 +500,7 @@
 <span class="sourceLineNo">492</span>                        this.coordC = original.coordC;<a name="line.492"></a>
 <span class="sourceLineNo">493</span>                        this.crs = original.crs;<a name="line.493"></a>
 <span class="sourceLineNo">494</span>                        this.uncertainty = original.uncertainty;<a name="line.494"></a>
-<span class="sourceLineNo">495</span>                        this.parameters = new LinkedHashMap&lt;String, String&gt;(original.parameters);<a name="line.495"></a>
+<span class="sourceLineNo">495</span>                        this.parameters = new LinkedHashMap&lt;&gt;(original.parameters);<a name="line.495"></a>
 <span class="sourceLineNo">496</span>                }<a name="line.496"></a>
 <span class="sourceLineNo">497</span><a name="line.497"></a>
 <span class="sourceLineNo">498</span>                /**<a name="line.498"></a>

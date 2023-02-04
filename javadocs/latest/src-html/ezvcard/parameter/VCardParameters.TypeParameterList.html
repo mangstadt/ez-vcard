@@ -42,7 +42,7 @@
 <span class="sourceLineNo">034</span>import ezvcard.util.ListMultimap;<a name="line.34"></a>
 <span class="sourceLineNo">035</span><a name="line.35"></a>
 <span class="sourceLineNo">036</span>/*<a name="line.36"></a>
-<span class="sourceLineNo">037</span> Copyright (c) 2012-2021, Michael Angstadt<a name="line.37"></a>
+<span class="sourceLineNo">037</span> Copyright (c) 2012-2023, Michael Angstadt<a name="line.37"></a>
 <span class="sourceLineNo">038</span> All rights reserved.<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
 <span class="sourceLineNo">040</span> Redistribution and use in source and binary forms, with or without<a name="line.40"></a>
@@ -347,7 +347,7 @@
 <span class="sourceLineNo">339</span><a name="line.339"></a>
 <span class="sourceLineNo">340</span>        private static final Map&lt;String, Set&lt;VCardVersion&gt;&gt; supportedVersions;<a name="line.340"></a>
 <span class="sourceLineNo">341</span>        static {<a name="line.341"></a>
-<span class="sourceLineNo">342</span>                Map&lt;String, Set&lt;VCardVersion&gt;&gt; m = new HashMap&lt;String, Set&lt;VCardVersion&gt;&gt;();<a name="line.342"></a>
+<span class="sourceLineNo">342</span>                Map&lt;String, Set&lt;VCardVersion&gt;&gt; m = new HashMap&lt;&gt;();<a name="line.342"></a>
 <span class="sourceLineNo">343</span>                m.put(ALTID, EnumSet.of(VCardVersion.V4_0));<a name="line.343"></a>
 <span class="sourceLineNo">344</span>                m.put(CALSCALE, EnumSet.of(VCardVersion.V4_0));<a name="line.344"></a>
 <span class="sourceLineNo">345</span>                m.put(CHARSET, EnumSet.of(VCardVersion.V2_1));<a name="line.345"></a>
@@ -1344,7 +1344,7 @@
 <span class="sourceLineNo">1336</span>         * @return a list of warnings or an empty list if no problems were found<a name="line.1336"></a>
 <span class="sourceLineNo">1337</span>         */<a name="line.1337"></a>
 <span class="sourceLineNo">1338</span>        public List&lt;ValidationWarning&gt; validate(VCardVersion version) {<a name="line.1338"></a>
-<span class="sourceLineNo">1339</span>                List&lt;ValidationWarning&gt; warnings = new ArrayList&lt;ValidationWarning&gt;(0);<a name="line.1339"></a>
+<span class="sourceLineNo">1339</span>                List&lt;ValidationWarning&gt; warnings = new ArrayList&lt;&gt;(0);<a name="line.1339"></a>
 <span class="sourceLineNo">1340</span><a name="line.1340"></a>
 <span class="sourceLineNo">1341</span>                /*<a name="line.1341"></a>
 <span class="sourceLineNo">1342</span>                 * Check for invalid characters in names and values.<a name="line.1342"></a>
@@ -1596,13 +1596,13 @@
 <span class="sourceLineNo">1588</span>                                return false;<a name="line.1588"></a>
 <span class="sourceLineNo">1589</span>                        }<a name="line.1589"></a>
 <span class="sourceLineNo">1590</span><a name="line.1590"></a>
-<span class="sourceLineNo">1591</span>                        List&lt;String&gt; valueLower = new ArrayList&lt;String&gt;(value.size());<a name="line.1591"></a>
+<span class="sourceLineNo">1591</span>                        List&lt;String&gt; valueLower = new ArrayList&lt;&gt;(value.size());<a name="line.1591"></a>
 <span class="sourceLineNo">1592</span>                        for (String v : value) {<a name="line.1592"></a>
 <span class="sourceLineNo">1593</span>                                valueLower.add(v.toLowerCase());<a name="line.1593"></a>
 <span class="sourceLineNo">1594</span>                        }<a name="line.1594"></a>
 <span class="sourceLineNo">1595</span>                        Collections.sort(valueLower);<a name="line.1595"></a>
 <span class="sourceLineNo">1596</span><a name="line.1596"></a>
-<span class="sourceLineNo">1597</span>                        List&lt;String&gt; otherValueLower = new ArrayList&lt;String&gt;(otherValue.size());<a name="line.1597"></a>
+<span class="sourceLineNo">1597</span>                        List&lt;String&gt; otherValueLower = new ArrayList&lt;&gt;(otherValue.size());<a name="line.1597"></a>
 <span class="sourceLineNo">1598</span>                        for (String v : otherValue) {<a name="line.1598"></a>
 <span class="sourceLineNo">1599</span>                                otherValueLower.add(v.toLowerCase());<a name="line.1599"></a>
 <span class="sourceLineNo">1600</span>                        }<a name="line.1600"></a>

@@ -25,7 +25,7 @@
 <span class="sourceLineNo">017</span>import ezvcard.parameter.VCardParameters;<a name="line.17"></a>
 <span class="sourceLineNo">018</span><a name="line.18"></a>
 <span class="sourceLineNo">019</span>/*<a name="line.19"></a>
-<span class="sourceLineNo">020</span> Copyright (c) 2012-2021, Michael Angstadt<a name="line.20"></a>
+<span class="sourceLineNo">020</span> Copyright (c) 2012-2023, Michael Angstadt<a name="line.20"></a>
 <span class="sourceLineNo">021</span> All rights reserved.<a name="line.21"></a>
 <span class="sourceLineNo">022</span><a name="line.22"></a>
 <span class="sourceLineNo">023</span> Redistribution and use in source and binary forms, with or without<a name="line.23"></a>
@@ -202,7 +202,7 @@
 <span class="sourceLineNo">194</span>        }<a name="line.194"></a>
 <span class="sourceLineNo">195</span><a name="line.195"></a>
 <span class="sourceLineNo">196</span>        private List&lt;JsonValue&gt; parseValues() throws IOException {<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                List&lt;JsonValue&gt; values = new ArrayList&lt;JsonValue&gt;();<a name="line.197"></a>
+<span class="sourceLineNo">197</span>                List&lt;JsonValue&gt; values = new ArrayList&lt;&gt;();<a name="line.197"></a>
 <span class="sourceLineNo">198</span>                while (parser.nextToken() != JsonToken.END_ARRAY) { //until we reach the end of the property array<a name="line.198"></a>
 <span class="sourceLineNo">199</span>                        JsonValue value = parseValue();<a name="line.199"></a>
 <span class="sourceLineNo">200</span>                        values.add(value);<a name="line.200"></a>
@@ -227,7 +227,7 @@
 <span class="sourceLineNo">219</span>        }<a name="line.219"></a>
 <span class="sourceLineNo">220</span><a name="line.220"></a>
 <span class="sourceLineNo">221</span>        private List&lt;JsonValue&gt; parseValueArray() throws IOException {<a name="line.221"></a>
-<span class="sourceLineNo">222</span>                List&lt;JsonValue&gt; array = new ArrayList&lt;JsonValue&gt;();<a name="line.222"></a>
+<span class="sourceLineNo">222</span>                List&lt;JsonValue&gt; array = new ArrayList&lt;&gt;();<a name="line.222"></a>
 <span class="sourceLineNo">223</span><a name="line.223"></a>
 <span class="sourceLineNo">224</span>                while (parser.nextToken() != JsonToken.END_ARRAY) {<a name="line.224"></a>
 <span class="sourceLineNo">225</span>                        JsonValue value = parseValue();<a name="line.225"></a>
@@ -238,7 +238,7 @@
 <span class="sourceLineNo">230</span>        }<a name="line.230"></a>
 <span class="sourceLineNo">231</span><a name="line.231"></a>
 <span class="sourceLineNo">232</span>        private Map&lt;String, JsonValue&gt; parseValueObject() throws IOException {<a name="line.232"></a>
-<span class="sourceLineNo">233</span>                Map&lt;String, JsonValue&gt; object = new HashMap&lt;String, JsonValue&gt;();<a name="line.233"></a>
+<span class="sourceLineNo">233</span>                Map&lt;String, JsonValue&gt; object = new HashMap&lt;&gt;();<a name="line.233"></a>
 <span class="sourceLineNo">234</span><a name="line.234"></a>
 <span class="sourceLineNo">235</span>                while (parser.nextToken() != JsonToken.END_OBJECT) {<a name="line.235"></a>
 <span class="sourceLineNo">236</span>                        checkCurrent(JsonToken.FIELD_NAME);<a name="line.236"></a>
