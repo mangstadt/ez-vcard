@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnmappableCharacterException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 
@@ -324,6 +325,13 @@ public class VCardWriterTest {
 			try (VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0)) {
 				writer.setAddProdId(false);
 				writer.write(vcard);
+			} catch (UnmappableCharacterException e) {
+				/*
+				 * This exception may be thrown if the character can't be
+				 * written in the system's default character set. If so, end
+				 * the test early.
+				 */
+				return;
 			}
 
 			//@formatter:off
