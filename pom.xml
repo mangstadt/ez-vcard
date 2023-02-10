@@ -47,7 +47,7 @@
 	</scm>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
@@ -334,6 +334,38 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+
+			<!-- Support for Java 9+ Module System(Jigsaw) -->
+			<plugin>
+				<groupId>org.moditect</groupId>
+				<artifactId>moditect-maven-plugin</artifactId>
+				<version>1.0.0.Final</version>
+				<executions>
+					<execution>
+						<id>add-module-infos</id>
+						<phase>package</phase>
+						<goals>
+							<goal>add-module-info</goal>
+						</goals>
+						<configuration>
+							<jvmVersion>11</jvmVersion>
+			                <module>
+			                    <moduleInfo>
+			                        <name>com.googlecode.ezvcard</name>
+			                        <exports>
+			                            !ezvcard.util.org.apache.commons.codec.*;
+			                            *;
+			                        </exports>
+			                    </moduleInfo>
+			                </module>
+					        <jdepsExtraArgs>
+					            <jdepsExtraArg>--multi-release</jdepsExtraArg>
+					            <jdepsExtraArg>11</jdepsExtraArg>
+					        </jdepsExtraArgs>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
