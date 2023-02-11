@@ -1,9 +1,10 @@
 open module ezvcard {
   requires vinnie;
-  requires java.xml;
-  requires freemarker;
-  requires org.jsoup;
   requires com.fasterxml.jackson.core;
+  requires static com.fasterxml.jackson.databind;
+  requires static java.xml;
+  requires static org.jsoup;
+  requires static freemarker;
   exports ezvcard;
   exports ezvcard.io;
   exports ezvcard.io.chain;
