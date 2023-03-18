@@ -6,9 +6,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.UnmappableCharacterException;
 
-import ezvcard.parameter.Encoding;
-import ezvcard.property.FormattedName;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -21,6 +20,7 @@ import ezvcard.io.scribe.SkipMeScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.AddressType;
 import ezvcard.parameter.EmailType;
+import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.parameter.KeyType;
 import ezvcard.parameter.TelephoneType;
@@ -29,6 +29,7 @@ import ezvcard.property.Address;
 import ezvcard.property.Agent;
 import ezvcard.property.Anniversary;
 import ezvcard.property.Birthday;
+import ezvcard.property.FormattedName;
 import ezvcard.property.Gender;
 import ezvcard.property.Geo;
 import ezvcard.property.Key;
@@ -40,8 +41,8 @@ import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
 import ezvcard.property.VCardProperty;
-import ezvcard.util.PartialDate;
 import ezvcard.util.Gobble;
+import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
 
@@ -322,8 +323,18 @@ public class VCardWriterTest {
 		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
 			VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0);
 			writer.setAddProdId(false);
-			writer.write(vcard);
-			writer.close();
+			try {
+				writer.write(vcard);
+			} catch (UnmappableCharacterException e) {
+				/*
+				 * This exception may be thrown if the character can't be
+				 * written in the system's default character set. If so, end
+				 * the test early.
+				 */
+				return;
+			} finally {
+				writer.close();
+			}
 
 			//@formatter:off
 			String expected = 
