@@ -3,6 +3,7 @@ package ezvcard.util;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.DateTimeException;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Locale;
@@ -434,7 +435,9 @@ public final class PartialDate {
 		 * Tries to parse a given string.
 		 * @param builder the object to assign the parsed data to
 		 * @param value the string to parse
-		 * @return true if the string was successfully parsed, false if not
+		 * @return true if the string matches this format's regex, false if not
+		 * @throws IllegalArgumentException if a value in the date string is
+		 * invalid (e.g. "13" for the month)
 		 */
 		public boolean parse(Builder builder, String value) {
 			Matcher m = regex.matcher(value);
@@ -469,16 +472,24 @@ public final class PartialDate {
 					}
 
 					int component = Integer.parseInt(groupStr);
-					if (index == OFFSET_HOUR) {
+					if (index == YEAR) {
+						builder.year(component);
+					} else if (index == MONTH) {
+						builder.month(component);
+					} else if (index == DATE) {
+						builder.date(component);
+					} else if (index == HOUR) {
+						builder.hour(component);
+					} else if (index == MINUTE) {
+						builder.minute(component);
+					} else if (index == SECOND) {
+						builder.second(component);
+					} else if (index == OFFSET_HOUR) {
 						offsetHour = component;
 						offsetPositive = startsWithPlus;
-						continue;
-					}
-					if (index == OFFSET_MINUTE) {
+					} else if (index == OFFSET_MINUTE) {
 						offsetMinute = component;
-						continue;
 					}
-					builder.components[index] = component;
 				}
 			}
 
@@ -489,8 +500,14 @@ public final class PartialDate {
 				if (!offsetPositive) {
 					offsetMinute *= -1;
 				}
-				builder.components[OFFSET_HOUR] = offsetHour;
-				builder.components[OFFSET_MINUTE] = offsetMinute;
+
+				ZoneOffset offset;
+				try {
+					offset = ZoneOffset.ofHoursMinutes(offsetHour, offsetMinute);
+				} catch (DateTimeException e) {
+					throw new IllegalArgumentException(e);
+				}
+				builder.offset(offset);
 			}
 
 			return true;

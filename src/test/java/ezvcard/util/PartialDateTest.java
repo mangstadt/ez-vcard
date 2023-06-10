@@ -241,6 +241,41 @@ public class PartialDateTest {
 	public void parse_invalid() {
 		PartialDate.parse("invalid");
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_month() {
+		PartialDate.parse("19871331");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_date() {
+		PartialDate.parse("19871233");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_hour() {
+		PartialDate.parse("T24:00:00");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_minute() {
+		PartialDate.parse("T00:61:00");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_second() {
+		PartialDate.parse("T00:00:61");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_offset_hour() {
+		PartialDate.parse("T23:00:00-88:00");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_offset_minute() {
+		PartialDate.parse("T23:00:00-00:60");
+	}
 
 	@Test
 	public void parse() {

@@ -1,5 +1,6 @@
 package ezvcard.util;
 
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -158,7 +159,8 @@ public enum VCardDateFormat {
 	 * @param string the string to parse
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the date string isn't in one of the
-	 * accepted ISO8601 formats
+	 * accepted ISO8601 formats or if it contains an invalid value (e.g. "13"
+	 * for the month)
 	 */
 	public static Temporal parse(String string) {
 		TimestampPattern p = TimestampPattern.parse(string);
@@ -166,21 +168,25 @@ public enum VCardDateFormat {
 			throw Messages.INSTANCE.getIllegalArgumentException(41, string);
 		}
 
-		LocalDate date = LocalDate.of(p.year(), p.month(), p.date());
-		if (!p.hasTime()) {
-			return date;
+		try {
+			LocalDate date = LocalDate.of(p.year(), p.month(), p.date());
+			if (!p.hasTime()) {
+				return date;
+			}
+
+			LocalTime time = LocalTime.of(p.hour(), p.minute(), p.second(), p.nanosecond());
+			LocalDateTime datetime = LocalDateTime.of(date, time);
+
+			ZoneOffset offset = p.offset();
+			if (offset == null) {
+				return datetime;
+			}
+
+			OffsetDateTime offsetDateTime = OffsetDateTime.of(datetime, offset);
+			return "Z".equals(offset.getId()) ? Instant.from(offsetDateTime) : offsetDateTime;
+		} catch (DateTimeException e) {
+			throw new IllegalArgumentException(e);
 		}
-
-		LocalTime time = LocalTime.of(p.hour(), p.minute(), p.second(), p.nanosecond());
-		LocalDateTime datetime = LocalDateTime.of(date, time);
-
-		ZoneOffset offset = p.offset();
-		if (offset == null) {
-			return datetime;
-		}
-
-		OffsetDateTime offsetDateTime = OffsetDateTime.of(datetime, offset);
-		return "Z".equals(offset.getId()) ? Instant.from(offsetDateTime) : offsetDateTime;
 	}
 
 	/**
