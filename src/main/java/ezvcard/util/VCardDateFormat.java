@@ -193,7 +193,8 @@ public enum VCardDateFormat {
 	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the date string isn't in one of the
-	 * accepted ISO8601 formats
+	 * accepted ISO8601 formats or if it contains an invalid value (e.g. "13"
+	 * for the month)
 	 */
 	public static Date parse(String dateStr) {
 		return parseAsCalendar(dateStr).getTime();
@@ -223,7 +224,8 @@ public enum VCardDateFormat {
 	 * @param dateStr the date string to parse (e.g. "20130609T181023Z")
 	 * @return the parsed date
 	 * @throws IllegalArgumentException if the date string isn't in one of the
-	 * accepted ISO8601 formats
+	 * accepted ISO8601 formats or if it contains an invalid value (e.g. "13"
+	 * for the month)
 	 */
 	public static Calendar parseAsCalendar(String dateStr) {
 		TimestampPattern p = new TimestampPattern(dateStr);
@@ -233,6 +235,11 @@ public enum VCardDateFormat {
 
 		Calendar c = Calendar.getInstance(p.timezone());
 		c.clear();
+		
+		/*
+		 * Check for invalid values (e.g. "13" for the month)
+		 */
+		c.setLenient(false);
 
 		c.set(Calendar.YEAR, p.year());
 		c.set(Calendar.MONTH, p.month() - 1);
@@ -244,6 +251,12 @@ public enum VCardDateFormat {
 			c.set(Calendar.SECOND, p.second());
 			c.set(Calendar.MILLISECOND, p.millisecond());
 		}
+
+		/*
+		 * "Calendar.getTime()" will throw an IllegalArgumentException if any
+		 * components are invalid (e.g. "13" for the month).
+		 */
+		c.getTime();
 
 		return c;
 	}

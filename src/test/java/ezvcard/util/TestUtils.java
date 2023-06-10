@@ -437,6 +437,13 @@ public class TestUtils {
 	public static Calendar date(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second, TimeZone tz) {
 		Calendar c = Calendar.getInstance(tz);
 		c.clear();
+
+		/*
+		 * Calendar.equals() also checks the lenient flag. Leniency must be
+		 * turned off here because VCardDateFormat has it turned off.
+		 */
+		c.setLenient(false);
+
 		c.set(year, month, dayOfMonth, hourOfDay, minute, second);
 		return c;
 	}

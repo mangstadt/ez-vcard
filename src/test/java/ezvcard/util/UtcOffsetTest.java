@@ -46,9 +46,16 @@ public class UtcOffsetTest {
 
 		offset = new UtcOffset(false, 5, 30);
 		assertEquals(-(5 * HOURS + 30 * MINUTES), offset.getMillis());
-
-		offset = new UtcOffset(false, 5, 70);
-		assertEquals(-(5 * HOURS + 70 * MINUTES), offset.getMillis());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void constructor_invalid_hours() {
+		new UtcOffset(false, 19, 0);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void constructor_invalid_minutes() {
+		new UtcOffset(false, 0, 60);
 	}
 
 	@Test
@@ -111,6 +118,10 @@ public class UtcOffsetTest {
 		assertParse("-05:30", -5, 30);
 		assertParse("-10:30", -10, 30);
 		assertParseInvalid("invalid");
+		assertParseInvalid("-19:00");
+		assertParseInvalid("19:00");
+		assertParseInvalid("00:60");
+		assertParseInvalid("-00:60");
 		assertParseInvalid("050030");
 		assertParseInvalid("05:00:30");
 		assertParseInvalid("four"); //expected number of characters, but they are not numbers

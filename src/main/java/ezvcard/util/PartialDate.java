@@ -413,7 +413,7 @@ public final class PartialDate {
 		 * @param regex the regular expression that describes the format
 		 * @param componentIndexes the indexes of the
 		 * {@link PartialDate#components} array to assign the value of each
-		 * regex group to, or -1 to ignore the group
+		 * regex group to, or null to ignore the group
 		 */
 		public Format(String regex, Integer... componentIndexes) {
 			this.regex = Pattern.compile('^' + regex + '$');
@@ -424,7 +424,9 @@ public final class PartialDate {
 		 * Tries to parse a given string.
 		 * @param builder the object to assign the parsed data to
 		 * @param value the string to parse
-		 * @return true if the string was successfully parsed, false if not
+		 * @return true if the string matches this format's regex, false if not
+		 * @throws IllegalArgumentException if a value in the date string is
+		 * invalid (e.g. "13" for the month)
 		 */
 		public boolean parse(Builder builder, String value) {
 			Matcher m = regex.matcher(value);
@@ -449,16 +451,24 @@ public final class PartialDate {
 					}
 
 					int component = Integer.parseInt(groupStr);
-					if (index == TIMEZONE_HOUR) {
+					if (index == YEAR) {
+						builder.year(component);
+					} else if (index == MONTH) {
+						builder.month(component);
+					} else if (index == DATE) {
+						builder.date(component);
+					} else if (index == HOUR) {
+						builder.hour(component);
+					} else if (index == MINUTE) {
+						builder.minute(component);
+					} else if (index == SECOND) {
+						builder.second(component);
+					} else if (index == TIMEZONE_HOUR) {
 						offsetHour = component;
 						offsetPositive = startsWithPlus;
-						continue;
-					}
-					if (index == TIMEZONE_MINUTE) {
+					} else if (index == TIMEZONE_MINUTE) {
 						offsetMinute = component;
-						continue;
 					}
-					builder.components[index] = component;
 				}
 			}
 
@@ -466,7 +476,7 @@ public final class PartialDate {
 				if (offsetMinute == null) {
 					offsetMinute = 0;
 				}
-				builder.offset = new UtcOffset(offsetPositive, offsetHour, offsetMinute);
+				builder.offset(new UtcOffset(offsetPositive, offsetHour, offsetMinute));
 			}
 			return true;
 		}

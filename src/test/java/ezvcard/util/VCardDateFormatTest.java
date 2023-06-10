@@ -262,6 +262,31 @@ public class VCardDateFormatTest {
 	public void parse_invalid() {
 		VCardDateFormat.parse("invalid");
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_month() {
+		VCardDateFormat.parse("19879215");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_date() {
+		VCardDateFormat.parse("19871233");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_hour() {
+		VCardDateFormat.parse("19871231T240000");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_minute() {
+		VCardDateFormat.parse("19871231T006100");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void parse_invalid_second() {
+		VCardDateFormat.parse("19871231T000061");
+	}
 
 	@Test
 	public void dateHasTime() {

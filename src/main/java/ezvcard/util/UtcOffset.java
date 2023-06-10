@@ -42,16 +42,33 @@ public final class UtcOffset {
 	 * ignored)
 	 * @param minute the minute component of the offset (the sign of this
 	 * integer is ignored)
+	 * @throws IllegalArgumentException if the hour is not between -18 and 18
+	 * inclusive or the minute is not between -59 and 59 inclusive
 	 */
 	public UtcOffset(boolean positive, int hour, int minute) {
 		/*
 		 * Note: The (hour, minute) constructor was removed because it could not
-		 * handle timezones such as "-0030".
+		 * handle negative timezones with a zero hour (e.g. "-0030").
 		 */
-		int sign = positive ? 1 : -1;
-		hour = Math.abs(hour);
-		minute = Math.abs(minute);
 
+		/*
+		 * Use the same validation rules as java.time.ZoneOffset:
+		 * 
+		 * "In 2008, time-zone offsets around the world extended from -12:00 to
+		 * +14:00. To prevent any problems with that range being extended, yet
+		 * still provide validation, the range of offsets is restricted to
+		 * -18:00 to 18:00 inclusive."
+		 */
+		hour = Math.abs(hour);
+		if (hour > 18) {
+			throw Messages.INSTANCE.getIllegalArgumentException(45, hour);
+		}
+		minute = Math.abs(minute);
+		if (minute > 59) {
+			throw Messages.INSTANCE.getIllegalArgumentException(46, minute);
+		}
+
+		int sign = positive ? 1 : -1;
 		millis = sign * (hoursToMillis(hour) + minutesToMillis(minute));
 	}
 
