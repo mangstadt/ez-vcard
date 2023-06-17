@@ -357,6 +357,12 @@
 			                            !ezvcard.util.org.apache.commons.codec.*;
 			                            *;
 			                        </exports>
+		                            <requires>
+		                                static org.jsoup;
+		                                static freemarker;
+		                                static com.fasterxml.jackson.core;
+		                                *;
+		                            </requires>
 			                    </moduleInfo>
 			                </module>
 					        <jdepsExtraArgs>
