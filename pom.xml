@@ -209,7 +209,12 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.0.0</version>
 				<configuration>
+					<!--
+					This setting prevents a warning related to modules from spamming the screen.
+					https://stackoverflow.com/a/62533664/13379
+					-->
 					<source>8</source>
+					
 					<encoding>UTF-8</encoding>
 					<linksource>true</linksource>
 					<links>
