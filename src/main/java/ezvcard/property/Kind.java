@@ -112,7 +112,7 @@ public class Kind extends TextProperty {
 	 * @return true if the value is "group", false if not
 	 */
 	public boolean isGroup() {
-		return GROUP.equals(value);
+		return GROUP.equalsIgnoreCase(value);
 	}
 
 	/**
