@@ -104,7 +104,7 @@ public class Kind extends TextProperty {
 	 * @return true if the value is "individual", false if not
 	 */
 	public boolean isIndividual() {
-		return INDIVIDUAL.equals(value);
+		return INDIVIDUAL.equalsIgnoreCase(value);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class Kind extends TextProperty {
 	 * @return true if the value is "group", false if not
 	 */
 	public boolean isGroup() {
-		return GROUP.equals(value);
+		return GROUP.equalsIgnoreCase(value);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class Kind extends TextProperty {
 	 * @return true if the value is "org", false if not
 	 */
 	public boolean isOrg() {
-		return ORG.equals(value);
+		return ORG.equalsIgnoreCase(value);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class Kind extends TextProperty {
 	 * @return true if the value is "location", false if not
 	 */
 	public boolean isLocation() {
-		return LOCATION.equals(value);
+		return LOCATION.equalsIgnoreCase(value);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class Kind extends TextProperty {
 	 * @see <a href="http://tools.ietf.org/html/rfc6473">RFC 6473</a>
 	 */
 	public boolean isApplication() {
-		return APPLICATION.equals(value);
+		return APPLICATION.equalsIgnoreCase(value);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class Kind extends TextProperty {
 	 * @see <a href="http://tools.ietf.org/html/rfc6869">RFC 6869</a>
 	 */
 	public boolean isDevice() {
-		return DEVICE.equals(value);
+		return DEVICE.equalsIgnoreCase(value);
 	}
 
 	/**
