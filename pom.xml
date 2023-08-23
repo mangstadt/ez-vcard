@@ -335,7 +335,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Automatic-Module-Name>com.googlecode.ez-vcard</Automatic-Module-Name>
+							<Automatic-Module-Name>com.googlecode.ezvcard</Automatic-Module-Name>
 						</manifestEntries>
 					</archive>
 				</configuration>
