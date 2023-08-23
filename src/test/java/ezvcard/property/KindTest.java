@@ -41,7 +41,7 @@ import org.junit.Test;
 public class KindTest {
 	@Test
 	public void isIndividual() {
-		Kind kind = new Kind("individual");
+		Kind kind = new Kind("Individual");
 		assertTrue(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -52,7 +52,7 @@ public class KindTest {
 
 	@Test
 	public void isGroup() {
-		Kind kind = new Kind("group");
+		Kind kind = new Kind("Group");
 		assertFalse(kind.isIndividual());
 		assertTrue(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -63,7 +63,7 @@ public class KindTest {
 
 	@Test
 	public void isOrg() {
-		Kind kind = new Kind("org");
+		Kind kind = new Kind("Org");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertTrue(kind.isOrg());
@@ -74,7 +74,7 @@ public class KindTest {
 
 	@Test
 	public void isLocation() {
-		Kind kind = new Kind("location");
+		Kind kind = new Kind("Location");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -85,7 +85,7 @@ public class KindTest {
 
 	@Test
 	public void isApplication() {
-		Kind kind = new Kind("application");
+		Kind kind = new Kind("Application");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
@@ -96,7 +96,7 @@ public class KindTest {
 
 	@Test
 	public void isDevice() {
-		Kind kind = new Kind("device");
+		Kind kind = new Kind("Device");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
 		assertFalse(kind.isOrg());
