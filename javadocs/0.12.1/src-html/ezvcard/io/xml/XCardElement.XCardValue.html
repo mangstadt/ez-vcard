@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../syntaxhighlighter.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package ezvcard.io.xml;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.util.ArrayList;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.util.Arrays;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Collection;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.Collections;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.List;<a name="line.7"></a>
+<span class="sourceLineNo">008</span><a name="line.8"></a>
+<span class="sourceLineNo">009</span>import org.w3c.dom.Document;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import org.w3c.dom.Element;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>import ezvcard.VCardDataType;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import ezvcard.VCardVersion;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import ezvcard.util.XmlUtils;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span>/*<a name="line.16"></a>
+<span class="sourceLineNo">017</span> Copyright (c) 2012-2023, Michael Angstadt<a name="line.17"></a>
+<span class="sourceLineNo">018</span> All rights reserved.<a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span> Redistribution and use in source and binary forms, with or without<a name="line.20"></a>
+<span class="sourceLineNo">021</span> modification, are permitted provided that the following conditions are met: <a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.23"></a>
+<span class="sourceLineNo">024</span> list of conditions and the following disclaimer. <a name="line.24"></a>
+<span class="sourceLineNo">025</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.25"></a>
+<span class="sourceLineNo">026</span> this list of conditions and the following disclaimer in the documentation<a name="line.26"></a>
+<span class="sourceLineNo">027</span> and/or other materials provided with the distribution. <a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.29"></a>
+<span class="sourceLineNo">030</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.30"></a>
+<span class="sourceLineNo">031</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.31"></a>
+<span class="sourceLineNo">032</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.32"></a>
+<span class="sourceLineNo">033</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.33"></a>
+<span class="sourceLineNo">034</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.34"></a>
+<span class="sourceLineNo">035</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.35"></a>
+<span class="sourceLineNo">036</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.36"></a>
+<span class="sourceLineNo">037</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.37"></a>
+<span class="sourceLineNo">038</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span> The views and conclusions contained in the software and documentation are those<a name="line.40"></a>
+<span class="sourceLineNo">041</span> of the authors and should not be interpreted as representing official policies, <a name="line.41"></a>
+<span class="sourceLineNo">042</span> either expressed or implied, of the FreeBSD Project.<a name="line.42"></a>
+<span class="sourceLineNo">043</span> */<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>/**<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * Wraps xCard functionality around an XML {@link Element} object.<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * @author Michael Angstadt<a name="line.47"></a>
+<span class="sourceLineNo">048</span> */<a name="line.48"></a>
+<span class="sourceLineNo">049</span>public class XCardElement {<a name="line.49"></a>
+<span class="sourceLineNo">050</span>        private final Document document;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        private final Element element;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        private final VCardVersion version;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        private final String namespace;<a name="line.53"></a>
+<span class="sourceLineNo">054</span><a name="line.54"></a>
+<span class="sourceLineNo">055</span>        /**<a name="line.55"></a>
+<span class="sourceLineNo">056</span>         * Wraps an existing XML element.<a name="line.56"></a>
+<span class="sourceLineNo">057</span>         * @param element the XML element<a name="line.57"></a>
+<span class="sourceLineNo">058</span>         */<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        public XCardElement(Element element) {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                this(element, VCardVersion.V4_0);<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        }<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
+<span class="sourceLineNo">063</span>        /**<a name="line.63"></a>
+<span class="sourceLineNo">064</span>         * Wraps an existing XML element.<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         * @param element the XML element<a name="line.65"></a>
+<span class="sourceLineNo">066</span>         * @param version the vCard version<a name="line.66"></a>
+<span class="sourceLineNo">067</span>         */<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        public XCardElement(Element element, VCardVersion version) {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                this.document = element.getOwnerDocument();<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                this.element = element;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                this.version = version;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                namespace = version.getXmlNamespace();<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        }<a name="line.73"></a>
+<span class="sourceLineNo">074</span><a name="line.74"></a>
+<span class="sourceLineNo">075</span>        /**<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         * Gets the first value with one of the given data types.<a name="line.76"></a>
+<span class="sourceLineNo">077</span>         * @param dataTypes the data type(s) to look for (null signifies the<a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * "unknown" data type)<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @return the value or null if not found<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        public String first(VCardDataType... dataTypes) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                String names[] = new String[dataTypes.length];<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                for (int i = 0; i &lt; dataTypes.length; i++) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        VCardDataType dataType = dataTypes[i];<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                        names[i] = toLocalName(dataType);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                }<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                return first(names);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>        /**<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * Gets the value of the first child element with one of the given names.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         * @param names the possible names of the element<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         * @return the element's text or null if not found<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         */<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        public String first(String... names) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                List&lt;String&gt; localNamesList = Arrays.asList(names);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                for (Element child : children()) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        if (localNamesList.contains(child.getLocalName()) &amp;&amp; namespace.equals(child.getNamespaceURI())) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                                return child.getTextContent();<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                        }<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                return null;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * Gets all the values of a given data type.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * @param dataType the data type to look for<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         * @return the values<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         */<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        public List&lt;String&gt; all(VCardDataType dataType) {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                String dataTypeStr = toLocalName(dataType);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                return all(dataTypeStr);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>        /**<a name="line.115"></a>
+<span class="sourceLineNo">116</span>         * Gets the value of all non-empty child elements that have the given name.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * @param localName the element name<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         * @return the values of the child elements<a name="line.118"></a>
+<span class="sourceLineNo">119</span>         */<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        public List&lt;String&gt; all(String localName) {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                List&lt;String&gt; childrenText = new ArrayList&lt;&gt;();<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                for (Element child : children()) {<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                        if (localName.equals(child.getLocalName()) &amp;&amp; namespace.equals(child.getNamespaceURI())) {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                                String text = child.getTextContent();<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                                if (text.length() &gt; 0) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                                        childrenText.add(child.getTextContent());<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                                }<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                        }<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                }<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                return childrenText;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * Adds a value.<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         * @param dataType the data type or null for the "unknown" data type<a name="line.135"></a>
+<span class="sourceLineNo">136</span>         * @param value the value<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * @return the created element<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         */<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        public Element append(VCardDataType dataType, String value) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                String dataTypeStr = toLocalName(dataType);<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                return append(dataTypeStr, value);<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        }<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>        /**<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         * Adds a child element.<a name="line.145"></a>
+<span class="sourceLineNo">146</span>         * @param name the name of the child element<a name="line.146"></a>
+<span class="sourceLineNo">147</span>         * @param value the value of the child element.<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         * @return the created element<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         */<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        public Element append(String name, String value) {<a name="line.150"></a>
+<span class="sourceLineNo">151</span>                Element child = document.createElementNS(namespace, name);<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                child.setTextContent(value);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                element.appendChild(child);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                return child;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        }<a name="line.155"></a>
+<span class="sourceLineNo">156</span><a name="line.156"></a>
+<span class="sourceLineNo">157</span>        /**<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         * Adds multiple child elements, each with the same name.<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         * @param name the name for all the child elements<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         * @param values the values of each child element<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * @return the created elements<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         */<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        public List&lt;Element&gt; append(String name, Collection&lt;String&gt; values) {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                if (values.isEmpty()) {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                        Element element = append(name, (String) null);<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                        return Collections.singletonList(element);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>                List&lt;Element&gt; elements = new ArrayList&lt;&gt;(values.size());<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                for (String value : values) {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                        elements.add(append(name, value));<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                }<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                return elements;<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>        /**<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         * Gets the owner document.<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * @return the owner document<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         */<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        public Document document() {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                return document;<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        }<a name="line.182"></a>
+<span class="sourceLineNo">183</span><a name="line.183"></a>
+<span class="sourceLineNo">184</span>        /**<a name="line.184"></a>
+<span class="sourceLineNo">185</span>         * Gets the wrapped XML element.<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * @return the wrapped XML element<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         */<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        public Element element() {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                return element;<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        }<a name="line.190"></a>
+<span class="sourceLineNo">191</span><a name="line.191"></a>
+<span class="sourceLineNo">192</span>        /**<a name="line.192"></a>
+<span class="sourceLineNo">193</span>         * Gets the vCard version.<a name="line.193"></a>
+<span class="sourceLineNo">194</span>         * @return the vCard version<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         */<a name="line.195"></a>
+<span class="sourceLineNo">196</span>        public VCardVersion version() {<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                return version;<a name="line.197"></a>
+<span class="sourceLineNo">198</span>        }<a name="line.198"></a>
+<span class="sourceLineNo">199</span><a name="line.199"></a>
+<span class="sourceLineNo">200</span>        /**<a name="line.200"></a>
+<span class="sourceLineNo">201</span>         * Gets the child elements of the XML element.<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * @return the child elements<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         */<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        private List&lt;Element&gt; children() {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                return XmlUtils.toElementList(element.getChildNodes());<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        }<a name="line.206"></a>
+<span class="sourceLineNo">207</span><a name="line.207"></a>
+<span class="sourceLineNo">208</span>        /**<a name="line.208"></a>
+<span class="sourceLineNo">209</span>         * Finds the first child element that has the xCard namespace and returns<a name="line.209"></a>
+<span class="sourceLineNo">210</span>         * its data type and value. If no such element is found, the parent<a name="line.210"></a>
+<span class="sourceLineNo">211</span>         * {@link XCardElement}'s text content, along with a null data type, is<a name="line.211"></a>
+<span class="sourceLineNo">212</span>         * returned.<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         * @return the value and data type<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         */<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        public XCardValue firstValue() {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                String elementNamespace = version.getXmlNamespace();<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                for (Element child : children()) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                        String childNamespace = child.getNamespaceURI();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                        if (elementNamespace.equals(childNamespace)) {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                                VCardDataType dataType = toDataType(child.getLocalName());<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                                String value = child.getTextContent();<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                                return new XCardValue(dataType, value);<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                        }<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                }<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>                return new XCardValue(null, element.getTextContent());<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        }<a name="line.227"></a>
+<span class="sourceLineNo">228</span><a name="line.228"></a>
+<span class="sourceLineNo">229</span>        /**<a name="line.229"></a>
+<span class="sourceLineNo">230</span>         * Gets the appropriate XML local name of a {@link VCardDataType} object.<a name="line.230"></a>
+<span class="sourceLineNo">231</span>         * @param dataType the data type or null for "unknown"<a name="line.231"></a>
+<span class="sourceLineNo">232</span>         * @return the local name (e.g. "text")<a name="line.232"></a>
+<span class="sourceLineNo">233</span>         */<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        private static String toLocalName(VCardDataType dataType) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                return (dataType == null) ? "unknown" : dataType.getName().toLowerCase();<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        }<a name="line.236"></a>
+<span class="sourceLineNo">237</span><a name="line.237"></a>
+<span class="sourceLineNo">238</span>        /**<a name="line.238"></a>
+<span class="sourceLineNo">239</span>         * Converts an XML local name to the appropriate {@link VCardDataType}<a name="line.239"></a>
+<span class="sourceLineNo">240</span>         * object.<a name="line.240"></a>
+<span class="sourceLineNo">241</span>         * @param localName the local name (e.g. "text")<a name="line.241"></a>
+<span class="sourceLineNo">242</span>         * @return the data type or null for "unknown"<a name="line.242"></a>
+<span class="sourceLineNo">243</span>         */<a name="line.243"></a>
+<span class="sourceLineNo">244</span>        private static VCardDataType toDataType(String localName) {<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                return "unknown".equals(localName) ? null : VCardDataType.get(localName);<a name="line.245"></a>
+<span class="sourceLineNo">246</span>        }<a name="line.246"></a>
+<span class="sourceLineNo">247</span><a name="line.247"></a>
+<span class="sourceLineNo">248</span>        /**<a name="line.248"></a>
+<span class="sourceLineNo">249</span>         * Represents the data type and value of a child element under an<a name="line.249"></a>
+<span class="sourceLineNo">250</span>         * {@link XCardElement}.<a name="line.250"></a>
+<span class="sourceLineNo">251</span>         */<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        public static class XCardValue {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                private final VCardDataType dataType;<a name="line.253"></a>
+<span class="sourceLineNo">254</span>                private final String value;<a name="line.254"></a>
+<span class="sourceLineNo">255</span><a name="line.255"></a>
+<span class="sourceLineNo">256</span>                /**<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                 * @param dataType the data type or null if "unknown"<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                 * @param value the value<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                 */<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                public XCardValue(VCardDataType dataType, String value) {<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                        this.dataType = dataType;<a name="line.261"></a>
+<span class="sourceLineNo">262</span>                        this.value = value;<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                }<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>                /**<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                 * Gets the data type<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                 * @return the data type or null if "unknown"<a name="line.267"></a>
+<span class="sourceLineNo">268</span>                 */<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                public VCardDataType getDataType() {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                        return dataType;<a name="line.270"></a>
+<span class="sourceLineNo">271</span>                }<a name="line.271"></a>
+<span class="sourceLineNo">272</span><a name="line.272"></a>
+<span class="sourceLineNo">273</span>                /**<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                 * Get the value.<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                 * @return the value<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                 */<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                public String getValue() {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                        return value;<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                }<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        }<a name="line.280"></a>
+<span class="sourceLineNo">281</span>}<a name="line.281"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
