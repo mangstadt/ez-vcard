@@ -101,7 +101,8 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "individual".
-	 * @return true if the value is "individual", false if not
+	 * @return true if the value is "individual" (case-insensitive), false if
+	 * not
 	 */
 	public boolean isIndividual() {
 		return INDIVIDUAL.equalsIgnoreCase(value);
@@ -109,7 +110,7 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "group".
-	 * @return true if the value is "group", false if not
+	 * @return true if the value is "group" (case-insensitive), false if not
 	 */
 	public boolean isGroup() {
 		return GROUP.equalsIgnoreCase(value);
@@ -117,7 +118,7 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "org".
-	 * @return true if the value is "org", false if not
+	 * @return true if the value is "org" (case-insensitive), false if not
 	 */
 	public boolean isOrg() {
 		return ORG.equalsIgnoreCase(value);
@@ -125,7 +126,7 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "location".
-	 * @return true if the value is "location", false if not
+	 * @return true if the value is "location" (case-insensitive), false if not
 	 */
 	public boolean isLocation() {
 		return LOCATION.equalsIgnoreCase(value);
@@ -133,7 +134,8 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "application".
-	 * @return true if the value is "application", false if not
+	 * @return true if the value is "application" (case-insensitive), false if
+	 * not
 	 * @see <a href="http://tools.ietf.org/html/rfc6473">RFC 6473</a>
 	 */
 	public boolean isApplication() {
@@ -142,7 +144,7 @@ public class Kind extends TextProperty {
 
 	/**
 	 * Determines if the value is set to "device".
-	 * @return true if the value is "device", false if not
+	 * @return true if the value is "device" (case-insensitive), false if not
 	 * @see <a href="http://tools.ietf.org/html/rfc6869">RFC 6869</a>
 	 */
 	public boolean isDevice() {
