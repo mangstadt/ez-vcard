@@ -53,6 +53,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**August 27, 2023**
+
+[Version 0.12.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release includes a few bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **February 4, 2023**
 
 [Version 0.12.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release updates to Java 1.8 and a few other things.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -60,14 +64,6 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 **September 11, 2021**
 
 [Version 0.11.3](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes several issues, including a security vulnerability.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**November 8, 2020**
-
-[Version 0.11.2](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a locale-specific issue related to number formatting.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**October 24, 2020**
-
-[Version 0.11.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes a vCard compatibility issue and updates ez-vcard's dependencies.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
 
 [Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
@@ -79,14 +75,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.12.0</version>
+   <version>0.12.1</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.12.0'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.12.1'
 ```
 
 # Build Instructions
@@ -109,6 +105,12 @@ You have some options:
  * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
+
+# Java 6 branch
+
+For those who can't use Java 8 (i.e. older Android APIs), there exists a parallel, Java 6 branch. This branch receives the same bug fixes that the main branch receives.
+
+https://github.com/mangstadt/ez-vcard/tree/j6
 
 # Android
 
