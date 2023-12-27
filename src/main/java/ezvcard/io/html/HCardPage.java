@@ -1,5 +1,7 @@
 package ezvcard.io.html;
 
+// import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -26,6 +28,7 @@ import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
 import ezvcard.util.VCardDateFormat;
+import ezvcard.util.VCardFloatFormatter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -82,6 +85,10 @@ import freemarker.template.TemplateException;
  * @see <a
  * href="http://microformats.org/wiki/hcard">http://microformats.org/wiki/hcard</a>
  */
+@SuppressWarnings(
+		{// "NewApi", // lib is for android-api-21. Some Path/Datetime require android-api-26 or desugar lib
+				"Unused"}) // this is a lib
+// @RequiresApi(26)
 public class HCardPage {
 	private final Template template;
 	private final List<VCard> vcards = new ArrayList<>();
@@ -219,5 +226,8 @@ public class HCardPage {
 		public String format(ZoneOffset offset) {
 			return VCardDateFormat.BASIC.format(offset);
 		}
-	}
+
+		public String format(Double d) {
+			return new VCardFloatFormatter().format(d);
+		}	}
 }

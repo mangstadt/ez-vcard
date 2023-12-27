@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -242,7 +243,9 @@ public class HCardPageTest {
 		String html = template.write();
 
 		//write to file for manual inspection
-		try (Writer writer = Files.newBufferedWriter(Paths.get("target", "vcard.html"))) {
+		Path file = Paths.get("target", "vcard.html");
+		Files.createDirectories(file.getParent());
+		try (Writer writer = Files.newBufferedWriter(file)) {
 			writer.write(html);
 		}
 
