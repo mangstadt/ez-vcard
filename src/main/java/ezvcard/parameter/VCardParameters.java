@@ -1338,9 +1338,23 @@ public class VCardParameters extends ListMultimap<String, String> {
 	public List<ValidationWarning> validate(VCardVersion version) {
 		List<ValidationWarning> warnings = new ArrayList<>(0);
 
-		/*
-		 * Check for invalid characters in names and values.
-		 */
+		checkForInvalidChars(version, warnings);
+
+		validateSupportedVersions(version, warnings);
+
+		validateCalscaleParameter(warnings);
+		validateCharsetParameter(warnings);
+		validateGeoParameter(warnings);
+		validateEncodingParameter(version, warnings);
+		validateIndexParameter(warnings);
+		validatePidParameter(warnings);
+		validatePrefParameter(warnings);
+		validateValueParameter(version, warnings);
+
+		return warnings;
+	}
+
+	private void checkForInvalidChars(VCardVersion version, List<ValidationWarning> warnings) {
 		SyntaxStyle syntax = version.getSyntaxStyle();
 		for (Map.Entry<String, List<String>> entry : this) {
 			String name = entry.getKey();
@@ -1353,146 +1367,167 @@ public class VCardParameters extends ListMultimap<String, String> {
 				continue;
 			}
 
-			//check the parameter name
-			if (!VObjectValidator.validateParameterName(name, syntax, true)) {
-				if (syntax == SyntaxStyle.OLD) {
-					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterName(syntax, true).flip();
-					warnings.add(new ValidationWarning(30, name, notAllowed.toString(true)));
-				} else {
-					warnings.add(new ValidationWarning(26, name));
-				}
-			}
+			checkForInvalidCharsInParamName(name, syntax, warnings);
 
-			//check the parameter value(s)
 			List<String> values = entry.getValue();
 			for (String value : values) {
-				/*
-				 * Newlines are allowed in LABEL parameters, but are not allowed
-				 * by vobject, so remove them from the value before validating.
-				 */
-				if (LABEL.equalsIgnoreCase(name)) {
-					value = value.replaceAll("\r\n|\r|\n", "");
-				}
-
-				if (!VObjectValidator.validateParameterValue(value, syntax, false, true)) {
-					AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterValue(syntax, false, true).flip();
-					int code = (syntax == SyntaxStyle.OLD) ? 31 : 25;
-					warnings.add(new ValidationWarning(code, name, value, notAllowed.toString(true)));
-				}
+				checkForInvalidCharsInParamValue(name, value, syntax, warnings);
 			}
+		}
+	}
+
+	private void checkForInvalidCharsInParamName(String name, SyntaxStyle syntax, List<ValidationWarning> warnings) {
+		if (VObjectValidator.validateParameterName(name, syntax, true)) {
+			return;
+		}
+
+		if (syntax == SyntaxStyle.OLD) {
+			AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterName(syntax, true).flip();
+			warnings.add(new ValidationWarning(30, name, notAllowed.toString(true)));
+		} else {
+			warnings.add(new ValidationWarning(26, name));
+		}
+	}
+
+	private void checkForInvalidCharsInParamValue(String name, String value, SyntaxStyle syntax, List<ValidationWarning> warnings) {
+		/*
+		 * Newlines are allowed in LABEL parameters, but are not allowed by
+		 * vobject, so remove them from the value before validating.
+		 */
+		if (LABEL.equalsIgnoreCase(name)) {
+			value = value.replaceAll("\r\n|\r|\n", "");
+		}
+
+		if (VObjectValidator.validateParameterValue(value, syntax, false, true)) {
+			return;
+		}
+
+		AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterValue(syntax, false, true).flip();
+		int code = (syntax == SyntaxStyle.OLD) ? 31 : 25;
+		warnings.add(new ValidationWarning(code, name, value, notAllowed.toString(true)));
+	}
+
+	private void validateSupportedVersions(VCardVersion version, List<ValidationWarning> warnings) {
+		for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
+			String name = entry.getKey();
+			String value = first(name);
+			if (value == null) {
+				continue;
+			}
+
+			Set<VCardVersion> versions = entry.getValue();
+			if (!versions.contains(version)) {
+				warnings.add(new ValidationWarning(6, name));
+			}
+		}
+	}
+
+	private void validateCalscaleParameter(List<ValidationWarning> warnings) {
+		String value = first(CALSCALE);
+		if (value == null) {
+			return;
+		}
+
+		if (Calscale.find(value) == null) {
+			warnings.add(new ValidationWarning(3, CALSCALE, value, Calscale.all()));
+		}
+	}
+
+	private void validateCharsetParameter(List<ValidationWarning> warnings) {
+		String value = getCharset();
+		if (value == null) {
+			return;
 		}
 
 		/*
-		 * Check for invalid or unsupported values (e.g. "ENCODING=foo").
+		 * Check that it has a character set that is supported by this JVM.
 		 */
-		{
-			final int nonStandardValueCode = 3;
-			final int unsupportedValueCode = 4;
+		try {
+			Charset.forName(value);
+		} catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+			warnings.add(new ValidationWarning(22, value));
+		}
+	}
 
-			String value = first(CALSCALE);
-			if (value != null && Calscale.find(value) == null) {
-				warnings.add(new ValidationWarning(nonStandardValueCode, CALSCALE, value, Calscale.all()));
-			}
-
-			value = first(ENCODING);
-			if (value != null) {
-				Encoding encoding = Encoding.find(value);
-				if (encoding == null) {
-					warnings.add(new ValidationWarning(nonStandardValueCode, ENCODING, value, Encoding.all()));
-				} else if (!encoding.isSupportedBy(version)) {
-					warnings.add(new ValidationWarning(unsupportedValueCode, ENCODING, value));
-				}
-			}
-
-			value = first(VALUE);
-			if (value != null) {
-				VCardDataType dataType = VCardDataType.find(value);
-				if (dataType == null) {
-					warnings.add(new ValidationWarning(nonStandardValueCode, VALUE, value, VCardDataType.all()));
-				} else if (!dataType.isSupportedBy(version)) {
-					warnings.add(new ValidationWarning(unsupportedValueCode, VALUE, value));
-				}
-			}
+	private void validateEncodingParameter(VCardVersion version, List<ValidationWarning> warnings) {
+		String value = first(ENCODING);
+		if (value == null) {
+			return;
 		}
 
-		/*
-		 * Check for parameters with malformed values.
-		 */
-		{
-			final int malformedValueCode = 5;
-
-			try {
-				getGeo();
-			} catch (IllegalStateException e) {
-				warnings.add(new ValidationWarning(malformedValueCode, GEO, first(GEO)));
-			}
-
-			try {
-				Integer index = getIndex();
-				if (index != null && index <= 0) {
-					warnings.add(new ValidationWarning(28, index));
-				}
-			} catch (IllegalStateException e) {
-				warnings.add(new ValidationWarning(malformedValueCode, INDEX, first(INDEX)));
-			}
-
-			List<String> pids = get(PID);
-			for (String pid : pids) {
-				if (!isPidValid(pid)) {
-					warnings.add(new ValidationWarning(27, pid));
-				}
-			}
-
-			try {
-				Integer pref = getPref();
-				if (pref != null && (pref < 1 || pref > 100)) {
-					warnings.add(new ValidationWarning(29, pref));
-				}
-			} catch (IllegalStateException e) {
-				warnings.add(new ValidationWarning(malformedValueCode, PREF, first(PREF)));
-			}
+		Encoding encoding = Encoding.find(value);
+		if (encoding == null) {
+			warnings.add(new ValidationWarning(3, ENCODING, value, Encoding.all()));
+			return;
 		}
 
-		/*
-		 * Check that each parameter is supported by the given vCard version.
-		 */
-		{
-			final int paramNotSupportedCode = 6;
+		if (!encoding.isSupportedBy(version)) {
+			warnings.add(new ValidationWarning(4, ENCODING, value));
+		}
+	}
 
-			for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
-				String name = entry.getKey();
-				String value = first(name);
-				if (value == null) {
-					continue;
-				}
+	private void validateGeoParameter(List<ValidationWarning> warnings) {
+		try {
+			getGeo();
+		} catch (IllegalStateException e) {
+			warnings.add(new ValidationWarning(5, GEO, first(GEO)));
+		}
+	}
 
-				Set<VCardVersion> versions = entry.getValue();
-				if (!versions.contains(version)) {
-					warnings.add(new ValidationWarning(paramNotSupportedCode, name));
-				}
+	private void validateIndexParameter(List<ValidationWarning> warnings) {
+		try {
+			Integer index = getIndex();
+			if (index == null) {
+				return;
 			}
+
+			if (index <= 0) {
+				warnings.add(new ValidationWarning(28, index));
+			}
+		} catch (IllegalStateException e) {
+			warnings.add(new ValidationWarning(5, INDEX, first(INDEX)));
+		}
+	}
+
+	private void validatePidParameter(List<ValidationWarning> warnings) {
+		//@formatter:off
+		get(PID).stream()
+			.filter(pid -> !isPidValid(pid))
+			.map(pid -> new ValidationWarning(27, pid))
+		.forEach(warnings::add);
+		//@formatter:on
+	}
+
+	private void validatePrefParameter(List<ValidationWarning> warnings) {
+		try {
+			Integer pref = getPref();
+			if (pref == null) {
+				return;
+			}
+
+			if (pref < 1 || pref > 100) {
+				warnings.add(new ValidationWarning(29, pref));
+			}
+		} catch (IllegalStateException e) {
+			warnings.add(new ValidationWarning(5, PREF, first(PREF)));
+		}
+	}
+
+	private void validateValueParameter(VCardVersion version, List<ValidationWarning> warnings) {
+		String value = first(VALUE);
+		if (value == null) {
+			return;
 		}
 
-		/*
-		 * Check that the CHARSET parameter has a character set that is
-		 * supported by this JVM.
-		 */
-		{
-			final int invalidCharsetCode = 22;
-
-			String charsetStr = getCharset();
-			if (charsetStr != null) {
-				try {
-					Charset.forName(charsetStr);
-				} catch (IllegalCharsetNameException e) {
-					warnings.add(new ValidationWarning(invalidCharsetCode, charsetStr));
-				} catch (UnsupportedCharsetException e) {
-					warnings.add(new ValidationWarning(invalidCharsetCode, charsetStr));
-				}
-			}
+		VCardDataType dataType = VCardDataType.find(value);
+		if (dataType == null) {
+			warnings.add(new ValidationWarning(3, VALUE, value, VCardDataType.all()));
+			return;
 		}
 
-		return warnings;
+		if (!dataType.isSupportedBy(version)) {
+			warnings.add(new ValidationWarning(4, VALUE, value));
+		}
 	}
 
 	private static boolean isPidValid(String pid) {
