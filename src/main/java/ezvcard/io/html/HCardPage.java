@@ -26,6 +26,7 @@ import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
 import ezvcard.util.VCardDateFormat;
+import ezvcard.util.VCardFloatFormatter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -192,6 +193,7 @@ public class HCardPage {
 	 */
 	public static class TemplateUtils {
 		private final Pattern newlineRegex = Pattern.compile("\\r\\n|\\r|\\n");
+		private final VCardFloatFormatter floatFormatter = new VCardFloatFormatter(6);
 
 		public String base64(String contentType, byte[] data) {
 			return new DataUri(contentType, data).toString();
@@ -218,6 +220,10 @@ public class HCardPage {
 
 		public String format(ZoneOffset offset) {
 			return VCardDateFormat.BASIC.format(offset);
+		}
+
+		public String format(Double d) {
+			return floatFormatter.format(d);
 		}
 	}
 }
