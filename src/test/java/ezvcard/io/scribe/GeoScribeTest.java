@@ -138,6 +138,24 @@ public class GeoScribeTest {
 		
 		sensei.assertParseHtml(
 		"<div>" +
+			"<abbr class=\"latitude\" title=\"-12.34\">S 12° 34</span>" +
+			"<abbr class=\"longitude\" title=\"56.78\">E 56° 78</span>" +
+		"</div>"		
+		).run(withBoth);
+		
+		sensei.assertParseHtml(
+		"<div>" +
+			"<span class=\"latitude\">" +
+				"<span class=\"value-title\" title=\"-12.34\"> </span>" +
+			"</span>" +
+			"<span class=\"longitude\">" +
+				"<span class=\"value-title\" title=\"56.78\"> </span>" +
+			"</span>" +
+		"</div>"		
+		).run(withBoth);
+		
+		sensei.assertParseHtml(
+		"<div>" +
 			"<span class=\"latitude\">invalid</span>" +
 			"<span class=\"longitude\">56.78</span>" +
 		"</div>"		
