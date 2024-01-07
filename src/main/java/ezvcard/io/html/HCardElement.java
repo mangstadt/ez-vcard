@@ -2,9 +2,9 @@ package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -80,11 +80,13 @@ public class HCardElement {
 	 * @return the absolute URL or empty string if it doesn't exist
 	 */
 	public String absUrl(String name) {
-		String url = element.absUrl(name); //returns empty string for some protocols like "tel:" and "data:", but not for "http:" or "mailto:"
-		if (url.isEmpty()) {
-			url = element.attr(name);
-		}
-		return url;
+		/*
+		 * Returns empty string for some protocols like "tel:" and "data:", but
+		 * not for "http:" or "mailto:"
+		 */
+		String url = element.absUrl(name);
+
+		return url.isEmpty() ? element.attr(name) : url;
 	}
 
 	/**
@@ -132,12 +134,11 @@ public class HCardElement {
 	 * @return the hCard values
 	 */
 	public List<String> allValues(String cssClass) {
-		Elements elements = element.getElementsByClass(cssClass);
-		List<String> values = new ArrayList<>(elements.size());
-		for (Element element : elements) {
-			values.add(value(element));
-		}
-		return values;
+		//@formatter:off
+		return element.getElementsByClass(cssClass).stream()
+			.map(this::value)
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**
@@ -145,12 +146,11 @@ public class HCardElement {
 	 * @return the type values (in lower-case)
 	 */
 	public List<String> types() {
-		List<String> types = allValues("type");
-		List<String> lowerCaseTypes = new ArrayList<>(types.size());
-		for (String type : types) {
-			lowerCaseTypes.add(type.toLowerCase());
-		}
-		return lowerCaseTypes;
+		//@formatter:off
+		return allValues("type").stream()
+			.map(String::toLowerCase)
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class HCardElement {
 	 */
 	public void append(String text) {
 		boolean first = true;
-		String lines[] = text.split("\\r\\n|\\n|\\r");
+		String[] lines = text.split("\\r\\n|\\n|\\r");
 		for (String line : lines) {
 			if (!first) {
 				//replace newlines with "<br>" tags
