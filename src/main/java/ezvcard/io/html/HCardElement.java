@@ -183,10 +183,14 @@ public class HCardElement {
 	}
 
 	private String value(Element element) {
-		//value of "title" attribute should be returned if it's a "<abbr>" tag
-		//example: <abbr class="latitude" title="48.816667">N 48� 81.6667</abbr>
-		if ("abbr".equals(element.tagName())) {
-			String title = element.attr("title");
+		String abbrValue = abbrElementValue(element);
+		if (abbrValue != null) {
+			return abbrValue;
+		}
+
+		Elements valueTitleElements = element.getElementsByClass("value-title");
+		if (!valueTitleElements.isEmpty()) {
+			String title = valueTitleElements.first().attr("title");
 			if (title.length() > 0) {
 				return title;
 			}
@@ -205,17 +209,37 @@ public class HCardElement {
 					continue;
 				}
 
-				if ("abbr".equals(valueElement.tagName())) {
-					String title = valueElement.attr("title");
-					if (title.length() > 0) {
-						value.append(title);
-						continue;
-					}
+				abbrValue = abbrElementValue(valueElement);
+				if (abbrValue != null) {
+					value.append(abbrValue);
+					continue;
 				}
+
 				visitForValue(valueElement, value);
 			}
 		}
 		return value.toString().trim();
+	}
+
+	/**
+	 * <p>
+	 * If the given element is {@code <abbr>}, gets the value of its "title"
+	 * attribute.
+	 * </p>
+	 * <p>
+	 * Example:
+	 * {@code <abbr class="latitude" title="48.816667">N 48° 81.6667</abbr>}
+	 * </p>
+	 * @param element
+	 * @return the value or null if not found
+	 */
+	private String abbrElementValue(Element element) {
+		if (!"abbr".equals(element.tagName())) {
+			return null;
+		}
+
+		String title = element.attr("title");
+		return (title.length() == 0) ? null : title;
 	}
 
 	private void visitForValue(Element element, StringBuilder value) {
