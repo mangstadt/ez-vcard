@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -291,135 +292,198 @@ public class HCardParser extends StreamReader {
 	}
 
 	private void visit(Element element) {
-		boolean visitChildren = true;
-		Set<String> classNames = element.classNames();
+		Set<String> classNames = adjustClassNames(element);
+
 		for (String className : classNames) {
-			className = className.toLowerCase();
-
-			//give special treatment to certain URLs
 			if (urlPropertyName.equals(className)) {
-				String href = element.attr("href");
-				if (href.length() > 0) {
-					if (!classNames.contains(emailName) && href.matches("(?i)mailto:.*")) {
-						className = emailName;
-					} else if (!classNames.contains(telName) && href.matches("(?i)tel:.*")) {
-						className = telName;
-					} else {
-						//try parsing as IMPP
-						VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
-
-						context.getWarnings().clear();
-						context.setPropertyName(scribe.getPropertyName());
-						try {
-							VCardProperty property = scribe.parseHtml(new HCardElement(element), context);
-							vcard.addProperty(property);
-							warnings.addAll(context.getWarnings());
-							continue;
-						} catch (SkipMeException e) {
-							//URL is not an instant messenger URL
-						} catch (CannotParseException e) {
-							//URL is not an instant messenger URL
-						}
-					}
+				if (tryToParseAsImpp(element)) {
+					continue;
 				}
 			}
 
-			//hCard uses a different name for the CATEGORIES property
-			if ("category".equals(className)) {
-				className = categoriesName;
+			parseProperty(element, className);
+		}
+
+		if (embeddedVCards.isEmpty()) {
+			//do not visit children if there are any embedded vCards
+			element.children().forEach(this::visit);
+		}
+	}
+
+	private Set<String> adjustClassNames(Element element) {
+		//@formatter:off
+		Set<String> classNamesToLower = element.classNames().stream()
+			.map(String::toLowerCase)
+		.collect(Collectors.toSet());
+
+		return classNamesToLower.stream()
+			.map(className -> adjustClassName(className, element, classNamesToLower))
+		.collect(Collectors.toSet());
+		//@formatter:on
+	}
+
+	private String adjustClassName(String className, Element element, Set<String> origClassNames) {
+		/*
+		 * hCard uses a different name for the CATEGORIES property.
+		 */
+		if ("category".equals(className)) {
+			return categoriesName;
+		}
+
+		/*
+		 * Give special treatment to certain URLs.
+		 */
+		if (urlPropertyName.equals(className)) {
+			String href = element.attr("href");
+			if (!origClassNames.contains(emailName) && href.matches("(?i)mailto:.*")) {
+				return emailName;
 			}
-
-			VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(className);
-			if (scribe == null) {
-				//if no scribe is found, and the class name doesn't start with "x-", then it must be an arbitrary CSS class that has nothing to do with vCard
-				if (!className.startsWith("x-")) {
-					continue;
-				}
-				scribe = new RawPropertyScribe(className);
+			if (!origClassNames.contains(telName) && href.matches("(?i)tel:.*")) {
+				return telName;
 			}
+		}
 
-			context.getWarnings().clear();
-			context.setPropertyName(scribe.getPropertyName());
+		return className;
+	}
 
-			VCardProperty property;
-			try {
-				property = scribe.parseHtml(new HCardElement(element), context);
-				warnings.addAll(context.getWarnings());
+	private boolean tryToParseAsImpp(Element element) {
+		String href = element.attr("href");
+		if (href.isEmpty()) {
+			return false;
+		}
 
-				//LABELs must be treated specially so they can be matched up with their ADRs
-				if (property instanceof Label) {
-					labels.add((Label) property);
-					continue;
-				}
+		VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
 
-				//add all NICKNAMEs to the same type object
-				if (property instanceof Nickname) {
-					Nickname nn = (Nickname) property;
-					if (nickname == null) {
-						nickname = nn;
-						vcard.addProperty(nickname);
-					} else {
-						nickname.getValues().addAll(nn.getValues());
-					}
-					continue;
-				}
-
-				//add all CATEGORIES to the same type object
-				if (property instanceof Categories) {
-					Categories c = (Categories) property;
-					if (categories == null) {
-						categories = c;
-						vcard.addProperty(categories);
-					} else {
-						categories.getValues().addAll(c.getValues());
-					}
-					continue;
-				}
-			} catch (SkipMeException e) {
-				//@formatter:off
-				warnings.add(new ParseWarning.Builder(context)
-					.message(22, e.getMessage())
-					.build()
-				);
-				//@formatter:on
-				continue;
-			} catch (CannotParseException e) {
-				//@formatter:off
-				warnings.add(new ParseWarning.Builder(context)
-					.message(e)
-					.build()
-				);
-				//@formatter:on
-
-				property = new RawProperty(className, element.outerHtml());
-			} catch (EmbeddedVCardException e) {
-				if (isChildOf(element, embeddedVCards)) {
-					//prevents multiple-nested embedded elements from overwriting each other
-					continue;
-				}
-
-				property = e.getProperty();
-
-				embeddedVCards.add(element);
-				HCardParser embeddedReader = new HCardParser(element, pageUrl);
-				try {
-					VCard embeddedVCard = embeddedReader.readNext();
-					e.injectVCard(embeddedVCard);
-				} finally {
-					warnings.addAll(embeddedReader.getWarnings());
-					IOUtils.closeQuietly(embeddedReader);
-				}
-				visitChildren = false;
-			}
-
+		context.getWarnings().clear();
+		context.setPropertyName(scribe.getPropertyName());
+		try {
+			VCardProperty property = scribe.parseHtml(new HCardElement(element), context);
 			vcard.addProperty(property);
+			warnings.addAll(context.getWarnings());
+			return true;
+		} catch (SkipMeException | CannotParseException e) {
+			//URL is not an instant messenger URL
+			return false;
+		}
+	}
+
+	private VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String className) {
+		VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(className);
+
+		if (scribe == null) {
+			/*
+			 * If no scribe is found, and the class name doesn't start with
+			 * "x-", then it must be an arbitrary CSS class that has nothing to
+			 * do with vCard
+			 */
+			if (!className.startsWith("x-")) {
+				return null;
+			}
+
+			scribe = new RawPropertyScribe(className);
 		}
 
-		if (visitChildren) {
-			for (Element child : element.children()) {
-				visit(child);
-			}
+		return scribe;
+	}
+
+	private VCard parseEmbeddedVCard(Element element) {
+		embeddedVCards.add(element);
+		HCardParser embeddedReader = new HCardParser(element, pageUrl);
+		try {
+			return embeddedReader.readNext();
+		} finally {
+			warnings.addAll(embeddedReader.getWarnings());
+			IOUtils.closeQuietly(embeddedReader);
 		}
+	}
+
+	private void parseProperty(Element element, String className) {
+		VCardPropertyScribe<? extends VCardProperty> scribe = getPropertyScribe(className);
+		if (scribe == null) {
+			//it's a CSS class that's unrelated to hCard
+			return;
+		}
+		
+		context.getWarnings().clear();
+		context.setPropertyName(scribe.getPropertyName());
+
+		VCardProperty property;
+		try {
+			property = scribe.parseHtml(new HCardElement(element), context);
+		} catch (SkipMeException e) {
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder(context)
+				.message(22, e.getMessage())
+				.build()
+			);
+			//@formatter:on
+
+			return;
+		} catch (CannotParseException e) {
+			//@formatter:off
+			warnings.add(new ParseWarning.Builder(context)
+				.message(e)
+				.build()
+			);
+			//@formatter:on
+
+			property = new RawProperty(className, element.outerHtml());
+			vcard.addProperty(property);
+			return;
+		} catch (EmbeddedVCardException e) {
+			if (isChildOf(element, embeddedVCards)) {
+				//prevents multiple-nested embedded elements from overwriting each other
+				return;
+			}
+
+			property = e.getProperty();
+
+			VCard embeddedVCard = parseEmbeddedVCard(element);
+			e.injectVCard(embeddedVCard);
+			vcard.addProperty(property);
+			return;
+		}
+		
+		warnings.addAll(context.getWarnings());
+
+		/*
+		 * LABELs must be treated specially so they can be matched up with their
+		 * ADRs.
+		 */
+		if (property instanceof Label) {
+			labels.add((Label) property);
+			return;
+		}
+
+		/*
+		 * Add all NICKNAMEs to the same type object.
+		 */
+		if (property instanceof Nickname) {
+			Nickname nn = (Nickname) property;
+			if (nickname == null) {
+				nickname = nn;
+				vcard.addProperty(nickname);
+			} else {
+				nickname.getValues().addAll(nn.getValues());
+			}
+			return;
+		}
+
+		/*
+		 * Add all CATEGORIES to the same type object.
+		 */
+		if (property instanceof Categories) {
+			Categories c = (Categories) property;
+			if (categories == null) {
+				categories = c;
+				vcard.addProperty(categories);
+			} else {
+				categories.getValues().addAll(c.getValues());
+			}
+			return;
+		}
+
+		vcard.addProperty(property);
 	}
 
 	public void close() {
