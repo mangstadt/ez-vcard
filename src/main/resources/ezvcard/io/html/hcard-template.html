@@ -379,8 +379,8 @@
 					<#if v.geo?? && v.geo.latitude?? && v.geo.longitude??>
 						<span class="l">Geo: </span>
 						<span class="geo">
-							<span class="latitude">${v.geo.latitude?string("0.######")}</span>,
-							<span class="longitude">${v.geo.longitude?string("0.######")}</span>
+							<span class="latitude">${utils.format(v.geo.latitude)}</span>,
+							<span class="longitude">${utils.format(v.geo.longitude)}</span>
 						</span>
 						<br />
 					</#if>

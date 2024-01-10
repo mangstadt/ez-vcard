@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Locale;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -230,6 +231,34 @@ public class HCardPageTest {
 		vcard = reader.readNext();
 		reader.close();
 		assertEquals("one" + NEWLINE + "two" + NEWLINE + "three" + NEWLINE + "four", vcard.getNotes().get(0).getValue());
+	}
+	
+	/**
+	 * Test round-tripping for locales that don't use a period for decimals.
+	 */
+	@Test
+	public void geo() throws Exception {
+		Locale defaultLocale = Locale.getDefault();
+
+		try {
+			Locale.setDefault(Locale.GERMANY);
+
+			VCard orig = new VCard();
+			orig.setGeo(123.456, -98.123);
+
+			HCardPage template = new HCardPage();
+			template.add(orig);
+
+			String html = template.write();
+			HCardParser reader = new HCardParser(html);
+			VCard parsed = reader.readNext();
+			reader.close();
+
+			assertEquals(orig.getGeo().getLatitude(), parsed.getGeo().getLatitude());
+			assertEquals(orig.getGeo().getLongitude(), parsed.getGeo().getLongitude());
+		} finally {
+			Locale.setDefault(defaultLocale);
+		}
 	}
 
 	@Test
