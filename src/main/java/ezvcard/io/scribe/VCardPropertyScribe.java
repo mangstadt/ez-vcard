@@ -67,7 +67,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param clazz the property class
 	 * @param propertyName the property name (e.g. "FN")
 	 */
-	public VCardPropertyScribe(Class<T> clazz, String propertyName) {
+	protected VCardPropertyScribe(Class<T> clazz, String propertyName) {
 		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()));
 	}
 
@@ -79,7 +79,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * documents (by default, the XML element name is set to the lower-cased
 	 * property name, and the element namespace is set to the xCard namespace)
 	 */
-	public VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname) {
+	protected VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname) {
 		this.clazz = clazz;
 		this.propertyName = propertyName;
 		this.qname = qname;

@@ -67,7 +67,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 */
 	protected T contentType;
 
-	public BinaryProperty() {
+	protected BinaryProperty() {
 		//empty
 	}
 
@@ -76,7 +76,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @param url the URL to the resource
 	 * @param type the content type
 	 */
-	public BinaryProperty(String url, T type) {
+	protected BinaryProperty(String url, T type) {
 		setUrl(url, type);
 	}
 
@@ -85,7 +85,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @param data the binary data
 	 * @param type the content type
 	 */
-	public BinaryProperty(byte[] data, T type) {
+	protected BinaryProperty(byte[] data, T type) {
 		setData(data, type);
 	}
 
@@ -95,7 +95,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @param type the content type
 	 * @throws IOException if there is a problem reading from the input stream
 	 */
-	public BinaryProperty(InputStream in, T type) throws IOException {
+	protected BinaryProperty(InputStream in, T type) throws IOException {
 		this(new Gobble(in).asByteArray(), type);
 	}
 
@@ -105,7 +105,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * @param type the content type
 	 * @throws IOException if there is a problem reading from the file
 	 */
-	public BinaryProperty(Path file, T type) throws IOException {
+	protected BinaryProperty(Path file, T type) throws IOException {
 		this(new BufferedInputStream(Files.newInputStream(file)), type);
 	}
 
@@ -113,7 +113,7 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	 * Copy constructor.
 	 * @param original the property to make a copy of
 	 */
-	public BinaryProperty(BinaryProperty<T> original) {
+	protected BinaryProperty(BinaryProperty<T> original) {
 		super(original);
 		data = (original.data == null) ? null : original.data.clone();
 		url = original.url;

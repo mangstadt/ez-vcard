@@ -44,7 +44,7 @@ import ezvcard.property.TextListProperty;
  * @author Michael Angstadt
  */
 public abstract class ListPropertyScribe<T extends TextListProperty> extends VCardPropertyScribe<T> {
-	public ListPropertyScribe(Class<T> clazz, String propertyName) {
+	protected ListPropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}
 

@@ -64,7 +64,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 */
 	protected VCardParameters parameters;
 
-	public VCardProperty() {
+	protected VCardProperty() {
 		parameters = new VCardParameters();
 	}
 

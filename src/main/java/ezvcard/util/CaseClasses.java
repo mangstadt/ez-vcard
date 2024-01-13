@@ -110,7 +110,7 @@ public abstract class CaseClasses<T, V> {
 	 * Creates a new case class collection.
 	 * @param clazz the case class
 	 */
-	public CaseClasses(Class<T> clazz) {
+	protected CaseClasses(Class<T> clazz) {
 		this.clazz = clazz;
 	}
 

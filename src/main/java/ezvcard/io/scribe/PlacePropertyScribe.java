@@ -43,7 +43,7 @@ import ezvcard.util.GeoUri;
  * @author Michael Angstadt
  */
 public abstract class PlacePropertyScribe<T extends PlaceProperty> extends VCardPropertyScribe<T> {
-	public PlacePropertyScribe(Class<T> clazz, String propertyName) {
+	protected PlacePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}
 

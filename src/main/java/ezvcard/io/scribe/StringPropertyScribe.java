@@ -34,11 +34,11 @@ import ezvcard.property.TextProperty;
  * @author Michael Angstadt
  */
 public abstract class StringPropertyScribe<T extends TextProperty> extends SimplePropertyScribe<T> {
-	public StringPropertyScribe(Class<T> clazz, String propertyName) {
+	protected StringPropertyScribe(Class<T> clazz, String propertyName) {
 		this(clazz, propertyName, VCardDataType.TEXT);
 	}
 
-	public StringPropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType) {
+	protected StringPropertyScribe(Class<T> clazz, String propertyName, VCardDataType dataType) {
 		super(clazz, propertyName, dataType);
 	}
 

@@ -38,7 +38,7 @@ import ezvcard.util.DataUri;
  * @author Michael Angstadt
  */
 public abstract class ImagePropertyScribe<T extends ImageProperty> extends BinaryPropertyScribe<T, ImageType> {
-	public ImagePropertyScribe(Class<T> clazz, String propertyName) {
+	protected ImagePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}
 

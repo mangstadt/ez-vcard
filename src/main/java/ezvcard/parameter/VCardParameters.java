@@ -1656,7 +1656,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @param <T> the parameter class
 	 */
 	public abstract class TypeParameterList<T extends VCardParameter> extends EnumParameterList<T> {
-		public TypeParameterList() {
+		protected TypeParameterList() {
 			super(TYPE);
 		}
 	}
@@ -1674,7 +1674,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @param <T> the parameter class
 	 */
 	public abstract class EnumParameterList<T extends VCardParameter> extends VCardParameterList<T> {
-		public EnumParameterList(String parameterName) {
+		protected EnumParameterList(String parameterName) {
 			super(parameterName);
 		}
 
@@ -1706,7 +1706,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 		/**
 		 * @param parameterName the name of the parameter (case insensitive)
 		 */
-		public VCardParameterList(String parameterName) {
+		protected VCardParameterList(String parameterName) {
 			this.parameterName = parameterName;
 			parameterValues = VCardParameters.this.get(parameterName);
 		}

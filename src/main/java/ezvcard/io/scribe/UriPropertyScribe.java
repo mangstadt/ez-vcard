@@ -36,7 +36,7 @@ import ezvcard.property.TextProperty;
  * @author Michael Angstadt
  */
 public abstract class UriPropertyScribe<T extends TextProperty> extends StringPropertyScribe<T> {
-	public UriPropertyScribe(Class<T> clazz, String propertyName) {
+	protected UriPropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName, VCardDataType.URI);
 	}
 

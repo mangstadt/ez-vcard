@@ -48,7 +48,7 @@ import ezvcard.util.VCardDateFormat;
  * @param <T> the property class
  */
 public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> extends VCardPropertyScribe<T> {
-	public DateOrTimePropertyScribe(Class<T> clazz, String propertyName) {
+	protected DateOrTimePropertyScribe(Class<T> clazz, String propertyName) {
 		super(clazz, propertyName);
 	}
 
