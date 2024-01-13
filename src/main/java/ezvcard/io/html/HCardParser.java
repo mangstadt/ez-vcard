@@ -283,28 +283,21 @@ public class HCardParser extends StreamReader {
 		}
 
 		//visit all descendant nodes, depth-first
-		for (Element child : vcardElement.children()) {
-			visit(child);
-		}
+		vcardElement.children().forEach(this::visit);
 
 		//assign labels to their addresses
 		assignLabels(vcard, labels);
 	}
 
 	private void visit(Element element) {
+		int embeddedVCardCount = embeddedVCards.size();
+
 		Set<String> classNames = adjustClassNames(element);
 
-		for (String className : classNames) {
-			if (urlPropertyName.equals(className)) {
-				if (tryToParseAsImpp(element)) {
-					continue;
-				}
-			}
+		classNames.forEach(className -> parseProperty(element, className));
 
-			parseProperty(element, className);
-		}
-
-		if (embeddedVCards.isEmpty()) {
+		boolean noEmbeddedVCardsWereAdded = (embeddedVCardCount == embeddedVCards.size());
+		if (noEmbeddedVCardsWereAdded) {
 			//do not visit children if there are any embedded vCards
 			element.children().forEach(this::visit);
 		}
@@ -346,10 +339,10 @@ public class HCardParser extends StreamReader {
 		return className;
 	}
 
-	private boolean tryToParseAsImpp(Element element) {
+	private VCardProperty tryToParseAsImpp(Element element) {
 		String href = element.attr("href");
 		if (href.isEmpty()) {
-			return false;
+			return null;
 		}
 
 		VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(Impp.class);
@@ -358,12 +351,11 @@ public class HCardParser extends StreamReader {
 		context.setPropertyName(scribe.getPropertyName());
 		try {
 			VCardProperty property = scribe.parseHtml(new HCardElement(element), context);
-			vcard.addProperty(property);
 			warnings.addAll(context.getWarnings());
-			return true;
+			return property;
 		} catch (SkipMeException | CannotParseException e) {
 			//URL is not an instant messenger URL
-			return false;
+			return null;
 		}
 	}
 
@@ -398,12 +390,20 @@ public class HCardParser extends StreamReader {
 	}
 
 	private void parseProperty(Element element, String className) {
+		if (urlPropertyName.equals(className)) {
+			VCardProperty impp = tryToParseAsImpp(element);
+			if (impp != null) {
+				vcard.addProperty(impp);
+				return;
+			}
+		}
+
 		VCardPropertyScribe<? extends VCardProperty> scribe = getPropertyScribe(className);
 		if (scribe == null) {
 			//it's a CSS class that's unrelated to hCard
 			return;
 		}
-		
+
 		context.getWarnings().clear();
 		context.setPropertyName(scribe.getPropertyName());
 
@@ -443,7 +443,7 @@ public class HCardParser extends StreamReader {
 			vcard.addProperty(property);
 			return;
 		}
-		
+
 		warnings.addAll(context.getWarnings());
 
 		/*
@@ -451,7 +451,7 @@ public class HCardParser extends StreamReader {
 		 * ADRs.
 		 */
 		if (property instanceof Label) {
-			labels.add((Label) property);
+			handleLabel((Label) property);
 			return;
 		}
 
@@ -459,13 +459,7 @@ public class HCardParser extends StreamReader {
 		 * Add all NICKNAMEs to the same type object.
 		 */
 		if (property instanceof Nickname) {
-			Nickname nn = (Nickname) property;
-			if (nickname == null) {
-				nickname = nn;
-				vcard.addProperty(nickname);
-			} else {
-				nickname.getValues().addAll(nn.getValues());
-			}
+			handleNickname((Nickname) property);
 			return;
 		}
 
@@ -473,17 +467,33 @@ public class HCardParser extends StreamReader {
 		 * Add all CATEGORIES to the same type object.
 		 */
 		if (property instanceof Categories) {
-			Categories c = (Categories) property;
-			if (categories == null) {
-				categories = c;
-				vcard.addProperty(categories);
-			} else {
-				categories.getValues().addAll(c.getValues());
-			}
+			handleCategories((Categories) property);
 			return;
 		}
 
 		vcard.addProperty(property);
+	}
+
+	private void handleLabel(Label property) {
+		labels.add(property);
+	}
+
+	private void handleNickname(Nickname property) {
+		if (nickname == null) {
+			nickname = property;
+			vcard.addProperty(nickname);
+		} else {
+			nickname.getValues().addAll(property.getValues());
+		}
+	}
+
+	private void handleCategories(Categories property) {
+		if (categories == null) {
+			categories = property;
+			vcard.addProperty(categories);
+		} else {
+			categories.getValues().addAll(property.getValues());
+		}
 	}
 
 	public void close() {
