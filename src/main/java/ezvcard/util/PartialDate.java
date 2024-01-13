@@ -77,7 +77,7 @@ public final class PartialDate {
 	private static final int OFFSET_MINUTE = 7;
 
 	//@formatter:off
-	private static final Format dateFormats[] = new Format[] {
+	private static final Format[] dateFormats = new Format[] {
 		new Format("(\\d{4})", YEAR),
 		new Format("(\\d{4})-(\\d{2})", YEAR, MONTH),
 		new Format("(\\d{4})-?(\\d{2})-?(\\d{2})", YEAR, MONTH, DATE),
@@ -90,7 +90,7 @@ public final class PartialDate {
 	private static final String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";
 
 	//@formatter:off
-	private static final Format timeFormats[] = new Format[] {
+	private static final Format[] timeFormats = new Format[] {
 		new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),
 		new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
 		new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
@@ -171,7 +171,7 @@ public final class PartialDate {
 		return parseFormats(value, builder, timeFormats);
 	}
 
-	private static boolean parseFormats(String value, Builder builder, Format formats[]) {
+	private static boolean parseFormats(String value, Builder builder, Format[] formats) {
 		for (Format regex : formats) {
 			if (regex.parse(builder, value)) {
 				return true;

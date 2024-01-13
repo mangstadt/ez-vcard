@@ -126,7 +126,7 @@ public class Key extends BinaryProperty<KeyType> {
 	 * @param data the binary data
 	 * @param type the type of key (e.g. PGP)
 	 */
-	public Key(byte data[], KeyType type) {
+	public Key(byte[] data, KeyType type) {
 		super(data, type);
 	}
 

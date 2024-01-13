@@ -65,7 +65,7 @@ public final class TelUri {
 	 * The characters which are allowed to exist unencoded inside of a parameter
 	 * value.
 	 */
-	private static final boolean validParameterValueCharacters[] = new boolean[128];
+	private static final boolean[] validParameterValueCharacters = new boolean[128];
 	static {
 		for (int i = '0'; i <= '9'; i++) {
 			validParameterValueCharacters[i] = true;

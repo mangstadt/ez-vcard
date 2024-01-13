@@ -71,7 +71,7 @@ public final class GeoUri {
 	 * The characters which are allowed to exist un-encoded inside of a
 	 * parameter value.
 	 */
-	private static final boolean validParameterValueCharacters[] = new boolean[128];
+	private static final boolean[] validParameterValueCharacters = new boolean[128];
 	static {
 		for (int i = '0'; i <= '9'; i++) {
 			validParameterValueCharacters[i] = true;

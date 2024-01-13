@@ -79,7 +79,7 @@ public class XCardElement {
 	 * @return the value or null if not found
 	 */
 	public String first(VCardDataType... dataTypes) {
-		String names[] = new String[dataTypes.length];
+		String[] names = new String[dataTypes.length];
 		for (int i = 0; i < dataTypes.length; i++) {
 			VCardDataType dataType = dataTypes[i];
 			names[i] = toLocalName(dataType);

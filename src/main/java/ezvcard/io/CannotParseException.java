@@ -36,7 +36,7 @@ import ezvcard.Messages;
 public class CannotParseException extends RuntimeException {
 	private static final long serialVersionUID = -7230344536456543576L;
 	private final Integer code;
-	private final Object args[];
+	private final Object[] args;
 
 	public CannotParseException() {
 		this(null);

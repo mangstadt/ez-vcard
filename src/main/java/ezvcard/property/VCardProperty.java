@@ -108,7 +108,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	 * @return true if it is supported, false if not
 	 */
 	public final boolean isSupportedBy(VCardVersion version) {
-		VCardVersion supportedVersions[] = getSupportedVersions();
+		VCardVersion[] supportedVersions = getSupportedVersions();
 		for (VCardVersion supportedVersion : supportedVersions) {
 			if (supportedVersion == version) {
 				return true;

@@ -53,7 +53,7 @@ public class MediaTypeCaseClasses<T extends MediaTypeParameter> extends CaseClas
 
 	@Override
 	protected boolean matches(T object, String[] value) {
-		String objectValues[] = new String[] { object.getValue(), object.getMediaType(), object.getExtension() };
+		String[] objectValues = { object.getValue(), object.getMediaType(), object.getExtension() };
 		for (int i = 0; i < value.length; i++) {
 			String v = value[i];
 			if (v != null && !v.equalsIgnoreCase(objectValues[i])) {

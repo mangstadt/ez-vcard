@@ -269,7 +269,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * @param contentType the content type or null if unknown
 	 * @return the property object
 	 */
-	protected abstract T _newInstance(byte data[], U contentType);
+	protected abstract T _newInstance(byte[] data, U contentType);
 
 	/**
 	 * Tries to determine a property value's content type by looking at the
@@ -366,7 +366,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			return url;
 		}
 
-		byte data[] = property.getData();
+		byte[] data = property.getData();
 		if (data != null) {
 			switch (version) {
 			case V2_1:
