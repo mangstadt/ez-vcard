@@ -266,10 +266,7 @@ public final class XmlUtils {
 		Transformer transformer;
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
-		} catch (TransformerConfigurationException e) {
-			//should never be thrown because we're not doing anything fancy with the configuration
-			throw new RuntimeException(e);
-		} catch (TransformerFactoryConfigurationError e) {
+		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
 			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}

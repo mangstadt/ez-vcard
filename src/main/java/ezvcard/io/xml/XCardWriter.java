@@ -373,9 +373,7 @@ public class XCardWriter extends XCardWriterBase {
 			propertyElement = DOC.createElementNS(qname.getNamespaceURI(), qname.getLocalPart());
 			try {
 				scribe.writeXml(property, propertyElement);
-			} catch (SkipMeException e) {
-				return;
-			} catch (EmbeddedVCardException e) {
+			} catch (SkipMeException | EmbeddedVCardException e) {
 				return;
 			}
 		}

@@ -469,10 +469,7 @@ public class XCardDocument {
 		Transformer transformer;
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
-		} catch (TransformerConfigurationException e) {
-			//should never be thrown because we're not doing anything fancy with the configuration
-			throw new RuntimeException(e);
-		} catch (TransformerFactoryConfigurationError e) {
+		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
 			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
 		}
@@ -672,9 +669,7 @@ public class XCardDocument {
 					try {
 						Element propertyElement = marshalProperty(property, vcard);
 						parent.appendChild(propertyElement);
-					} catch (SkipMeException e) {
-						//skip property
-					} catch (EmbeddedVCardException e) {
+					} catch (SkipMeException | EmbeddedVCardException e) {
 						//skip property
 					}
 				}
