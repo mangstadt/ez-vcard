@@ -123,11 +123,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 */
 	public void put(K key, V value) {
 		key = sanitizeKey(key);
-		List<V> list = map.get(key);
-		if (list == null) {
-			list = new ArrayList<>();
-			map.put(key, list);
-		}
+		List<V> list = map.computeIfAbsent(key, k -> new ArrayList<>());
 		list.add(value);
 	}
 
@@ -142,11 +138,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 		}
 
 		key = sanitizeKey(key);
-		List<V> list = map.get(key);
-		if (list == null) {
-			list = new ArrayList<>();
-			map.put(key, list);
-		}
+		List<V> list = map.computeIfAbsent(key, k -> new ArrayList<>());
 		list.addAll(values);
 	}
 
