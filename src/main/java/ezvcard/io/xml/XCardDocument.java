@@ -468,7 +468,9 @@ public class XCardDocument {
 	public void write(Writer writer, Map<String, String> outputProperties) throws TransformerException {
 		Transformer transformer;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory factory = TransformerFactory.newInstance();
+			XmlUtils.applyXXEProtection(factory);
+			transformer = factory.newTransformer();
 		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
 			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);

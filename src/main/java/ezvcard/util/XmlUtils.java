@@ -204,6 +204,9 @@ public final class XmlUtils {
 		String[] attributes = {
 			//XMLConstants.ACCESS_EXTERNAL_DTD (Java 7 only)
 			"http://javax.xml.XMLConstants/property/accessExternalDTD",
+			
+			//XMLConstants.ACCESS_EXTERNAL_SCHEMA (Java 7 only)
+			"http://javax.xml.XMLConstants/property/accessExternalSchema",
 
 			//XMLConstants.ACCESS_EXTERNAL_STYLESHEET (Java 7 only)
 			"http://javax.xml.XMLConstants/property/accessExternalStylesheet"
@@ -265,7 +268,9 @@ public final class XmlUtils {
 	public static void toWriter(Node node, Writer writer, Map<String, String> outputProperties) throws TransformerException {
 		Transformer transformer;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory factory = TransformerFactory.newInstance();
+			applyXXEProtection(factory);
+			transformer = factory.newTransformer();
 		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
 			//should never be thrown because we're not doing anything fancy with the configuration
 			throw new RuntimeException(e);
