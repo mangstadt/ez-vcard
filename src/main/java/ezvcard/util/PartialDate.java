@@ -329,11 +329,24 @@ public final class PartialDate {
 		StringBuilder sb = new StringBuilder(maxPossibleLength);
 		NumberFormat nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
+		writeDateComponent(sb, nf, extended);
+		writeTimeComponent(sb, nf, extended);
+
+		return sb.toString();
+	}
+
+	private void writeDateComponent(StringBuilder sb, NumberFormat nf, boolean extended) {
+		if (hasYear() && !hasMonth() && hasDate()) {
+			//this is checked for in the builder and should never be thrown here
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));
+		}
+
 		String yearStr = hasYear() ? getYear().toString() : null;
 		String monthStr = hasMonth() ? nf.format(getMonth()) : null;
 		String dateStr = hasDate() ? nf.format(getDate()) : null;
 
 		String dash = extended ? "-" : "";
+
 		if (hasYear() && !hasMonth() && !hasDate()) {
 			sb.append(yearStr);
 		} else if (!hasYear() && hasMonth() && !hasDate()) {
@@ -344,50 +357,51 @@ public final class PartialDate {
 			sb.append(yearStr).append("-").append(monthStr);
 		} else if (!hasYear() && hasMonth() && hasDate()) {
 			sb.append("--").append(monthStr).append(dash).append(dateStr);
-		} else if (hasYear() && !hasMonth() && hasDate()) {
-			//this is checked for in the builder and should never be thrown here
-			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));
 		} else if (hasYear() && hasMonth() && hasDate()) {
 			sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);
 		}
+	}
 
-		if (hasTimeComponent()) {
-			sb.append('T');
-
-			String hourStr = hasHour() ? nf.format(getHour()) : null;
-			String minuteStr = hasMinute() ? nf.format(getMinute()) : null;
-			String secondStr = hasSecond() ? nf.format(getSecond()) : null;
-
-			dash = extended ? ":" : "";
-			if (hasHour() && !hasMinute() && !hasSecond()) {
-				sb.append(hourStr);
-			} else if (!hasHour() && hasMinute() && !hasSecond()) {
-				sb.append("-").append(minuteStr);
-			} else if (!hasHour() && !hasMinute() && hasSecond()) {
-				sb.append("--").append(secondStr);
-			} else if (hasHour() && hasMinute() && !hasSecond()) {
-				sb.append(hourStr).append(dash).append(minuteStr);
-			} else if (!hasHour() && hasMinute() && hasSecond()) {
-				sb.append("-").append(minuteStr).append(dash).append(secondStr);
-			} else if (hasHour() && !hasMinute() && hasSecond()) {
-				//this is checked for in the builder and should never be thrown here
-				throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));
-			} else if (hasHour() && hasMinute() && hasSecond()) {
-				sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
-			}
-
-			Integer offsetHour = components[OFFSET_HOUR];
-			if (offsetHour != null) {
-				Integer offsetMinute = components[OFFSET_MINUTE];
-				String offsetHourStr = nf.format(Math.abs(offsetHour));
-				String offsetMinuteStr = nf.format(Math.abs(offsetMinute));
-
-				sb.append((offsetHour < 0 || offsetMinute < 0) ? '-' : '+');
-				sb.append(offsetHourStr).append(dash).append(offsetMinuteStr);
-			}
+	private void writeTimeComponent(StringBuilder sb, NumberFormat nf, boolean extended) {
+		if (!hasTimeComponent()) {
+			return;
 		}
 
-		return sb.toString();
+		if (hasHour() && !hasMinute() && hasSecond()) {
+			//this is checked for in the builder and should never be thrown here
+			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));
+		}
+
+		sb.append('T');
+
+		String hourStr = hasHour() ? nf.format(getHour()) : null;
+		String minuteStr = hasMinute() ? nf.format(getMinute()) : null;
+		String secondStr = hasSecond() ? nf.format(getSecond()) : null;
+
+		String dash = extended ? ":" : "";
+		if (hasHour() && !hasMinute() && !hasSecond()) {
+			sb.append(hourStr);
+		} else if (!hasHour() && hasMinute() && !hasSecond()) {
+			sb.append("-").append(minuteStr);
+		} else if (!hasHour() && !hasMinute() && hasSecond()) {
+			sb.append("--").append(secondStr);
+		} else if (hasHour() && hasMinute() && !hasSecond()) {
+			sb.append(hourStr).append(dash).append(minuteStr);
+		} else if (!hasHour() && hasMinute() && hasSecond()) {
+			sb.append("-").append(minuteStr).append(dash).append(secondStr);
+		} else if (hasHour() && hasMinute() && hasSecond()) {
+			sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
+		}
+
+		Integer offsetHour = components[OFFSET_HOUR];
+		if (offsetHour != null) {
+			Integer offsetMinute = components[OFFSET_MINUTE];
+			String offsetHourStr = nf.format(Math.abs(offsetHour));
+			String offsetMinuteStr = nf.format(Math.abs(offsetMinute));
+
+			sb.append((offsetHour < 0 || offsetMinute < 0) ? '-' : '+');
+			sb.append(offsetHourStr).append(dash).append(offsetMinuteStr);
+		}
 	}
 
 	@Override
