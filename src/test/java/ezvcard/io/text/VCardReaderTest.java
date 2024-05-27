@@ -835,6 +835,20 @@ public class VCardReaderTest {
 			assertNoMoreVCards(reader);
 		}
 	}
+	
+	@Test
+	public void missing_version() throws Exception {
+		//@formatter:off
+		VCardAsserter asserter = read(
+		"BEGIN:VCARD\r\n" +
+		"END:VCARD\r\n"
+		);
+
+		asserter.next(V2_1); //default to 2.1
+		asserter.warnings(39);
+		asserter.done();
+		//@formatter:on
+	}
 
 	@Test
 	public void invalid_version() throws Exception {
