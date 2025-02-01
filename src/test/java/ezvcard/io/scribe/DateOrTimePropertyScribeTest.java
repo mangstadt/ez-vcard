@@ -160,12 +160,9 @@ public class DateOrTimePropertyScribeTest {
 	public void parseText() {
 		sensei.assertParseText(dateExtendedStr).run(withDate);
 		sensei.assertParseText(dateTimeExtendedStr).run(withDateTime);
-		sensei.assertParseText(partialDate.toISO8601(false)).versions(V2_1, V3_0).cannotParse(5);
-		sensei.assertParseText(partialDate.toISO8601(false)).versions(V4_0).run(withPartialDate);
-		sensei.assertParseText(partialTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse(5);
-		sensei.assertParseText(partialTime.toISO8601(false)).versions(V4_0).run(withPartialTime);
-		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V2_1, V3_0).cannotParse(5);
-		sensei.assertParseText(partialDateTime.toISO8601(false)).versions(V4_0).run(withPartialDateTime);
+		sensei.assertParseText(partialDate.toISO8601(false)).run(withPartialDate);
+		sensei.assertParseText(partialTime.toISO8601(false)).run(withPartialTime);
+		sensei.assertParseText(partialDateTime.toISO8601(false)).run(withPartialDateTime);
 		sensei.assertParseText(text).versions(V2_1, V3_0).cannotParse(5);
 		sensei.assertParseText(text).versions(V4_0).warnings(6).run(hasText(text));
 		sensei.assertParseText(text).versions(V2_1, V3_0).dataType(TEXT).cannotParse(5);
