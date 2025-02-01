@@ -221,13 +221,12 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 		try {
 			return newInstance(date(value));
 		} catch (IllegalArgumentException e) {
-			if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
-				throw new CannotParseException(5);
-			}
-
 			try {
 				return newInstance(PartialDate.parse(value));
 			} catch (IllegalArgumentException e2) {
+				if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
+					throw new CannotParseException(5);
+				}
 				context.addWarning(6);
 				return newInstance(value);
 			}
