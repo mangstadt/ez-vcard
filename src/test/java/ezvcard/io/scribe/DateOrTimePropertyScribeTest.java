@@ -124,12 +124,12 @@ public class DateOrTimePropertyScribeTest {
 		sensei.assertWriteText(withDate).versions(V3_0).run(dateExtendedStr);
 		sensei.assertWriteText(withDateTime).versions(V2_1, V4_0).run(dateTimeStr);
 		sensei.assertWriteText(withDateTime).versions(V3_0).run(dateTimeExtendedStr);
-		sensei.assertWriteText(withPartialDate).versions(V2_1, V3_0).run("");
-		sensei.assertWriteText(withPartialDate).versions(V4_0).run(partialDate.toISO8601(false));
-		sensei.assertWriteText(withPartialTime).versions(V2_1, V3_0).run("");
-		sensei.assertWriteText(withPartialTime).versions(V4_0).run(partialTime.toISO8601(false));
-		sensei.assertWriteText(withPartialDateTime).versions(V2_1, V3_0).run("");
-		sensei.assertWriteText(withPartialDateTime).versions(V4_0).run(partialDateTime.toISO8601(false));
+		sensei.assertWriteText(withPartialDate).versions(V2_1, V4_0).run(partialDate.toISO8601(false));
+		sensei.assertWriteText(withPartialDate).versions(V3_0).run(partialDate.toISO8601(true));
+		sensei.assertWriteText(withPartialTime).versions(V2_1, V4_0).run(partialTime.toISO8601(false));
+		sensei.assertWriteText(withPartialTime).versions(V3_0).run(partialTime.toISO8601(true));
+		sensei.assertWriteText(withPartialDateTime).versions(V2_1, V4_0).run(partialDateTime.toISO8601(false));
+		sensei.assertWriteText(withPartialDateTime).versions(V3_0).run(partialDateTime.toISO8601(true));
 		sensei.assertWriteText(withText).versions(V2_1, V3_0).run("");
 		sensei.assertWriteText(withText).versions(V4_0).run(textEscaped);
 		sensei.assertWriteText(empty).run("");

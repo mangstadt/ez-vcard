@@ -88,21 +88,23 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 	@Override
 	protected String _writeText(T property, WriteContext context) {
 		VCardVersion version = context.getVersion();
+		boolean extended = (version == VCardVersion.V3_0);
+
 		Temporal date = property.getDate();
 		if (date != null) {
-			boolean extended = (version == VCardVersion.V3_0);
 			return date(date).extended(extended).write();
+		}
+
+		//allow partial dates to be written to non-4.0 vCards for leniency and round-tripping
+		PartialDate partialDate = property.getPartialDate();
+		if (partialDate != null) {
+			return partialDate.toISO8601(extended);
 		}
 
 		if (version == VCardVersion.V4_0) {
 			String text = property.getText();
 			if (text != null) {
 				return VObjectPropertyValues.escape(text);
-			}
-
-			PartialDate partialDate = property.getPartialDate();
-			if (partialDate != null) {
-				return partialDate.toISO8601(false);
 			}
 		}
 
@@ -222,6 +224,8 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 			return newInstance(date(value));
 		} catch (IllegalArgumentException e) {
 			try {
+				//allow partial dates to be parsed from non-4.0 vCards
+				//https://github.com/mangstadt/ez-vcard/issues/155
 				return newInstance(PartialDate.parse(value));
 			} catch (IllegalArgumentException e2) {
 				if (context.getVersion() == VCardVersion.V2_1 || context.getVersion() == VCardVersion.V3_0) {
