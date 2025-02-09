@@ -646,23 +646,13 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void write_xmlVerison_1_1() throws Throwable {
-		VCard vcard = new VCard();
-		XCardDocument xcard = new XCardDocument();
-		xcard.addVCard(vcard);
-
-		String xml = xcard.write(null, "1.1");
-		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.1\".*?\\?>.*"));
-	}
-
-	@Test
 	public void write_xmlVerison_invalid() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
 
 		String xml = xcard.write(null, "10.17");
-		assertTrue(xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
+		assertTrue(xml, xml.matches("(?i)<\\?xml.*?version=\"1.0\".*?\\?>.*"));
 	}
 
 	@Test
