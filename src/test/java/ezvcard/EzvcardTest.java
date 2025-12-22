@@ -3,9 +3,11 @@ package ezvcard;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertVersion;
+import static java.util.stream.Collectors.toList;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -15,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -79,18 +82,28 @@ public class EzvcardTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
+	//@formatter:off
+	private static final String DOCUMENT_SINGLE =
+	"BEGIN:VCARD\r\n" +
+	"VERSION:2.1\r\n" +
+	"FN:John Doe\r\n" +
+	"END:VCARD\r\n";
+
+	private static final String DOCUMENT_TWO =
+	"BEGIN:VCARD\r\n" +
+	"VERSION:2.1\r\n" +
+	"FN:John Doe\r\n" +
+	"END:VCARD\r\n" +
+	"BEGIN:VCARD\r\n" +
+	"VERSION:3.0\r\n" +
+	"FN:Jane Doe\r\n" +
+	"END:VCARD\r\n";
+	//@formatter:on
+
 	@Test
 	public void parse_first() throws Exception {
-		//@formatter:off
-		String str = 
-		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:John Doe\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
-
 		List<List<ParseWarning>> warnings = new ArrayList<>();
-		VCard vcard = Ezvcard.parse(str).warnings(warnings).first();
+		VCard vcard = Ezvcard.parse(DOCUMENT_SINGLE).warnings(warnings).first();
 		assertVersion(VCardVersion.V2_1, vcard);
 		assertEquals("John Doe", vcard.getFormattedName().getValue());
 
@@ -99,21 +112,26 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void parse_iterator() {
+		Iterator<VCard> iter = Ezvcard.parse(DOCUMENT_SINGLE).iterator();
+		assertTrue(iter.hasNext());
+		assertEquals("John Doe", iter.next().getFormattedName().getValue());
+		assertFalse(iter.hasNext()); // last try
+		assertThrows(NoSuchElementException.class, iter::next);
+		assertFalse(iter.hasNext()); // done
+
+		iter = Ezvcard.parse(DOCUMENT_SINGLE).iterator();
+		// not calling hasNext() yields different iterator state
+		assertEquals("John Doe", iter.next().getFormattedName().getValue());
+		assertThrows(NoSuchElementException.class, iter::next);
+	}
+
+	@Test
 	public void parse_all() throws Exception {
-		//@formatter:off
-		String str = 
-		"BEGIN:VCARD\r\n" +
-		"VERSION:2.1\r\n" +
-		"FN:John Doe\r\n" +
-		"END:VCARD\r\n" +
-		"BEGIN:VCARD\r\n" +
-		"VERSION:3.0\r\n" +
-		"FN:Jane Doe\r\n" +
-		"END:VCARD\r\n";
-		//@formatter:on
+
 
 		List<List<ParseWarning>> warnings = new ArrayList<>();
-		List<VCard> vcards = Ezvcard.parse(str).warnings(warnings).all();
+		List<VCard> vcards = Ezvcard.parse(DOCUMENT_TWO).warnings(warnings).all();
 		Iterator<VCard> it = vcards.iterator();
 
 		VCard vcard = it.next();
@@ -129,6 +147,14 @@ public class EzvcardTest {
 		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void parse_stream() {
+		assertEquals(
+				Ezvcard.parse(DOCUMENT_TWO).all(),
+				Ezvcard.parse(DOCUMENT_TWO).stream().collect(toList())
+		);
 	}
 
 	@Test
