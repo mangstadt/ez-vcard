@@ -184,8 +184,8 @@ public class EzvcardTest {
 		"END:VCARD\r\n";
 		//@formatter:on
 
-		String expected = Ezvcard.parse(str).all();
-		String actual = Ezvcard.parse(str).stream().collect(toList());
+		List<VCard> expected = Ezvcard.parse(str).all();
+		List<VCard> actual = Ezvcard.parse(str).stream().collect(toList());
 		assertEquals(expected, actual);
 	}
 
