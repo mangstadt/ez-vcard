@@ -85,7 +85,7 @@ public class EzvcardTest {
 	@Test
 	public void parse_first() throws Exception {
 		//@formatter:off
-		String str =
+		String str = 
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
 		"FN:John Doe\r\n" +
@@ -140,7 +140,7 @@ public class EzvcardTest {
 	@Test
 	public void parse_all() throws Exception {
 		//@formatter:off
-		String str =
+		String str = 
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
 		"FN:John Doe\r\n" +
@@ -185,7 +185,7 @@ public class EzvcardTest {
 		//@formatter:on
 
 		String expected = Ezvcard.parse(str).all();
-		STring actual = Ezvcard.parse(str).stream().collect(toList());
+		String actual = Ezvcard.parse(str).stream().collect(toList());
 		assertEquals(expected, actual);
 	}
 
