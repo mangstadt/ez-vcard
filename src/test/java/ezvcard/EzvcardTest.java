@@ -3,9 +3,11 @@ package ezvcard;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertVersion;
+import static java.util.stream.Collectors.toList;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -15,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -99,6 +102,42 @@ public class EzvcardTest {
 	}
 
 	@Test
+	public void parse_iterator() {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		Iterator<VCard> it = Ezvcard.parse(str).iterator();
+		assertEquals("John Doe", it.next().getFormattedName().getValue());
+		assertThrows(NoSuchElementException.class, it::next);
+	}
+
+	/**
+	 * Calling "hasNext()" yields different iterator state.
+	 */
+	@Test
+	public void parse_iterator_hasNext() {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		Iterator<VCard> it = Ezvcard.parse(str).iterator();
+		assertTrue(it.hasNext());
+		assertEquals("John Doe", it.next().getFormattedName().getValue());
+		assertFalse(it.hasNext()); // last try
+		assertThrows(NoSuchElementException.class, it::next);
+		assertFalse(it.hasNext()); // done
+	}
+
+	@Test
 	public void parse_all() throws Exception {
 		//@formatter:off
 		String str = 
@@ -129,6 +168,25 @@ public class EzvcardTest {
 		assertParseWarnings(warnings.get(1));
 
 		assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void parse_stream() {
+		//@formatter:off
+		String str =
+		"BEGIN:VCARD\r\n" +
+		"VERSION:2.1\r\n" +
+		"FN:John Doe\r\n" +
+		"END:VCARD\r\n" +
+		"BEGIN:VCARD\r\n" +
+		"VERSION:3.0\r\n" +
+		"FN:Jane Doe\r\n" +
+		"END:VCARD\r\n";
+		//@formatter:on
+
+		List<VCard> expected = Ezvcard.parse(str).all();
+		List<VCard> actual = Ezvcard.parse(str).stream().collect(toList());
+		assertEquals(expected, actual);
 	}
 
 	@Test

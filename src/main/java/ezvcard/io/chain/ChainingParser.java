@@ -3,9 +3,16 @@ package ezvcard.io.chain;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import ezvcard.VCard;
 import ezvcard.io.ParseWarning;
@@ -45,7 +52,7 @@ import ezvcard.property.VCardProperty;
  * @author Michael Angstadt
  * @param <T> the object instance's type (for method chaining)
  */
-abstract class ChainingParser<T extends ChainingParser<?>> {
+abstract class ChainingParser<T extends ChainingParser<?>> implements Iterable<VCard> {
 	final String string;
 	final InputStream in;
 	final Reader reader;
@@ -117,22 +124,13 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 * @throws IOException if there's an I/O problem
 	 */
 	public VCard first() throws IOException {
-		StreamReader reader = constructReader();
-		if (index != null) {
-			reader.setScribeIndex(index);
-		}
+		StreamReader reader = newReaderWithIndex();
 
 		try {
-			VCard vcard = reader.readNext();
-			if (warnings != null) {
-				warnings.add(reader.getWarnings());
-			}
-			return vcard;
+            return readNextWithWarnings(reader);
 		} finally {
-			if (closeWhenDone()) {
-				reader.close();
-			}
-		}
+            closeIfNeeded(reader);
+        }
 	}
 
 	/**
@@ -141,31 +139,174 @@ abstract class ChainingParser<T extends ChainingParser<?>> {
 	 * @throws IOException if there's an I/O problem
 	 */
 	public List<VCard> all() throws IOException {
-		StreamReader reader = constructReader();
-		if (index != null) {
-			reader.setScribeIndex(index);
-		}
+		StreamReader reader = newReaderWithIndex();
 
 		try {
 			List<VCard> vcards = new ArrayList<>();
 			VCard vcard;
-			while ((vcard = reader.readNext()) != null) {
-				if (warnings != null) {
-					warnings.add(reader.getWarnings());
-				}
+			while ((vcard = readNextWithWarnings(reader)) != null) {
 				vcards.add(vcard);
 			}
 			return vcards;
 		} finally {
-			if (closeWhenDone()) {
-				reader.close();
-			}
-		}
+            closeIfNeeded(reader);
+        }
+	}
+
+	/**
+	 * Lazily reads vCards from the stream.
+	 * @return an {@link Iterator} over vCards being parsed
+	 */
+	@Override
+	public Iterator<VCard> iterator() {
+		return new ParsingIterator();
+    }
+
+	/**
+	 * Creates a {@link Stream} of vCards to be lazily read.
+	 * @return a {@link Stream} of vCards being parsed
+	 */
+	public Stream<VCard> stream() {
+		ParsingSpliterator spliterator = new ParsingSpliterator();
+		return StreamSupport.stream(spliterator, false).onClose(spliterator::close);
 	}
 
 	abstract StreamReader constructReader() throws IOException;
 
 	private boolean closeWhenDone() {
 		return in == null && reader == null;
+	}
+
+	private StreamReader newReaderWithIndex() throws IOException {
+		StreamReader reader = constructReader();
+		if (index != null) {
+			reader.setScribeIndex(index);
+		}
+		return reader;
+	}
+
+	private VCard readNextWithWarnings(StreamReader reader) throws IOException {
+		VCard vCard = reader.readNext();
+		if (vCard != null && warnings != null) {
+			warnings.add(reader.getWarnings());
+		}
+		return vCard;
+	}
+
+	private void closeIfNeeded(StreamReader reader) throws IOException {
+		if (closeWhenDone()) {
+			reader.close();
+		}
+	}
+
+	private final class ParsingIterator extends Parserator implements Iterator<VCard> {
+		private VCard next;
+
+		@Override
+		public boolean hasNext() {
+			return !done && (next != null || (next = advance()) != null);
+		}
+
+		@Override
+		public VCard next() {
+			if (done) {
+				throw new NoSuchElementException();
+			}
+
+			VCard next = this.next;
+			if (next != null) {
+				this.next = null;
+				return next;
+			}
+
+			if ((next = advance()) != null) {
+				return next;
+			}
+
+			throw new NoSuchElementException();
+		}
+	}
+
+	private final class ParsingSpliterator extends Parserator implements Spliterator<VCard> {
+		@Override
+		public boolean tryAdvance(Consumer<? super VCard> action) {
+			if (done) {
+				return false;
+			}
+
+			VCard vCard = advance();
+			if (vCard != null) {
+				action.accept(vCard);
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public Spliterator<VCard> trySplit() {
+			return null;
+		}
+
+		@Override
+		public long estimateSize() {
+			return Long.MAX_VALUE;
+		}
+
+		@Override
+		public int characteristics() {
+			return Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE;
+		}
+	}
+
+	private class Parserator {
+		private StreamReader reader;
+		boolean done = false;
+
+		VCard advance() {
+			StreamReader reader = this.reader;
+			if (reader == null) {
+				try {
+					this.reader = reader = newReaderWithIndex();
+				} catch (IOException e) {
+					throw new UncheckedIOException(e);
+				}
+			}
+
+			VCard vCard;
+			try {
+				vCard = readNextWithWarnings(reader);
+			} catch (IOException e) {
+				throw closeExceptionally(e);
+			}
+
+			if (vCard == null) {
+				close();
+			}
+			return vCard;
+		}
+
+		void close() {
+			StreamReader reader = this.reader;
+			this.reader = null;
+			done = true;
+			try {
+				closeIfNeeded(reader);
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		}
+
+		private UncheckedIOException closeExceptionally(IOException e) {
+			StreamReader reader = this.reader;
+			this.reader = null;
+			done = true;
+			try {
+				closeIfNeeded(reader);
+			} catch (IOException ex) {
+				e.addSuppressed(ex);
+			}
+			return new UncheckedIOException(e);
+		}
 	}
 }
