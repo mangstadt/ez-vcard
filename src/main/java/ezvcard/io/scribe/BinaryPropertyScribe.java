@@ -187,11 +187,11 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			//not a data URI
 			U mediaType;
 			String type = element.attr("type");
-			if (type.length() > 0) {
-				mediaType = _mediaTypeFromMediaTypeParameter(type);
-			} else {
+			if (type.isEmpty()) {
 				String extension = getFileExtension(data);
 				mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
+			} else {
+				mediaType = _mediaTypeFromMediaTypeParameter(type);
 			}
 
 			return _newInstance(data, mediaType);

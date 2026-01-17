@@ -334,7 +334,7 @@ public class XCardReader extends StreamReader {
 
 			//append to property element
 			if (propertyElement != null && typeToPush != ElementType.property && typeToPush != ElementType.parameters && !structure.isUnderParameters()) {
-				if (textContent.length() > 0) {
+				if (!textContent.isEmpty()) {
 					parent.appendChild(DOC.createTextNode(textContent));
 				}
 				Element element = createElement(namespace, localName, attributes);
@@ -442,7 +442,7 @@ public class XCardReader extends StreamReader {
 
 			//append element to property element
 			if (propertyElement != null && type != ElementType.property && type != ElementType.parameters && !structure.isUnderParameters()) {
-				if (textContent.length() > 0) {
+				if (!textContent.isEmpty()) {
 					parent.appendChild(DOC.createTextNode(textContent));
 				}
 				parent = (Element) parent.getParentNode();

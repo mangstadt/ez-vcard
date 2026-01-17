@@ -122,7 +122,7 @@ public class XCardElement {
 		for (Element child : children()) {
 			if (localName.equals(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
 				String text = child.getTextContent();
-				if (text.length() > 0) {
+				if (!text.isEmpty()) {
 					childrenText.add(child.getTextContent());
 				}
 			}

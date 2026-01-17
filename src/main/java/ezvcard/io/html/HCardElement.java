@@ -166,7 +166,7 @@ public class HCardElement {
 				element.appendElement("br");
 			}
 
-			if (line.length() > 0) {
+			if (!line.isEmpty()) {
 				element.appendText(line);
 			}
 

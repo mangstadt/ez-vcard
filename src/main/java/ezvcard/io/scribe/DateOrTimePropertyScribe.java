@@ -177,7 +177,7 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 		String value = null;
 		if ("time".equals(element.tagName())) {
 			String datetime = element.attr("datetime");
-			if (datetime.length() > 0) {
+			if (!datetime.isEmpty()) {
 				value = datetime;
 			}
 		}

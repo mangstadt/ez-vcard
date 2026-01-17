@@ -176,7 +176,7 @@ public final class TelUri {
 		}
 
 		if (paramName == null) {
-			if (s.length() > 0) {
+			if (!s.isEmpty()) {
 				addParameter(s, "", builder);
 			}
 			return;

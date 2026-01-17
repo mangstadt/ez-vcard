@@ -103,7 +103,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 		if (property.getValues().isEmpty()) {
 			String value = element.value();
-			if (value.length() > 0) {
+			if (!value.isEmpty()) {
 				property.getValues().add(value);
 			}
 		}
