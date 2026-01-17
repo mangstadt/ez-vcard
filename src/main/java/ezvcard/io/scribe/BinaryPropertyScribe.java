@@ -103,9 +103,6 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 			switch (version) {
 			case V2_1:
-				copy.setType(contentType.getValue());
-				copy.setMediaType(null);
-				break;
 			case V3_0:
 				copy.setType(contentType.getValue());
 				copy.setMediaType(null);
