@@ -46,7 +46,7 @@
 
 package ezvcard.util.org.apache.commons.codec.binary;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import ezvcard.util.org.apache.commons.codec.DecoderException;
@@ -562,16 +562,7 @@ public abstract class BaseNCodec {
      * @return encoded bytes, or <code>null</code> if the input string was <code>null</code>
      */
     protected static byte[] getBytesUtf8(final String string) {
-        if (string == null) {
-            return null;
-        }
-
-    	try {
-			return string.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			//should never be thrown because all JVMs must support UTF-8
-			throw new RuntimeException(e);
-		}
+        return (string == null) ? null : string.getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -583,15 +574,6 @@ public abstract class BaseNCodec {
      *         or <code>null</code> if the input byte array was <code>null</code>.
      */
     protected static String newStringUtf8(final byte[] bytes) {
-        if (bytes == null) {
-            return null;
-        }
-
-        try {
-			return new String(bytes, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			//should never be thrown because all JVMs must support UTF-8
-			throw new RuntimeException(e);
-		}
+        return (bytes == null) ? null : new String(bytes, StandardCharsets.UTF_8);
     }
 }
