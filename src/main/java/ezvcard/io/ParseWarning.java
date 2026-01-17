@@ -36,8 +36,10 @@ either expressed or implied, of the FreeBSD Project.
  * @author Michael Angstadt
  */
 public class ParseWarning {
-	private final Integer code, lineNumber;
-	private final String propertyName, message;
+	private final Integer code;
+	private final Integer lineNumber;
+	private final String propertyName;
+	private final String message;
 
 	private ParseWarning(Integer lineNumber, String propertyName, Integer code, String message) {
 		this.lineNumber = lineNumber;
@@ -106,8 +108,10 @@ public class ParseWarning {
 	 * @author Michael Angstadt
 	 */
 	public static class Builder {
-		private Integer lineNumber, code;
-		private String propertyName, message;
+		private Integer lineNumber;
+		private Integer code;
+		private String propertyName;
+		private String message;
 
 		/**
 		 * Creates an empty builder.

@@ -541,7 +541,8 @@ public class VCardReader extends StreamReader {
 			}
 
 			types.clear();
-			int prev = -1, cur;
+			int prev = -1;
+			int cur;
 			while ((cur = valueWithComma.indexOf(',', prev + 1)) >= 0) {
 				types.add(valueWithComma.substring(prev + 1, cur));
 				prev = cur;

@@ -61,7 +61,9 @@ public class JCardPrettyPrinter extends DefaultPrettyPrinter {
 	 */
 	private static final Indenter INLINE_INDENTER = new DefaultPrettyPrinter.FixedSpaceIndenter();
 
-	private Indenter propertyIndenter, arrayIndenter, objectIndenter;
+	private Indenter propertyIndenter;
+	private Indenter arrayIndenter;
+	private Indenter objectIndenter;
 
 	public JCardPrettyPrinter() {
 		propertyIndenter = INLINE_INDENTER;

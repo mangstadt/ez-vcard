@@ -191,7 +191,9 @@ public class XCardReader extends StreamReader {
 	private class ReadThread extends Thread {
 		private final SAXResult result;
 		private final Transformer transformer;
-		private volatile boolean finished = false, started = false, closed = false;
+		private volatile boolean finished = false;
+		private volatile boolean started = false;
+		private volatile boolean closed = false;
 
 		public ReadThread() {
 			setName(getClass().getSimpleName());
@@ -240,7 +242,8 @@ public class XCardReader extends StreamReader {
 		private final ClearableStringBuilder characterBuffer = new ClearableStringBuilder();
 
 		private String group;
-		private Element propertyElement, parent;
+		private Element propertyElement;
+		private Element parent;
 		private QName paramName;
 		private VCardParameters parameters;
 

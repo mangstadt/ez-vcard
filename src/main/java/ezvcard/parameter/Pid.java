@@ -40,7 +40,8 @@ import ezvcard.property.ClientPidMap;
  * Section 5.5</a>
  */
 public class Pid {
-	private final Integer localId, clientPidMapReference;
+	private final Integer localId;
+	private final Integer clientPidMapReference;
 
 	/**
 	 * Creates a new PID.
@@ -92,7 +93,8 @@ public class Pid {
 	 */
 	public static Pid valueOf(String value) {
 		int dot = value.indexOf('.');
-		String localIdStr, clientPidMapReferenceStr;
+		String localIdStr;
+		String clientPidMapReferenceStr;
 		if (dot < 0) {
 			localIdStr = value;
 			clientPidMapReferenceStr = null;

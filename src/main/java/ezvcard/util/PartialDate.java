@@ -135,7 +135,8 @@ public final class PartialDate {
 	 */
 	public static PartialDate parse(String string) {
 		int t = string.indexOf('T');
-		String beforeT, afterT;
+		String beforeT;
+		String afterT;
 		if (t < 0) {
 			beforeT = string;
 			afterT = null;
@@ -469,7 +470,8 @@ public final class PartialDate {
 			 * in the string.
 			 */
 			boolean offsetPositive = false;
-			Integer offsetHour = null, offsetMinute = null;
+			Integer offsetHour = null;
+			Integer offsetMinute = null;
 
 			for (int i = 0; i < componentIndexes.length; i++) {
 				Integer index = componentIndexes[i];

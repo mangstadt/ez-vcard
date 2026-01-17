@@ -322,7 +322,8 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			throw Messages.INSTANCE.getIllegalArgumentException(40, text);
 		}
 
-		String hourStr, minuteStr = null;
+		String hourStr;
+		String minuteStr = null;
 		if (colon < 0) {
 			hourStr = text.substring(i);
 			int minutePos = hourStr.length() - 2;
@@ -337,7 +338,8 @@ public class TimezoneScribe extends VCardPropertyScribe<Timezone> {
 			}
 		}
 
-		int hour, minute;
+		int hour;
+		int minute;
 		try {
 			hour = Integer.parseInt(hourStr);
 			minute = (minuteStr == null) ? 0 : Integer.parseInt(minuteStr);
