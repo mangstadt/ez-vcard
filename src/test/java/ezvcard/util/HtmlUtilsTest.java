@@ -70,14 +70,14 @@ public class HtmlUtilsTest {
 	@Test
 	public void toElement_without_base_url() {
 		Element element = HtmlUtils.toElement("<img src=\"image.png\" />");
-		assertEquals(element.tagName(), "img");
+		assertEquals("img", element.tagName());
 		assertEquals("", element.absUrl("src"));
 	}
 
 	@Test
 	public void toElement_with_base_url() {
 		Element element = HtmlUtils.toElement("<img src=\"image.png\" />", "http://example.com/");
-		assertEquals(element.tagName(), "img");
+		assertEquals("img", element.tagName());
 		assertEquals("http://example.com/image.png", element.absUrl("src"));
 	}
 }
