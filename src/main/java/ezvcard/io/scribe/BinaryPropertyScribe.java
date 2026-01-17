@@ -225,7 +225,15 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			if (value.startsWith("http")) {
 				return _newInstance(value, contentType);
 			}
-			return _newInstance(Base64.decodeBase64(value), contentType);
+			try {
+				/*
+				 * 2.1 and 3.0 technically don't support data URIs--parse for
+				 * convenience.
+				 */
+				return parseAsDataUri(value);
+			} catch (IllegalArgumentException e) {
+				return _newInstance(Base64.decodeBase64(value), contentType);
+			}
 		case V4_0:
 			return _newInstance(value, contentType);
 		}
@@ -335,7 +343,15 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		case V3_0:
 			//parse as URL
 			if (dataType == VCardDataType.URL || dataType == VCardDataType.URI) {
-				return _newInstance(value, contentType);
+				try {
+					/*
+					 * 2.1 and 3.0 technically don't support data URIs--parse
+					 * for convenience.
+					 */
+					return parseAsDataUri(value);
+				} catch (IllegalArgumentException e) {
+					return _newInstance(value, contentType);
+				}
 			}
 
 			//parse as binary
@@ -347,10 +363,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			break;
 		case V4_0:
 			try {
-				//parse as data URI
-				DataUri uri = DataUri.parse(value);
-				contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
-				return _newInstance(uri.getData(), contentType);
+				return parseAsDataUri(value);
 			} catch (IllegalArgumentException e) {
 				//not a data URI
 			}
@@ -358,6 +371,16 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		}
 
 		return cannotUnmarshalValue(value, version, contentType);
+	}
+
+	/**
+	 * @throws IllegalArgumentException if the given value is not a valid data
+	 * URI
+	 */
+	protected T parseAsDataUri(String value) throws IllegalArgumentException {
+		DataUri uri = DataUri.parse(value);
+		U contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
+		return _newInstance(uri.getData(), contentType);
 	}
 
 	private String write(T property, VCardVersion version) {

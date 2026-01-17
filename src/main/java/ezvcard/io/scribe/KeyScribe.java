@@ -207,13 +207,21 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 		switch (version) {
 		case V2_1:
 		case V3_0:
-			/*
-			 * It wasn't explicitly defined as a URI, and didn't have an
-			 * ENCODING parameter, so treat it as text.
-			 */
-			Key key = new Key();
-			key.setText(value, contentType);
-			return key;
+			try {
+				/*
+				 * 2.1 and 3.0 technically don't support data URIs--parse for
+				 * convenience.
+				 */
+				return parseAsDataUri(value);
+			} catch (IllegalArgumentException e) {
+				/*
+				 * It wasn't explicitly defined as a URI, and didn't have an
+				 * ENCODING parameter, so treat it as text.
+				 */
+				Key key = new Key();
+				key.setText(value, contentType);
+				return key;
+			}
 		case V4_0:
 			/*
 			 * It wasn't explicitly defined as a text value, and it could not be
