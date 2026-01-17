@@ -9,10 +9,14 @@ import ezvcard.VCardVersion;
  * property element names).
  * @author Michael Angstadt
  */
-public interface XCardQNames {
-	String NAMESPACE = VCardVersion.V4_0.getXmlNamespace();
-	QName VCARDS = new QName(NAMESPACE, "vcards");
-	QName VCARD = new QName(NAMESPACE, "vcard");
-	QName GROUP = new QName(NAMESPACE, "group");
-	QName PARAMETERS = new QName(NAMESPACE, "parameters");
+public final class XCardQNames {
+	public static final String NAMESPACE = VCardVersion.V4_0.getXmlNamespace();
+	public static final QName VCARDS = new QName(NAMESPACE, "vcards");
+	public static final QName VCARD = new QName(NAMESPACE, "vcard");
+	public static final QName GROUP = new QName(NAMESPACE, "group");
+	public static final QName PARAMETERS = new QName(NAMESPACE, "parameters");
+
+	private XCardQNames() {
+		//hide
+	}
 }
