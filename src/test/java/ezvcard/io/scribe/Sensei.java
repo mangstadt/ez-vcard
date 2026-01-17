@@ -175,7 +175,7 @@ public class Sensei<T extends VCardProperty> {
 	 */
 	public class DataTypeTest {
 		protected final T property;
-		private VCardVersion version[] = VCardVersion.values();
+		private VCardVersion[] version = VCardVersion.values();
 
 		public DataTypeTest(T property) {
 			this.property = property;
@@ -209,7 +209,7 @@ public class Sensei<T extends VCardProperty> {
 	 */
 	public class PrepareParamsTest {
 		protected final T property;
-		private VCardVersion versions[] = VCardVersion.values();
+		private VCardVersion[] versions = VCardVersion.values();
 		private VCard vcard = new VCard();
 		private VCardParameters expected = new VCardParameters();
 
@@ -278,7 +278,7 @@ public class Sensei<T extends VCardProperty> {
 	 */
 	public class WriteTextTest {
 		protected final T property;
-		private VCardVersion versions[] = VCardVersion.values();
+		private VCardVersion[] versions = VCardVersion.values();
 		private boolean includeTrailingSemicolons = false;
 
 		public WriteTextTest(T property) {
@@ -496,7 +496,7 @@ public class Sensei<T extends VCardProperty> {
 	public class ParseTextTest extends ParseTest<ParseTextTest> {
 		private final String value;
 		private VCardDataType dataType;
-		private VCardVersion versions[] = VCardVersion.values();
+		private VCardVersion[] versions = VCardVersion.values();
 
 		/**
 		 * @param value the text to parse

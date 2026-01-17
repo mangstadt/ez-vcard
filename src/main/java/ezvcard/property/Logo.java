@@ -52,7 +52,7 @@ import ezvcard.parameter.ImageType;
  * vcard.addLogo(logo);
  * 
  * //binary data
- * byte data[] = ...
+ * byte[] data = ...
  * logo = new Logo(data, ImageType.PNG);
  * vcard.addLogo(logo);
  * </pre>

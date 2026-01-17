@@ -529,7 +529,7 @@ public class VCardWriterTest {
 	@Test
 	public void setTargetApplication_outlook() throws Throwable {
 		VCard vcard = new VCard();
-		byte data[] = "foobar".getBytes();
+		byte[] data = "foobar".getBytes();
 		vcard.addKey(new Key(data, KeyType.X509));
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
 		vcard.addLogo(new Logo("http://www.company.com/logo.png", ImageType.PNG));

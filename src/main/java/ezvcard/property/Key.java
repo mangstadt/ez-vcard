@@ -61,7 +61,7 @@ import ezvcard.parameter.KeyType;
  * vcard.addKey(key);
  * 
  * //binary data
- * byte data[] = ...
+ * byte[] data = ...
  * key = new Key(data, KeyType.PGP);
  * vcard.addKey(key);
  * 

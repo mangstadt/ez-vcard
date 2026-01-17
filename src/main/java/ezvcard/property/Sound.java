@@ -52,7 +52,7 @@ import ezvcard.parameter.SoundType;
  * vcard.addSound(sound);
  * 
  * //binary data
- * byte data[] = ...
+ * byte[] data = ...
  * sound = new Sound(data, SoundType.OGG);
  * vcard.addSound(sound);
  * </pre>

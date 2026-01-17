@@ -143,7 +143,7 @@ public class BinaryPropertyScribeTest {
 	@Test
 	public void parseText_url() {
 		{
-			VCardVersion versions[] = { V2_1, V3_0 };
+			VCardVersion[] versions = { V2_1, V3_0 };
 
 			//without TYPE parameter
 			sensei.assertParseText(url).dataType(URL).versions(versions).run(hasUrl(url, ImageType.JPEG));
@@ -179,7 +179,7 @@ public class BinaryPropertyScribeTest {
 	public void parseText_binary() {
 		//2.1, 3.0
 		{
-			VCardVersion versions[] = { V2_1, V3_0 };
+			VCardVersion[] versions = { V2_1, V3_0 };
 
 			//with TYPE
 			{

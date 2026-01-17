@@ -52,7 +52,7 @@ import ezvcard.parameter.ImageType;
  * vcard.addPhoto(photo);
  * 
  * //binary data
- * byte data[] = ...
+ * byte[] data = ...
  * photo = new Photo(data, ImageType.JPEG);
  * vcard.addPhoto(photo);
  * </pre>

@@ -65,7 +65,7 @@ public class PropertySensei {
 	public static class PropertyValidateAsserter {
 		private final VCardProperty property;
 		private VCard vcard;
-		private VCardVersion versions[] = VCardVersion.values();
+		private VCardVersion[] versions = VCardVersion.values();
 
 		public PropertyValidateAsserter(VCardProperty property) {
 			this.property = property;
@@ -220,7 +220,7 @@ public class PropertySensei {
 		 * @return this
 		 */
 		public EqualsMethodAsserter constructor(Object... values) {
-			Class<?> parameterTypes[] = new Class<?>[values.length];
+			Class<?>[] parameterTypes = new Class<?>[values.length];
 			for (int i = 0; i < values.length; i++) {
 				parameterTypes[i] = values[i].getClass();
 			}
@@ -255,7 +255,7 @@ public class PropertySensei {
 		 * @return this
 		 */
 		public EqualsMethodAsserter method(String name, Object... values) {
-			Class<?> parameterTypes[] = new Class<?>[values.length];
+			Class<?>[] parameterTypes = new Class<?>[values.length];
 			for (int i = 0; i < values.length; i++) {
 				parameterTypes[i] = values[i].getClass();
 			}
@@ -319,7 +319,7 @@ public class PropertySensei {
 		}
 
 		private Class<?>[] toTypes(Object... values) {
-			Class<?> parameterTypes[] = new Class<?>[values.length];
+			Class<?>[] parameterTypes = new Class<?>[values.length];
 			for (int i = 0; i < values.length; i++) {
 				parameterTypes[i] = values[i].getClass();
 			}

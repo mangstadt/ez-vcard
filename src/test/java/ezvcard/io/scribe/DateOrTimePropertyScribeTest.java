@@ -172,7 +172,7 @@ public class DateOrTimePropertyScribeTest {
 
 	@Test
 	public void parseXml() {
-		String tags[] = { "date", "date-time", "date-and-or-time" };
+		String[] tags = { "date", "date-time", "date-and-or-time" };
 		for (String tag : tags) {
 			String format = "<" + tag + ">%s</" + tag + ">";
 			sensei.assertParseXml(String.format(format, dateStr)).run(withDate);

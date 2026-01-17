@@ -168,7 +168,7 @@ public class TestUtils {
 
 	public static class VCardValidateChecker {
 		private final VCard vcard;
-		private VCardVersion versions[] = VCardVersion.values();
+		private VCardVersion[] versions = VCardVersion.values();
 		private Map<VCardProperty, Integer[]> expectedPropCodes = new HashMap<>();
 
 		public VCardValidateChecker(VCard vcard) {

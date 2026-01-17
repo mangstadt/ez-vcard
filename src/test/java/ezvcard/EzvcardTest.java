@@ -567,7 +567,7 @@ public class EzvcardTest {
 
 	@Test
 	public void write_targetApplication() throws Exception {
-		byte data[] = "data".getBytes();
+		byte[] data = "data".getBytes();
 		VCard vcard = new VCard();
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
 
