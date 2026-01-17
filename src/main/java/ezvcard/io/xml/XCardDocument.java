@@ -493,12 +493,13 @@ public class XCardDocument {
 
 	private class XCardDocumentStreamReader extends StreamReader {
 		private final Iterator<Element> vcardElements;
-		{
+
+		private VCard vcard;
+
+		public XCardDocumentStreamReader() {
 			List<Element> list = (vcardsRootElement == null) ? Collections.<Element> emptyList() : getChildElements(vcardsRootElement, VCARD);
 			vcardElements = list.iterator();
 		}
-
-		private VCard vcard;
 
 		@Override
 		public VCard readNext() {

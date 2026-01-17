@@ -49,7 +49,8 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * each parameter's value.
 	 */
 	protected final Map<String, VCardDataType> parameterDataTypes = new HashMap<>();
-	{
+
+	protected XCardWriterBase() {
 		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
 		registerParameterDataType(VCardParameters.CALSCALE, VCardDataType.TEXT);
 		//registerParameterDataType(VCardParameters.CHARSET, VCardDataType.TEXT); //not 4.0
