@@ -134,51 +134,64 @@ public final class PartialDate {
 	 * string
 	 */
 	public static PartialDate parse(String string) {
-		int t = string.indexOf('T');
-		String beforeT;
-		String afterT;
-		if (t < 0) {
-			beforeT = string;
-			afterT = null;
-		} else {
-			beforeT = string.substring(0, t);
-			afterT = (t < string.length() - 1) ? string.substring(t + 1) : null;
-		}
-
-		Builder builder = new Builder();
-		boolean success;
-		if (afterT == null) {
-			//date or time
-			success = parseDate(beforeT, builder) || parseTime(beforeT, builder);
-		} else if (beforeT.isEmpty()) {
-			//time
-			success = parseTime(afterT, builder);
-		} else {
-			//date and time
-			success = parseDate(beforeT, builder) && parseTime(afterT, builder);
-		}
-
-		if (!success) {
-			throw Messages.INSTANCE.getIllegalArgumentException(36, string);
-		}
-		return builder.build();
+		return new Parser(string).parse();
 	}
 
-	private static boolean parseDate(String value, Builder builder) {
-		return parseFormats(value, builder, dateFormats);
-	}
+	private static class Parser {
+		private final String string;
 
-	private static boolean parseTime(String value, Builder builder) {
-		return parseFormats(value, builder, timeFormats);
-	}
+		public Parser(String string) {
+			this.string = string;
+		}
 
-	private static boolean parseFormats(String value, Builder builder, Format[] formats) {
-		for (Format regex : formats) {
-			if (regex.parse(builder, value)) {
-				return true;
+		public PartialDate parse() {
+			int t = string.indexOf('T');
+			String beforeT;
+			String afterT;
+			if (t < 0) {
+				beforeT = string;
+				afterT = null;
+			} else {
+				beforeT = (t == 0) ? null : string.substring(0, t);
+				afterT = (t < string.length() - 1) ? string.substring(t + 1) : null;
 			}
+
+			Builder builder = new Builder();
+			boolean success;
+			if (afterT == null) {
+				//date OR time
+				success = parseDate(beforeT, builder) || parseTime(beforeT, builder);
+			} else if (beforeT == null) {
+				//time
+				success = parseTime(afterT, builder);
+			} else {
+				//date AND time
+				success = parseDate(beforeT, builder) && parseTime(afterT, builder);
+			}
+
+			if (!success) {
+				throw Messages.INSTANCE.getIllegalArgumentException(36, string);
+			}
+
+			return builder.build();
 		}
-		return false;
+
+		private boolean parseDate(String value, Builder builder) {
+			return parseFormats(value, builder, dateFormats);
+		}
+
+		private boolean parseTime(String value, Builder builder) {
+			return parseFormats(value, builder, timeFormats);
+		}
+
+		private boolean parseFormats(String value, Builder builder, Format[] formats) {
+			for (Format regex : formats) {
+				if (regex.parse(builder, value)) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	/**
@@ -321,87 +334,102 @@ public final class PartialDate {
 	 * {@link #builder()} method
 	 */
 	public String toISO8601(boolean extended) {
-		/*
-		 * Micro-optimization: The max length a timestamp string can possibly be
-		 * is 25. Example: 2012-07-01T14:21:10-05:00
-		 */
-		final int maxPossibleLength = 25;
-
-		StringBuilder sb = new StringBuilder(maxPossibleLength);
-		NumberFormat nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
-
-		writeDateComponent(sb, nf, extended);
-		writeTimeComponent(sb, nf, extended);
-
-		return sb.toString();
-	}
-
-	private void writeDateComponent(StringBuilder sb, NumberFormat nf, boolean extended) {
+		//these are checked for in the builder and should never be thrown here
 		if (hasYear() && !hasMonth() && hasDate()) {
-			//this is checked for in the builder and should never be thrown here
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));
 		}
-
-		String yearStr = hasYear() ? getYear().toString() : null;
-		String monthStr = hasMonth() ? nf.format(getMonth()) : null;
-		String dateStr = hasDate() ? nf.format(getDate()) : null;
-
-		String dash = extended ? "-" : "";
-
-		if (hasYear() && !hasMonth() && !hasDate()) {
-			sb.append(yearStr);
-		} else if (!hasYear() && hasMonth() && !hasDate()) {
-			sb.append("--").append(monthStr);
-		} else if (!hasYear() && !hasMonth() && hasDate()) {
-			sb.append("---").append(dateStr);
-		} else if (hasYear() && hasMonth() && !hasDate()) {
-			sb.append(yearStr).append("-").append(monthStr);
-		} else if (!hasYear() && hasMonth() && hasDate()) {
-			sb.append("--").append(monthStr).append(dash).append(dateStr);
-		} else if (hasYear() && hasMonth() && hasDate()) {
-			sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);
-		}
-	}
-
-	private void writeTimeComponent(StringBuilder sb, NumberFormat nf, boolean extended) {
-		if (!hasTimeComponent()) {
-			return;
-		}
-
 		if (hasHour() && !hasMinute() && hasSecond()) {
-			//this is checked for in the builder and should never be thrown here
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));
 		}
 
-		sb.append('T');
+		return new ISO8601Writer(extended).write();
+	}
 
-		String hourStr = hasHour() ? nf.format(getHour()) : null;
-		String minuteStr = hasMinute() ? nf.format(getMinute()) : null;
-		String secondStr = hasSecond() ? nf.format(getSecond()) : null;
+	private class ISO8601Writer {
+		/**
+		 * Micro-optimization: The max length a timestamp string can possibly be
+		 * is 25. Example: 2012-07-01T14:21:10-05:00
+		 */
+		private static final int MAX_POSSIBLE_LENGTH = 25;
 
-		String dash = extended ? ":" : "";
-		if (hasHour() && !hasMinute() && !hasSecond()) {
-			sb.append(hourStr);
-		} else if (!hasHour() && hasMinute() && !hasSecond()) {
-			sb.append("-").append(minuteStr);
-		} else if (!hasHour() && !hasMinute() && hasSecond()) {
-			sb.append("--").append(secondStr);
-		} else if (hasHour() && hasMinute() && !hasSecond()) {
-			sb.append(hourStr).append(dash).append(minuteStr);
-		} else if (!hasHour() && hasMinute() && hasSecond()) {
-			sb.append("-").append(minuteStr).append(dash).append(secondStr);
-		} else if (hasHour() && hasMinute() && hasSecond()) {
-			sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);
+		private final StringBuilder sb;
+		private final NumberFormat nf;
+		private final String dash;
+		private final String colon;
+
+		public ISO8601Writer(boolean extended) {
+			sb = new StringBuilder(MAX_POSSIBLE_LENGTH);
+			nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
+			dash = extended ? "-" : "";
+			colon = extended ? ":" : "";
 		}
 
-		Integer offsetHour = components[OFFSET_HOUR];
-		if (offsetHour != null) {
+		public String write() {
+			writeDateComponent();
+
+			if (hasTimeComponent()) {
+				writeTimeComponent();
+			}
+
+			return sb.toString();
+		}
+
+		private void writeDateComponent() {
+			String yearStr = hasYear() ? getYear().toString() : null;
+			String monthStr = hasMonth() ? nf.format(getMonth()) : null;
+			String dateStr = hasDate() ? nf.format(getDate()) : null;
+
+			if (hasYear() && !hasMonth() && !hasDate()) {
+				sb.append(yearStr);
+			} else if (!hasYear() && hasMonth() && !hasDate()) {
+				sb.append("--").append(monthStr);
+			} else if (!hasYear() && !hasMonth() && hasDate()) {
+				sb.append("---").append(dateStr);
+			} else if (hasYear() && hasMonth() && !hasDate()) {
+				sb.append(yearStr).append("-").append(monthStr);
+			} else if (!hasYear() && hasMonth() && hasDate()) {
+				sb.append("--").append(monthStr).append(dash).append(dateStr);
+			} else if (hasYear() && hasMonth() && hasDate()) {
+				sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);
+			}
+		}
+
+		private void writeTimeComponent() {
+			sb.append('T');
+
+			String hourStr = hasHour() ? nf.format(getHour()) : null;
+			String minuteStr = hasMinute() ? nf.format(getMinute()) : null;
+			String secondStr = hasSecond() ? nf.format(getSecond()) : null;
+
+			if (hasHour() && !hasMinute() && !hasSecond()) {
+				sb.append(hourStr);
+			} else if (!hasHour() && hasMinute() && !hasSecond()) {
+				sb.append("-").append(minuteStr);
+			} else if (!hasHour() && !hasMinute() && hasSecond()) {
+				sb.append("--").append(secondStr);
+			} else if (hasHour() && hasMinute() && !hasSecond()) {
+				sb.append(hourStr).append(colon).append(minuteStr);
+			} else if (!hasHour() && hasMinute() && hasSecond()) {
+				sb.append("-").append(minuteStr).append(colon).append(secondStr);
+			} else if (hasHour() && hasMinute() && hasSecond()) {
+				sb.append(hourStr).append(colon).append(minuteStr).append(colon).append(secondStr);
+			}
+
+			writeOffsetIfPresent();
+		}
+
+		private void writeOffsetIfPresent() {
+			Integer offsetHour = components[OFFSET_HOUR];
+			if (offsetHour == null) {
+				return;
+			}
+
 			Integer offsetMinute = components[OFFSET_MINUTE];
 			String offsetHourStr = nf.format(Math.abs(offsetHour));
 			String offsetMinuteStr = nf.format(Math.abs(offsetMinute));
 
 			sb.append((offsetHour < 0 || offsetMinute < 0) ? '-' : '+');
-			sb.append(offsetHourStr).append(dash).append(offsetMinuteStr);
+			sb.append(offsetHourStr).append(colon).append(offsetMinuteStr);
 		}
 	}
 
@@ -432,8 +460,8 @@ public final class PartialDate {
 	 * Represents a string format that a partial date can be in.
 	 */
 	private static class Format {
-		private Pattern regex;
-		private Integer[] componentIndexes;
+		private final Pattern regex;
+		private final Integer[] componentIndexes;
 
 		/**
 		 * @param regex the regular expression that describes the format
@@ -455,61 +483,84 @@ public final class PartialDate {
 		 * invalid (e.g. "13" for the month)
 		 */
 		public boolean parse(Builder builder, String value) {
-			Matcher m = regex.matcher(value);
-			if (!m.find()) {
-				return false;
+			return new FormatParser(builder, value).parse();
+		}
+
+		private class FormatParser {
+			private final Builder builder;
+			private final Matcher m;
+
+			private boolean offsetPositive;
+			private Integer offsetHour;
+			private Integer offsetMinute;
+
+			public FormatParser(Builder builder, String value) {
+				this.builder = builder;
+				m = regex.matcher(value);
 			}
 
-			/*
-			 * All this complicated handling of the offset is due to:
-			 * 
-			 * The hour portion can be zero, and zero can't be negative (e.g.
-			 * "-00:30").
-			 * 
-			 * There is no positive or negative sign next to the minute portion
-			 * in the string.
-			 */
-			boolean offsetPositive = false;
-			Integer offsetHour = null;
-			Integer offsetMinute = null;
-
-			for (int i = 0; i < componentIndexes.length; i++) {
-				Integer index = componentIndexes[i];
-				if (index == null) {
-					continue;
+			public boolean parse() {
+				if (!m.find()) {
+					return false;
 				}
 
-				int group = i + 1;
-				String groupStr = m.group(group);
-				if (groupStr != null) {
-					boolean startsWithPlus = groupStr.startsWith("+");
-					if (startsWithPlus) {
-						groupStr = groupStr.substring(1);
+				/*
+				 * All this complicated handling of the offset is due to:
+				 * 
+				 * The hour portion can be zero, and zero can't be negative
+				 * (e.g. "-00:30").
+				 * 
+				 * There is no positive or negative sign next to the minute
+				 * portion in the string.
+				 */
+
+				for (int i = 0; i < componentIndexes.length; i++) {
+					Integer index = componentIndexes[i];
+					if (index == null) {
+						continue;
 					}
 
-					int component = Integer.parseInt(groupStr);
-					if (index == YEAR) {
-						builder.year(component);
-					} else if (index == MONTH) {
-						builder.month(component);
-					} else if (index == DATE) {
-						builder.date(component);
-					} else if (index == HOUR) {
-						builder.hour(component);
-					} else if (index == MINUTE) {
-						builder.minute(component);
-					} else if (index == SECOND) {
-						builder.second(component);
-					} else if (index == OFFSET_HOUR) {
-						offsetHour = component;
-						offsetPositive = startsWithPlus;
-					} else if (index == OFFSET_MINUTE) {
-						offsetMinute = component;
+					String groupStr = m.group(i + 1);
+					if (groupStr != null) {
+						processComponent(index, groupStr);
 					}
+				}
+
+				if (offsetHour != null) {
+					handleZoneOffset();
+				}
+
+				return true;
+			}
+
+			private void processComponent(Integer index, String groupStr) {
+				boolean startsWithPlus = groupStr.startsWith("+");
+				if (startsWithPlus) {
+					groupStr = groupStr.substring(1);
+				}
+
+				int component = Integer.parseInt(groupStr);
+				if (index == YEAR) {
+					builder.year(component);
+				} else if (index == MONTH) {
+					builder.month(component);
+				} else if (index == DATE) {
+					builder.date(component);
+				} else if (index == HOUR) {
+					builder.hour(component);
+				} else if (index == MINUTE) {
+					builder.minute(component);
+				} else if (index == SECOND) {
+					builder.second(component);
+				} else if (index == OFFSET_HOUR) {
+					offsetHour = component;
+					offsetPositive = startsWithPlus;
+				} else if (index == OFFSET_MINUTE) {
+					offsetMinute = component;
 				}
 			}
 
-			if (offsetHour != null) {
+			private void handleZoneOffset() {
 				if (offsetMinute == null) {
 					offsetMinute = 0;
 				}
@@ -525,8 +576,6 @@ public final class PartialDate {
 				}
 				builder.offset(offset);
 			}
-
-			return true;
 		}
 	}
 

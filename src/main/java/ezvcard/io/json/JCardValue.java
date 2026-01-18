@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ezvcard.property.Categories;
 import ezvcard.property.Note;
@@ -193,74 +194,84 @@ public class JCardValue {
 	 * @return the values or empty list if not found
 	 */
 	public List<List<String>> asStructured() {
-		if (values.isEmpty()) {
+		return new StructuredValueConverter().convert();
+	}
+
+	private class StructuredValueConverter {
+		public List<List<String>> convert() {
+			if (values.isEmpty()) {
+				return Collections.emptyList();
+			}
+
+			JsonValue first = values.get(0);
+
+			//["gender", {}, "text", ["M", "text"] ]
+			List<JsonValue> array = first.getArray();
+			if (array != null) {
+				return fromArray(array);
+			}
+
+			//get the first value if it's not enclosed in an array
+			//["gender", {}, "text", "M"]
+			Object obj = first.getValue();
+			if (obj != null) {
+				return Collections.singletonList(fromValue(obj));
+			}
+
+			//["gender", {}, "text", null]
+			if (first.isNull()) {
+				return Collections.singletonList(fromNull());
+			}
+
 			return Collections.emptyList();
 		}
 
-		JsonValue first = values.get(0);
+		private List<List<String>> fromArray(List<JsonValue> array) {
+			//@formatter:off
+			return array.stream()
+				.map(this::fromArrayValue)
+				.filter(v -> v != null)
+			.collect(Collectors.toList());
+			//@formatter:on
+		}
 
-		//["gender", {}, "text", ["M", "text"] ]
-		List<JsonValue> array = first.getArray();
-		if (array != null) {
-			List<List<String>> components = new ArrayList<>(array.size());
-			for (JsonValue value : array) {
-				if (value.isNull()) {
-					components.add(Collections.<String>emptyList());
-					continue;
-				}
-
-				Object obj = value.getValue();
-				if (obj != null) {
-					String s = obj.toString();
-					List<String> component = s.isEmpty() ? Collections.<String>emptyList() : Collections.singletonList(s);
-					components.add(component);
-					continue;
-				}
-
-				List<JsonValue> subArray = value.getArray();
-				if (subArray != null) {
-					List<String> component = new ArrayList<>(subArray.size());
-					for (JsonValue subArrayValue : subArray) {
-						if (subArrayValue.isNull()) {
-							component.add("");
-							continue;
-						}
-
-						obj = subArrayValue.getValue();
-						if (obj != null) {
-							component.add(obj.toString());
-							continue;
-						}
-					}
-
-					if (component.size() == 1 && component.get(0).isEmpty()) {
-						component.clear();
-					}
-					components.add(component);
-				}
+		private List<String> fromArrayValue(JsonValue value) {
+			if (value.isNull()) {
+				return fromNull();
 			}
-			return components;
+
+			Object obj = value.getValue();
+			if (obj != null) {
+				return fromValue(obj);
+			}
+
+			List<JsonValue> subArray = value.getArray();
+			if (subArray != null) {
+				//@formatter:off
+				List<String> component = subArray.stream()
+					.map(jsonValue -> jsonValue.isNull() ? "" : jsonValue.getValue())
+					.filter(o -> o != null)
+					.map(Object::toString)
+				.collect(Collectors.toList());
+				//@formatter:on
+
+				if (component.size() == 1 && component.get(0).isEmpty()) {
+					return Collections.emptyList();
+				}
+				return component;
+			}
+
+			return null;
 		}
 
-		//get the first value if it's not enclosed in an array
-		//["gender", {}, "text", "M"]
-		Object obj = first.getValue();
-		if (obj != null) {
-			List<List<String>> components = new ArrayList<>(1);
+		private List<String> fromNull() {
+			return Collections.emptyList();
+		}
+
+		private List<String> fromValue(Object obj) {
 			String s = obj.toString();
-			List<String> component = s.isEmpty() ? Collections.<String>emptyList() : Collections.singletonList(s);
-			components.add(component);
-			return components;
+			return s.isEmpty() ? Collections.emptyList() : Collections.singletonList(s);
 		}
-
-		//["gender", {}, "text", null]
-		if (first.isNull()) {
-			List<List<String>> components = new ArrayList<>(1);
-			components.add(Collections.<String>emptyList());
-			return components;
-		}
-
-		return Collections.emptyList();
 	}
 
 	/**

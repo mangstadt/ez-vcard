@@ -67,6 +67,8 @@ public final class GeoUri {
 	 */
 	public static final String CRS_WGS84 = "wgs84";
 
+	private static final String SCHEME = "geo:";
+
 	/**
 	 * The characters which are allowed to exist un-encoded inside of a
 	 * parameter value.
@@ -88,11 +90,6 @@ public final class GeoUri {
 			validParameterValueCharacters[c] = true;
 		}
 	}
-
-	/**
-	 * Finds hex values in a parameter value.
-	 */
-	private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
 
 	private static final String PARAM_CRS = "crs";
 	private static final String PARAM_UNCERTAINTY = "u";
@@ -120,122 +117,170 @@ public final class GeoUri {
 	 * @throws IllegalArgumentException if the string is not a valid geo URI
 	 */
 	public static GeoUri parse(String uri) {
-		//URI format: geo:LAT,LONG;prop1=value1;prop2=value2
+		return new Parser(uri).parse();
+	}
 
-		String scheme = "geo:";
-		if (uri.length() < scheme.length() || !uri.substring(0, scheme.length()).equalsIgnoreCase(scheme)) {
-			//not a geo URI
-			throw Messages.INSTANCE.getIllegalArgumentException(18, scheme);
+	private static class Parser {
+		private static final Pattern hexPattern = Pattern.compile("(?i)%([0-9a-f]{2})");
+
+		private final String uri;
+		private final CharIterator it;
+		private final Builder builder;
+		private final ClearableStringBuilder buffer;
+
+		private String paramName;
+		private boolean coordinatesDone;
+
+		public Parser(String uri) {
+			this.uri = uri;
+			checkScheme();
+
+			builder = new Builder(null, null);
+			buffer = new ClearableStringBuilder();
+
+			it = new CharIterator(uri, SCHEME.length());
 		}
 
-		Builder builder = new Builder(null, null);
-		ClearableStringBuilder buffer = new ClearableStringBuilder();
-		String paramName = null;
-		boolean coordinatesDone = false;
-		for (int i = scheme.length(); i < uri.length(); i++) {
-			char c = uri.charAt(i);
+		private void checkScheme() {
+			if (uri.length() < SCHEME.length() || !uri.substring(0, SCHEME.length()).equalsIgnoreCase(SCHEME)) {
+				//not a geo URI
+				throw Messages.INSTANCE.getIllegalArgumentException(18, SCHEME);
+			}
+		}
 
+		public GeoUri parse() {
+			//URI format: geo:LAT,LONG;prop1=value1;prop2=value2
+
+			while (it.hasNext()) {
+				char c = it.next();
+				processCharacter(c);
+			}
+
+			if (coordinatesDone) {
+				handleEndOfParameter();
+			} else {
+				handleEndOfCoordinate();
+				if (builder.coordB == null) {
+					throw Messages.INSTANCE.getIllegalArgumentException(21);
+				}
+			}
+
+			return builder.build();
+		}
+
+		private void processCharacter(char c) {
 			if (c == ',' && !coordinatesDone) {
-				handleEndOfCoordinate(buffer, builder);
-				continue;
+				handleEndOfCoordinate();
+				return;
 			}
 
 			if (c == ';') {
 				if (coordinatesDone) {
-					handleEndOfParameter(buffer, paramName, builder);
+					handleEndOfParameter();
 					paramName = null;
 				} else {
-					handleEndOfCoordinate(buffer, builder);
+					handleEndOfCoordinate();
 					if (builder.coordB == null) {
 						throw Messages.INSTANCE.getIllegalArgumentException(21);
 					}
 					coordinatesDone = true;
 				}
-				continue;
+				return;
 			}
 
 			if (c == '=' && coordinatesDone && paramName == null) {
 				paramName = buffer.getAndClear();
-				continue;
+				return;
 			}
 
 			buffer.append(c);
 		}
 
-		if (coordinatesDone) {
-			handleEndOfParameter(buffer, paramName, builder);
-		} else {
-			handleEndOfCoordinate(buffer, builder);
-			if (builder.coordB == null) {
-				throw Messages.INSTANCE.getIllegalArgumentException(21);
-			}
-		}
+		private void handleEndOfCoordinate() {
+			String s = buffer.getAndClear();
 
-		return builder.build();
-	}
-
-	private static void handleEndOfCoordinate(ClearableStringBuilder buffer, Builder builder) {
-		String s = buffer.getAndClear();
-
-		if (builder.coordA == null) {
-			try {
-				builder.coordA = Double.parseDouble(s);
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "A"), e);
-			}
-			return;
-		}
-
-		if (builder.coordB == null) {
-			try {
-				builder.coordB = Double.parseDouble(s);
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "B"), e);
-			}
-			return;
-		}
-
-		if (builder.coordC == null) {
-			try {
-				builder.coordC = Double.parseDouble(s);
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, "C"), e);
-			}
-			return;
-		}
-	}
-
-	private static void addParameter(String name, String value, Builder builder) {
-		value = decodeParameterValue(value);
-
-		if (PARAM_CRS.equalsIgnoreCase(name)) {
-			builder.crs = value;
-			return;
-		}
-
-		if (PARAM_UNCERTAINTY.equalsIgnoreCase(name)) {
-			try {
-				builder.uncertainty = Double.valueOf(value);
+			if (builder.coordA == null) {
+				builder.coordA = parseCoord(s, "A");
 				return;
+			}
+
+			if (builder.coordB == null) {
+				builder.coordB = parseCoord(s, "B");
+				return;
+			}
+
+			if (builder.coordC == null) {
+				builder.coordC = parseCoord(s, "C");
+				return;
+			}
+		}
+
+		private Double parseCoord(String s, String letter) {
+			try {
+				return Double.parseDouble(s);
 			} catch (NumberFormatException e) {
-				//if it can't be parsed, then treat it as an ordinary parameter
+				throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(22, letter), e);
 			}
 		}
 
-		builder.parameters.put(name, value);
-	}
+		private void addParameter(String name, String value) {
+			value = decodeParameterValue(value);
 
-	private static void handleEndOfParameter(ClearableStringBuilder buffer, String paramName, Builder builder) {
-		String s = buffer.getAndClear();
-
-		if (paramName == null) {
-			if (!s.isEmpty()) {
-				addParameter(s, "", builder);
+			if (PARAM_CRS.equalsIgnoreCase(name)) {
+				builder.crs = value;
+				return;
 			}
-			return;
+
+			if (PARAM_UNCERTAINTY.equalsIgnoreCase(name)) {
+				try {
+					builder.uncertainty = Double.valueOf(value);
+					return;
+				} catch (NumberFormatException e) {
+					//if it can't be parsed, then treat it as an ordinary parameter
+				}
+			}
+
+			builder.parameters.put(name, value);
 		}
 
-		addParameter(paramName, s, builder);
+		private void handleEndOfParameter() {
+			String s = buffer.getAndClear();
+
+			if (paramName == null) {
+				if (!s.isEmpty()) {
+					addParameter(s, "");
+				}
+				return;
+			}
+
+			addParameter(paramName, s);
+		}
+
+		/**
+		 * Decodes escaped characters in a parameter value.
+		 * @param value the parameter value
+		 * @return the decoded value
+		 */
+		private String decodeParameterValue(String value) {
+			Matcher m = hexPattern.matcher(value);
+			StringBuffer sb = null;
+
+			while (m.find()) {
+				if (sb == null) {
+					sb = new StringBuffer(value.length());
+				}
+
+				int hex = Integer.parseInt(m.group(1), 16);
+				m.appendReplacement(sb, Character.toString((char) hex));
+			}
+
+			if (sb == null) {
+				return value;
+			}
+
+			m.appendTail(sb);
+			return sb.toString();
+		}
 	}
 
 	/**
@@ -320,95 +365,83 @@ public final class GeoUri {
 	 * @return the geo URI's string representation
 	 */
 	public String toString(int decimals) {
-		VCardFloatFormatter formatter = new VCardFloatFormatter(decimals);
-		StringBuilder sb = new StringBuilder("geo:");
+		return new Writer(decimals).write();
+	}
 
-		sb.append(formatter.format(coordA));
-		sb.append(',');
-		sb.append(formatter.format(coordB));
+	private class Writer {
+		private final VCardFloatFormatter formatter;
+		private final StringBuilder sb;
 
-		if (coordC != null) {
+		public Writer(int decimals) {
+			formatter = new VCardFloatFormatter(decimals);
+			sb = new StringBuilder(SCHEME);
+		}
+
+		public String write() {
+			sb.append(formatter.format(coordA));
 			sb.append(',');
-			sb.append(coordC);
-		}
+			sb.append(formatter.format(coordB));
 
-		//if the CRS is WGS-84, then it doesn't have to be displayed
-		if (crs != null && !crs.equalsIgnoreCase(CRS_WGS84)) {
-			writeParameter(PARAM_CRS, crs, sb);
-		}
-
-		if (uncertainty != null) {
-			writeParameter(PARAM_UNCERTAINTY, formatter.format(uncertainty), sb);
-		}
-
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			String name = entry.getKey();
-			String value = entry.getValue();
-			writeParameter(name, value, sb);
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * Writes a parameter to a string.
-	 * @param name the parameter name
-	 * @param value the parameter value
-	 * @param sb the string to write to
-	 */
-	private void writeParameter(String name, String value, StringBuilder sb) {
-		sb.append(';').append(name).append('=').append(encodeParameterValue(value));
-	}
-
-	/**
-	 * Encodes a string for safe inclusion in a parameter value.
-	 * @param value the string to encode
-	 * @return the encoded value
-	 */
-	private static String encodeParameterValue(String value) {
-		StringBuilder sb = null;
-		for (int i = 0; i < value.length(); i++) {
-			char c = value.charAt(i);
-			if (c < validParameterValueCharacters.length && validParameterValueCharacters[c]) {
-				if (sb != null) {
-					sb.append(c);
-				}
-			} else {
-				if (sb == null) {
-					sb = new StringBuilder(value.length() * 2);
-					sb.append(value, 0, i);
-				}
-				String hex = Integer.toString(c, 16);
-				sb.append('%').append(hex);
-			}
-		}
-		return (sb == null) ? value : sb.toString();
-	}
-
-	/**
-	 * Decodes escaped characters in a parameter value.
-	 * @param value the parameter value
-	 * @return the decoded value
-	 */
-	private static String decodeParameterValue(String value) {
-		Matcher m = hexPattern.matcher(value);
-		StringBuffer sb = null;
-
-		while (m.find()) {
-			if (sb == null) {
-				sb = new StringBuffer(value.length());
+			if (coordC != null) {
+				sb.append(',');
+				sb.append(coordC);
 			}
 
-			int hex = Integer.parseInt(m.group(1), 16);
-			m.appendReplacement(sb, Character.toString((char) hex));
+			//if the CRS is WGS-84, then it doesn't have to be displayed
+			if (crs != null && !crs.equalsIgnoreCase(CRS_WGS84)) {
+				writeParameter(PARAM_CRS, crs);
+			}
+
+			if (uncertainty != null) {
+				writeParameter(PARAM_UNCERTAINTY, formatter.format(uncertainty));
+			}
+
+			for (Map.Entry<String, String> entry : parameters.entrySet()) {
+				String name = entry.getKey();
+				String value = entry.getValue();
+				writeParameter(name, value);
+			}
+
+			return sb.toString();
 		}
 
-		if (sb == null) {
-			return value;
+		/**
+		 * Writes a parameter to a string.
+		 * @param name the parameter name
+		 * @param value the parameter value
+		 * @param sb the string to write to
+		 */
+		private void writeParameter(String name, String value) {
+			sb.append(';').append(name).append('=').append(encodeParameterValue(value));
 		}
 
-		m.appendTail(sb);
-		return sb.toString();
+		/**
+		 * Encodes a string for safe inclusion in a parameter value.
+		 * @param value the string to encode
+		 * @return the encoded value
+		 */
+		private String encodeParameterValue(String value) {
+			StringBuilder encodedValue = null;
+			CharIterator it = new CharIterator(value);
+
+			while (it.hasNext()) {
+				char c = it.next();
+				if (c < validParameterValueCharacters.length && validParameterValueCharacters[c]) {
+					if (encodedValue != null) {
+						encodedValue.append(c);
+					}
+				} else {
+					if (encodedValue == null) {
+						encodedValue = new StringBuilder(value.length() * 2);
+						encodedValue.append(value, 0, it.index());
+					}
+					String hex = Integer.toString(c, 16);
+					encodedValue.append('%').append(hex);
+				}
+			}
+
+			return (encodedValue == null) ? value : encodedValue.toString();
+		}
 	}
 
 	@Override

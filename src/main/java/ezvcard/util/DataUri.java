@@ -97,78 +97,111 @@ public final class DataUri {
 	 * it cannot be parsed
 	 */
 	public static DataUri parse(String uri) {
-		//Syntax: data:[<media type>][;charset=<character set>][;base64],<data>
+		return new Parser(uri).parse();
+	}
 
-		String scheme = "data:";
-		if (uri.length() < scheme.length() || !uri.substring(0, scheme.length()).equalsIgnoreCase(scheme)) {
-			//not a data URI
-			throw Messages.INSTANCE.getIllegalArgumentException(18, scheme);
+	private static class Parser {
+		private static final String SCHEME = "data:";
+
+		private final String uri;
+		private final CharIterator it;
+
+		private String contentType;
+		private String charset;
+		private boolean base64;
+		private String dataStr;
+		private int tokenStart;
+
+		public Parser(String uri) {
+			this.uri = uri;
+			checkScheme();
+
+			tokenStart = SCHEME.length();
+			it = new CharIterator(uri, tokenStart);
 		}
 
-		String contentType = null;
-		String charset = null;
-		boolean base64 = false;
-		String dataStr = null;
-		int tokenStart = scheme.length();
-		for (int i = scheme.length(); i < uri.length(); i++) {
-			char c = uri.charAt(i);
+		private void checkScheme() {
+			if (uri.length() < SCHEME.length() || !uri.substring(0, SCHEME.length()).equalsIgnoreCase(SCHEME)) {
+				//not a data URI
+				throw Messages.INSTANCE.getIllegalArgumentException(18, SCHEME);
+			}
+		}
 
-			if (c == ';') {
-				String token = uri.substring(tokenStart, i);
-				if (contentType == null) {
-					contentType = token.toLowerCase();
-				} else {
-					if (token.toLowerCase().startsWith("charset=")) {
-						int equals = token.indexOf('=');
-						charset = token.substring(equals + 1);
-					} else if ("base64".equalsIgnoreCase(token)) {
-						base64 = true;
+		public DataUri parse() {
+			//Syntax: data:[<media type>][;charset=<character set>][;base64],<data>
+			while (it.hasNext()) {
+				char c = it.next();
+
+				if (c == ',') {
+					handleComma();
+					break;
+				}
+
+				if (c == ';') {
+					handleSemicolon();
+				}
+			}
+
+			if (dataStr == null) {
+				throw Messages.INSTANCE.getIllegalArgumentException(20);
+			}
+
+			return build();
+		}
+
+		private void handleComma() {
+			String token = uri.substring(tokenStart, it.index());
+			if (contentType == null) {
+				contentType = token.toLowerCase();
+			} else {
+				if (token.toLowerCase().startsWith("charset=")) {
+					int equals = token.indexOf('=');
+					charset = token.substring(equals + 1);
+				} else if ("base64".equalsIgnoreCase(token)) {
+					base64 = true;
+				}
+			}
+
+			dataStr = uri.substring(it.index() + 1);
+		}
+
+		private void handleSemicolon() {
+			String token = uri.substring(tokenStart, it.index());
+			if (contentType == null) {
+				contentType = token.toLowerCase();
+			} else {
+				if (token.toLowerCase().startsWith("charset=")) {
+					int equals = token.indexOf('=');
+					charset = token.substring(equals + 1);
+				} else if ("base64".equalsIgnoreCase(token)) {
+					base64 = true;
+				}
+			}
+
+			tokenStart = it.index() + 1;
+		}
+
+		private DataUri build() {
+			String text = null;
+			byte[] data = null;
+
+			if (base64) {
+				dataStr = dataStr.replaceAll("\\s", "");
+				data = Base64.decodeBase64(dataStr);
+				if (charset != null) {
+					try {
+						text = new String(data, charset);
+					} catch (UnsupportedEncodingException e) {
+						throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(43, charset), e);
 					}
+					data = null;
 				}
-				tokenStart = i + 1;
-				continue;
+			} else {
+				text = dataStr;
 			}
 
-			if (c == ',') {
-				String token = uri.substring(tokenStart, i);
-				if (contentType == null) {
-					contentType = token.toLowerCase();
-				} else {
-					if (token.toLowerCase().startsWith("charset=")) {
-						int equals = token.indexOf('=');
-						charset = token.substring(equals + 1);
-					} else if ("base64".equalsIgnoreCase(token)) {
-						base64 = true;
-					}
-				}
-
-				dataStr = uri.substring(i + 1);
-				break;
-			}
+			return new DataUri(contentType, data, text);
 		}
-
-		if (dataStr == null) {
-			throw Messages.INSTANCE.getIllegalArgumentException(20);
-		}
-
-		String text = null;
-		byte[] data = null;
-		if (base64) {
-			dataStr = dataStr.replaceAll("\\s", "");
-			data = Base64.decodeBase64(dataStr);
-			if (charset != null) {
-				try {
-					text = new String(data, charset);
-				} catch (UnsupportedEncodingException e) {
-					throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(43, charset), e);
-				}
-				data = null;
-			}
-		} else {
-			text = dataStr;
-		}
-
-		return new DataUri(contentType, data, text);
 	}
 
 	/**
