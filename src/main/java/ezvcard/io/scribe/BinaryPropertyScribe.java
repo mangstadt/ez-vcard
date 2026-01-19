@@ -222,15 +222,8 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			if (value.startsWith("http")) {
 				return _newInstance(value, contentType);
 			}
-			try {
-				/*
-				 * 2.1 and 3.0 technically don't support data URIs--parse for
-				 * convenience.
-				 */
-				return parseAsDataUri(value);
-			} catch (IllegalArgumentException e) {
-				return _newInstance(Base64.decodeBase64(value), contentType);
-			}
+
+			return _newInstance(Base64.decodeBase64(value), contentType);
 		case V4_0:
 			return _newInstance(value, contentType);
 		}
@@ -333,6 +326,17 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * @return the parsed property
 	 */
 	protected T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
+		/*
+		 * If the value is a data URI, just parse it, no matter what the version
+		 * is or what parameters are set. 2.1 and 3.0 technically don't support
+		 * data URIs--parse for convenience.
+		 */
+		try {
+			return parseAsDataUri(value);
+		} catch (IllegalArgumentException e) {
+			//not a data URI
+		}
+
 		U contentType = parseContentTypeFromValueAndParameters(value, parameters, version);
 
 		switch (version) {
@@ -340,15 +344,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 		case V3_0:
 			//parse as URL
 			if (dataType == VCardDataType.URL || dataType == VCardDataType.URI) {
-				try {
-					/*
-					 * 2.1 and 3.0 technically don't support data URIs--parse
-					 * for convenience.
-					 */
-					return parseAsDataUri(value);
-				} catch (IllegalArgumentException e) {
-					return _newInstance(value, contentType);
-				}
+				return _newInstance(value, contentType);
 			}
 
 			//parse as binary
@@ -359,11 +355,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 			break;
 		case V4_0:
-			try {
-				return parseAsDataUri(value);
-			} catch (IllegalArgumentException e) {
-				//not a data URI
-			}
+			//already checked for data URI
 			break;
 		}
 
