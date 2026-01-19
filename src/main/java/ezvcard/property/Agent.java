@@ -175,23 +175,28 @@ public class Agent extends VCardProperty {
 		}
 
 		if (this.vcard != null) {
-			NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
-			nf.setMinimumIntegerDigits(2);
+			validateAgentVCard(version, warnings);
+		}
+	}
 
-			ValidationWarnings validationWarnings = this.vcard.validate(version);
-			for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : validationWarnings) {
-				VCardProperty property = entry.getKey();
-				List<ValidationWarning> propViolations = entry.getValue();
+	private void validateAgentVCard(VCardVersion version, List<ValidationWarning> warnings) {
+		NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
+		nf.setMinimumIntegerDigits(2);
 
-				for (ValidationWarning propViolation : propViolations) {
-					String className = (property == null) ? "" : property.getClass().getSimpleName();
+		ValidationWarnings validationWarnings = vcard.validate(version);
 
-					int code = propViolation.getCode();
-					String codeStr = (code >= 0) ? "W" + nf.format(code) : "";
-					String message = propViolation.getMessage();
-					warnings.add(new ValidationWarning(10, className, codeStr, message));
-				}
-			}
+		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : validationWarnings) {
+			VCardProperty property = entry.getKey();
+			List<ValidationWarning> propertyWarnings = entry.getValue();
+
+			String className = (property == null) ? "" : property.getClass().getSimpleName();
+
+			propertyWarnings.stream().map(warning -> {
+				int code = warning.getCode();
+				String codeStr = (code >= 0) ? "W" + nf.format(code) : "";
+				String message = warning.getMessage();
+				return new ValidationWarning(10, className, codeStr, message);
+			}).forEach(warnings::add);
 		}
 	}
 

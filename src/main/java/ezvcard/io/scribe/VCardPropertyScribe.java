@@ -654,34 +654,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		case V3_0:
 			parameters.setPref(null);
 
-			//find the property with the lowest PREF value in the vCard
-			VCardProperty mostPreferred = null;
-			Integer lowestPref = null;
-			for (VCardProperty p : vcard.getProperties(property.getClass())) {
-				Integer pref;
-				try {
-					pref = p.getParameters().getPref();
-				} catch (IllegalStateException e) {
-					continue;
-				}
-
-				if (pref == null) {
-					continue;
-				}
-
-				if (lowestPref == null || pref < lowestPref) {
-					mostPreferred = p;
-					lowestPref = pref;
-				}
-			}
-
+			VCardProperty mostPreferred = findPropertyWithLowestPref(property.getClass(), vcard);
 			if (property == mostPreferred) {
 				parameters.put(VCardParameters.TYPE, "pref");
 			}
 
 			break;
 		case V4_0:
-			for (String type : property.getParameters().get(VCardParameters.TYPE)) {
+			for (String type : property.getParameters().getTypes()) {
 				if ("pref".equalsIgnoreCase(type)) {
 					parameters.remove(VCardParameters.TYPE, type);
 					parameters.setPref(1);
@@ -690,6 +670,31 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			}
 			break;
 		}
+	}
+
+	private static VCardProperty findPropertyWithLowestPref(Class<? extends VCardProperty> clazz, VCard vcard) {
+		VCardProperty mostPreferred = null;
+		Integer lowestPref = null;
+
+		for (VCardProperty property : vcard.getProperties(clazz)) {
+			Integer pref;
+			try {
+				pref = property.getParameters().getPref();
+			} catch (IllegalStateException e) {
+				continue;
+			}
+
+			if (pref == null) {
+				continue;
+			}
+
+			if (lowestPref == null || pref < lowestPref) {
+				mostPreferred = property;
+				lowestPref = pref;
+			}
+		}
+
+		return mostPreferred;
 	}
 
 	/**
