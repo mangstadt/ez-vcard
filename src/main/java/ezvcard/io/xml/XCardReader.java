@@ -266,80 +266,17 @@ public class XCardReader extends StreamReader {
 			QName qname = new QName(namespace, localName);
 			String textContent = characterBuffer.getAndClear();
 
-			if (structure.isEmpty()) {
-				//<vcards>
-				if (VCARDS.equals(qname)) {
-					structure.push(ElementType.vcards);
-				}
+			//ignore all XML until a <vcards> elements is read
+			if (!isInsideVCardsElement(qname)) {
 				return;
 			}
 
 			ElementType parentType = structure.peek();
-			ElementType typeToPush = null;
+			ElementType typeToPush = (parentType == null) ? null : processStartElement(parentType, qname, attributes);
 
-			if (parentType != null) {
-				switch (parentType) {
-				case vcards:
-					//<vcard>
-					if (VCARD.equals(qname)) {
-						readVCard = new VCard();
-						readVCard.setVersion(version);
-						typeToPush = ElementType.vcard;
-					}
-					break;
+			if (shouldElementBeAppendedToPropertyElement(typeToPush)) {
+				appendNonEmptyTextContentToParent(textContent);
 
-				case vcard:
-					//<group>
-					if (GROUP.equals(qname)) {
-						group = attributes.getValue("name");
-						typeToPush = ElementType.group;
-					} else {
-						propertyElement = createElement(namespace, localName, attributes);
-						parameters = new VCardParameters();
-						parent = propertyElement;
-						typeToPush = ElementType.property;
-					}
-					break;
-
-				case group:
-					propertyElement = createElement(namespace, localName, attributes);
-					parameters = new VCardParameters();
-					parent = propertyElement;
-					typeToPush = ElementType.property;
-					break;
-
-				case property:
-					//<parameters>
-					if (PARAMETERS.equals(qname)) {
-						typeToPush = ElementType.parameters;
-					}
-					break;
-
-				case parameters:
-					//inside of <parameters>
-					if (NS.equals(namespace)) {
-						paramName = qname;
-						typeToPush = ElementType.parameter;
-					}
-					break;
-
-				case parameter:
-					if (NS.equals(namespace)) {
-						typeToPush = ElementType.parameterValue;
-					}
-					break;
-
-				case parameterValue:
-					//should never have child elements
-					break;
-				}
-			}
-
-			//append to property element
-			if (propertyElement != null && typeToPush != ElementType.property && typeToPush != ElementType.parameters && !structure.isUnderParameters()) {
-				if (!textContent.isEmpty()) {
-					parent.appendChild(DOC.createTextNode(textContent));
-				}
 				Element element = createElement(namespace, localName, attributes);
 				parent.appendChild(element);
 				parent = element;
@@ -348,117 +285,199 @@ public class XCardReader extends StreamReader {
 			structure.push(typeToPush);
 		}
 
+		private boolean isInsideVCardsElement(QName qname) {
+			if (!structure.isEmpty()) {
+				return true;
+			}
+
+			if (VCARDS.equals(qname)) {
+				structure.push(ElementType.vcards);
+			}
+
+			return false;
+		}
+
+		private ElementType processStartElement(ElementType parentType, QName qname, Attributes attributes) {
+			switch (parentType) {
+			case vcards:
+				//<vcard>
+				if (VCARD.equals(qname)) {
+					readVCard = new VCard();
+					readVCard.setVersion(version);
+					return ElementType.vcard;
+				}
+				break;
+
+			case vcard:
+				//<group>
+				if (GROUP.equals(qname)) {
+					group = attributes.getValue("name");
+					return ElementType.group;
+				} else {
+					propertyElement = createElement(qname.getNamespaceURI(), qname.getLocalPart(), attributes);
+					parameters = new VCardParameters();
+					parent = propertyElement;
+					return ElementType.property;
+				}
+
+			case group:
+				propertyElement = createElement(qname.getNamespaceURI(), qname.getLocalPart(), attributes);
+				parameters = new VCardParameters();
+				parent = propertyElement;
+				return ElementType.property;
+
+			case property:
+				//<parameters>
+				if (PARAMETERS.equals(qname)) {
+					return ElementType.parameters;
+				}
+				break;
+
+			case parameters:
+				//inside of <parameters>
+				if (NS.equals(qname.getNamespaceURI())) {
+					paramName = qname;
+					return ElementType.parameter;
+				}
+				break;
+
+			case parameter:
+				if (NS.equals(qname.getNamespaceURI())) {
+					return ElementType.parameterValue;
+				}
+				break;
+
+			case parameterValue:
+				//should never have child elements
+				break;
+			}
+
+			return null;
+		}
+
 		@Override
 		public void endElement(String namespace, String localName, String qName) throws SAXException {
 			String textContent = characterBuffer.getAndClear();
 
-			if (structure.isEmpty()) {
-				//no <vcards> elements were read yet
+			//ignore all XML until a <vcards> elements is read
+			boolean isInsideVCardsElement = !structure.isEmpty();
+			if (!isInsideVCardsElement) {
 				return;
 			}
 
 			ElementType type = structure.pop();
-			if (type == null && (propertyElement == null || structure.isUnderParameters())) {
-				//it's a non-xCard element
+			boolean isNotAnXCardElement = (type == null && (propertyElement == null || structure.isUnderParameters()));
+			if (isNotAnXCardElement) {
 				return;
 			}
 
 			if (type != null) {
-				switch (type) {
-				case parameterValue:
-					parameters.put(paramName.getLocalPart(), textContent);
-					break;
-
-				case parameter:
-					//do nothing
-					break;
-
-				case parameters:
-					//do nothing
-					break;
-
-				case property:
-					propertyElement.appendChild(DOC.createTextNode(textContent));
-
-					String propertyName = localName;
-					VCardProperty property;
-					QName propertyQName = new QName(propertyElement.getNamespaceURI(), propertyElement.getLocalName());
-					VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(propertyQName);
-
-					context.getWarnings().clear();
-					context.setPropertyName(propertyName);
-					try {
-						property = scribe.parseXml(propertyElement, parameters, context);
-						property.setGroup(group);
-						readVCard.addProperty(property);
-						warnings.addAll(context.getWarnings());
-					} catch (SkipMeException e) {
-						//@formatter:off
-						warnings.add(new ParseWarning.Builder(context)
-							.message(22, e.getMessage())
-							.build()
-						);
-						//@formatter:on
-					} catch (CannotParseException e) {
-						//@formatter:off
-						warnings.add(new ParseWarning.Builder(context)
-							.message(e)
-							.build()
-						);
-						//@formatter:on
-
-						scribe = index.getPropertyScribe(Xml.class);
-						property = scribe.parseXml(propertyElement, parameters, context);
-						property.setGroup(group);
-						readVCard.addProperty(property);
-					} catch (EmbeddedVCardException e) {
-						//@formatter:off
-						warnings.add(new ParseWarning.Builder(context)
-							.message(34)
-							.build()
-						);
-						//@formatter:on
-					}
-
-					propertyElement = null;
-					break;
-
-				case group:
-					group = null;
-					break;
-
-				case vcard:
-					//wait for readNext() to be called again
-					try {
-						readerBlock.put(lock);
-						threadBlock.take();
-					} catch (InterruptedException e) {
-						throw new SAXException(e);
-					}
-					break;
-
-				case vcards:
-					//do nothing
-					break;
-				}
+				processEndElement(type, localName, textContent);
 			}
 
-			//append element to property element
-			if (propertyElement != null && type != ElementType.property && type != ElementType.parameters && !structure.isUnderParameters()) {
-				if (!textContent.isEmpty()) {
-					parent.appendChild(DOC.createTextNode(textContent));
-				}
+			if (shouldElementBeAppendedToPropertyElement(type)) {
+				appendNonEmptyTextContentToParent(textContent);
 				parent = (Element) parent.getParentNode();
+			}
+		}
+
+		private boolean shouldElementBeAppendedToPropertyElement(ElementType type) {
+			return propertyElement != null && type != ElementType.property && type != ElementType.parameters && !structure.isUnderParameters();
+		}
+
+		private void appendNonEmptyTextContentToParent(String text) {
+			if (!text.isEmpty()) {
+				parent.appendChild(DOC.createTextNode(text));
+			}
+		}
+
+		private void processEndElement(ElementType type, String localName, String textContent) throws SAXException {
+			switch (type) {
+			case parameterValue:
+				parameters.put(paramName.getLocalPart(), textContent);
+				break;
+
+			case parameter:
+				//do nothing
+				break;
+
+			case parameters:
+				//do nothing
+				break;
+
+			case property:
+				propertyElement.appendChild(DOC.createTextNode(textContent));
+
+				String propertyName = localName;
+				VCardProperty property;
+				QName propertyQName = new QName(propertyElement.getNamespaceURI(), propertyElement.getLocalName());
+				VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(propertyQName);
+
+				context.getWarnings().clear();
+				context.setPropertyName(propertyName);
+				try {
+					property = scribe.parseXml(propertyElement, parameters, context);
+					property.setGroup(group);
+					readVCard.addProperty(property);
+					warnings.addAll(context.getWarnings());
+				} catch (SkipMeException e) {
+					//@formatter:off
+					warnings.add(new ParseWarning.Builder(context)
+						.message(22, e.getMessage())
+						.build()
+					);
+					//@formatter:on
+				} catch (CannotParseException e) {
+					//@formatter:off
+					warnings.add(new ParseWarning.Builder(context)
+						.message(e)
+						.build()
+					);
+					//@formatter:on
+
+					scribe = index.getPropertyScribe(Xml.class);
+					property = scribe.parseXml(propertyElement, parameters, context);
+					property.setGroup(group);
+					readVCard.addProperty(property);
+				} catch (EmbeddedVCardException e) {
+					//@formatter:off
+					warnings.add(new ParseWarning.Builder(context)
+						.message(34)
+						.build()
+					);
+					//@formatter:on
+				}
+
+				propertyElement = null;
+				break;
+
+			case group:
+				group = null;
+				break;
+
+			case vcard:
+				//wait for readNext() to be called again
+				try {
+					readerBlock.put(lock);
+					threadBlock.take();
+				} catch (InterruptedException e) {
+					throw new SAXException(e);
+				}
+				break;
+
+			case vcards:
+				//do nothing
+				break;
 			}
 		}
 
 		private Element createElement(String namespace, String localName, Attributes attributes) {
 			Element element = DOC.createElementNS(namespace, localName);
-			applyAttributesTo(element, attributes);
+			applyAttributes(element, attributes);
 			return element;
 		}
 
-		private void applyAttributesTo(Element element, Attributes attributes) {
+		private void applyAttributes(Element element, Attributes attributes) {
 			for (int i = 0; i < attributes.getLength(); i++) {
 				String qname = attributes.getQName(i);
 				if (qname.startsWith("xmlns:")) {
