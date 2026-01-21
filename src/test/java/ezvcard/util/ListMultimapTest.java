@@ -7,8 +7,8 @@ import static ezvcard.util.TestUtils.assertNotEqualsBothWays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,12 +182,8 @@ public class ListMultimapTest {
 		assertTrue(map.get("two").isEmpty());
 		assertEquals(1, map.size());
 
-		try {
-			map.removeAll("one").add("2");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+		List<String> removed = map.removeAll("one");
+		assertThrows(UnsupportedOperationException.class, () -> removed.add("2"));
 	}
 
 	@Test
@@ -201,18 +197,9 @@ public class ListMultimapTest {
 
 		Set<String> actual = map.keySet();
 		assertCollectionContains(actual, "one", "two", "three");
-		try {
-			actual.add("four");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
-		try {
-			actual.remove("one");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+
+		assertThrows(UnsupportedOperationException.class, () -> actual.add("four"));
+		assertThrows(UnsupportedOperationException.class, () -> actual.remove("one"));
 	}
 
 	@Test
@@ -342,19 +329,11 @@ public class ListMultimapTest {
 		assertEquals(Arrays.asList("1", "2"), m.get("foo"));
 		assertEquals(Arrays.asList("1"), m.get("bar"));
 
-		try {
-			m.get("foo").add("3");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+		List<String> values = m.get("foo");
+		assertThrows(UnsupportedOperationException.class, () -> values.add("3"));
 
-		try {
-			m.put("foo", new ArrayList<>());
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+		List<String> empty = new ArrayList<>();
+		assertThrows(UnsupportedOperationException.class, () -> m.put("foo", empty));
 	}
 
 	@Test
@@ -366,49 +345,28 @@ public class ListMultimapTest {
 
 		Iterator<Map.Entry<String, List<String>>> it = map.iterator();
 
-		Map.Entry<String, List<String>> entry = it.next();
-		assertEquals("foo", entry.getKey());
-		assertEquals(Arrays.asList("1", "2"), entry.getValue());
-		try {
-			entry.getValue().add("3");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
-		try {
-			entry.setValue(new ArrayList<>());
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
-		try {
-			it.remove();
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+		Map.Entry<String, List<String>> entry1 = it.next();
+		assertEquals("foo", entry1.getKey());
+		assertEquals(Arrays.asList("1", "2"), entry1.getValue());
 
-		entry = it.next();
-		assertEquals("bar", entry.getKey());
-		assertEquals(Arrays.asList("1"), entry.getValue());
-		try {
-			entry.getValue().add("3");
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
-		try {
-			entry.setValue(new ArrayList<>());
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
-		try {
-			it.remove();
-			fail();
-		} catch (UnsupportedOperationException e) {
-			//expected
-		}
+		List<String> values1 = entry1.getValue();
+		assertThrows(UnsupportedOperationException.class, () -> values1.add("3"));
+
+		List<String> empty = new ArrayList<>();
+		assertThrows(UnsupportedOperationException.class, () -> entry1.setValue(empty));
+
+		assertThrows(UnsupportedOperationException.class, it::remove);
+
+		Map.Entry<String, List<String>> entry2 = it.next();
+		assertEquals("bar", entry2.getKey());
+		assertEquals(Arrays.asList("1"), entry2.getValue());
+
+		List<String> values2 = entry2.getValue();
+		assertThrows(UnsupportedOperationException.class, () -> values2.add("3"));
+
+		assertThrows(UnsupportedOperationException.class, () -> entry2.setValue(empty));
+
+		assertThrows(UnsupportedOperationException.class, it::remove);
 
 		assertFalse(it.hasNext());
 	}

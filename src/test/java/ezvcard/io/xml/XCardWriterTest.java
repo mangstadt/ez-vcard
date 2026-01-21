@@ -4,8 +4,8 @@ import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertValidate;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -517,16 +517,11 @@ public class XCardWriterTest {
 		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
 
-		vcard = new VCard();
-		vcard.setFormattedName("Jane Doe");
-		vcard.addProperty(new SkipMeProperty());
+		VCard vcard2 = new VCard();
+		vcard2.setFormattedName("Jane Doe");
+		vcard2.addProperty(new SkipMeProperty());
 
-		try {
-			writer.write(vcard);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//should be thrown
-		}
+		assertThrows(IllegalArgumentException.class, () -> writer.write(vcard2));		
 
 		writer.close();
 

@@ -13,8 +13,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
@@ -139,13 +139,7 @@ public class VCardPropertyTest {
 	public void parameters() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		assertEquals(new VCardParameters(), property.getParameters());
-
-		try {
-			property.setParameters(null);
-			fail("NPE expected.");
-		} catch (NullPointerException e) {
-			//expected
-		}
+		assertThrows(NullPointerException.class, () -> property.setParameters(null));
 
 		VCardParameters parameters = new VCardParameters();
 		property.setParameters(parameters);
@@ -212,24 +206,17 @@ public class VCardPropertyTest {
 	public void copy_constructor_throws_exception() {
 		RuntimeException exception = new RuntimeException();
 		CopyConstructorThrowsExceptionTest property = new CopyConstructorThrowsExceptionTest(exception);
-		try {
-			property.copy();
-			fail("Expected an exception to be thrown.");
-		} catch (UnsupportedOperationException e) {
-			assertTrue(e.getCause() instanceof InvocationTargetException);
-			assertSame(e.getCause().getCause(), exception);
-		}
+
+		UnsupportedOperationException e = assertThrows(UnsupportedOperationException.class, property::copy);
+		assertTrue(e.getCause() instanceof InvocationTargetException);
+		assertSame(e.getCause().getCause(), exception);
 	}
 
 	@Test
 	public void copy_no_copy_constructor() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
-		try {
-			property.copy();
-			fail("Expected an exception to be thrown.");
-		} catch (UnsupportedOperationException e) {
-			assertTrue(e.getCause() instanceof NoSuchMethodException);
-		}
+		UnsupportedOperationException e = assertThrows(UnsupportedOperationException.class, property::copy);
+		assertTrue(e.getCause() instanceof NoSuchMethodException);
 	}
 
 	@Test

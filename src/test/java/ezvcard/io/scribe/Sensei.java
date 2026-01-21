@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -326,12 +327,8 @@ public class Sensei<T extends VCardProperty> {
 
 		public void run(Class<? extends RuntimeException> expected) {
 			for (VCardVersion version : versions) {
-				try {
-					scribe.writeText(property, new WriteContext(version, null, false));
-					fail("Expected " + expected.getSimpleName());
-				} catch (RuntimeException t) {
-					assertEquals("Expected " + expected.getSimpleName() + ", but was " + t.getClass().getSimpleName(), expected, t.getClass());
-				}
+				WriteContext context = new WriteContext(version, null, false);
+				assertThrows(expected, () -> scribe.writeText(property, context));
 			}
 		}
 	}

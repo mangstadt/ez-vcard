@@ -2,7 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -87,11 +87,6 @@ public class GobbleTest {
 		Reader reader = new StringReader(data);
 		Gobble stream = new Gobble(reader);
 		assertEquals(data, stream.asString());
-		try {
-			stream.asByteArray();
-			fail();
-		} catch (IllegalStateException e) {
-			//expected
-		}
+		assertThrows(IllegalStateException.class, stream::asByteArray);
 	}
 }

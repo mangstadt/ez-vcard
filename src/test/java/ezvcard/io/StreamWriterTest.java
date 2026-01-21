@@ -8,8 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,12 +79,7 @@ public class StreamWriterTest {
 	public void unregistered_property() throws Exception {
 		vcard.addProperty(new TestProperty());
 
-		try {
-			writer.write(vcard);
-			fail("Expected IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
+		assertThrows(IllegalArgumentException.class, () -> writer.write(vcard));
 
 		assertNull(writer.properties); //vCard was not written
 	}

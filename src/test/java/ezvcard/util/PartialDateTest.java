@@ -3,17 +3,17 @@ package ezvcard.util;
 import static ezvcard.util.PartialDate.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-
 import org.junit.Test;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -53,21 +53,13 @@ public class PartialDateTest {
 		PartialDate.Builder builder = builder();
 		final int start = 0, end = 13;
 
-		try {
-			builder.month(start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.month(start));
 
 		for (int i = start + 1; i < end; i++) {
 			builder.month(i);
 		}
 
-		try {
-			builder.month(end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.month(end));
 	}
 
 	@Test
@@ -75,21 +67,13 @@ public class PartialDateTest {
 		PartialDate.Builder builder = builder();
 		final int start = 0, end = 32;
 
-		try {
-			builder.date(start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.date(start));
 
 		for (int i = start + 1; i < end; i++) {
 			builder.date(i);
 		}
 
-		try {
-			builder.date(end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.date(end));
 	}
 
 	@Test
@@ -97,21 +81,13 @@ public class PartialDateTest {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 24;
 
-		try {
-			builder.hour(start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.hour(start));
 
 		for (int i = start + 1; i < end; i++) {
 			builder.hour(i);
 		}
 
-		try {
-			builder.hour(end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.hour(end));
 	}
 
 	@Test
@@ -119,21 +95,13 @@ public class PartialDateTest {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 60;
 
-		try {
-			builder.minute(start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.minute(start));
 
 		for (int i = start + 1; i < end; i++) {
 			builder.minute(i);
 		}
 
-		try {
-			builder.minute(end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.minute(end));
 	}
 
 	@Test
@@ -141,23 +109,15 @@ public class PartialDateTest {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 60;
 
-		try {
-			builder.second(start);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.second(start));
 
 		for (int i = start + 1; i < end; i++) {
 			builder.second(i);
 		}
 
-		try {
-			builder.second(end);
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+		assertThrows(IllegalArgumentException.class, () -> builder.second(end));
 	}
-	
+
 	@Test
 	public void builder_offset_null() {
 		PartialDate d1 = builder().year(2020).month(5).date(21).offset(ZoneOffset.ofHoursMinutes(1, 30)).offset(null).build();
@@ -166,18 +126,15 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_build() {
-		try {
-			builder().year(2015).date(1).build();
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+	public void builder_build_date_missing_month() {
+		PartialDate.Builder b = builder().year(2015).date(1);
+		assertThrows(IllegalArgumentException.class, b::build);
+	}
 
-		try {
-			builder().hour(16).second(1).build();
-			fail();
-		} catch (IllegalArgumentException expected) {
-		}
+	@Test
+	public void builder_build_time_missing_minutes() {
+		PartialDate.Builder b = builder().hour(16).second(1);
+		assertThrows(IllegalArgumentException.class, b::build);
 	}
 
 	@Test
@@ -241,37 +198,37 @@ public class PartialDateTest {
 	public void parse_invalid() {
 		PartialDate.parse("invalid");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_month() {
 		PartialDate.parse("19871331");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_date() {
 		PartialDate.parse("19871233");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_hour() {
 		PartialDate.parse("T24:00:00");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_minute() {
 		PartialDate.parse("T00:61:00");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_second() {
 		PartialDate.parse("T00:00:61");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_offset_hour() {
 		PartialDate.parse("T23:00:00-88:00");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_offset_minute() {
 		PartialDate.parse("T23:00:00-00:60");
@@ -311,7 +268,7 @@ public class PartialDateTest {
 		assertParse("--0420T05-0500", builder().month(4).date(20).hour(5).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
 		assertParse("--04-20T05-05:00", builder().month(4).date(20).hour(5).offset(ZoneOffset.ofHoursMinutes(-5, 0)));
 	}
-	
+
 	@Test
 	public void getUtcOffset() {
 		//@formatter:off
@@ -324,7 +281,7 @@ public class PartialDateTest {
 			ZoneOffset.ofHoursMinutes(5, 30)
 		);
 		//@formatter:on
-		
+
 		for (ZoneOffset offset : offsets) {
 			PartialDate date = builder().offset(offset).build();
 			assertEquals(offset, date.getUtcOffset());

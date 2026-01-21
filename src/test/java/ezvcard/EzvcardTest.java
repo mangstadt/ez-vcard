@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.Writer;
 import java.nio.file.Files;
@@ -33,6 +32,7 @@ import org.w3c.dom.NodeList;
 import ezvcard.io.LuckyNumProperty;
 import ezvcard.io.LuckyNumProperty.LuckyNumScribe;
 import ezvcard.io.ParseWarning;
+import ezvcard.io.chain.ChainingTextWriter;
 import ezvcard.io.text.TargetApplication;
 import ezvcard.io.xml.XCardNamespaceContext;
 import ezvcard.parameter.ImageType;
@@ -515,22 +515,14 @@ public class EzvcardTest {
 		fn.getParameters().put("X-TEST", "George Herman \"Babe\" Ruth");
 
 		//default should be "false"
-		try {
-			Ezvcard.write(vcard).go();
-			fail("IllegalArgumentException expected.");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
+		ChainingTextWriter writerDefault = Ezvcard.write(vcard);
+		assertThrows(IllegalArgumentException.class, writerDefault::go);
 
 		String actual = Ezvcard.write(vcard).caretEncoding(true).go();
 		assertTrue(actual.contains("\r\nFN;X-TEST=George Herman ^'Babe^' Ruth:"));
 
-		try {
-			Ezvcard.write(vcard).caretEncoding(false).go();
-			fail("IllegalArgumentException expected.");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
+		ChainingTextWriter writerFalse = Ezvcard.write(vcard).caretEncoding(false);
+		assertThrows(IllegalArgumentException.class, writerFalse::go);
 	}
 
 	@Test

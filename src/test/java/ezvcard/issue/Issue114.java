@@ -1,13 +1,15 @@
 package ezvcard.issue;
 
-import ezvcard.Ezvcard;
-import ezvcard.VCard;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
+
+import org.junit.Test;
+
+import ezvcard.Ezvcard;
+import ezvcard.VCard;
+import ezvcard.io.chain.ChainingTextWriter;
 
 /**
  * @author Michael Angstadt
@@ -21,12 +23,9 @@ public class Issue114 {
 			vcard = Ezvcard.parse(in).first();
 		}
 
-		try {
-			Ezvcard.write(vcard).go();
-			fail();
-		} catch (IllegalArgumentException e) {
-			assertEquals("Property \"ADR\" has a parameter named \"LABEL\" whose value contains one or more invalid characters.  The following characters are not permitted: [ \\n \\r \" ]", e.getMessage());
-		}
+		ChainingTextWriter writer = Ezvcard.write(vcard);
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, writer::go);
+		assertEquals("Property \"ADR\" has a parameter named \"LABEL\" whose value contains one or more invalid characters.  The following characters are not permitted: [ \\n \\r \" ]", e.getMessage());
 
 		Ezvcard.write(vcard).caretEncoding(true).go(); //should not throw any exceptions
 	}

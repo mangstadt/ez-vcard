@@ -1,7 +1,7 @@
 package ezvcard.parameter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,12 +82,8 @@ public class EnumParameterListTest {
 		assertEquals(Arrays.asList(), parameters.get(NAME));
 
 		parameters.put(NAME, "3");
-		try {
-			list.get(0);
-			fail();
-		} catch (IllegalStateException e) {
-			assertEquals(e.getCause().getClass(), NumberFormatException.class);
-		}
+		IllegalStateException e = assertThrows(IllegalStateException.class, () -> list.get(0));
+		assertEquals(e.getCause().getClass(), NumberFormatException.class);
 	}
 
 	private static class VCardParameterImpl extends VCardParameter {

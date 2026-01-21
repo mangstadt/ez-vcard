@@ -1,7 +1,7 @@
 package ezvcard.io.json;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -156,14 +156,11 @@ public class JCardRawReaderTest {
 
 		JCardRawReader reader = createReader(json);
 		JCardDataStreamListener listener = mock(JCardDataStreamListener.class);
+		
+		JCardParseException e = assertThrows(JCardParseException.class, () -> reader.readNext(listener));
+		assertEquals(JsonToken.VALUE_STRING, e.getExpectedToken());
+		assertEquals(JsonToken.START_ARRAY, e.getActualToken());
 
-		try {
-			reader.readNext(listener);
-			fail("JCardParseException expected.");
-		} catch (JCardParseException e) {
-			assertEquals(JsonToken.VALUE_STRING, e.getExpectedToken());
-			assertEquals(JsonToken.START_ARRAY, e.getActualToken());
-		}
 		reader.readNext(listener);
 
 		verify(listener, times(2)).beginVCard();

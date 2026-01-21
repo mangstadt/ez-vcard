@@ -8,8 +8,8 @@ import static ezvcard.util.TestUtils.assertVersion;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -359,13 +359,9 @@ public class XCardReaderTest {
 
 		XCardReader reader = new XCardReader(xml);
 
-		try {
-			reader.readNext();
-			fail();
-		} catch (IOException e) {
-			assertTrue(e.getCause() instanceof TransformerException);
-			assertTrue(e.getCause().getCause() instanceof SAXException);
-		}
+		IOException e = assertThrows(IOException.class, reader::readNext);
+		assertTrue(e.getCause() instanceof TransformerException);
+		assertTrue(e.getCause().getCause() instanceof SAXException);
 
 		assertNoMoreVCards(reader);
 	}

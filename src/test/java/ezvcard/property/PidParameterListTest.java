@@ -1,8 +1,8 @@
 package ezvcard.property;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,12 +60,8 @@ public class PidParameterListTest {
 		List<Pid> pids = property.getPids();
 
 		parameters.put(VCardParameters.PID, "foobar");
-		try {
-			pids.get(0);
-			fail();
-		} catch (IllegalStateException e) {
-			assertTrue(e.getCause() instanceof NumberFormatException);
-		}
+		IllegalStateException e = assertThrows(IllegalStateException.class, () -> pids.get(0));
+		assertTrue(e.getCause() instanceof NumberFormatException);
 	}
 
 	private static class PidParameterListProperty extends VCardProperty {

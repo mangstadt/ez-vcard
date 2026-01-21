@@ -2,8 +2,8 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -174,13 +174,13 @@ public class VCardDateFormatTest {
 	@Test
 	public void parse_datetime_nanoseconds() {
 		Instant instant = LocalDateTime.of(2012, 7, 1, 7, 1, 30).toInstant(ZoneOffset.UTC);
-		
+
 		Instant instantWithNanos = instant.plus(100_000_000, ChronoUnit.NANOS);
 		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1Z"));
-		
+
 		instantWithNanos = instant.plus(123_900_000, ChronoUnit.NANOS);
 		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1239Z"));
-		
+
 		instantWithNanos = instant.plus(123_456_789, ChronoUnit.NANOS);
 		assertEquals(instantWithNanos, VCardDateFormat.parse("20120701T070130.1234567888Z")); //round
 	}
@@ -197,11 +197,7 @@ public class VCardDateFormatTest {
 			assertEquals(date, VCardDateFormat.parse("2012-7-01"));
 			assertEquals(date, VCardDateFormat.parse("2012-7-1"));
 
-			try {
-				VCardDateFormat.parse("201271");
-				fail();
-			} catch (IllegalArgumentException expected) {
-			}
+			assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("201271"));
 		}
 
 		{
@@ -209,11 +205,7 @@ public class VCardDateFormatTest {
 
 			assertEquals(ambiguous, VCardDateFormat.parse("2012-11-3"));
 
-			try {
-				VCardDateFormat.parse("2012113"); //Jan 13 or Nov 3?
-				fail();
-			} catch (IllegalArgumentException expected) {
-			}
+			assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("2012113")); //Jan 13 or Nov 3?
 		}
 	}
 
@@ -221,32 +213,32 @@ public class VCardDateFormatTest {
 	public void parse_invalid() {
 		VCardDateFormat.parse("invalid");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_month() {
 		VCardDateFormat.parse("19879215");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_date() {
 		VCardDateFormat.parse("19871233");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_hour() {
 		VCardDateFormat.parse("19871231T240000");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_minute() {
 		VCardDateFormat.parse("19871231T006100");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_invalid_second() {
 		VCardDateFormat.parse("19871231T000061");
 	}
-	
+
 	@Test
 	public void hasTime() {
 		assertFalse(VCardDateFormat.hasTime(LocalDate.now()));

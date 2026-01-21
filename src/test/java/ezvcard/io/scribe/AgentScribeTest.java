@@ -6,7 +6,7 @@ import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.VCardVersion.values;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -73,12 +73,9 @@ public class AgentScribeTest {
 		sensei.assertWriteText(withUrl).run(url);
 
 		for (VCardVersion version : values()) {
-			try {
-				scribe.writeText(withVCard, new WriteContext(version, null, false));
-				fail();
-			} catch (EmbeddedVCardException e) {
-				assertEquals(vcard, e.getVCard());
-			}
+			WriteContext context = new WriteContext(version, null, false);
+			EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, () -> scribe.writeText(withVCard, context));
+			assertEquals(vcard, e.getVCard());
 		}
 
 		sensei.assertWriteText(empty).skipMe();
@@ -92,61 +89,58 @@ public class AgentScribeTest {
 
 	@Test
 	public void parseText_vcard_2_1() {
-		try {
-			sensei.assertParseText("").versions(V2_1).run();
-			fail();
-		} catch (EmbeddedVCardException e) {
-			Agent property = (Agent) e.getProperty();
-			assertNull(property.getUrl());
-			assertNull(property.getVCard());
+		Sensei<Agent>.ParseTextTest test = sensei.assertParseText("").versions(V2_1);
+		EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, test::run);
 
-			e.injectVCard(vcard);
-			assertNull(property.getUrl());
-			assertEquals(vcard, property.getVCard());
-		}
+		Agent property = (Agent) e.getProperty();
+		assertNull(property.getUrl());
+		assertNull(property.getVCard());
+
+		e.injectVCard(vcard);
+		assertNull(property.getUrl());
+		assertEquals(vcard, property.getVCard());
 	}
 
 	@Test
 	public void parseText_vcard_3_0() {
-		try {
-			sensei.assertParseText("BEGIN:VCARD\\nEND:VCARD").versions(V3_0).run();
-			fail();
-		} catch (EmbeddedVCardException e) {
-			Agent property = (Agent) e.getProperty();
-			assertNull(property.getUrl());
-			assertNull(property.getVCard());
+		Sensei<Agent>.ParseTextTest test = sensei.assertParseText("BEGIN:VCARD\\nEND:VCARD").versions(V3_0);
+		EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, test::run);
 
-			e.injectVCard(vcard);
-			assertNull(property.getUrl());
-			assertEquals(vcard, property.getVCard());
-		}
+		Agent property = (Agent) e.getProperty();
+		assertNull(property.getUrl());
+		assertNull(property.getVCard());
+
+		e.injectVCard(vcard);
+		assertNull(property.getUrl());
+		assertEquals(vcard, property.getVCard());
 	}
 
 	@Test
 	public void parseHtml() {
+		//@formatter:off
+		Sensei<Agent>.ParseHtmlTest test = sensei.assertParseHtml(
+		"<div class=\"agent vcard\">" +
+			"<span class=\"fn\">Jane Doe</span>" +
+			"<div class=\"agent vcard\">" +
+				"<span class=\"fn\">Joseph Doe</span>" +
+			"</div>" +
+		"</div>");
+		//@formatter:on
+
+		EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, test::run);
+
+		Agent property = (Agent) e.getProperty();
+		assertNull(property.getUrl());
+		assertNull(property.getVCard());
+
+		e.injectVCard(vcard);
+		assertNull(property.getUrl());
+		assertEquals(vcard, property.getVCard());
+	}
+
+	@Test
+	public void parseHtml_url() {
 		sensei.assertParseHtml("<a href=\"" + url + "\"></a>").run(withUrl);
 		sensei.assertParseHtml("<div>" + url + "</div>").run(withUrl);
-
-		try {
-			//@formatter:off
-			sensei.assertParseHtml(
-			"<div class=\"agent vcard\">" +
-				"<span class=\"fn\">Jane Doe</span>" +
-				"<div class=\"agent vcard\">" +
-					"<span class=\"fn\">Joseph Doe</span>" +
-				"</div>" +
-			"</div>").run();
-			//@formatter:on
-
-			fail();
-		} catch (EmbeddedVCardException e) {
-			Agent property = (Agent) e.getProperty();
-			assertNull(property.getUrl());
-			assertNull(property.getVCard());
-
-			e.injectVCard(vcard);
-			assertNull(property.getUrl());
-			assertEquals(vcard, property.getVCard());
-		}
 	}
 }
