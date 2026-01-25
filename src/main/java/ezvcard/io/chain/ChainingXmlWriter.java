@@ -199,9 +199,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 			writer.setScribeIndex(index);
 		}
 
-		for (VCard vcard : vcards) {
-			writer.write(vcard);
-		}
+		vcards.forEach(writer::write);
 
 		return document;
 	}

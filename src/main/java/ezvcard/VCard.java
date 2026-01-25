@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.TransformerException;
 
@@ -141,9 +142,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public VCard(VCard original) {
 		version = original.version;
-		for (VCardProperty property : original.getProperties()) {
-			addProperty(property.copy());
-		}
+
+		//@formatter:off
+		original.getProperties().stream()
+			.map(VCardProperty::copy)
+		.forEach(this::addProperty);
+		//@formatter:on
 	}
 
 	/**
@@ -4345,12 +4349,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the property or null if none were found
 	 */
 	public RawProperty getExtendedProperty(String name) {
-		for (RawProperty raw : getExtendedProperties()) {
-			if (raw.getPropertyName().equalsIgnoreCase(name)) {
-				return raw;
-			}
-		}
-		return null;
+		//@formatter:off
+		return getExtendedProperties().stream()
+			.filter(raw -> raw.getPropertyName().equalsIgnoreCase(name))
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	/**
@@ -4359,15 +4362,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties (this list is immutable)
 	 */
 	public List<RawProperty> getExtendedProperties(String name) {
-		List<RawProperty> properties = new ArrayList<>();
-
-		for (RawProperty raw : getExtendedProperties()) {
-			if (raw.getPropertyName().equalsIgnoreCase(name)) {
-				properties.add(raw);
-			}
-		}
-
-		return Collections.unmodifiableList(properties);
+		//@formatter:off
+		return Collections.unmodifiableList(getExtendedProperties().stream()
+			.filter(raw -> raw.getPropertyName().equalsIgnoreCase(name))
+		.collect(Collectors.toList()));
+		//@formatter:on
 	}
 
 	/**
@@ -4436,12 +4435,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public List<RawProperty> removeExtendedProperty(String name) {
 		List<RawProperty> all = getExtendedProperties();
-		List<RawProperty> toRemove = new ArrayList<>();
-		for (RawProperty property : all) {
-			if (property.getPropertyName().equalsIgnoreCase(name)) {
-				toRemove.add(property);
-			}
-		}
+
+		//@formatter:off
+		List<RawProperty> toRemove = all.stream()
+			.filter(property -> property.getPropertyName().equalsIgnoreCase(name))
+		.collect(Collectors.toList());
+		//@formatter:on
 
 		all.removeAll(toRemove);
 		return Collections.unmodifiableList(toRemove);
@@ -4520,11 +4519,11 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the new list (this list is immutable)
 	 */
 	private static <T> List<T> castList(List<?> list, Class<T> castTo) {
-		List<T> casted = new ArrayList<>(list.size());
-		for (Object object : list) {
-			casted.add(castTo.cast(object));
-		}
-		return Collections.unmodifiableList(casted);
+		//@formatter:off
+		return Collections.unmodifiableList(list.stream()
+			.map(castTo::cast)
+		.collect(Collectors.toList()));
+		//@formatter:on
 	}
 
 	/**
@@ -4564,9 +4563,7 @@ public class VCard implements Iterable<VCardProperty> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("version=").append(version);
-		for (VCardProperty property : properties.values()) {
-			sb.append(StringUtils.NEWLINE).append(property);
-		}
+		properties.values().forEach(property -> sb.append(StringUtils.NEWLINE).append(property));
 		return sb.toString();
 	}
 
@@ -4577,10 +4574,8 @@ public class VCard implements Iterable<VCardProperty> {
 
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
 
-		int propertiesHash = 1;
-		for (VCardProperty property : properties.values()) {
-			propertiesHash += property.hashCode();
-		}
+		int propertiesHash = 1 + properties.values().stream().mapToInt(Object::hashCode).sum();
+
 		result = prime * result + propertiesHash;
 
 		return result;
@@ -4623,13 +4618,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return a unique ALTID
 	 */
 	static <T extends HasAltId> String generateAltId(Collection<T> properties) {
-		Set<String> altIds = new HashSet<>();
-		for (T property : properties) {
-			String altId = property.getAltId();
-			if (altId != null) {
-				altIds.add(altId);
-			}
-		}
+		//@formatter:off
+		Set<String> altIds = properties.stream()
+			.map(HasAltId::getAltId)
+			.filter(Objects::nonNull)
+		.collect(Collectors.toSet());
+		//@formatter:on
 
 		int altId = 1;
 		while (altIds.contains(Integer.toString(altId))) {

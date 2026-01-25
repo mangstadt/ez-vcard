@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -102,10 +103,7 @@ public class TestUtils {
 	 */
 	public static void assertParseWarnings(List<ParseWarning> warnings, Integer... expectedCodes) {
 		List<Integer> expectedWarnings = new ArrayList<>(Arrays.asList(expectedCodes));
-		List<Integer> actualWarnings = new ArrayList<>(warnings.size());
-		for (ParseWarning warning : warnings) {
-			actualWarnings.add(warning.getCode());
-		}
+		List<Integer> actualWarnings = warnings.stream().map(ParseWarning::getCode).collect(Collectors.toList());
 
 		for (Integer actualWarning : actualWarnings) {
 			if (!expectedWarnings.remove(actualWarning)) {
@@ -145,14 +143,13 @@ public class TestUtils {
 		 */
 		List<Integer> expected = new ArrayList<>(Arrays.asList(expectedCodes));
 
-		for (ValidationWarning warning : warnings) {
-			Integer code = warning.getCode();
-			boolean removed = expected.remove((Object) code);
-			if (!removed) {
-				return false;
-			}
-		}
-		return true;
+		//@formatter:off
+		boolean unexpectedWarningFound = warnings.stream()
+			.map(ValidationWarning::getCode)
+		.anyMatch(code -> !expected.remove((Object) code));
+		//@formatter:on
+
+		return !unexpectedWarningFound;
 	}
 
 	public static void assertValidate(List<ValidationWarning> warnings, Integer... expectedCodes) {

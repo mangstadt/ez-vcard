@@ -219,12 +219,12 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 		String protocol = uri.getScheme();
 		String handle = uri.getSchemeSpecificPart();
 
-		for (HtmlLinkFormat format : htmlLinkFormats) {
-			if (protocol.equals(format.getProtocol())) {
-				return format.buildLink(handle);
-			}
-		}
-		return uri.toASCIIString();
+		//@formatter:off
+		return htmlLinkFormats.stream()
+			.filter(format -> protocol.equals(format.getProtocol()))
+			.map(format -> format.buildLink(handle))
+		.findFirst().orElseGet(uri::toASCIIString);
+		//@formatter:on
 	}
 
 	private static class HtmlLinkFormat {

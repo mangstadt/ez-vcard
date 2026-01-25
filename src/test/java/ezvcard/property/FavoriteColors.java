@@ -119,9 +119,7 @@ public class FavoriteColors extends VCardProperty {
 		@Override
 		protected FavoriteColors _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			FavoriteColors prop = new FavoriteColors();
-			for (String color : VObjectPropertyValues.parseList(value)) {
-				prop.addColor(color);
-			}
+			VObjectPropertyValues.parseList(value).forEach(prop::addColor);
 			return prop;
 		}
 
@@ -144,9 +142,7 @@ public class FavoriteColors extends VCardProperty {
 			}
 
 			FavoriteColors property = new FavoriteColors();
-			for (String color : colors) {
-				property.addColor(color);
-			}
+			colors.forEach(property::addColor);
 			return property;
 		}
 
@@ -176,9 +172,7 @@ public class FavoriteColors extends VCardProperty {
 		@Override
 		protected FavoriteColors _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 			FavoriteColors property = new FavoriteColors();
-			for (String color : value.asMulti()) {
-				property.addColor(color);
-			}
+			value.asMulti().forEach(property::addColor);
 			return property;
 		}
 	}

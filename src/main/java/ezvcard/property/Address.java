@@ -457,16 +457,14 @@ public class Address extends VCardProperty implements HasAltId {
 
 	@Override
 	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
-		for (AddressType type : getTypes()) {
-			if (type == AddressType.PREF) {
-				//ignore because it is converted to a PREF parameter for 4.0 vCards
-				continue;
-			}
-
-			if (!type.isSupportedBy(version)) {
-				warnings.add(new ValidationWarning(9, type.getValue()));
-			}
-		}
+		//@formatter:off
+		getTypes().stream()
+			.filter(type -> type != AddressType.PREF) //ignore TYPE=PREF because it is converted to a PREF parameter for 4.0 vCards
+			.filter(type -> !type.isSupportedBy(version))
+			.map(AddressType::getValue)
+			.map(value -> new ValidationWarning(9, value))
+		.forEach(warnings::add);
+		//@formatter:on
 
 		/*
 		 * 2.1 does not allow multi-valued components.

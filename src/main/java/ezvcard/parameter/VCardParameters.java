@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
@@ -1574,10 +1575,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
 
-			int valueHash = 1;
-			for (String v : value) {
-				valueHash += v.toLowerCase().hashCode();
-			}
+			//@formatter:off
+			int valueHash = 1 + value.stream()
+				.map(String::toLowerCase)
+				.mapToInt(String::hashCode)
+			.sum();
+			//@formatter:on
 
 			int entryHash = 1;
 			entryHash += prime * entryHash + ((key == null) ? 0 : key.toLowerCase().hashCode());
@@ -1623,24 +1626,23 @@ public class VCardParameters extends ListMultimap<String, String> {
 				return false;
 			}
 
-			List<String> valueLower = new ArrayList<>(value.size());
-			for (String v : value) {
-				valueLower.add(v.toLowerCase());
-			}
-			Collections.sort(valueLower);
-
-			List<String> otherValueLower = new ArrayList<>(otherValue.size());
-			for (String v : otherValue) {
-				otherValueLower.add(v.toLowerCase());
-			}
-			Collections.sort(otherValueLower);
-
+			List<String> valueLower = toLowerCaseAndSort(value);
+			List<String> otherValueLower = toLowerCaseAndSort(otherValue);
 			if (!valueLower.equals(otherValueLower)) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	private List<String> toLowerCaseAndSort(List<String> values) {
+		//@formatter:off
+		return values.stream()
+			.map(String::toLowerCase)
+			.sorted()
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**

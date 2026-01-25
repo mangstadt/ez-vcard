@@ -16,11 +16,11 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
@@ -626,13 +626,11 @@ public class XCardDocument {
 		}
 
 		private List<Element> getChildElements(Element parent, QName qname) {
-			List<Element> elements = new ArrayList<>();
-			for (Element child : XmlUtils.toElementList(parent.getChildNodes())) {
-				if (XmlUtils.hasQName(child, qname)) {
-					elements.add(child);
-				}
-			}
-			return elements;
+			//@formatter:off
+			return XmlUtils.toElementList(parent.getChildNodes()).stream()
+				.filter(child -> XmlUtils.hasQName(child, qname))
+			.collect(Collectors.toList());
+			//@formatter:on
 		}
 	}
 
@@ -737,10 +735,10 @@ public class XCardDocument {
 			for (Map.Entry<String, List<String>> parameter : parameters) {
 				String parameterName = parameter.getKey().toLowerCase();
 				Element parameterElement = createElement(parameterName);
+				VCardDataType dataType = parameterDataTypes.get(parameterName);
+				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
 
 				for (String parameterValue : parameter.getValue()) {
-					VCardDataType dataType = parameterDataTypes.get(parameterName);
-					String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
 					Element dataTypeElement = createElement(dataTypeElementName);
 					dataTypeElement.setTextContent(parameterValue);
 					parameterElement.appendChild(dataTypeElement);

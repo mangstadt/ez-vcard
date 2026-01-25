@@ -47,12 +47,7 @@ public class HtmlUtils {
 	 * @return true if it is a child, false if not
 	 */
 	public static boolean isChildOf(Element child, Elements possibleParents) {
-		for (Element parent : child.parents()) {
-			if (possibleParents.contains(parent)) {
-				return true;
-			}
-		}
-		return false;
+		return child.parents().stream().anyMatch(parent -> possibleParents.contains(parent));
 	}
 
 	/**

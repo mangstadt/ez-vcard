@@ -1,10 +1,10 @@
 package ezvcard.io.xml;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,12 +94,14 @@ public class XCardElement {
 	 */
 	public String first(String... names) {
 		List<String> localNamesList = Arrays.asList(names);
-		for (Element child : children()) {
-			if (localNamesList.contains(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
-				return child.getTextContent();
-			}
-		}
-		return null;
+
+		//@formatter:off
+		return children().stream()
+			.filter(child -> localNamesList.contains(child.getLocalName()))
+			.filter(child -> namespace.equals(child.getNamespaceURI()))
+			.map(Element::getTextContent)
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	/**
@@ -118,16 +120,14 @@ public class XCardElement {
 	 * @return the values of the child elements
 	 */
 	public List<String> all(String localName) {
-		List<String> childrenText = new ArrayList<>();
-		for (Element child : children()) {
-			if (localName.equals(child.getLocalName()) && namespace.equals(child.getNamespaceURI())) {
-				String text = child.getTextContent();
-				if (!text.isEmpty()) {
-					childrenText.add(child.getTextContent());
-				}
-			}
-		}
-		return childrenText;
+		//@formatter:off
+		return children().stream()
+			.filter(child -> localName.equals(child.getLocalName()))
+			.filter(child -> namespace.equals(child.getNamespaceURI()))
+			.map(Element::getTextContent)
+			.filter(text -> !text.isEmpty())
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**
@@ -166,11 +166,11 @@ public class XCardElement {
 			return Collections.singletonList(element);
 		}
 
-		List<Element> elements = new ArrayList<>(values.size());
-		for (String value : values) {
-			elements.add(append(name, value));
-		}
-		return elements;
+		//@formatter:off
+		return values.stream()
+			.map(value -> append(name, value))
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**
@@ -214,16 +214,17 @@ public class XCardElement {
 	 */
 	public XCardValue firstValue() {
 		String elementNamespace = version.getXmlNamespace();
-		for (Element child : children()) {
-			String childNamespace = child.getNamespaceURI();
-			if (elementNamespace.equals(childNamespace)) {
+
+		//@formatter:off
+		return children().stream()
+			.filter(child -> elementNamespace.equals(child.getNamespaceURI()))
+			.map(child -> {
 				VCardDataType dataType = toDataType(child.getLocalName());
 				String value = child.getTextContent();
 				return new XCardValue(dataType, value);
-			}
-		}
-
-		return new XCardValue(null, element.getTextContent());
+			})
+		.findFirst().orElseGet(() -> new XCardValue(null, element.getTextContent()));
+		//@formatter:on
 	}
 
 	/**

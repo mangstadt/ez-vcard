@@ -3,6 +3,7 @@ package ezvcard.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -50,19 +51,7 @@ public final class StringUtils {
 	 * @return the delimited string
 	 */
 	public static String join(Collection<?> collection, String delimiter) {
-		StringBuilder sb = new StringBuilder();
-
-		boolean first = true;
-		for (Object value : collection) {
-			if (!first) {
-				sb.append(delimiter);
-			}
-
-			sb.append(value);
-			first = false;
-		}
-
-		return sb.toString();
+		return collection.stream().map(Object::toString).collect(Collectors.joining(delimiter));
 	}
 
 	/**

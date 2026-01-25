@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.jsoup.Jsoup;
@@ -414,9 +415,7 @@ public class HCardPageTest {
 	 */
 	private Document generate(VCard... vcards) throws TemplateException {
 		HCardPage template = new HCardPage();
-		for (VCard vcard : vcards) {
-			template.add(vcard);
-		}
+		Arrays.stream(vcards).forEach(template::add);
 		return Jsoup.parse(template.write());
 	}
 }

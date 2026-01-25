@@ -1,5 +1,7 @@
 package ezvcard;
 
+import java.util.Arrays;
+
 import com.github.mangstadt.vinnie.SyntaxStyle;
 
 /*
@@ -129,12 +131,11 @@ public enum VCardVersion {
 	 * @return the object or null if not found
 	 */
 	public static VCardVersion valueOfByStr(String value) {
-		for (VCardVersion version : VCardVersion.values()) {
-			if (version.getVersion().equals(value)) {
-				return version;
-			}
-		}
-		return null;
+		//@formatter:off
+		return Arrays.stream(VCardVersion.values())
+			.filter(version -> version.getVersion().equals(value))
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	/**
@@ -143,13 +144,12 @@ public enum VCardVersion {
 	 * @return the object or null if not found
 	 */
 	public static VCardVersion valueOfByXmlNamespace(String ns) {
-		for (VCardVersion version : VCardVersion.values()) {
-			String versionNs = version.getXmlNamespace();
-			if (versionNs != null && versionNs.equals(ns)) {
-				return version;
-			}
-		}
-		return null;
+		//@formatter:off
+		return Arrays.stream(VCardVersion.values())
+			.filter(version -> version.getXmlNamespace() != null)
+			.filter(version -> version.getXmlNamespace().equals(ns))
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.github.mangstadt.vinnie.VObjectProperty;
 import com.github.mangstadt.vinnie.io.Context;
@@ -529,17 +530,17 @@ public class VCardReader extends StreamReader {
 				return;
 			}
 
-			String valueWithComma = null;
-			for (String value : types) {
-				if (value.indexOf(',') >= 0) {
-					valueWithComma = value;
-					break;
-				}
-			}
-			if (valueWithComma == null) {
+			//@formatter:off
+			Optional<String> valueWithCommaOpt = types.stream()
+				.filter(value -> value.indexOf(',') >= 0)
+			.findFirst();
+			//@formatter:on
+
+			if (!valueWithCommaOpt.isPresent()) {
 				return;
 			}
 
+			String valueWithComma = valueWithCommaOpt.get();
 			types.clear();
 			int prev = -1;
 			int cur;

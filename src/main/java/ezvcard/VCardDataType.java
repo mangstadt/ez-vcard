@@ -6,6 +6,7 @@ import static ezvcard.VCardVersion.V4_0;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 
 import ezvcard.util.CaseClasses;
@@ -222,12 +223,7 @@ public class VCardDataType {
 	 * @return true if it is supported, false if not
 	 */
 	public boolean isSupportedBy(VCardVersion version) {
-		for (VCardVersion supportedVersion : getSupportedVersions()) {
-			if (supportedVersion == version) {
-				return true;
-			}
-		}
-		return false;
+		return Arrays.stream(getSupportedVersions()).anyMatch(supportedVersion -> supportedVersion == version);
 	}
 
 	@Override

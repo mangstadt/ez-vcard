@@ -3,8 +3,11 @@ package ezvcard.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -138,12 +141,11 @@ public abstract class CaseClasses<T, V> {
 	public T find(V value) {
 		checkInit();
 
-		for (T obj : preDefined) {
-			if (matches(obj, value)) {
-				return obj;
-			}
-		}
-		return null;
+		//@formatter:off
+		return preDefined.stream()
+			.filter(obj -> matches(obj, value))
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	/**
@@ -159,15 +161,15 @@ public abstract class CaseClasses<T, V> {
 		}
 
 		synchronized (runtimeDefined) {
-			for (T obj : runtimeDefined) {
-				if (matches(obj, value)) {
-					return obj;
-				}
-			}
-
-			T created = create(value);
-			runtimeDefined.add(created);
-			return created;
+			//@formatter:off
+			return runtimeDefined.stream()
+				.filter(obj -> matches(obj, value))
+			.findFirst().orElseGet(() -> {
+				T created = create(value);
+				runtimeDefined.add(created);
+				return created;
+			});
+			//@formatter:on
 		}
 	}
 
@@ -201,27 +203,24 @@ public abstract class CaseClasses<T, V> {
 	 * Initializes this class's fields.
 	 */
 	private void init() {
-		Collection<T> preDefined = new ArrayList<>();
-		for (Field field : clazz.getFields()) {
-			if (!isPreDefinedField(field)) {
-				continue;
-			}
-
-			try {
-				Object obj = field.get(null);
-				if (obj != null) {
-					T c = clazz.cast(obj);
-					preDefined.add(c);
+		//@formatter:off
+		preDefined = Collections.unmodifiableCollection(Arrays.stream(clazz.getFields())
+			.filter(this::isPreDefinedField)
+			.map(field -> {
+				try {
+					return field.get(null);
+				} catch (Exception e) {
+					//reflection error
+					//should never be thrown because we check for "public static" and the correct type
+					throw new IllegalStateException(e);
 				}
-			} catch (Exception e) {
-				//reflection error
-				//should never be thrown because we check for "public static" and the correct type
-				throw new RuntimeException(e);
-			}
-		}
+			})
+			.filter(Objects::nonNull)
+			.map(clazz::cast)
+		.collect(Collectors.toList()));
+		//@formatter:on
 
 		runtimeDefined = new ArrayList<>(0);
-		this.preDefined = Collections.unmodifiableCollection(preDefined);
 	}
 
 	/**

@@ -94,11 +94,13 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 
 		//remove the <parameters> element
 		Element root = xml.getValue().getDocumentElement();
-		for (Element child : XmlUtils.toElementList(root.getChildNodes())) {
-			if ("parameters".equals(child.getLocalName()) && VCardVersion.V4_0.getXmlNamespace().equals(child.getNamespaceURI())) {
-				root.removeChild(child);
-			}
-		}
+
+		//@formatter:off
+		XmlUtils.toElementList(root.getChildNodes()).stream()
+			.filter(child -> "parameters".equals(child.getLocalName()))
+			.filter(child -> VCardVersion.V4_0.getXmlNamespace().equals(child.getNamespaceURI()))
+		.forEach(root::removeChild);
+		//@formatter:on
 
 		return xml;
 	}

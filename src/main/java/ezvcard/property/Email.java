@@ -129,15 +129,14 @@ public class Email extends TextProperty implements HasAltId {
 	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		super._validate(warnings, version, vcard);
 
-		for (EmailType type : getTypes()) {
-			if (type == EmailType.PREF) {
-				//ignore because it is converted to a PREF parameter for 4.0 vCards
-				continue;
-			}
-			if (!type.isSupportedBy(version)) {
-				warnings.add(new ValidationWarning(9, type.getValue()));
-			}
-		}
+		//@formatter:off
+		getTypes().stream()
+			.filter(type -> type != EmailType.PREF) //ignore TYPE=PREF because it is converted to a PREF parameter for 4.0 vCards
+			.filter(type -> !type.isSupportedBy(version))
+			.map(EmailType::getValue)
+			.map(value -> new ValidationWarning(9, value))
+		.forEach(warnings::add);
+		//@formatter:on
 	}
 
 	@Override

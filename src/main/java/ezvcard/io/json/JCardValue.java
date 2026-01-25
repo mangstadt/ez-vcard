@@ -86,11 +86,11 @@ public class JCardValue {
 	 * @return the jCard value
 	 */
 	public static JCardValue multi(List<?> values) {
-		List<JsonValue> multiValues = new ArrayList<>(values.size());
-		for (Object value : values) {
-			multiValues.add(new JsonValue(value));
-		}
-		return new JCardValue(multiValues);
+		//@formatter:off
+		return new JCardValue(values.stream()
+			.map(JsonValue::new)
+		.collect(Collectors.toList()));
+		//@formatter:on
 	}
 
 	/**
@@ -106,12 +106,11 @@ public class JCardValue {
 	 * @return the jCard value
 	 */
 	public static JCardValue structured(Object... values) {
-		List<List<?>> valuesList = new ArrayList<>(values.length);
-		for (Object value : values) {
-			List<?> list = (value instanceof List) ? (List<?>) value : Collections.singletonList(value);
-			valuesList.add(list);
-		}
-		return structured(valuesList);
+		//@formatter:off
+		return structured(Arrays.stream(values)
+			.map(value -> (value instanceof List) ? (List<?>) value : Collections.singletonList(value))
+		.collect(Collectors.toList()));
+		//@formatter:on
 	}
 
 	/**
@@ -137,13 +136,13 @@ public class JCardValue {
 				continue;
 			}
 
-			List<JsonValue> subArray = new ArrayList<>(list.size());
-			for (Object value : list) {
-				if (value == null) {
-					value = "";
-				}
-				subArray.add(new JsonValue(value));
-			}
+			//@formatter:off
+			List<JsonValue> subArray = list.stream()
+				.map(value -> (value == null) ? "" : value)
+				.map(JsonValue::new)
+			.collect(Collectors.toList());
+			//@formatter:on
+
 			array.add(new JsonValue(subArray));
 		}
 

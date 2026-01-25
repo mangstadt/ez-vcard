@@ -185,12 +185,7 @@ public final class PartialDate {
 		}
 
 		private boolean parseFormats(String value, Builder builder, Format[] formats) {
-			for (Format regex : formats) {
-				if (regex.parse(builder, value)) {
-					return true;
-				}
-			}
-			return false;
+			return Arrays.stream(formats).anyMatch(regex -> regex.parse(builder, value));
 		}
 	}
 

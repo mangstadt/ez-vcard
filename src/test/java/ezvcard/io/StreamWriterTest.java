@@ -12,10 +12,10 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -344,12 +344,7 @@ public class StreamWriterTest {
 		}
 
 		public <T extends VCardProperty> List<T> get(Class<T> clazz) {
-			List<VCardProperty> props = properties.get(clazz);
-			List<T> casted = new ArrayList<>(props.size());
-			for (VCardProperty property : props) {
-				casted.add(clazz.cast(property));
-			}
-			return casted;
+			return properties.get(clazz).stream().map(clazz::cast).collect(Collectors.toList());
 		}
 
 		public <T extends VCardProperty> T first(Class<T> clazz) {

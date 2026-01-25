@@ -196,16 +196,14 @@ public class Telephone extends VCardProperty implements HasAltId {
 			warnings.add(new ValidationWarning(19));
 		}
 
-		for (TelephoneType type : getTypes()) {
-			if (type == TelephoneType.PREF) {
-				//ignore because it is converted to a PREF parameter for 4.0 vCards
-				continue;
-			}
-
-			if (!type.isSupportedBy(version)) {
-				warnings.add(new ValidationWarning(9, type.getValue()));
-			}
-		}
+		//@formatter:off
+		getTypes().stream()
+			.filter(type -> type != TelephoneType.PREF) //ignore TYPE=PREF because it is converted to a PREF parameter for 4.0 vCards
+			.filter(type -> !type.isSupportedBy(version))
+			.map(TelephoneType::getValue)
+			.map(value -> new ValidationWarning(9, value))
+		.forEach(warnings::add);
+		//@formatter:on
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -253,9 +254,8 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 */
 	public void clear() {
 		//clear each collection to make previously returned lists empty
-		for (List<V> value : map.values()) {
-			value.clear();
-		}
+		map.values().forEach(List::clear);
+
 		map.clear();
 	}
 
@@ -272,11 +272,11 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @return the values (this list is immutable)
 	 */
 	public List<V> values() {
-		List<V> list = new ArrayList<>();
-		for (List<V> value : map.values()) {
-			list.addAll(value);
-		}
-		return Collections.unmodifiableList(list);
+		//@formatter:off
+		return Collections.unmodifiableList(map.values().stream()
+			.flatMap(List::stream)
+		.collect(Collectors.toList()));
+		//@formatter:on
 	}
 
 	/**
@@ -292,11 +292,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 * @return the number of values
 	 */
 	public int size() {
-		int size = 0;
-		for (List<V> value : map.values()) {
-			size += value.size();
-		}
-		return size;
+		return map.values().stream().mapToInt(List::size).sum();
 	}
 
 	/**
@@ -391,8 +387,8 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 
 	/**
 	 * Note: This class is a modified version of the
-	 * "AbstractMapBasedMultimap.WrappedList" class from the <a
-	 * href="https://github.com/google/guava">Guava</a> library.
+	 * "AbstractMapBasedMultimap.WrappedList" class from the
+	 * <a href="https://github.com/google/guava">Guava</a> library.
 	 * 
 	 * <p>
 	 * Collection decorator that stays in sync with the multimap values for a
