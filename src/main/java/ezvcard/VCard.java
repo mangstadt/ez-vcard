@@ -81,6 +81,7 @@ import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
 import ezvcard.util.ListMultimap;
 import ezvcard.util.StringUtils;
+import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -322,7 +323,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public String writeHtml() {
-		return Ezvcard.writeHtml(this).go();
+		try {
+			return Ezvcard.writeHtml(this).go();
+		} catch (TemplateException e) {
+			//should never be thrown because we are using the default HTML template
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -339,7 +345,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(Path file) throws IOException {
-		Ezvcard.writeHtml(this).go(file);
+		try {
+			Ezvcard.writeHtml(this).go(file);
+		} catch (TemplateException e) {
+			//should never be thrown because we are using the default HTML template
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -356,7 +367,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(OutputStream out) throws IOException {
-		Ezvcard.writeHtml(this).go(out);
+		try {
+			Ezvcard.writeHtml(this).go(out);
+		} catch (TemplateException e) {
+			//should never be thrown because we are using the default HTML template
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -373,7 +389,12 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @see <a href="http://microformats.org/wiki/hcard">hCard 1.0</a>
 	 */
 	public void writeHtml(Writer writer) throws IOException {
-		Ezvcard.writeHtml(this).go(writer);
+		try {
+			Ezvcard.writeHtml(this).go(writer);
+		} catch (TemplateException e) {
+			//should never be thrown because we are using the default HTML template
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

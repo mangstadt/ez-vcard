@@ -10,6 +10,7 @@ import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.io.html.HCardPage;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -65,8 +66,9 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	/**
 	 * Writes the hCards to a string.
 	 * @return the HTML page
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public String go() {
+	public String go() throws TemplateException {
 		return buildPage().write();
 	}
 
@@ -74,8 +76,9 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	 * Writes the hCards to an output stream.
 	 * @param out the output stream to write to
 	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void go(OutputStream out) throws IOException {
+	public void go(OutputStream out) throws IOException, TemplateException {
 		buildPage().write(out);
 	}
 
@@ -83,8 +86,9 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	 * Writes the hCards to a file.
 	 * @param file the file to write to
 	 * @throws IOException if there's a problem writing to the file
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void go(Path file) throws IOException {
+	public void go(Path file) throws IOException, TemplateException {
 		buildPage().write(file);
 	}
 
@@ -92,16 +96,15 @@ public class ChainingHtmlWriter extends ChainingWriter<ChainingHtmlWriter> {
 	 * Writes the hCards to a writer.
 	 * @param writer the writer to write to
 	 * @throws IOException if there's a problem writing to the writer
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void go(Writer writer) throws IOException {
+	public void go(Writer writer) throws IOException, TemplateException {
 		buildPage().write(writer);
 	}
 
 	private HCardPage buildPage() {
 		HCardPage page = (template == null) ? new HCardPage() : new HCardPage(template);
-		for (VCard vcard : vcards) {
-			page.add(vcard);
-		}
+		vcards.forEach(page::add);
 		return page;
 	}
 }
