@@ -45,6 +45,8 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  * @author Michael Angstadt
  */
 public final class DataUri {
+	private static final String SCHEME = "data:";
+
 	private final byte[] data;
 	private final String text;
 	private final String contentType;
@@ -101,8 +103,6 @@ public final class DataUri {
 	}
 
 	private static class Parser {
-		private static final String SCHEME = "data:";
-
 		private final String uri;
 		private final CharIterator it;
 
@@ -248,7 +248,7 @@ public final class DataUri {
 	 */
 	public String toString(String charset) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("data:");
+		sb.append(SCHEME);
 		sb.append(contentType);
 
 		if (data != null) {
