@@ -5,6 +5,7 @@ import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertValidate;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,5 +104,16 @@ public class StructuredNameTest {
 		.notSame("getPrefixes")
 		.notSame("getSuffixes");
 		//@formatter:on
+	}
+
+	@Test
+	public void sortAs_null() {
+		StructuredName n = new StructuredName();
+
+		n.setSortAs("Doe");
+		assertEquals(Arrays.asList("Doe"), n.getSortAs());
+
+		n.setSortAs(null);
+		assertEquals(Arrays.asList(), n.getSortAs());
 	}
 }
