@@ -1,9 +1,7 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -32,22 +30,17 @@ import ezvcard.parameter.SoundType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Address;
 import ezvcard.property.Birthday;
-import ezvcard.property.Email;
 import ezvcard.property.Impp;
 import ezvcard.property.Logo;
-import ezvcard.property.Note;
 import ezvcard.property.Organization;
 import ezvcard.property.Photo;
 import ezvcard.property.Revision;
-import ezvcard.property.Role;
 import ezvcard.property.SortString;
 import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
 import ezvcard.property.Timezone;
-import ezvcard.property.Title;
 import ezvcard.property.Uid;
-import ezvcard.property.Url;
 import ezvcard.util.TelUri;
 import freemarker.template.TemplateException;
 
@@ -267,13 +260,13 @@ public class HCardPageTest {
 	@Test
 	public void create_then_parse() throws Exception {
 		//create template
-		VCard expected = createFullVCard();
+		VCard input = createFullVCard();
 		HCardPage template = new HCardPage();
-		template.add(expected);
+		template.add(input);
 		String html = template.write();
 
-		//write to file for manual inspection
-		try (Writer writer = Files.newBufferedWriter(Paths.get("target", "vcard.html"))) {
+		//write to HTML file for manual inspection
+		try (Writer writer = Files.newBufferedWriter(Paths.get("target", "HCardPageTest.create_then_parse.html"))) {
 			writer.write(html);
 		}
 
@@ -283,135 +276,40 @@ public class HCardPageTest {
 			actual = reader.readNext();
 		}
 
-		assertEquals("Claus", actual.getSortString().getValue());
-
-		assertEquals(expected.getClassification().getValue(), actual.getClassification().getValue());
-
-		assertEquals(expected.getMailer().getValue(), actual.getMailer().getValue());
-
-		assertEquals(expected.getFormattedName().getValue(), actual.getFormattedName().getValue());
-
-		assertEquals(expected.getUid().getValue(), actual.getUid().getValue());
-
-		assertEquals(expected.getNickname().getValues(), actual.getNickname().getValues());
-
-		assertEquals(expected.getOrganization().getValues(), actual.getOrganization().getValues());
-
-		assertEquals(expected.getCategories().getValues(), actual.getCategories().getValues());
-
-		assertEquals(expected.getBirthday().getDate(), actual.getBirthday().getDate());
-
-		assertEquals(expected.getRevision().getValue(), actual.getRevision().getValue());
-
-		assertEquals(expected.getGeo().getLatitude(), actual.getGeo().getLatitude());
-		assertEquals(expected.getGeo().getLongitude(), actual.getGeo().getLongitude());
-
-		assertEquals(expected.getTimezone().getOffset(), actual.getTimezone().getOffset());
-		assertNull(actual.getTimezone().getText()); //text value is not written
-
+		/*
+		 * Output will be slightly different from the original.
+		 */
+		VCard expected = input;
 		{
-			StructuredName e = expected.getStructuredName();
-			StructuredName a = actual.getStructuredName();
-			assertEquals(e.getFamily(), a.getFamily());
-			assertEquals(e.getGiven(), a.getGiven());
-			assertEquals(e.getAdditionalNames(), a.getAdditionalNames());
-			assertEquals(e.getPrefixes(), a.getPrefixes());
-			assertEquals(e.getSuffixes(), a.getSuffixes());
-			assertTrue(a.getSortAs().isEmpty());
-		}
+			/*
+			 * SORT-AS parameter is converted to SORT-STRING property.
+			 */
+			expected.setSortString("Claus");
+			expected.getStructuredName().setSortAs(null);
 
-		assertEquals(expected.getTitles().size(), actual.getTitles().size());
-		for (int i = 0; i < expected.getTitles().size(); i++) {
-			Title e = expected.getTitles().get(i);
-			Title a = actual.getTitles().get(i);
-			assertEquals(e.getValue(), a.getValue());
-		}
+			/*
+			 * Timezone text value not written to HTML page.
+			 */
+			expected.getTimezone().setText(null);
 
-		assertEquals(expected.getRoles().size(), actual.getRoles().size());
-		for (int i = 0; i < expected.getRoles().size(); i++) {
-			Role e = expected.getRoles().get(i);
-			Role a = actual.getRoles().get(i);
-			assertEquals(e.getValue(), a.getValue());
-		}
+			/*
+			 * TEL URIs are converted to text
+			 */
+			{
+				expected.getTelephoneNumbers().clear();
 
-		assertEquals(expected.getNotes().size(), actual.getNotes().size());
-		for (int i = 0; i < expected.getNotes().size(); i++) {
-			Note e = expected.getNotes().get(i);
-			Note a = actual.getNotes().get(i);
-			assertEquals(e.getValue(), a.getValue());
-		}
-
-		assertEquals(expected.getUrls().size(), actual.getUrls().size());
-		for (int i = 0; i < expected.getUrls().size(); i++) {
-			Url e = expected.getUrls().get(i);
-			Url a = actual.getUrls().get(i);
-			assertEquals(e.getValue(), a.getValue());
-		}
-
-		assertEquals(expected.getImpps().size(), actual.getImpps().size());
-		for (int i = 0; i < expected.getImpps().size(); i++) {
-			Impp e = expected.getImpps().get(i);
-			Impp a = actual.getImpps().get(i);
-			assertEquals(e.getUri(), a.getUri());
-		}
-
-		assertEquals(expected.getEmails().size(), actual.getEmails().size());
-		for (int i = 0; i < expected.getEmails().size(); i++) {
-			Email e = expected.getEmails().get(i);
-			Email a = actual.getEmails().get(i);
-			assertEquals(e.getValue(), a.getValue());
-			assertEquals(e.getTypes(), a.getTypes());
-		}
-
-		assertEquals(expected.getTelephoneNumbers().size(), actual.getTelephoneNumbers().size());
-		for (int i = 0; i < expected.getTelephoneNumbers().size(); i++) {
-			Telephone e = expected.getTelephoneNumbers().get(i);
-			Telephone a = actual.getTelephoneNumbers().get(i);
-			if (e.getText() != null) {
-				assertEquals(e.getText(), a.getText());
-			} else {
-				TelUri uri = e.getUri();
-				if (uri.getExtension() == null) {
-					assertEquals(e.getUri().getNumber(), a.getText());
-				} else {
-					assertEquals(e.getUri().getNumber() + " x" + uri.getExtension(), a.getText());
-				}
+				expected.addTelephoneNumber("+1-555-222-3333 x101");
+				expected.addTelephoneNumber("+1-555-333-4444", TelephoneType.WORK);
+				expected.addTelephoneNumber("(555) 111-2222", TelephoneType.HOME, TelephoneType.VOICE, TelephoneType.PREF);
 			}
-			assertEquals(e.getTypes(), a.getTypes());
+
+			/**
+			 * PRODID property added
+			 */
+			expected.setProductId("ez-vcard " + Ezvcard.VERSION);
 		}
 
-		assertEquals(expected.getAddresses().size(), actual.getAddresses().size());
-		for (int i = 0; i < expected.getAddresses().size(); i++) {
-			Address e = expected.getAddresses().get(i);
-			Address a = actual.getAddresses().get(i);
-			assertEquals(e.getPoBox(), a.getPoBox());
-			assertEquals(e.getExtendedAddress(), a.getExtendedAddress());
-			assertEquals(e.getStreetAddress(), a.getStreetAddress());
-			assertEquals(e.getLocality(), a.getLocality());
-			assertEquals(e.getRegion(), a.getRegion());
-			assertEquals(e.getPostalCode(), a.getPostalCode());
-			assertEquals(e.getCountry(), a.getCountry());
-			assertEquals(e.getLabel(), a.getLabel());
-			assertEquals(e.getTypes(), a.getTypes());
-		}
-
-		assertEquals(expected.getPhotos().size(), actual.getPhotos().size());
-		for (int i = 0; i < expected.getPhotos().size(); i++) {
-			Photo e = expected.getPhotos().get(i);
-			Photo a = actual.getPhotos().get(i);
-			assertEquals(e.getContentType(), a.getContentType());
-			assertArrayEquals(e.getData(), a.getData());
-		}
-
-		assertEquals(expected.getSounds().size(), actual.getSounds().size());
-		for (int i = 0; i < expected.getSounds().size(); i++) {
-			Sound e = expected.getSounds().get(i);
-			Sound a = actual.getSounds().get(i);
-			assertEquals(e.getContentType(), a.getContentType());
-			assertArrayEquals(e.getData(), a.getData());
-		}
-
-		assertEquals("ez-vcard " + Ezvcard.VERSION, actual.getProductId().getValue());
+		assertEquals(expected, actual);
 	}
 
 	private VCard createFullVCard() throws IOException {
