@@ -84,7 +84,11 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 
 	@Override
 	protected void _writeXml(Xml property, XCardElement element) {
-		//Xml properties are handled as a special case when writing xCard documents, so this method should never get called (see: "XCardDocument" class)
+		/*
+		 * Xml properties are handled as a special case when writing xCard
+		 * documents, so this method should never get called (see
+		 * "XCardDocument" class)
+		 */
 		super._writeXml(property, element);
 	}
 

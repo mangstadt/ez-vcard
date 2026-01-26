@@ -76,7 +76,10 @@ public class AgentScribe extends VCardPropertyScribe<Agent> {
 			throw new EmbeddedVCardException(vcard);
 		}
 
-		//don't write an empty value because parsers could interpret that as there being an embedded vCard on the next line
+		/*
+		 * Don't write an empty value because parsers could interpret that as
+		 * there being an embedded vCard on the next line
+		 */
 		throw new SkipMeException(Messages.INSTANCE.getValidationWarning(8));
 	}
 

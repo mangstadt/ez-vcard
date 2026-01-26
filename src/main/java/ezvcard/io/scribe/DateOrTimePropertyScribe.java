@@ -95,7 +95,10 @@ public abstract class DateOrTimePropertyScribe<T extends DateOrTimeProperty> ext
 			return date(date).extended(extended).write();
 		}
 
-		//allow partial dates to be written to non-4.0 vCards for leniency and round-tripping
+		/*
+		 * Allow partial dates to be written to non-4.0 vCards for leniency and
+		 * round-tripping
+		 */
 		PartialDate partialDate = property.getPartialDate();
 		if (partialDate != null) {
 			return partialDate.toISO8601(extended);
