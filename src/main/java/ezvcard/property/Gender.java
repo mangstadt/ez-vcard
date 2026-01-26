@@ -134,7 +134,7 @@ public class Gender extends VCardProperty {
 
 	/**
 	 * Sets the gender value.
-	 * @param gender the gender value (see static strings for the possible
+	 * @param genderCode the gender value (see static strings for the possible
 	 * values)
 	 */
 	public void setGender(String genderCode) {

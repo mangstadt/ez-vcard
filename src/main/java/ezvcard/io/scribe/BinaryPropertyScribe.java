@@ -363,6 +363,9 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	}
 
 	/**
+	 * Attempts to parse the given string as a data URI.
+	 * @param value the string to parse
+	 * @return the data URI
 	 * @throws IllegalArgumentException if the given value is not a valid data
 	 * URI
 	 */
