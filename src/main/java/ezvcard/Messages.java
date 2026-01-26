@@ -91,11 +91,13 @@ public enum Messages {
 	 * @return the message or null if not found
 	 */
 	public String getMessage(String key, Object... args) {
+		String message;
 		try {
-			String message = bundle.getString(key);
-			return MessageFormat.format(message, args);
+			message = bundle.getString(key);
 		} catch (MissingResourceException e) {
 			return null;
 		}
+
+		return MessageFormat.format(message, args);
 	}
 }
