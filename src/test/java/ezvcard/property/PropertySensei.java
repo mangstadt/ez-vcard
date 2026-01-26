@@ -230,7 +230,7 @@ public class PropertySensei {
 		 * @param values the values to pass into the constructor
 		 * @return this
 		 */
-		public EqualsMethodAsserter constructor(Class<?> parameterTypes[], Object... values) {
+		public EqualsMethodAsserter constructor(Class<?>[] parameterTypes, Object... values) {
 			if (parameterTypes.length != values.length) {
 				throw new IllegalArgumentException("Number of parameter types must match number of values.");
 			}
@@ -263,7 +263,7 @@ public class PropertySensei {
 		 * @param values the values to pass into the method
 		 * @return this
 		 */
-		public EqualsMethodAsserter method(String name, Class<?> parameterTypes[], Object... values) {
+		public EqualsMethodAsserter method(String name, Class<?>[] parameterTypes, Object... values) {
 			if (parameterTypes.length != values.length) {
 				throw new IllegalArgumentException("Number of parameter types must match number of values.");
 			}
