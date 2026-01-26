@@ -86,16 +86,16 @@ public class Gender extends VCardProperty {
 	public static final String NONE = "N";
 	public static final String UNKNOWN = "U";
 
-	private String gender;
+	private String genderCode;
 	private String text;
 
 	/**
 	 * Creates a gender property. Use of this constructor is discouraged. Please
 	 * use one of the static factory methods to create a new GENDER property.
-	 * @param gender the gender value (e.g. "F")
+	 * @param genderCode the gender value (e.g. "F")
 	 */
-	public Gender(String gender) {
-		this.gender = gender;
+	public Gender(String genderCode) {
+		this.genderCode = genderCode;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class Gender extends VCardProperty {
 	 */
 	public Gender(Gender original) {
 		super(original);
-		gender = original.gender;
+		genderCode = original.genderCode;
 		text = original.text;
 	}
 
@@ -129,7 +129,7 @@ public class Gender extends VCardProperty {
 	 * @return the gender value (see static strings for the possible values)
 	 */
 	public String getGender() {
-		return gender;
+		return genderCode;
 	}
 
 	/**
@@ -137,8 +137,8 @@ public class Gender extends VCardProperty {
 	 * @param gender the gender value (see static strings for the possible
 	 * values)
 	 */
-	public void setGender(String gender) {
-		this.gender = gender;
+	public void setGender(String genderCode) {
+		this.genderCode = genderCode;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class Gender extends VCardProperty {
 	 * @return true if the gender is "male", false if not
 	 */
 	public boolean isMale() {
-		return MALE.equals(gender);
+		return MALE.equals(genderCode);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class Gender extends VCardProperty {
 	 * @return true if the gender is "female", false if not
 	 */
 	public boolean isFemale() {
-		return FEMALE.equals(gender);
+		return FEMALE.equals(genderCode);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class Gender extends VCardProperty {
 	 * @return true if the gender is "other", false if not
 	 */
 	public boolean isOther() {
-		return OTHER.equals(gender);
+		return OTHER.equals(genderCode);
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class Gender extends VCardProperty {
 	 * @return true if the gender is "none", false if not
 	 */
 	public boolean isNone() {
-		return NONE.equals(gender);
+		return NONE.equals(genderCode);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class Gender extends VCardProperty {
 	 * @return true if the gender is "unknown", false if not
 	 */
 	public boolean isUnknown() {
-		return UNKNOWN.equals(gender);
+		return UNKNOWN.equals(genderCode);
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class Gender extends VCardProperty {
 
 	@Override
 	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
-		if (gender == null) {
+		if (genderCode == null) {
 			warnings.add(new ValidationWarning(8));
 		}
 	}
@@ -233,7 +233,7 @@ public class Gender extends VCardProperty {
 	@Override
 	protected Map<String, Object> toStringValues() {
 		Map<String, Object> values = new LinkedHashMap<>();
-		values.put("gender", gender);
+		values.put("genderCode", genderCode);
 		values.put("text", text);
 		return values;
 	}
@@ -247,7 +247,7 @@ public class Gender extends VCardProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((genderCode == null) ? 0 : genderCode.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		return result;
 	}
@@ -257,9 +257,9 @@ public class Gender extends VCardProperty {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
 		Gender other = (Gender) obj;
-		if (gender == null) {
-			if (other.gender != null) return false;
-		} else if (!gender.equals(other.gender)) return false;
+		if (genderCode == null) {
+			if (other.genderCode != null) return false;
+		} else if (!genderCode.equals(other.genderCode)) return false;
 		if (text == null) {
 			if (other.text != null) return false;
 		} else if (!text.equals(other.text)) return false;

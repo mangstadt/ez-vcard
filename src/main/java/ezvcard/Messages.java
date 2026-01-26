@@ -36,10 +36,10 @@ import java.util.ResourceBundle;
 public enum Messages {
 	INSTANCE;
 
-	private final ResourceBundle messages;
+	private final ResourceBundle bundle;
 
 	Messages() {
-		messages = ResourceBundle.getBundle("ezvcard/messages");
+		bundle = ResourceBundle.getBundle("ezvcard/messages");
 	}
 
 	/**
@@ -92,7 +92,7 @@ public enum Messages {
 	 */
 	public String getMessage(String key, Object... args) {
 		try {
-			String message = messages.getString(key);
+			String message = bundle.getString(key);
 			return MessageFormat.format(message, args);
 		} catch (MissingResourceException e) {
 			return null;
