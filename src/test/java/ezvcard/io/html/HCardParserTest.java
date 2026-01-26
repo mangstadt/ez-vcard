@@ -711,7 +711,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void registerExtendedProperty() throws Exception {
+	public void registerExtendedProperty() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -747,7 +747,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void registerExtendedProperty_overrides_standard_type_classes() throws Exception {
+	public void registerExtendedProperty_overrides_standard_type_classes() {
 		//@formatter:off
 		String html =
 		"<html>" +

@@ -49,7 +49,7 @@ import ezvcard.VCardDataType;
  */
 public class RawPropertyTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		RawProperty property = new RawProperty("name", "value");
 		assertEquals("name", property.getPropertyName());
 		assertEquals("value", property.getValue());

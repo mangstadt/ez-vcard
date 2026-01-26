@@ -50,7 +50,7 @@ import ezvcard.VCardVersion;
  */
 public class TimezoneTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		Timezone property = new Timezone((String) null);
 		assertNull(property.getOffset());
 		assertNull(property.getText());

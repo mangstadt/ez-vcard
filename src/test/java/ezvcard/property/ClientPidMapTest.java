@@ -48,7 +48,7 @@ import ezvcard.VCardVersion;
  */
 public class ClientPidMapTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		ClientPidMap property = new ClientPidMap(null, null);
 		assertNull(property.getPid());
 		assertNull(property.getUri());

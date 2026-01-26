@@ -44,7 +44,7 @@ import org.junit.Test;
  */
 public class SimplePropertyTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		SimplePropertyImpl property = new SimplePropertyImpl((String) null);
 		assertNull(property.getValue());
 

@@ -46,7 +46,7 @@ import ezvcard.util.GeoUri;
  */
 public class GeoTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		Geo property = new Geo(12.34, 56.78);
 		assertEquals(12.34, property.getLatitude(), 0.1);
 		assertEquals(56.78, property.getLongitude(), 0.1);

@@ -347,7 +347,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_bad_xml() throws Exception {
+	public void read_bad_xml() {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -855,7 +855,7 @@ public class XCardReaderTest {
 		asserter.done();
 	}
 
-	private static VCardAsserter read(String file) throws SAXException, IOException {
+	private static VCardAsserter read(String file) {
 		XCardReader reader = new XCardReader(XCardReaderTest.class.getResourceAsStream(file));
 		return new VCardAsserter(reader);
 	}

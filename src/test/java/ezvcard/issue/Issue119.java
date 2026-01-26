@@ -24,7 +24,7 @@ import ezvcard.property.VCardProperty;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class Issue119 {
 	@Test
-	public void faq_code_sample() throws Exception {
+	public void faq_code_sample() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("value");
 		

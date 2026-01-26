@@ -76,7 +76,7 @@ public class StreamWriterTest {
 	}
 
 	@Test
-	public void unregistered_property() throws Exception {
+	public void unregistered_property() {
 		vcard.addProperty(new TestProperty());
 
 		assertThrows(IllegalArgumentException.class, () -> writer.write(vcard));

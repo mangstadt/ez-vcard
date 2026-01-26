@@ -52,7 +52,7 @@ import ezvcard.util.PartialDate;
  */
 public class DateOrTimePropertyTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 		assertNull(property.getDate());
 		assertNull(property.getPartialDate());

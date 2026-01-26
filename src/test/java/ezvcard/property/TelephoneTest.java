@@ -52,7 +52,7 @@ import ezvcard.util.TelUri;
  */
 public class TelephoneTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		Telephone property = new Telephone((String) null);
 		assertNull(property.getText());
 		assertNull(property.getUri());

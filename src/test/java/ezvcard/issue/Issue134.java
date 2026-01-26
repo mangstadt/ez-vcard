@@ -20,7 +20,7 @@ import ezvcard.property.RawProperty;
  */
 public class Issue134 {
 	@Test
-	public void test_2_1() throws Exception {
+	public void test_2_1() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
@@ -41,7 +41,7 @@ public class Issue134 {
 	}
 
 	@Test
-	public void test_3_0() throws Exception {
+	public void test_3_0() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
@@ -62,7 +62,7 @@ public class Issue134 {
 	}
 
 	@Test
-	public void test_4_0() throws Exception {
+	public void test_4_0() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:4.0\r\n" +

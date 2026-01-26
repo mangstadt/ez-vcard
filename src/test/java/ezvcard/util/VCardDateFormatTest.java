@@ -189,7 +189,7 @@ public class VCardDateFormatTest {
 	 * Allow single digit month and/or date as long as there are dashes.
 	 */
 	@Test
-	public void parse_single_digit_month_and_date() throws Exception {
+	public void parse_single_digit_month_and_date() {
 		{
 			LocalDate date = LocalDate.of(2012, 7, 1);
 

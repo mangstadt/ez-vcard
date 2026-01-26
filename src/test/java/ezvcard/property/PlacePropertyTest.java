@@ -53,7 +53,7 @@ public class PlacePropertyTest {
 	private final GeoUri geoUriObj = new GeoUri.Builder(40.71448, -74.00598).build();
 
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		PlaceProperty property = new PlaceProperty();
 		assertNull(property.getText());
 		assertNull(property.getUri());

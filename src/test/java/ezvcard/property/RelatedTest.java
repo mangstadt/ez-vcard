@@ -55,7 +55,7 @@ public class RelatedTest {
 	private final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
 
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		Related property = new Related();
 		assertNull(property.getUri());
 		assertNull(property.getText());

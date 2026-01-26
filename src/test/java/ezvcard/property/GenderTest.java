@@ -50,7 +50,7 @@ import ezvcard.VCardVersion;
  */
 public class GenderTest {
 	@Test
-	public void constructors() throws Exception {
+	public void constructors() {
 		Gender property = new Gender((String) null);
 		assertNull(property.getGender());
 		assertNull(property.getText());

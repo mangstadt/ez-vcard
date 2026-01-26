@@ -74,7 +74,7 @@ public class XmlUtilsTest {
 	//@formatter:on
 
 	@Test
-	public void createDocument() throws Exception {
+	public void createDocument() {
 		Document document = XmlUtils.createDocument();
 		assertNotNull(document);
 	}
