@@ -31,6 +31,7 @@ import ezvcard.property.Photo;
 import ezvcard.property.SortString;
 import ezvcard.property.Sound;
 import ezvcard.property.StructuredName;
+import ezvcard.util.CharIterator;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
 
@@ -1533,11 +1534,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	private static boolean isPidValid(String pid) {
 		boolean dotFound = false;
-		for (int i = 0; i < pid.length(); i++) {
-			char c = pid.charAt(i);
+		CharIterator it = new CharIterator(pid);
+		while (it.hasNext()) {
+			char c = it.next();
 
 			if (c == '.') {
-				if (i == 0 || i == pid.length() - 1) {
+				if (it.index() == 0 || it.index() == pid.length() - 1) {
 					return false;
 				}
 				if (dotFound) {

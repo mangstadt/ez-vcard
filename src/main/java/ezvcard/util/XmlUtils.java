@@ -10,10 +10,11 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -305,14 +306,13 @@ public final class XmlUtils {
 	 * @return the elements
 	 */
 	public static List<Element> toElementList(NodeList nodeList) {
-		List<Element> elements = new ArrayList<>();
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-			if (node instanceof Element) {
-				elements.add((Element) node);
-			}
-		}
-		return elements;
+		//@formatter:off
+		return IntStream.range(0, nodeList.getLength())
+			.mapToObj(nodeList::item)
+			.filter(Element.class::isInstance)
+			.map(Element.class::cast)
+		.collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	/**
@@ -331,13 +331,14 @@ public final class XmlUtils {
 	 */
 	private static Element getFirstChildElement(Node parent) {
 		NodeList nodeList = parent.getChildNodes();
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-			if (node instanceof Element) {
-				return (Element) node;
-			}
-		}
-		return null;
+
+		//@formatter:off
+		return IntStream.range(0, nodeList.getLength())
+			.mapToObj(nodeList::item)
+			.filter(Element.class::isInstance)
+			.map(Element.class::cast)
+		.findFirst().orElse(null);
+		//@formatter:on
 	}
 
 	/**

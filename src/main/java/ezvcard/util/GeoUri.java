@@ -4,8 +4,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import ezvcard.Messages;
 
@@ -75,20 +77,11 @@ public final class GeoUri {
 	 */
 	private static final boolean[] validParameterValueCharacters = new boolean[128];
 	static {
-		for (int i = '0'; i <= '9'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		for (int i = 'A'; i <= 'Z'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		for (int i = 'a'; i <= 'z'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		String s = "!$&'()*+-.:[]_~";
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			validParameterValueCharacters[c] = true;
-		}
+		IntConsumer markAsValidCharacter = c -> validParameterValueCharacters[c] = true;
+		IntStream.rangeClosed('0', '9').forEach(markAsValidCharacter);
+		IntStream.rangeClosed('A', 'Z').forEach(markAsValidCharacter);
+		IntStream.rangeClosed('a', 'z').forEach(markAsValidCharacter);
+		"!$&'()*+-.:[]_~".chars().forEach(markAsValidCharacter);
 	}
 
 	private static final String PARAM_CRS = "crs";

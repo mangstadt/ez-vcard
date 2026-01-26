@@ -617,11 +617,12 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @return the exception object (note that the exception is NOT thrown!)
 	 */
 	protected static CannotParseException missingXmlElements(VCardDataType... dataTypes) {
-		String[] elements = new String[dataTypes.length];
-		for (int i = 0; i < dataTypes.length; i++) {
-			VCardDataType dataType = dataTypes[i];
-			elements[i] = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
-		}
+		//@formatter:off
+		String[] elements = Arrays.stream(dataTypes)
+			.map(dataType -> (dataType == null) ? "unknown" : dataType.getName().toLowerCase())
+		.toArray(len -> new String[len]);
+		//@formatter:on
+
 		return missingXmlElements(elements);
 	}
 

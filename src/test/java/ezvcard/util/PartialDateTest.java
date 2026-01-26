@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -55,9 +56,7 @@ public class PartialDateTest {
 
 		assertThrows(IllegalArgumentException.class, () -> builder.month(start));
 
-		for (int i = start + 1; i < end; i++) {
-			builder.month(i);
-		}
+		IntStream.range(start + 1, end).forEach(builder::month);
 
 		assertThrows(IllegalArgumentException.class, () -> builder.month(end));
 	}
@@ -69,9 +68,7 @@ public class PartialDateTest {
 
 		assertThrows(IllegalArgumentException.class, () -> builder.date(start));
 
-		for (int i = start + 1; i < end; i++) {
-			builder.date(i);
-		}
+		IntStream.range(start + 1, end).forEach(builder::date);
 
 		assertThrows(IllegalArgumentException.class, () -> builder.date(end));
 	}
@@ -83,9 +80,7 @@ public class PartialDateTest {
 
 		assertThrows(IllegalArgumentException.class, () -> builder.hour(start));
 
-		for (int i = start + 1; i < end; i++) {
-			builder.hour(i);
-		}
+		IntStream.range(start + 1, end).forEach(builder::hour);
 
 		assertThrows(IllegalArgumentException.class, () -> builder.hour(end));
 	}
@@ -97,9 +92,7 @@ public class PartialDateTest {
 
 		assertThrows(IllegalArgumentException.class, () -> builder.minute(start));
 
-		for (int i = start + 1; i < end; i++) {
-			builder.minute(i);
-		}
+		IntStream.range(start + 1, end).forEach(builder::minute);
 
 		assertThrows(IllegalArgumentException.class, () -> builder.minute(end));
 	}
@@ -111,9 +104,7 @@ public class PartialDateTest {
 
 		assertThrows(IllegalArgumentException.class, () -> builder.second(start));
 
-		for (int i = start + 1; i < end; i++) {
-			builder.second(i);
-		}
+		IntStream.range(start + 1, end).forEach(builder::second);
 
 		assertThrows(IllegalArgumentException.class, () -> builder.second(end));
 	}

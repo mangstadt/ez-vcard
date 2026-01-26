@@ -3,8 +3,10 @@ package ezvcard.util;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import ezvcard.Messages;
 
@@ -67,20 +69,11 @@ public final class TelUri {
 	 */
 	private static final boolean[] validParameterValueCharacters = new boolean[128];
 	static {
-		for (int i = '0'; i <= '9'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		for (int i = 'A'; i <= 'Z'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		for (int i = 'a'; i <= 'z'; i++) {
-			validParameterValueCharacters[i] = true;
-		}
-		String s = "!$&'()*+-.:[]_~/";
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			validParameterValueCharacters[c] = true;
-		}
+		IntConsumer markAsValidCharacter = c -> validParameterValueCharacters[c] = true;
+		IntStream.rangeClosed('0', '9').forEach(markAsValidCharacter);
+		IntStream.rangeClosed('A', 'Z').forEach(markAsValidCharacter);
+		IntStream.rangeClosed('a', 'z').forEach(markAsValidCharacter);
+		"!$&'()*+-.:[]_~/".chars().forEach(markAsValidCharacter);
 	}
 
 	/**
@@ -124,8 +117,9 @@ public final class TelUri {
 		Builder builder = new Builder();
 		ClearableStringBuilder buffer = new ClearableStringBuilder();
 		String paramName = null;
-		for (int i = scheme.length(); i < uri.length(); i++) {
-			char c = uri.charAt(i);
+		CharIterator it = new CharIterator(uri, scheme.length());
+		while (it.hasNext()) {
+			char c = it.next();
 
 			if (c == '=' && builder.number != null && paramName == null) {
 				paramName = buffer.getAndClear();
@@ -323,8 +317,9 @@ public final class TelUri {
 	 */
 	private static String encodeParameterValue(String value) {
 		StringBuilder sb = null;
-		for (int i = 0; i < value.length(); i++) {
-			char c = value.charAt(i);
+		CharIterator it = new CharIterator(value);
+		while (it.hasNext()) {
+			char c = it.next();
 			if (c < validParameterValueCharacters.length && validParameterValueCharacters[c]) {
 				if (sb != null) {
 					sb.append(c);
@@ -332,7 +327,7 @@ public final class TelUri {
 			} else {
 				if (sb == null) {
 					sb = new StringBuilder(value.length() * 2);
-					sb.append(value, 0, i);
+					sb.append(value, 0, it.index());
 				}
 				String hex = Integer.toString(c, 16);
 				sb.append('%').append(hex);

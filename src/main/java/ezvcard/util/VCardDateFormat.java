@@ -11,7 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -270,13 +272,13 @@ public enum VCardDateFormat {
 		}
 
 		private int parseInt(int... group) {
-			for (int g : group) {
-				String s = matcher.group(g);
-				if (s != null) {
-					return Integer.parseInt(s);
-				}
-			}
-			throw new NullPointerException();
+			//@formatter:off
+			return Arrays.stream(group)
+				.mapToObj(matcher::group)
+				.filter(Objects::nonNull)
+				.mapToInt(Integer::parseInt)
+			.findFirst().orElseThrow(NullPointerException::new);
+			//@formatter:on
 		}
 	}
 

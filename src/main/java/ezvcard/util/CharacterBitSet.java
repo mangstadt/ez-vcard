@@ -109,13 +109,7 @@ public class CharacterBitSet {
 	 * if not
 	 */
 	public boolean containsOnly(String string, int startIndex) {
-		for (int i = startIndex; i < string.length(); i++) {
-			char c = string.charAt(i);
-			if (!bitSet.get(c)) {
-				return false;
-			}
-		}
-		return true;
+		return string.chars().skip(startIndex).allMatch(bitSet::get);
 	}
 
 	/**
@@ -138,13 +132,7 @@ public class CharacterBitSet {
 	 * if not
 	 */
 	public boolean containsAny(String string, int startIndex) {
-		for (int i = startIndex; i < string.length(); i++) {
-			char c = string.charAt(i);
-			if (bitSet.get(c)) {
-				return true;
-			}
-		}
-		return false;
+		return string.chars().skip(startIndex).anyMatch(bitSet::get);
 	}
 
 	@Override
