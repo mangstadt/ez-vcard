@@ -1,7 +1,5 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.StringUtils.join;
-
 import java.util.List;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
@@ -91,13 +89,13 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 		 */
 		if (context.getVersion() == VCardVersion.V2_1) {
 			SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
-			builder.append(join(property.getPoBoxes(), ","));
-			builder.append(join(property.getExtendedAddresses(), ","));
-			builder.append(join(property.getStreetAddresses(), ","));
-			builder.append(join(property.getLocalities(), ","));
-			builder.append(join(property.getRegions(), ","));
-			builder.append(join(property.getPostalCodes(), ","));
-			builder.append(join(property.getCountries(), ","));
+			builder.append(String.join(",", property.getPoBoxes()));
+			builder.append(String.join(",", property.getExtendedAddresses()));
+			builder.append(String.join(",", property.getStreetAddresses()));
+			builder.append(String.join(",", property.getLocalities()));
+			builder.append(String.join(",", property.getRegions()));
+			builder.append(String.join(",", property.getPostalCodes()));
+			builder.append(String.join(",", property.getCountries()));
 			return builder.build(false, context.isIncludeTrailingSemicolons());
 		} else {
 			StructuredValueBuilder builder = new StructuredValueBuilder();

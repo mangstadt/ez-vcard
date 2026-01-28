@@ -1,7 +1,5 @@
 package ezvcard.io.scribe;
 
-import static ezvcard.util.StringUtils.join;
-
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
@@ -75,9 +73,9 @@ public class StructuredNameScribe extends VCardPropertyScribe<StructuredName> {
 			SemiStructuredValueBuilder builder = new SemiStructuredValueBuilder();
 			builder.append(property.getFamily());
 			builder.append(property.getGiven());
-			builder.append(join(property.getAdditionalNames(), ","));
-			builder.append(join(property.getPrefixes(), ","));
-			builder.append(join(property.getSuffixes(), ","));
+			builder.append(String.join(",", property.getAdditionalNames()));
+			builder.append(String.join(",", property.getPrefixes()));
+			builder.append(String.join(",", property.getSuffixes()));
 			return builder.build(false, context.isIncludeTrailingSemicolons());
 		} else {
 			StructuredValueBuilder builder = new StructuredValueBuilder();

@@ -1,9 +1,7 @@
 package ezvcard.util;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -43,16 +41,6 @@ public final class StringUtils {
 	 * The local computer's newline character sequence.
 	 */
 	public static final String NEWLINE = System.getProperty("line.separator");
-
-	/**
-	 * Joins a collection of values into a delimited list.
-	 * @param collection the collection of values
-	 * @param delimiter the delimiter (e.g. ",")
-	 * @return the delimited string
-	 */
-	public static String join(Collection<?> collection, String delimiter) {
-		return collection.stream().map(Object::toString).collect(Collectors.joining(delimiter));
-	}
 
 	/**
 	 * Creates a copy of the given map, converting its keys and values to

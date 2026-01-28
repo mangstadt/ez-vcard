@@ -12,7 +12,6 @@ import ezvcard.parameter.AddressType;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.util.GeoUri;
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -543,6 +542,6 @@ public class Address extends VCardProperty implements HasAltId {
 	}
 
 	private static String getAddressFull(List<String> list) {
-		return list.isEmpty() ? null : StringUtils.join(list, ",");
+		return list.isEmpty() ? null : String.join(",", list);
 	}
 }

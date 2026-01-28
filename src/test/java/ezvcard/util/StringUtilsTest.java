@@ -2,8 +2,6 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,24 +40,6 @@ import org.junit.Test;
  * @author Michael Angstadt
  */
 public class StringUtilsTest {
-	@Test
-	public void join() {
-		Collection<Object> values = Arrays.<Object> asList("one", "two", 3);
-		String expected = "one,two,3";
-		String actual = StringUtils.join(values, ",");
-		assertEquals(expected, actual);
-
-		values = Arrays.<Object> asList("one");
-		expected = "one";
-		actual = StringUtils.join(values, ",");
-		assertEquals(expected, actual);
-
-		values = Arrays.asList();
-		expected = "";
-		actual = StringUtils.join(values, ",");
-		assertEquals(expected, actual);
-	}
-
 	@Test
 	public void toLowerCase() {
 		Map<String, String> input = new HashMap<>();
