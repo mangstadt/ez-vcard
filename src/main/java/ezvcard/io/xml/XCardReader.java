@@ -170,6 +170,7 @@ public class XCardReader extends StreamReader {
 			try {
 				threadBlock.put(lock);
 			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 				return null;
 			}
 		}
@@ -178,6 +179,7 @@ public class XCardReader extends StreamReader {
 		try {
 			readerBlock.take();
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			return null;
 		}
 
@@ -230,6 +232,7 @@ public class XCardReader extends StreamReader {
 				try {
 					readerBlock.put(lock);
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 					//ignore
 				}
 			}
@@ -461,6 +464,7 @@ public class XCardReader extends StreamReader {
 					readerBlock.put(lock);
 					threadBlock.take();
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 					throw new SAXException(e);
 				}
 				break;
