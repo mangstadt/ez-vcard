@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -48,14 +48,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
  */
 public class DataUriTest {
 	private final String dataString = "test-data";
-	private final byte[] dataBytes;
-	{
-		try {
-			dataBytes = dataString.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	private final byte[] dataBytes = dataString.getBytes(StandardCharsets.UTF_8);
 	private final String dataBase64 = Base64.encodeBase64String(dataBytes);
 
 	@Test
@@ -175,22 +168,16 @@ public class DataUriTest {
 		assertEquals("data:text/plain;base64," + dataBase64, uri.toString());
 
 		uri = new DataUri("text/plain", dataBytes);
-		assertEquals("data:text/plain;base64," + dataBase64, uri.toString("UTF-8"));
+		assertEquals("data:text/plain;base64," + dataBase64, uri.toString(StandardCharsets.UTF_8));
 
 		uri = new DataUri("text/plain", dataString);
 		assertEquals("data:text/plain," + dataString, uri.toString());
 
 		uri = new DataUri("text/plain", dataString);
-		assertEquals("data:text/plain;charset=UTF-8;base64," + dataBase64, uri.toString("UTF-8"));
+		assertEquals("data:text/plain;charset=UTF-8;base64," + dataBase64, uri.toString(StandardCharsets.UTF_8));
 
 		uri = new DataUri("text/plain", (String) null);
 		assertEquals("data:text/plain,", uri.toString());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void toString_bad_charset() {
-		DataUri uri = new DataUri("text/plain", dataString);
-		uri.toString("foobar");
 	}
 
 	@Test

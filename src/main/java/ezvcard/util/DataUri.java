@@ -1,6 +1,7 @@
 package ezvcard.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import ezvcard.Messages;
@@ -240,13 +241,12 @@ public final class DataUri {
 	/**
 	 * Creates a data URI string.
 	 * @param charset only applicable if the data URI's value is text. Defines
-	 * the character set to encode the text in, or null not to specify a
-	 * character set
+	 * what character set to use when encoding text value in base64. Setting
+	 * this to "null" will insert the text in the data URI as-is without
+	 * base64-encoding it.
 	 * @return the data URI (e.g. "data:image/jpeg;base64,[base64 string]")
-	 * @throws IllegalArgumentException if the given character set is not
-	 * supported by this JVM
 	 */
-	public String toString(String charset) {
+	public String toString(Charset charset) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(SCHEME);
 		sb.append(contentType);
@@ -258,16 +258,10 @@ public final class DataUri {
 			if (charset == null) {
 				sb.append(',').append(text);
 			} else {
-				byte[] data;
-				try {
-					data = text.getBytes(charset);
-				} catch (UnsupportedEncodingException e) {
-					throw new IllegalArgumentException(Messages.INSTANCE.getExceptionMessage(44, charset), e);
-				}
-
-				sb.append(";charset=").append(charset);
+				byte[] textBytes = text.getBytes(charset);
+				sb.append(";charset=").append(charset.name());
 				sb.append(";base64,");
-				sb.append(Base64.encodeBase64String(data));
+				sb.append(Base64.encodeBase64String(textBytes));
 			}
 		} else {
 			sb.append(',');
