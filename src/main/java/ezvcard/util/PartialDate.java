@@ -87,18 +87,21 @@ public final class PartialDate {
 	};
 	//@formatter:on
 
-	private static final String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";
+	private static final Format[] timeFormats;
+	static {
+		String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";
 
-	//@formatter:off
-	private static final Format[] timeFormats = new Format[] {
-		new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),
-		new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
-		new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
-		new Format("-(\\d{2}):?(\\d{2})" + offsetRegex, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
-		new Format("-(\\d{2})" + offsetRegex, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
-		new Format("--(\\d{2})" + offsetRegex, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE)
-	};
-	//@formatter:on
+		//@formatter:off
+		timeFormats = new Format[] {
+			new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),
+			new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
+			new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
+			new Format("-(\\d{2}):?(\\d{2})" + offsetRegex, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),
+			new Format("-(\\d{2})" + offsetRegex, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),
+			new Format("--(\\d{2})" + offsetRegex, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE)
+		};
+		//@formatter:on
+	}
 
 	private final Integer[] components;
 
