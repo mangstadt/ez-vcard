@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import ezvcard.VCard;
@@ -95,22 +96,18 @@ public abstract class StreamReader implements Closeable {
 	protected void assignLabels(VCard vcard, List<Label> labels) {
 		List<Address> adrs = vcard.getAddresses();
 		for (Label label : labels) {
-			boolean orphaned = true;
 			Set<AddressType> labelTypes = new HashSet<>(label.getTypes());
-			for (Address adr : adrs) {
-				if (adr.getLabel() != null) {
-					//a label has already been assigned to it
-					continue;
-				}
 
-				Set<AddressType> adrTypes = new HashSet<>(adr.getTypes());
-				if (adrTypes.equals(labelTypes)) {
-					adr.setLabel(label.getValue());
-					orphaned = false;
-					break;
-				}
-			}
-			if (orphaned) {
+			//@formatter:off
+			Optional<Address> matchingAdr = adrs.stream()
+				.filter(adr -> adr.getLabel() == null) //only consider addresses that don't have a label assigned to them
+				.filter(adr -> labelTypes.equals(new HashSet<>(adr.getTypes()))) //do the types match?
+			.findFirst();
+			//@formatter:on
+
+			if (matchingAdr.isPresent()) {
+				matchingAdr.get().setLabel(label.getValue());
+			} else {
 				vcard.addOrphanedLabel(label);
 			}
 		}

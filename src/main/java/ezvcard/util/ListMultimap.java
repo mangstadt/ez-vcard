@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -307,6 +308,14 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 			view.put(key, Collections.unmodifiableList(value));
 		}
 		return Collections.unmodifiableMap(view);
+	}
+
+	/**
+	 * Generates a stream of the underlying {@link Map} object.
+	 * @return the stream
+	 */
+	public Stream<Map.Entry<K, List<V>>> stream() {
+		return map.entrySet().stream();
 	}
 
 	/**

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -30,6 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -139,8 +141,8 @@ public final class XmlUtils {
 	 * @return the parsed DOM
 	 * @throws SAXException if the XML is not valid
 	 * @throws IOException if there is a problem reading from the reader
-	 * @see <a
-	 * href="http://stackoverflow.com/q/3482494/13379">http://stackoverflow.com/q/3482494/13379</a>
+	 * @see <a href=
+	 * "http://stackoverflow.com/q/3482494/13379">http://stackoverflow.com/q/3482494/13379</a>
 	 */
 	public static Document toDocument(Reader reader) throws SAXException, IOException {
 		return toDocument(new InputSource(reader));
@@ -306,13 +308,39 @@ public final class XmlUtils {
 	 * @return the elements
 	 */
 	public static List<Element> toElementList(NodeList nodeList) {
+		return toElementStream(nodeList).collect(Collectors.toList());
+	}
+
+	/**
+	 * Generates a stream of just the elements in a {@link NodeList}.
+	 * @param nodeList the node list
+	 * @return the stream
+	 */
+	public static Stream<Element> toElementStream(NodeList nodeList) {
 		//@formatter:off
 		return IntStream.range(0, nodeList.getLength())
 			.mapToObj(nodeList::item)
 			.filter(Element.class::isInstance)
-			.map(Element.class::cast)
-		.collect(Collectors.toList());
+			.map(Element.class::cast);
 		//@formatter:on
+	}
+
+	/**
+	 * Allows a {@link NodeList} to be used in a for-each loop.
+	 * @param nodeList the node list
+	 * @return the iterable object
+	 */
+	public static Iterable<Node> iterable(NodeList nodeList) {
+		return () -> IntStream.range(0, nodeList.getLength()).mapToObj(nodeList::item).iterator();
+	}
+
+	/**
+	 * Creates a stream from a {@link NamedNodeMap}.
+	 * @param namedNodeMap the named node map
+	 * @return the stream
+	 */
+	public static Stream<Node> stream(NamedNodeMap namedNodeMap) {
+		return IntStream.range(0, namedNodeMap.getLength()).mapToObj(namedNodeMap::item);
 	}
 
 	/**
@@ -331,14 +359,7 @@ public final class XmlUtils {
 	 */
 	private static Element getFirstChildElement(Node parent) {
 		NodeList nodeList = parent.getChildNodes();
-
-		//@formatter:off
-		return IntStream.range(0, nodeList.getLength())
-			.mapToObj(nodeList::item)
-			.filter(Element.class::isInstance)
-			.map(Element.class::cast)
-		.findFirst().orElse(null);
-		//@formatter:on
+		return toElementStream(nodeList).findFirst().orElse(null);
 	}
 
 	/**

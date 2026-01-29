@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.transform.TransformerException;
 
@@ -4256,29 +4257,33 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
-		List<T> propertiesWithoutAltIds = new ArrayList<>();
-		ListMultimap<String, T> propertiesWithAltIds = new ListMultimap<>();
-		for (T property : getProperties(clazz)) {
-			String altId = property.getAltId();
-			if (altId == null) {
-				propertiesWithoutAltIds.add(property);
-			} else {
-				propertiesWithAltIds.put(altId, property);
-			}
-		}
+		//@formatter:off
+		ListMultimap<String, T> propertiesGroupedByAltId = new ListMultimap<>();
+		getProperties(clazz).stream()
+			.filter(property -> property.getAltId() != null)
+		.forEach(property -> propertiesGroupedByAltId.put(property.getAltId(), property));
 
-		int size = propertiesWithoutAltIds.size() + propertiesWithAltIds.size();
+		List<T> propertiesWithoutAltIds = getProperties(clazz).stream()
+			.filter(property -> property.getAltId() == null)
+		.collect(Collectors.toList());
+		//@formatter:on
+
+		int size = propertiesGroupedByAltId.size() + propertiesWithoutAltIds.size();
 		List<List<T>> listToReturn = new ArrayList<>(size);
-		for (Map.Entry<String, List<T>> entry : propertiesWithAltIds) {
-			listToReturn.add(Collections.unmodifiableList(entry.getValue()));
-		}
 
-		//put properties without ALTIDs at the end
-		for (T property : propertiesWithoutAltIds) {
-			List<T> list = new ArrayList<>(1);
-			list.add(property);
-			listToReturn.add(Collections.unmodifiableList(list));
-		}
+		//@formatter:off
+		propertiesGroupedByAltId.stream()
+			.map(Map.Entry::getValue)
+			.map(Collections::unmodifiableList)
+		.forEach(listToReturn::add);
+		//@formatter:on
+
+		//put properties without ALTIDs at the end of the returned list
+		//@formatter:off
+		propertiesWithoutAltIds.stream()
+			.map(Collections::singletonList)
+		.forEach(listToReturn::add);
+		//@formatter:on
 
 		return Collections.unmodifiableList(listToReturn);
 	}
@@ -4472,10 +4477,8 @@ public class VCard implements Iterable<VCardProperty> {
 	 */
 	public <T extends VCardProperty & HasAltId> void addPropertyAlt(Class<T> propertyClass, Collection<T> altRepresentations) {
 		String altId = generateAltId(getProperties(propertyClass));
-		for (T property : altRepresentations) {
-			property.setAltId(altId);
-			addProperty(property);
-		}
+		altRepresentations.forEach(property -> property.setAltId(altId));
+		altRepresentations.forEach(this::addProperty);
 	}
 
 	/**
@@ -4559,6 +4562,14 @@ public class VCard implements Iterable<VCardProperty> {
 		return warnings;
 	}
 
+	/**
+	 * Generates a stream of this vCard's properties.
+	 * @return a stream of the properties
+	 */
+	public Stream<VCardProperty> stream() {
+		return properties.values().stream();
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -4600,10 +4611,9 @@ public class VCard implements Iterable<VCardProperty> {
 			}
 
 			List<VCardProperty> otherValueCopy = new ArrayList<>(otherValue);
-			for (VCardProperty property : value) {
-				if (!otherValueCopy.remove(property)) {
-					return false;
-				}
+			boolean allPropertiesAreEqual = value.stream().allMatch(otherValueCopy::remove);
+			if (!allPropertiesAreEqual) {
+				return false;
 			}
 		}
 

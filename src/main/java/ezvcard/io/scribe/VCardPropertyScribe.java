@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.namespace.QName;
 
@@ -662,12 +663,15 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 
 			break;
 		case V4_0:
-			for (String type : property.getParameters().getTypes()) {
-				if ("pref".equalsIgnoreCase(type)) {
-					parameters.remove(VCardParameters.TYPE, type);
-					parameters.setPref(1);
-					break;
-				}
+			//@formatter:off
+			Optional<String> prefType = property.getParameters().getTypes().stream()
+				.filter("pref"::equalsIgnoreCase)
+			.findFirst();
+			//@formatter:on
+
+			if (prefType.isPresent()) {
+				parameters.remove(VCardParameters.TYPE, prefType.get());
+				parameters.setPref(1);
 			}
 			break;
 		}

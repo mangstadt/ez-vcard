@@ -81,7 +81,7 @@ public class VCardParameterTest {
 		EqualsVerifier.forClass(VCardParameter.class).usingGetClass().verify();
 	}
 
-	private static class VCardParameterImpl extends VCardParameter {
+	public static class VCardParameterImpl extends VCardParameter {
 		@SupportedVersions(VCardVersion.V2_1)
 		public static VCardParameterImpl ONE = new VCardParameterImpl("one");
 

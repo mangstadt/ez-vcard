@@ -217,13 +217,17 @@ public class TestUtils {
 				}
 
 				if (!expectedPropCodes.isEmpty()) {
-					List<String> lines = new ArrayList<>();
-					for (Map.Entry<VCardProperty, Integer[]> entry : expectedPropCodes.entrySet()) {
-						VCardProperty property = entry.getKey();
-						String className = (property == null) ? null : property.getClass().getSimpleName();
-						Integer[] expectedCodes = entry.getValue();
-						lines.add(className + ": " + Arrays.toString(expectedCodes));
-					}
+					//@formatter:off
+					List<String> lines = expectedPropCodes.entrySet().stream()
+						.map(entry -> {
+							VCardProperty property = entry.getKey();
+							String className = (property == null) ? null : property.getClass().getSimpleName();
+							Integer[] expectedCodes = entry.getValue();
+							return className + ": " + Arrays.toString(expectedCodes);
+						})
+					.collect(Collectors.toList());
+					//@formatter:on
+
 					fail("For version " + version + ", the following validation warnings were expected, but NOT thrown:\n" + lines + "\nActual warnings:\n" + warnings);
 				}
 			}

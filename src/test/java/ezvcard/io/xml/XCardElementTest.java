@@ -165,7 +165,7 @@ public class XCardElementTest {
 		assertEquals(VCardVersion.V4_0.getXmlNamespace(), appendedElement.getNamespaceURI());
 		assertEquals("2", appendedElement.getTextContent());
 
-		Iterator<Element> it = XmlUtils.toElementList(xcardElement.element().getChildNodes()).iterator();
+		Iterator<Element> it = XmlUtils.toElementStream(xcardElement.element().getChildNodes()).iterator();
 
 		Element element = it.next();
 		assertEquals("one", element.getLocalName());

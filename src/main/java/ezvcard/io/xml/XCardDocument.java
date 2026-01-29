@@ -627,7 +627,7 @@ public class XCardDocument {
 
 		private List<Element> getChildElements(Element parent, QName qname) {
 			//@formatter:off
-			return XmlUtils.toElementList(parent.getChildNodes()).stream()
+			return XmlUtils.toElementStream(parent.getChildNodes())
 				.filter(child -> XmlUtils.hasQName(child, qname))
 			.collect(Collectors.toList());
 			//@formatter:on

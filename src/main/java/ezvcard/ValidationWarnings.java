@@ -1,13 +1,13 @@
 package ezvcard;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ListMultimap;
@@ -130,16 +130,16 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 * @return the validation warnings
 	 */
 	public List<ValidationWarning> getByProperty(Class<? extends VCardProperty> propertyClass) {
-		List<ValidationWarning> propWarnings = new ArrayList<>();
-		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
-			VCardProperty property = entry.getKey();
+		//@formatter:off
+		return warnings.stream()
+			.filter(entry -> isPropertyInstanceOf(entry.getKey(), propertyClass))
+			.flatMap(entry -> entry.getValue().stream())
+		.collect(Collectors.toList());
+		//@formatter:on
+	}
 
-			if ((property == null && propertyClass == null) || (property != null && propertyClass == property.getClass())) {
-				List<ValidationWarning> propViolations = entry.getValue();
-				propWarnings.addAll(propViolations);
-			}
-		}
-		return propWarnings;
+	private boolean isPropertyInstanceOf(VCardProperty property, Class<? extends VCardProperty> clazz) {
+		return (property == null && clazz == null) || (property != null && clazz == property.getClass());
 	}
 
 	/**

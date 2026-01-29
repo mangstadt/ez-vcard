@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import ezvcard.Messages;
 
@@ -512,17 +513,12 @@ public final class PartialDate {
 				 * portion in the string.
 				 */
 
-				for (int i = 0; i < componentIndexes.length; i++) {
-					Integer index = componentIndexes[i];
-					if (index == null) {
-						continue;
-					}
-
-					String groupStr = m.group(i + 1);
-					if (groupStr != null) {
-						processComponent(index, groupStr);
-					}
-				}
+				//@formatter:off
+				IntStream.range(0, componentIndexes.length)
+					.filter(i -> componentIndexes[i] != null)
+					.filter(i -> m.group(i + 1) != null)
+				.forEach(i -> processComponent(componentIndexes[i], m.group(i + 1)));
+				//@formatter:on
 
 				if (offsetHour != null) {
 					handleZoneOffset();

@@ -388,9 +388,7 @@ public class XCardWriter extends XCardWriterBase {
 
 	private void write(Element propertyElement) throws SAXException {
 		NodeList children = propertyElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
-
+		for (Node child : XmlUtils.iterable(children)) {
 			if (child instanceof Element) {
 				Element element = (Element) child;
 
@@ -499,16 +497,13 @@ public class XCardWriter extends XCardWriterBase {
 	private Attributes getElementAttributes(Element element) {
 		AttributesImpl attributes = new AttributesImpl();
 		NamedNodeMap attributeNodes = element.getAttributes();
-		for (int i = 0; i < attributeNodes.getLength(); i++) {
-			Node node = attributeNodes.item(i);
 
-			String localName = node.getLocalName();
-			if ("xmlns".equals(localName)) {
-				continue;
-			}
+		//@formatter:off
+		XmlUtils.stream(attributeNodes)
+			.filter(node -> !"xmlns".equals(node.getLocalName()))
+		.forEach(node -> attributes.addAttribute(node.getNamespaceURI(), "", node.getLocalName(), "", node.getNodeValue()));
+		//@formatter:on
 
-			attributes.addAttribute(node.getNamespaceURI(), "", localName, "", node.getNodeValue());
-		}
 		return attributes;
 	}
 }

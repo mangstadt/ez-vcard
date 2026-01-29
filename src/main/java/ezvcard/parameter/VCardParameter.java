@@ -1,10 +1,8 @@
 package ezvcard.parameter;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
+import ezvcard.util.SupportedVersionsHelper;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -85,28 +83,7 @@ public class VCardParameter {
 	 * @return the vCard versions that support this parameter.
 	 */
 	public VCardVersion[] getSupportedVersions() {
-		for (Field field : getClass().getFields()) {
-			if (!Modifier.isStatic(field.getModifiers())) {
-				continue;
-			}
-
-			Object fieldValue;
-			try {
-				fieldValue = field.get(null);
-			} catch (IllegalArgumentException e) {
-				//should never be thrown because we check for the static modified
-				continue;
-			} catch (IllegalAccessException e) {
-				continue;
-			}
-
-			if (fieldValue == this) {
-				SupportedVersions supportedVersionsAnnotation = field.getAnnotation(SupportedVersions.class);
-				return (supportedVersionsAnnotation == null) ? VCardVersion.values() : supportedVersionsAnnotation.value();
-			}
-		}
-
-		return VCardVersion.values();
+		return SupportedVersionsHelper.getSupportedVersions(this);
 	}
 
 	/**
@@ -125,12 +102,7 @@ public class VCardParameter {
 	 * @return true if it is supported, false if not
 	 */
 	public boolean isSupportedBy(VCardVersion version) {
-		for (VCardVersion supportedVersion : getSupportedVersions()) {
-			if (supportedVersion == version) {
-				return true;
-			}
-		}
-		return false;
+		return SupportedVersionsHelper.isSupportedBy(version, this);
 	}
 
 	@Override

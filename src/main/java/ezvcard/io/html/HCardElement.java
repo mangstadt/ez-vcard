@@ -203,20 +203,18 @@ public class HCardElement {
 			visitForValue(element, value);
 		} else {
 			//append together all children whose CSS class is "value"
-			for (Element valueElement : valueElements) {
-				if (HtmlUtils.isChildOf(valueElement, valueElements)) {
-					//ignore "value" elements that are descendants of other "value" elements
-					continue;
+			//@formatter:off
+			valueElements.stream()
+				.filter(valueElement -> !HtmlUtils.isChildOf(valueElement, valueElements)) //ignore "value" elements that are descendants of other "value" elements
+			.forEach(valueElement -> {
+				String childAbbrValue = abbrElementValue(valueElement);
+				if (childAbbrValue == null) {
+					visitForValue(valueElement, value);
+				} else {
+					value.append(childAbbrValue);
 				}
-
-				abbrValue = abbrElementValue(valueElement);
-				if (abbrValue != null) {
-					value.append(abbrValue);
-					continue;
-				}
-
-				visitForValue(valueElement, value);
-			}
+			});
+			//@formatter:on
 		}
 		return value.toString().trim();
 	}

@@ -11,6 +11,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -1372,9 +1373,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 			checkForInvalidCharsInParamName(name, syntax, warnings);
 
 			List<String> values = entry.getValue();
-			for (String value : values) {
-				checkForInvalidCharsInParamValue(name, value, syntax, warnings);
-			}
+			values.forEach(value -> checkForInvalidCharsInParamValue(name, value, syntax, warnings));
 		}
 	}
 
@@ -1410,18 +1409,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	}
 
 	private void validateSupportedVersions(VCardVersion version, List<ValidationWarning> warnings) {
-		for (Map.Entry<String, Set<VCardVersion>> entry : supportedVersions.entrySet()) {
-			String name = entry.getKey();
-			String value = first(name);
-			if (value == null) {
-				continue;
-			}
-
-			Set<VCardVersion> versions = entry.getValue();
-			if (!versions.contains(version)) {
-				warnings.add(new ValidationWarning(6, name));
-			}
-		}
+		//@formatter:off
+		supportedVersions.entrySet().stream()
+			.filter(entry -> first(entry.getKey()) != null) //does this parameter list contain the parameter?
+			.filter(entry -> !entry.getValue().contains(version)) //is the parameter not supported by the given version?
+			.map(entry -> new ValidationWarning(6, entry.getKey()))
+		.forEach(warnings::add);
+		//@formatter:on
 	}
 
 	private void validateCalscaleParameter(List<ValidationWarning> warnings) {
@@ -1571,27 +1565,25 @@ public class VCardParameters extends ListMultimap<String, String> {
 		 * value order does not matter
 		 */
 		final int prime = 31;
-		int result = 1;
 
-		for (Map.Entry<String, List<String>> entry : this) {
+		return 1 + stream().mapToInt(entry -> {
 			String key = entry.getKey();
-			List<String> value = entry.getValue();
+			int keyHash = ((key == null) ? 0 : key.toLowerCase().hashCode());
 
+			List<String> value = entry.getValue();
 			//@formatter:off
 			int valueHash = 1 + value.stream()
+				.filter(Objects::nonNull)
 				.map(String::toLowerCase)
 				.mapToInt(String::hashCode)
 			.sum();
 			//@formatter:on
 
 			int entryHash = 1;
-			entryHash += prime * entryHash + ((key == null) ? 0 : key.toLowerCase().hashCode());
+			entryHash += prime * entryHash + keyHash;
 			entryHash += prime * entryHash + valueHash;
-
-			result += entryHash;
-		}
-
-		return result;
+			return entryHash;
+		}).sum();
 	}
 
 	/**

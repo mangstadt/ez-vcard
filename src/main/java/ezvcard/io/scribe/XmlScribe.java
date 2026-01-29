@@ -100,7 +100,7 @@ public class XmlScribe extends VCardPropertyScribe<Xml> {
 		Element root = xml.getValue().getDocumentElement();
 
 		//@formatter:off
-		XmlUtils.toElementList(root.getChildNodes()).stream()
+		XmlUtils.toElementStream(root.getChildNodes())
 			.filter(child -> "parameters".equals(child.getLocalName()))
 			.filter(child -> VCardVersion.V4_0.getXmlNamespace().equals(child.getNamespaceURI()))
 		.forEach(root::removeChild);
