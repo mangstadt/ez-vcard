@@ -1,7 +1,7 @@
 package ezvcard.util;
 
-import static ezvcard.util.TestUtils.buildTimezone;
-
+import java.time.Duration;
+import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.junit.rules.ExternalResource;
@@ -36,22 +36,35 @@ import org.junit.rules.ExternalResource;
  * @author Michael Angstadt
  */
 public class DefaultTimezoneRule extends ExternalResource {
-	private final int hour, minute;
-	private TimeZone defaultTz;
+	private final TimeZone defaultTz;
+	private final TimeZone tz;
 
 	/**
 	 * @param hour the hour component of the UTC offset
-	 * @param minute the minute component of the UTC offset
+	 * @param minute the minute component of the UTC offset (if offset is
+	 * negative, do not make the minute component negative)
 	 */
 	public DefaultTimezoneRule(int hour, int minute) {
-		this.hour = hour;
-		this.minute = minute;
+		defaultTz = TimeZone.getDefault();
+		tz = buildSimpleTimezone(hour, minute);
+	}
+
+	private TimeZone buildSimpleTimezone(int hour, int minute) {
+		Duration hourDuration = Duration.ofHours(hour);
+
+		Duration minuteDuration = Duration.ofMinutes(minute);
+		if (hourDuration.isNegative()) {
+			minuteDuration = minuteDuration.negated();
+		}
+
+		Duration offset = hourDuration.plus(minuteDuration);
+		int millis = (int) offset.toMillis();
+		return new SimpleTimeZone(millis, "");
 	}
 
 	@Override
 	protected void before() {
-		defaultTz = TimeZone.getDefault();
-		TimeZone.setDefault(buildTimezone(hour, minute));
+		TimeZone.setDefault(tz);
 	}
 
 	@Override

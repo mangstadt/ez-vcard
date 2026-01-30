@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -256,23 +255,6 @@ public class TestUtils {
 		for (T expectedElement : expectedElements) {
 			assertTrue("Collection did not contain: " + expectedElement, actualCopy.remove(expectedElement));
 		}
-	}
-
-	/**
-	 * Builds a timezone object with the given offset.
-	 * @param hours the hour offset
-	 * @param minutes the minute offset
-	 * @return the timezone object
-	 */
-	public static TimeZone buildTimezone(int hours, int minutes) {
-		int hourMillis = 1000 * 60 * 60 * hours;
-
-		int minuteMillis = 1000 * 60 * minutes;
-		if (hours < 0) {
-			minuteMillis *= -1;
-		}
-
-		return new SimpleTimeZone(hourMillis + minuteMillis, "");
 	}
 
 	/**
