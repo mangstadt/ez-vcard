@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
@@ -18,6 +19,7 @@ import ezvcard.VCardVersion;
 import ezvcard.ValidationWarning;
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -333,11 +335,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((group == null) ? 0 : group.toLowerCase().hashCode());
-		result = prime * result + parameters.hashCode();
-		return result;
+		return StringUtils.hashIgnoreCase(group, parameters);
 	}
 
 	@Override
@@ -346,11 +344,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		VCardProperty other = (VCardProperty) obj;
-		if (group == null) {
-			if (other.group != null) return false;
-		} else if (!group.equalsIgnoreCase(other.group)) return false;
-		if (!parameters.equals(other.parameters)) return false;
-		return true;
+		return StringUtils.equalsIgnoreCase(group, other.group) && Objects.equals(parameters, other.parameters);
 	}
 
 	/*

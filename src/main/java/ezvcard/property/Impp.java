@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -417,7 +418,7 @@ public class Impp extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		result = prime * result + Objects.hash(uri);
 		return result;
 	}
 
@@ -425,10 +426,8 @@ public class Impp extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Impp other = (Impp) obj;
-		if (uri == null) {
-			if (other.uri != null) return false;
-		} else if (!uri.equals(other.uri)) return false;
-		return true;
+		return Objects.equals(uri, other.uri);
 	}
 }

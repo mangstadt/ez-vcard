@@ -182,13 +182,10 @@ public class Xml extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Xml other = (Xml) obj;
-		if (value == null) {
-			if (other.value != null) return false;
-		} else {
-			if (other.value == null) return false;
-			if (!XmlUtils.toString(value).equals(XmlUtils.toString(other.value))) return false;
-		}
-		return true;
+		if (value == null && other.value != null) return false;
+		if (value != null && other.value == null) return false;
+		return XmlUtils.toString(value).equals(XmlUtils.toString(other.value));
 	}
 }

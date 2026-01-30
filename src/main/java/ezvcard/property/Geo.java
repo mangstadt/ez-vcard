@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -284,7 +285,7 @@ public class Geo extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		result = prime * result + Objects.hash(uri);
 		return result;
 	}
 
@@ -292,10 +293,8 @@ public class Geo extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Geo other = (Geo) obj;
-		if (uri == null) {
-			if (other.uri != null) return false;
-		} else if (!uri.equals(other.uri)) return false;
-		return true;
+		return Objects.equals(uri, other.uri);
 	}
 }

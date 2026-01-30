@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -245,9 +246,8 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
 		result = prime * result + Arrays.hashCode(data);
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + Objects.hash(contentType, url);
 		return result;
 	}
 
@@ -255,14 +255,8 @@ public abstract class BinaryProperty<T extends MediaTypeParameter> extends VCard
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		BinaryProperty<?> other = (BinaryProperty<?>) obj;
-		if (contentType == null) {
-			if (other.contentType != null) return false;
-		} else if (!contentType.equals(other.contentType)) return false;
-		if (!Arrays.equals(data, other.data)) return false;
-		if (url == null) {
-			if (other.url != null) return false;
-		} else if (!url.equals(other.url)) return false;
-		return true;
+		return Objects.equals(contentType, other.contentType) && Arrays.equals(data, other.data) && Objects.equals(url, other.url);
 	}
 }

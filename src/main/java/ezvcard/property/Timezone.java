@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -286,8 +287,7 @@ public class Timezone extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((offset == null) ? 0 : offset.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + Objects.hash(offset, text);
 		return result;
 	}
 
@@ -295,13 +295,8 @@ public class Timezone extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Timezone other = (Timezone) obj;
-		if (offset == null) {
-			if (other.offset != null) return false;
-		} else if (!offset.equals(other.offset)) return false;
-		if (text == null) {
-			if (other.text != null) return false;
-		} else if (!text.equals(other.text)) return false;
-		return true;
+		return Objects.equals(offset, other.offset) && Objects.equals(text, other.text);
 	}
 }

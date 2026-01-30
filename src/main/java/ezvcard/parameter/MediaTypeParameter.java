@@ -1,5 +1,7 @@
 package ezvcard.parameter;
 
+import java.util.Objects;
+
 /*
  Copyright (c) 2012-2023, Michael Angstadt
  All rights reserved.
@@ -70,30 +72,16 @@ public class MediaTypeParameter extends VCardParameter {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((extension == null) ? 0 : extension.hashCode());
-		result = prime * result + ((mediaType == null) ? 0 : mediaType.hashCode());
+		result = prime * result + Objects.hash(extension, mediaType);
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		MediaTypeParameter other = (MediaTypeParameter) obj;
-		if (extension == null) {
-			if (other.extension != null)
-				return false;
-		} else if (!extension.equals(other.extension))
-			return false;
-		if (mediaType == null) {
-			if (other.mediaType != null)
-				return false;
-		} else if (!mediaType.equals(other.mediaType))
-			return false;
-		return true;
+		return Objects.equals(extension, other.extension) && Objects.equals(mediaType, other.mediaType);
 	}
 }

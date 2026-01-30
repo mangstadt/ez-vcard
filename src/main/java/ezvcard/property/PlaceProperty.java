@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -202,9 +203,7 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((geoUri == null) ? 0 : geoUri.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+		result = prime * result + Objects.hash(geoUri, text, uri);
 		return result;
 	}
 
@@ -212,16 +211,8 @@ public class PlaceProperty extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		PlaceProperty other = (PlaceProperty) obj;
-		if (geoUri == null) {
-			if (other.geoUri != null) return false;
-		} else if (!geoUri.equals(other.geoUri)) return false;
-		if (text == null) {
-			if (other.text != null) return false;
-		} else if (!text.equals(other.text)) return false;
-		if (uri == null) {
-			if (other.uri != null) return false;
-		} else if (!uri.equals(other.uri)) return false;
-		return true;
+		return Objects.equals(geoUri, other.geoUri) && Objects.equals(text, other.text) && Objects.equals(uri, other.uri);
 	}
 }

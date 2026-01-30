@@ -2,6 +2,7 @@ package ezvcard.io.json;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -105,42 +106,16 @@ public class JsonValue {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((array == null) ? 0 : array.hashCode());
-		result = prime * result + (isNull ? 1231 : 1237);
-		result = prime * result + ((object == null) ? 0 : object.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
+		return Objects.hash(array, isNull, object, value);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		JsonValue other = (JsonValue) obj;
-		if (array == null) {
-			if (other.array != null)
-				return false;
-		} else if (!array.equals(other.array))
-			return false;
-		if (isNull != other.isNull)
-			return false;
-		if (object == null) {
-			if (other.object != null)
-				return false;
-		} else if (!object.equals(other.object))
-			return false;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
+		return Objects.equals(array, other.array) && isNull == other.isNull && Objects.equals(object, other.object) && Objects.equals(value, other.value);
 	}
 
 	@Override

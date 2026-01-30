@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import ezvcard.property.Categories;
@@ -299,25 +300,16 @@ public class JCardValue {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		JCardValue that = (JCardValue) o;
-
-		if (values != null ? !values.equals(that.values) : that.values != null) {
-			return false;
-		}
-
-		return true;
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		JCardValue other = (JCardValue) obj;
+		return Objects.equals(values, other.values);
 	}
 
 	@Override
 	public int hashCode() {
-		return values != null ? values.hashCode() : 0;
+		return Objects.hash(values);
 	}
 }

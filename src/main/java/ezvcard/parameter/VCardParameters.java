@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
@@ -35,6 +34,7 @@ import ezvcard.property.StructuredName;
 import ezvcard.util.CharIterator;
 import ezvcard.util.GeoUri;
 import ezvcard.util.ListMultimap;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -1615,28 +1615,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
 			List<String> otherValue = other.get(key);
-
-			if (value.size() != otherValue.size()) {
-				return false;
-			}
-
-			List<String> valueLower = toLowerCaseAndSort(value);
-			List<String> otherValueLower = toLowerCaseAndSort(otherValue);
-			if (!valueLower.equals(otherValueLower)) {
+			if (!StringUtils.equalsIgnoreCaseIgnoreOrder(value, otherValue)) {
 				return false;
 			}
 		}
 
 		return true;
-	}
-
-	private List<String> toLowerCaseAndSort(List<String> values) {
-		//@formatter:off
-		return values.stream()
-			.map(String::toLowerCase)
-			.sorted()
-		.collect(Collectors.toList());
-		//@formatter:on
 	}
 
 	/**

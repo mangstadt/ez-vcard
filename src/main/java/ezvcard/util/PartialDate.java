@@ -446,8 +446,7 @@ public final class PartialDate {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PartialDate other = (PartialDate) obj;
-		if (!Arrays.equals(components, other.components)) return false;
-		return true;
+		return Arrays.equals(components, other.components);
 	}
 
 	@Override

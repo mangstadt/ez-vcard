@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -265,11 +266,7 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + additional.hashCode();
-		result = prime * result + ((family == null) ? 0 : family.hashCode());
-		result = prime * result + ((given == null) ? 0 : given.hashCode());
-		result = prime * result + prefixes.hashCode();
-		result = prime * result + suffixes.hashCode();
+		result = prime * result + Objects.hash(additional, family, given, prefixes, suffixes);
 		return result;
 	}
 
@@ -277,16 +274,8 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		StructuredName other = (StructuredName) obj;
-		if (!additional.equals(other.additional)) return false;
-		if (family == null) {
-			if (other.family != null) return false;
-		} else if (!family.equals(other.family)) return false;
-		if (given == null) {
-			if (other.given != null) return false;
-		} else if (!given.equals(other.given)) return false;
-		if (!prefixes.equals(other.prefixes)) return false;
-		if (!suffixes.equals(other.suffixes)) return false;
-		return true;
+		return Objects.equals(additional, other.additional) && Objects.equals(family, other.family) && Objects.equals(given, other.given) && Objects.equals(prefixes, other.prefixes) && Objects.equals(suffixes, other.suffixes);
 	}
 }

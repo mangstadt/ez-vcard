@@ -1,5 +1,7 @@
 package ezvcard.parameter;
 
+import java.util.Objects;
+
 import ezvcard.property.ClientPidMap;
 
 /*
@@ -115,11 +117,7 @@ public class Pid {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((clientPidMapReference == null) ? 0 : clientPidMapReference.hashCode());
-		result = prime * result + localId.hashCode();
-		return result;
+		return Objects.hash(clientPidMapReference, localId);
 	}
 
 	@Override
@@ -128,10 +126,6 @@ public class Pid {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Pid other = (Pid) obj;
-		if (clientPidMapReference == null) {
-			if (other.clientPidMapReference != null) return false;
-		} else if (!clientPidMapReference.equals(other.clientPidMapReference)) return false;
-		if (!localId.equals(other.localId)) return false;
-		return true;
+		return Objects.equals(clientPidMapReference, other.clientPidMapReference) && Objects.equals(localId, other.localId);
 	}
 }

@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -247,8 +248,7 @@ public class Gender extends VCardProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((genderCode == null) ? 0 : genderCode.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + Objects.hash(genderCode, text);
 		return result;
 	}
 
@@ -256,13 +256,8 @@ public class Gender extends VCardProperty {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Gender other = (Gender) obj;
-		if (genderCode == null) {
-			if (other.genderCode != null) return false;
-		} else if (!genderCode.equals(other.genderCode)) return false;
-		if (text == null) {
-			if (other.text != null) return false;
-		} else if (!text.equals(other.text)) return false;
-		return true;
+		return Objects.equals(genderCode, other.genderCode) && Objects.equals(text, other.text);
 	}
 }

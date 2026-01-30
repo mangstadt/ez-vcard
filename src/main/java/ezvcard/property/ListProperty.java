@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -85,7 +86,7 @@ public class ListProperty<T> extends VCardProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + values.hashCode();
+		result = prime * result + Objects.hash(values);
 		return result;
 	}
 
@@ -93,8 +94,8 @@ public class ListProperty<T> extends VCardProperty {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		ListProperty<?> other = (ListProperty<?>) obj;
-		if (!values.equals(other.values)) return false;
-		return true;
+		return Objects.equals(values, other.values);
 	}
 }

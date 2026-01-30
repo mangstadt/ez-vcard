@@ -1,9 +1,14 @@
 package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -41,7 +46,7 @@ import org.junit.Test;
  */
 public class StringUtilsTest {
 	@Test
-	public void toLowerCase() {
+	public void mapToLowerCase() {
 		Map<String, String> input = new HashMap<>();
 		input.put("ONE", "TWO");
 		input.put(null, "THREE");
@@ -52,8 +57,72 @@ public class StringUtilsTest {
 		expected.put(null, "three");
 		expected.put("four", null);
 
-		Map<String, String> actual = StringUtils.toLowerCase(input);
+		Map<String, String> actual = StringUtils.mapToLowercase(input);
 
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void equalsIgnoreCase_string() {
+		assertTrue(StringUtils.equalsIgnoreCase((String) null, null));
+		assertFalse(StringUtils.equalsIgnoreCase("a", null));
+		assertFalse(StringUtils.equalsIgnoreCase(null, "A"));
+		assertTrue(StringUtils.equalsIgnoreCase("a", "A"));
+		assertFalse(StringUtils.equalsIgnoreCase("a", "B"));
+	}
+
+	@Test
+	public void equalsIgnoreCase_map() {
+		Map<String, String> a = new HashMap<>();
+		a.put("one", "TWO");
+		assertTrue(StringUtils.equalsIgnoreCase((Map<String, String>) null, null));
+		assertFalse(StringUtils.equalsIgnoreCase(a, null));
+		assertFalse(StringUtils.equalsIgnoreCase(null, a));
+
+		Map<String, String> b = new HashMap<>();
+		b.put("ONE", "two");
+		assertTrue(StringUtils.equalsIgnoreCase(a, b));
+
+		Map<String, String> c = new HashMap<>();
+		c.put("1", "2");
+		assertFalse(StringUtils.equalsIgnoreCase(a, c));
+
+		Map<String, String> d = new HashMap<>();
+		d.put("one", "TWO");
+		d.put("3", "4");
+		assertFalse(StringUtils.equalsIgnoreCase(a, d));
+	}
+
+	@Test
+	public void equalsIgnoreCaseIgnoreOrder() {
+		List<String> a = Arrays.asList("a", "b");
+		assertTrue(StringUtils.equalsIgnoreCaseIgnoreOrder(null, null));
+		assertFalse(StringUtils.equalsIgnoreCaseIgnoreOrder(a, null));
+		assertFalse(StringUtils.equalsIgnoreCaseIgnoreOrder(null, a));
+
+		List<String> b = Arrays.asList("B", "A");
+		assertTrue(StringUtils.equalsIgnoreCaseIgnoreOrder(a, b));
+
+		List<String> c = Arrays.asList("C", "D");
+		assertFalse(StringUtils.equalsIgnoreCaseIgnoreOrder(a, c));
+
+		List<String> d = Arrays.asList("A", "B", "C", "D");
+		assertFalse(StringUtils.equalsIgnoreCaseIgnoreOrder(a, d));
+	}
+
+	@Test
+	public void hashIgnoreCase_string() {
+		Object obj = 1;
+		assertEquals(Objects.hash(obj, "abc"), StringUtils.hashIgnoreCase(obj, "AbC"));
+	}
+
+	@Test
+	public void hashIgnoreCase_map() {
+		Map<String, String> actual = new HashMap<>();
+		actual.put("ONE", "TWO");
+		Map<String, String> expected = new HashMap<>();
+		expected.put("one", "two");
+
+		assertEquals(expected.hashCode(), StringUtils.hashIgnoreCase(actual));
 	}
 }

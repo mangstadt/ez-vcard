@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
@@ -12,6 +13,7 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarning;
+import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -146,8 +148,7 @@ public class RawProperty extends TextProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
-		result = prime * result + ((propertyName == null) ? 0 : propertyName.toLowerCase().hashCode());
+		result = prime * result + StringUtils.hashIgnoreCase(dataType, propertyName);
 		return result;
 	}
 
@@ -155,13 +156,8 @@ public class RawProperty extends TextProperty {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		RawProperty other = (RawProperty) obj;
-		if (dataType == null) {
-			if (other.dataType != null) return false;
-		} else if (!dataType.equals(other.dataType)) return false;
-		if (propertyName == null) {
-			if (other.propertyName != null) return false;
-		} else if (!propertyName.equalsIgnoreCase(other.propertyName)) return false;
-		return true;
+		return Objects.equals(dataType, other.dataType) && StringUtils.equalsIgnoreCase(propertyName, other.propertyName);
 	}
 }

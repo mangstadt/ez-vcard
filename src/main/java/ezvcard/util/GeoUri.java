@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -441,12 +442,8 @@ public final class GeoUri {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((coordA == null) ? 0 : coordA.hashCode());
-		result = prime * result + ((coordB == null) ? 0 : coordB.hashCode());
-		result = prime * result + ((coordC == null) ? 0 : coordC.hashCode());
-		result = prime * result + ((crs == null) ? 0 : crs.toLowerCase().hashCode());
-		result = prime * result + ((parameters == null) ? 0 : StringUtils.toLowerCase(parameters).hashCode());
-		result = prime * result + ((uncertainty == null) ? 0 : uncertainty.hashCode());
+		result = prime * result + StringUtils.hashIgnoreCase(parameters);
+		result = prime * result + StringUtils.hashIgnoreCase(coordA, coordB, coordC, crs, uncertainty);
 		return result;
 	}
 
@@ -456,32 +453,7 @@ public final class GeoUri {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		GeoUri other = (GeoUri) obj;
-		if (coordA == null) {
-			if (other.coordA != null) return false;
-		} else if (!coordA.equals(other.coordA)) return false;
-		if (coordB == null) {
-			if (other.coordB != null) return false;
-		} else if (!coordB.equals(other.coordB)) return false;
-		if (coordC == null) {
-			if (other.coordC != null) return false;
-		} else if (!coordC.equals(other.coordC)) return false;
-		if (crs == null) {
-			if (other.crs != null) return false;
-		} else if (!crs.equalsIgnoreCase(other.crs)) return false;
-		if (uncertainty == null) {
-			if (other.uncertainty != null) return false;
-		} else if (!uncertainty.equals(other.uncertainty)) return false;
-		if (parameters == null) {
-			if (other.parameters != null) return false;
-		} else {
-			if (other.parameters == null) return false;
-			if (parameters.size() != other.parameters.size()) return false;
-
-			Map<String, String> parametersLower = StringUtils.toLowerCase(parameters);
-			Map<String, String> otherParametersLower = StringUtils.toLowerCase(other.parameters);
-			if (!parametersLower.equals(otherParametersLower)) return false;
-		}
-		return true;
+		return Objects.equals(coordA, other.coordA) && Objects.equals(coordB, other.coordB) && Objects.equals(coordC, other.coordC) && StringUtils.equalsIgnoreCase(crs, other.crs) && Objects.equals(uncertainty, other.uncertainty) && StringUtils.equalsIgnoreCase(parameters, other.parameters);
 	}
 
 	/**

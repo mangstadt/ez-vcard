@@ -1,7 +1,11 @@
 package ezvcard.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -48,8 +52,9 @@ public final class StringUtils {
 	 * @param map the map
 	 * @return the copy with lowercase keys and values
 	 */
-	public static Map<String, String> toLowerCase(Map<String, String> map) {
-		Map<String, String> lowerCaseMap = new HashMap<>(map.size());
+	static Map<String, String> mapToLowercase(Map<String, String> map) {
+		Map<String, String> lowerMap = new HashMap<>(map.size());
+
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String key = entry.getKey();
 			key = (key == null) ? null : key.toLowerCase();
@@ -57,9 +62,85 @@ public final class StringUtils {
 			String value = entry.getValue();
 			value = (value == null) ? null : value.toLowerCase();
 
-			lowerCaseMap.put(key, value);
+			lowerMap.put(key, value);
 		}
-		return lowerCaseMap;
+
+		return lowerMap;
+	}
+
+	/**
+	 * Compares two strings using case-insensitive equality, also checking for
+	 * null.
+	 * @param a the first string (can be null)
+	 * @param b the second string (can be null)
+	 * @return true if they are equal, false if not
+	 */
+	public static boolean equalsIgnoreCase(String a, String b) {
+		return (a == null) ? b == null : a.equalsIgnoreCase(b);
+	}
+
+	/**
+	 * Compares two string-based maps using case-insensitive equality, also
+	 * checking for null.
+	 * @param a the first map (can be null)
+	 * @param b the second map (can be null)
+	 * @return true if they are equal, false if not
+	 */
+	public static boolean equalsIgnoreCase(Map<String, String> a, Map<String, String> b) {
+		if (a == null) return b == null;
+		if (b == null) return a == null;
+		if (a.size() != b.size()) return false;
+
+		return mapToLowercase(a).equals(mapToLowercase(b));
+	}
+
+	/**
+	 * Compares two lists of strings using case-insensitive equality and
+	 * ignoring order. Also checks for null.
+	 * @param a the first list (can be null)
+	 * @param b the second list (can be null)
+	 * @return true if they are equal, false if not
+	 */
+	public static boolean equalsIgnoreCaseIgnoreOrder(List<String> a, List<String> b) {
+		if (a == null) return b == null;
+		if (b == null) return a == null;
+		if (a.size() != b.size()) return false;
+
+		return listToLowerCaseAndSort(a).equals(listToLowerCaseAndSort(b));
+	}
+
+	private static List<String> listToLowerCaseAndSort(List<String> values) {
+		//@formatter:off
+		return values.stream()
+			.map(String::toLowerCase)
+			.sorted()
+		.collect(Collectors.toList());
+		//@formatter:on
+	}
+
+	/**
+	 * Calls {@link Objects#hash}, replacing all String objects with lowercase
+	 * versions.
+	 * @param objects the objects to hash
+	 * @return the hash code
+	 */
+	public static int hashIgnoreCase(Object... objects) {
+		//@formatter:off
+		IntStream.range(0, objects.length)
+			.filter(i -> objects[i] instanceof String)
+		.forEach(i -> objects[i] = ((String) objects[i]).toLowerCase());
+		//@formatter:on
+
+		return Objects.hash(objects);
+	}
+
+	/**
+	 * Generates a case-insensitive hash code of a string-based map.
+	 * @param map the map (can be null)
+	 * @return the hash code or 0 if the map is null
+	 */
+	public static int hashIgnoreCase(Map<String, String> map) {
+		return (map == null) ? 0 : mapToLowercase(map).hashCode();
 	}
 
 	private StringUtils() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -505,13 +506,7 @@ public class Address extends VCardProperty implements HasAltId {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + countries.hashCode();
-		result = prime * result + extendedAddresses.hashCode();
-		result = prime * result + localities.hashCode();
-		result = prime * result + poBoxes.hashCode();
-		result = prime * result + postalCodes.hashCode();
-		result = prime * result + regions.hashCode();
-		result = prime * result + streetAddresses.hashCode();
+		result = prime * result + Objects.hash(countries, extendedAddresses, localities, poBoxes, postalCodes, regions, streetAddresses);
 		return result;
 	}
 
@@ -519,15 +514,9 @@ public class Address extends VCardProperty implements HasAltId {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!super.equals(obj)) return false;
+		if (getClass() != obj.getClass()) return false;
 		Address other = (Address) obj;
-		if (!countries.equals(other.countries)) return false;
-		if (!extendedAddresses.equals(other.extendedAddresses)) return false;
-		if (!localities.equals(other.localities)) return false;
-		if (!poBoxes.equals(other.poBoxes)) return false;
-		if (!postalCodes.equals(other.postalCodes)) return false;
-		if (!regions.equals(other.regions)) return false;
-		if (!streetAddresses.equals(other.streetAddresses)) return false;
-		return true;
+		return Objects.equals(countries, other.countries) && Objects.equals(extendedAddresses, other.extendedAddresses) && Objects.equals(localities, other.localities) && Objects.equals(poBoxes, other.poBoxes) && Objects.equals(postalCodes, other.postalCodes) && Objects.equals(regions, other.regions) && Objects.equals(streetAddresses, other.streetAddresses);
 	}
 
 	private static String first(List<String> list) {
