@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import ezvcard.VCard;
@@ -266,34 +265,6 @@ public class TestUtils {
 		Set<T> expectedSet = new HashSet<>(expectedElements.length);
 		expectedSet.addAll(Arrays.asList(expectedElements));
 		assertEquals(expectedSet, actualSet);
-	}
-
-	/**
-	 * Creates a GMT timezone.
-	 * @param offsetMillis the offset in milliseconds
-	 * @return the timezone
-	 */
-	public static TimeZone gmtTz(long offsetMillis) {
-		long totalMinutes = Math.abs(offsetMillis / 1000 / 60);
-		long hours = totalMinutes / 60;
-		long minutes = totalMinutes % 60;
-
-		StringBuilder tzid = new StringBuilder("GMT");
-		tzid.append((offsetMillis >= 0) ? '+' : '-');
-
-		if (hours < 10) {
-			tzid.append('0');
-		}
-		tzid.append(hours);
-
-		tzid.append(':');
-
-		if (minutes < 10) {
-			tzid.append('0');
-		}
-		tzid.append(minutes);
-
-		return TimeZone.getTimeZone(tzid.toString());
 	}
 
 	/**
