@@ -4257,13 +4257,15 @@ public class VCard implements Iterable<VCardProperty> {
 	 * @return the properties (this list is immutable)
 	 */
 	public <T extends VCardProperty & HasAltId> List<List<T>> getPropertiesAlt(Class<T> clazz) {
+		List<T> properties = getProperties(clazz);
+
 		//@formatter:off
 		ListMultimap<String, T> propertiesGroupedByAltId = new ListMultimap<>();
-		getProperties(clazz).stream()
+		properties.stream()
 			.filter(property -> property.getAltId() != null)
 		.forEach(property -> propertiesGroupedByAltId.put(property.getAltId(), property));
 
-		List<T> propertiesWithoutAltIds = getProperties(clazz).stream()
+		List<T> propertiesWithoutAltIds = properties.stream()
 			.filter(property -> property.getAltId() == null)
 		.collect(Collectors.toList());
 		//@formatter:on
