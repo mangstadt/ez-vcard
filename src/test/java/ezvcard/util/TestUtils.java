@@ -216,17 +216,17 @@ public class TestUtils {
 
 				if (!expectedPropCodes.isEmpty()) {
 					//@formatter:off
-					List<String> lines = expectedPropCodes.entrySet().stream()
+					String expectedWarningsNotEncounted = expectedPropCodes.entrySet().stream()
 						.map(entry -> {
 							VCardProperty property = entry.getKey();
 							String className = (property == null) ? null : property.getClass().getSimpleName();
 							Integer[] expectedCodes = entry.getValue();
 							return className + ": " + Arrays.toString(expectedCodes);
 						})
-					.collect(Collectors.toList());
+					.collect(Collectors.joining(StringUtils.NEWLINE));
 					//@formatter:on
 
-					fail("For version " + version + ", the following validation warnings were expected, but NOT thrown:\n" + lines + "\nActual warnings:\n" + warnings);
+					fail("For version " + version + ", the following validation warnings were expected, but NOT thrown:\n" + expectedWarningsNotEncounted + "\nActual warnings:\n" + warnings);
 				}
 			}
 		}
