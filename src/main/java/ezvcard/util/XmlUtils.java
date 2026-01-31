@@ -174,24 +174,21 @@ public final class XmlUtils {
 	 * XXE Cheat Sheet</a>
 	 */
 	public static void applyXXEProtection(DocumentBuilderFactory factory) {
-		Map<String, Boolean> features = new HashMap<>();
-		features.put("http://apache.org/xml/features/disallow-doctype-decl", true);
-		features.put("http://xml.org/sax/features/external-general-entities", false);
-		features.put("http://xml.org/sax/features/external-parameter-entities", false);
-		features.put("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-		for (Map.Entry<String, Boolean> entry : features.entrySet()) {
-			String feature = entry.getKey();
-			Boolean value = entry.getValue();
-			try {
-				factory.setFeature(feature, value);
-			} catch (ParserConfigurationException e) {
-				//feature is not supported by the local XML engine, skip it
-			}
-		}
+		setFeature(factory, "http://apache.org/xml/features/disallow-doctype-decl", true);
+		setFeature(factory, "http://xml.org/sax/features/external-general-entities", false);
+		setFeature(factory, "http://xml.org/sax/features/external-parameter-entities", false);
+		setFeature(factory, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
 		factory.setXIncludeAware(false);
 		factory.setExpandEntityReferences(false);
+	}
+
+	private static void setFeature(DocumentBuilderFactory factory, String feature, Boolean value) {
+		try {
+			factory.setFeature(feature, value);
+		} catch (ParserConfigurationException e) {
+			//feature is not supported by the local XML engine, skip it
+		}
 	}
 
 	/**
@@ -203,25 +200,21 @@ public final class XmlUtils {
 	 * XXE Cheat Sheet</a>
 	 */
 	public static void applyXXEProtection(TransformerFactory factory) {
-		//@formatter:off
-		String[] attributes = {
-			//XMLConstants.ACCESS_EXTERNAL_DTD (Java 7 only)
-			"http://javax.xml.XMLConstants/property/accessExternalDTD",
-			
-			//XMLConstants.ACCESS_EXTERNAL_SCHEMA (Java 7 only)
-			"http://javax.xml.XMLConstants/property/accessExternalSchema",
+		//XMLConstants.ACCESS_EXTERNAL_DTD (Java 7 only)
+		setAttribute(factory, "http://javax.xml.XMLConstants/property/accessExternalDTD");
 
-			//XMLConstants.ACCESS_EXTERNAL_STYLESHEET (Java 7 only)
-			"http://javax.xml.XMLConstants/property/accessExternalStylesheet"
-		};
-		//@formatter:on
+		//XMLConstants.ACCESS_EXTERNAL_SCHEMA (Java 7 only)
+		setAttribute(factory, "http://javax.xml.XMLConstants/property/accessExternalSchema");
 
-		for (String attribute : attributes) {
-			try {
-				factory.setAttribute(attribute, "");
-			} catch (IllegalArgumentException e) {
-				//attribute is not supported by the local XML engine, skip it
-			}
+		//XMLConstants.ACCESS_EXTERNAL_STYLESHEET (Java 7 only)
+		setAttribute(factory, "http://javax.xml.XMLConstants/property/accessExternalStylesheet");
+	}
+
+	private static void setAttribute(TransformerFactory factory, String name) {
+		try {
+			factory.setAttribute(name, "");
+		} catch (IllegalArgumentException e) {
+			//attribute is not supported by the local XML engine, skip it
 		}
 	}
 
@@ -293,13 +286,13 @@ public final class XmlUtils {
 	 * @param outputProperties the output properties
 	 */
 	public static void assignOutputProperties(Transformer transformer, Map<String, String> outputProperties) {
-		for (Map.Entry<String, String> property : outputProperties.entrySet()) {
+		outputProperties.forEach((name, value) -> {
 			try {
-				transformer.setOutputProperty(property.getKey(), property.getValue());
+				transformer.setOutputProperty(name, value);
 			} catch (IllegalArgumentException e) {
 				//ignore invalid output properties
 			}
-		}
+		});
 	}
 
 	/**

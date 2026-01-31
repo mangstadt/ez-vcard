@@ -480,11 +480,7 @@ public class XCardDocument {
 		 * Using Transformer#setOutputProperties(Properties) doesn't work for
 		 * some reason for setting the number of indentation spaces.
 		 */
-		for (Map.Entry<String, String> entry : outputProperties.entrySet()) {
-			String key = entry.getKey();
-			String value = entry.getValue();
-			transformer.setOutputProperty(key, value);
-		}
+		outputProperties.forEach(transformer::setOutputProperty);
 
 		DOMSource source = new DOMSource(document);
 		StreamResult result = new StreamResult(writer);
@@ -648,9 +644,7 @@ public class XCardDocument {
 		protected void _write(VCard vcard, List<VCardProperty> properties) throws IOException {
 			//group properties by group name (null = no group name)
 			ListMultimap<String, VCardProperty> propertiesByGroup = new ListMultimap<>();
-			for (VCardProperty property : properties) {
-				propertiesByGroup.put(property.getGroup(), property);
-			}
+			properties.forEach(property -> propertiesByGroup.put(property.getGroup(), property));
 
 			//marshal each property object
 			Element vcardElement = createElement(VCARD);

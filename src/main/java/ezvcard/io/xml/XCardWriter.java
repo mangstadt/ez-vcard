@@ -258,11 +258,7 @@ public class XCardWriter extends XCardWriterBase {
 		 * Using Transformer#setOutputProperties(Properties) doesn't work for
 		 * some reason for setting the number of indentation spaces.
 		 */
-		for (Map.Entry<String, String> entry : outputProperties.entrySet()) {
-			String key = entry.getKey();
-			String value = entry.getValue();
-			transformer.setOutputProperty(key, value);
-		}
+		outputProperties.forEach(transformer::setOutputProperty);
 
 		Result result = (writer == null) ? new DOMResult(parent) : new StreamResult(writer);
 		handler.setResult(result);

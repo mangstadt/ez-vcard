@@ -54,18 +54,12 @@ public final class StringUtils {
 	 */
 	static Map<String, String> mapToLowercase(Map<String, String> map) {
 		Map<String, String> lowerMap = new HashMap<>(map.size());
-
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			String key = entry.getKey();
-			key = (key == null) ? null : key.toLowerCase();
-
-			String value = entry.getValue();
-			value = (value == null) ? null : value.toLowerCase();
-
-			lowerMap.put(key, value);
-		}
-
+		map.forEach((key, value) -> lowerMap.put(toLowerCase(key), toLowerCase(value)));
 		return lowerMap;
+	}
+
+	private static String toLowerCase(String s) {
+		return (s == null) ? null : s.toLowerCase();
 	}
 
 	/**

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
@@ -1359,22 +1360,25 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	private void checkForInvalidChars(VCardVersion version, List<ValidationWarning> warnings) {
 		SyntaxStyle syntax = version.getSyntaxStyle();
-		for (Map.Entry<String, List<String>> entry : this) {
+		Stream<Map.Entry<String, List<String>>> stream = stream();
+
+		/*
+		 * Don't check LABEL parameter for 2.1 and 3.0 because this parameter is
+		 * converted to a property in those versions.
+		 */
+		if (version != VCardVersion.V4_0) {
+			stream = stream.filter(entry -> !LABEL.equalsIgnoreCase(entry.getKey()));
+		}
+
+		//@formatter:off
+		stream.forEach(entry -> {
 			String name = entry.getKey();
-
-			/*
-			 * Don't check LABEL parameter for 2.1 and 3.0 because this
-			 * parameter is converted to a property in those versions.
-			 */
-			if (version != VCardVersion.V4_0 && LABEL.equalsIgnoreCase(name)) {
-				continue;
-			}
-
 			checkForInvalidCharsInParamName(name, syntax, warnings);
 
 			List<String> values = entry.getValue();
 			values.forEach(value -> checkForInvalidCharsInParamValue(name, value, syntax, warnings));
-		}
+		});
+		//@formatter:on
 	}
 
 	private void checkForInvalidCharsInParamName(String name, SyntaxStyle syntax, List<ValidationWarning> warnings) {
@@ -1611,16 +1615,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 		VCardParameters other = (VCardParameters) obj;
 		if (size() != other.size()) return false;
 
-		for (Map.Entry<String, List<String>> entry : this) {
+		return stream().allMatch(entry -> {
 			String key = entry.getKey();
 			List<String> value = entry.getValue();
 			List<String> otherValue = other.get(key);
-			if (!StringUtils.equalsIgnoreCaseIgnoreOrder(value, otherValue)) {
-				return false;
-			}
-		}
-
-		return true;
+			return StringUtils.equalsIgnoreCaseIgnoreOrder(value, otherValue);
+		});
 	}
 
 	/**

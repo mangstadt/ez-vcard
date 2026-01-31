@@ -390,11 +390,7 @@ public final class GeoUri {
 				writeParameter(PARAM_UNCERTAINTY, formatter.format(uncertainty));
 			}
 
-			for (Map.Entry<String, String> entry : parameters.entrySet()) {
-				String name = entry.getKey();
-				String value = entry.getValue();
-				writeParameter(name, value);
-			}
+			parameters.forEach(this::writeParameter);
 
 			return sb.toString();
 		}

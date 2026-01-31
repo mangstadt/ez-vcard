@@ -190,11 +190,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 		XCardDocumentStreamWriter writer = document.writer();
 		writer.setAddProdId(prodId);
 		writer.setVersionStrict(versionStrict);
-		for (Map.Entry<String, VCardDataType> entry : parameterDataTypes.entrySet()) {
-			String parameterName = entry.getKey();
-			VCardDataType dataType = entry.getValue();
-			writer.registerParameterDataType(parameterName, dataType);
-		}
+		parameterDataTypes.forEach(writer::registerParameterDataType);
 		if (index != null) {
 			writer.setScribeIndex(index);
 		}

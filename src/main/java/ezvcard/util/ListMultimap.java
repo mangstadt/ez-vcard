@@ -95,10 +95,9 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 
 	private static <K, V> Map<K, List<V>> copy(Map<K, List<V>> orig) {
 		Map<K, List<V>> map = new LinkedHashMap<>(orig.size());
-		for (Map.Entry<K, List<V>> entry : orig.entrySet()) {
-			List<V> values = new ArrayList<>(entry.getValue());
-			map.put(entry.getKey(), values);
-		}
+		orig.forEach((key, values) -> {
+			map.put(key, new ArrayList<>(values));
+		});
 		return map;
 	}
 
@@ -302,11 +301,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 	 */
 	public Map<K, List<V>> asMap() {
 		Map<K, List<V>> view = new LinkedHashMap<>(map.size());
-		for (Map.Entry<K, List<V>> entry : map.entrySet()) {
-			K key = entry.getKey();
-			List<V> value = entry.getValue();
-			view.put(key, Collections.unmodifiableList(value));
-		}
+		map.forEach((key, value) -> view.put(key, Collections.unmodifiableList(value)));
 		return Collections.unmodifiableMap(view);
 	}
 

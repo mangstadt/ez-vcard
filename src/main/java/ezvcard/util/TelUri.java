@@ -248,11 +248,7 @@ public final class TelUri {
 			writeParameter(PARAM_PHONE_CONTEXT, phoneContext, sb);
 		}
 
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			String name = entry.getKey();
-			String value = entry.getValue();
-			writeParameter(name, value, sb);
-		}
+		parameters.forEach((name, value) -> writeParameter(name, value, sb));
 
 		return sb.toString();
 	}
