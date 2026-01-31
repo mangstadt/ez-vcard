@@ -95,9 +95,7 @@ public class ListMultimap<K, V> implements Iterable<Map.Entry<K, List<V>>> {
 
 	private static <K, V> Map<K, List<V>> copy(Map<K, List<V>> orig) {
 		Map<K, List<V>> map = new LinkedHashMap<>(orig.size());
-		orig.forEach((key, values) -> {
-			map.put(key, new ArrayList<>(values));
-		});
+		orig.forEach((key, values) -> map.put(key, new ArrayList<>(values)));
 		return map;
 	}
 
