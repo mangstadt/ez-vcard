@@ -227,9 +227,9 @@ public class HCardParser extends StreamReader {
 		Elements vcardElementsIncludingNested = searchUnder.getElementsByClass("vcard");
 
 		//@formatter:off
-		Elements vcardElementsWithoutNested = new Elements(vcardElementsIncludingNested.stream()
+		List<Element> vcardElementsWithoutNested = vcardElementsIncludingNested.stream()
 			.filter(element -> !isChildOf(element, vcardElementsIncludingNested))
-		.collect(Collectors.toList()));
+		.collect(Collectors.toList());
 		//@formatter:on
 
 		vcardElementsIt = vcardElementsWithoutNested.iterator();
