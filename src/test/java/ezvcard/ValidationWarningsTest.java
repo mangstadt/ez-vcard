@@ -86,7 +86,7 @@ public class ValidationWarningsTest {
 		List<String> expectedLines = Arrays.asList(
 			"one",
 			"W02: " + Messages.INSTANCE.getValidationWarning(2, "two"),
-			"[TestProperty1] | three",
+			"[TestProperty1]: three",
 			"[TestProperty1] | W04: " + Messages.INSTANCE.getValidationWarning(4, "four")
 		);
 		//@formatter:on

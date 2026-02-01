@@ -61,6 +61,19 @@ public class ValidationWarning {
 	}
 
 	/**
+	 * Gets the validation warning code in string form.
+	 * @return the warning code in string form (e.g. "W08") or empty string if
+	 * no code was specified
+	 */
+	public String getCodeString() {
+		if (code == null) {
+			return "";
+		}
+
+		return "W" + ((code < 10) ? "0" : "") + code;
+	}
+
+	/**
 	 * Gets the validation warning message
 	 * @return the warning message
 	 */

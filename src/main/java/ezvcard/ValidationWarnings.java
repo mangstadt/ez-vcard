@@ -1,13 +1,12 @@
 package ezvcard;
 
-import java.text.NumberFormat;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ezvcard.property.VCardProperty;
 import ezvcard.util.ListMultimap;
@@ -155,37 +154,40 @@ public class ValidationWarnings implements Iterable<Map.Entry<VCardProperty, Lis
 	 */
 	@Override
 	public String toString() {
-		NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
-		nf.setMinimumIntegerDigits(2);
-
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : warnings) {
+		return warnings.stream().flatMap(entry -> {
 			VCardProperty property = entry.getKey();
 			List<ValidationWarning> propViolations = entry.getValue();
+			return propViolations.stream().map(propViolation -> toString(property, propViolation));
+		}).collect(Collectors.joining(StringUtils.NEWLINE));
+	}
 
-			for (ValidationWarning propViolation : propViolations) {
-				if (property != null) {
-					sb.append('[');
-					sb.append(property.getClass().getSimpleName());
-					sb.append("] | ");
-				}
+	private String toString(VCardProperty property, ValidationWarning warning) {
+		StringBuilder sb = new StringBuilder();
+		String codeString = warning.getCodeString();
 
-				Integer code = propViolation.getCode();
-				if (code != null) {
-					sb.append('W');
-					sb.append(nf.format(code));
-					sb.append(": ");
-				}
-
-				sb.append(propViolation.getMessage());
-				sb.append(StringUtils.NEWLINE);
-			}
+		if (property != null) {
+			sb.append('[').append(property.getClass().getSimpleName()).append(']');
+			sb.append(codeString.isEmpty() ? ": " : " | ");
 		}
+
+		if (!codeString.isEmpty()) {
+			sb.append(codeString).append(": ");
+		}
+
+		sb.append(warning.getMessage());
 
 		return sb.toString();
 	}
 
 	public Iterator<Entry<VCardProperty, List<ValidationWarning>>> iterator() {
 		return warnings.iterator();
+	}
+
+	/**
+	 * Streams the underlying map.
+	 * @return the stream
+	 */
+	public Stream<Map.Entry<VCardProperty, List<ValidationWarning>>> stream() {
+		return warnings.stream();
 	}
 }

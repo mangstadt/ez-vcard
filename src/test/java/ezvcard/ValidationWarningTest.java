@@ -1,9 +1,9 @@
-package ezvcard.parameter;
+package ezvcard;
 
-import java.lang.reflect.Constructor;
-import java.util.stream.IntStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import ezvcard.util.CaseClasses;
+import org.junit.Test;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -31,30 +31,27 @@ import ezvcard.util.CaseClasses;
  */
 
 /**
- * Manages the list of pre-defined values for a media type parameter.
  * @author Michael Angstadt
- * @param <T> the parameter class
  */
-public class MediaTypeCaseClasses<T extends MediaTypeParameter> extends CaseClasses<T, String[]> {
-	public MediaTypeCaseClasses(Class<T> clazz) {
-		super(clazz);
+public class ValidationWarningTest {
+	@Test
+	public void getCodeString() {
+		ValidationWarning warning = new ValidationWarning("message");
+		assertEquals("", warning.getCodeString());
+
+		warning = new ValidationWarning(1);
+		assertEquals("W01", warning.getCodeString());
+
+		warning = new ValidationWarning(11);
+		assertEquals("W11", warning.getCodeString());
 	}
 
-	@Override
-	protected T create(String[] value) {
-		try {
-			//reflection: return new ClassName(value, mediaType, extension);
-			Constructor<T> constructor = clazz.getDeclaredConstructor(String.class, String.class, String.class);
-			constructor.setAccessible(true);
-			return constructor.newInstance(value[0], value[1], value[2]);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+	@Test
+	public void toString_() {
+		ValidationWarning warning = new ValidationWarning("message");
+		assertEquals("message", warning.toString());
 
-	@Override
-	protected boolean matches(T object, String[] value) {
-		String[] objectValues = { object.getValue(), object.getMediaType(), object.getExtension() };
-		return IntStream.range(0, value.length).allMatch(i -> value[i] == null || value[i].equalsIgnoreCase(objectValues[i]));
+		warning = new ValidationWarning(1);
+		assertTrue(warning.toString().startsWith("(1) "));
 	}
-}
+	}

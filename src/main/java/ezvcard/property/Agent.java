@@ -1,16 +1,13 @@
 package ezvcard.property;
 
-import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import ezvcard.ValidationWarnings;
 import ezvcard.ValidationWarning;
 
 /*
@@ -181,24 +178,18 @@ public class Agent extends VCardProperty {
 	}
 
 	private void validateAgentVCard(VCardVersion version, List<ValidationWarning> warnings) {
-		NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ROOT);
-		nf.setMinimumIntegerDigits(2);
-
-		ValidationWarnings validationWarnings = vcard.validate(version);
-
-		for (Map.Entry<VCardProperty, List<ValidationWarning>> entry : validationWarnings) {
+		vcard.validate(version).stream().flatMap(entry -> {
 			VCardProperty property = entry.getKey();
 			List<ValidationWarning> propertyWarnings = entry.getValue();
 
 			String className = (property == null) ? "" : property.getClass().getSimpleName();
 
-			propertyWarnings.stream().map(warning -> {
-				int code = warning.getCode();
-				String codeStr = (code >= 0) ? "W" + nf.format(code) : "";
+			return propertyWarnings.stream().map(warning -> {
+				String codeStr = warning.getCodeString();
 				String message = warning.getMessage();
 				return new ValidationWarning(10, className, codeStr, message);
-			}).forEach(warnings::add);
-		}
+			});
+		}).forEach(warnings::add);
 	}
 
 	@Override
