@@ -1,5 +1,8 @@
 package ezvcard.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -68,6 +71,23 @@ public class HtmlUtils {
 	public static Element toElement(String html, String baseUrl) {
 		Document d = (baseUrl == null) ? Jsoup.parse(html) : Jsoup.parse(html, baseUrl);
 		return d.getElementsByTag("body").first().children().first();
+	}
+
+	/**
+	 * Extracts the anchor portion from a URL.
+	 * @param url the full URL
+	 * @return the anchor, or null if there is no anchor, or null if the given
+	 * string is not a valid URL
+	 */
+	public static String getAnchorFromUrl(String url) {
+		URL urlObj;
+		try {
+			urlObj = new URL(url);
+		} catch (MalformedURLException e) {
+			return null;
+		}
+
+		return urlObj.getRef();
 	}
 
 	private HtmlUtils() {

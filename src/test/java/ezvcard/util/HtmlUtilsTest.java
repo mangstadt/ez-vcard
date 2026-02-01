@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jsoup.Jsoup;
@@ -79,5 +80,13 @@ public class HtmlUtilsTest {
 		Element element = HtmlUtils.toElement("<img src=\"image.png\" />", "http://example.com/");
 		assertEquals("img", element.tagName());
 		assertEquals("http://example.com/image.png", element.absUrl("src"));
+	}
+
+	@Test
+	public void getAnchorFromUrl() {
+		assertEquals("foo", HtmlUtils.getAnchorFromUrl("https://domain.com/page#foo"));
+		assertEquals("", HtmlUtils.getAnchorFromUrl("https://domain.com/page#"));
+		assertNull(HtmlUtils.getAnchorFromUrl("https://domain.com/page"));
+		assertNull(HtmlUtils.getAnchorFromUrl("not a URL"));
 	}
 }

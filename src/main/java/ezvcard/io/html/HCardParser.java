@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +39,7 @@ import ezvcard.property.Telephone;
 import ezvcard.property.Url;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.Gobble;
+import ezvcard.util.HtmlUtils;
 import ezvcard.util.IOUtils;
 
 /*
@@ -88,8 +89,9 @@ import ezvcard.util.IOUtils;
  * wiki/hcard</a>
  */
 public class HCardParser extends StreamReader {
+	private static final Duration urlTimeout = Duration.ofSeconds(30);
+
 	private final String pageUrl;
-	private final Elements vcardElements;
 	private final Iterator<Element> vcardElementsIt;
 	private final List<Label> labels = new ArrayList<>();
 
@@ -109,7 +111,7 @@ public class HCardParser extends StreamReader {
 	 * @throws IOException if there's a problem loading the webpage
 	 */
 	public HCardParser(URL url) throws IOException {
-		this(Jsoup.parse(url, 30000), url.toString());
+		this(Jsoup.parse(url, (int) urlTimeout.toMillis()), url.toString());
 	}
 
 	/**
@@ -207,36 +209,30 @@ public class HCardParser extends StreamReader {
 	public HCardParser(Document document, String pageUrl) {
 		this.pageUrl = pageUrl;
 
-		String anchor = null;
-		if (pageUrl != null) {
-			try {
-				URL url = new URL(pageUrl);
-				anchor = url.getRef();
-			} catch (MalformedURLException e) {
-				anchor = null;
-			}
-		}
+		String anchor = (pageUrl == null) ? null : HtmlUtils.getAnchorFromUrl(pageUrl);
 
-		Element searchUnder = null;
-		if (anchor != null) {
-			searchUnder = document.getElementById(anchor);
-		}
+		Element searchUnder = (anchor == null) ? null : document.getElementById(anchor);
 		if (searchUnder == null) {
 			searchUnder = document;
 		}
 
-		vcardElements = searchUnder.getElementsByClass("vcard");
+		/*
+		 * Nested vCards also show up in this list as separate list items. For
+		 * example, if the HTML document has one vCard and that vCard has one
+		 * nested vCard (i.e. AGENT property), this list will have two elements.
+		 * 
+		 * Exclude the nested vCards from being processed as their own,
+		 * independent vCards.
+		 */
+		Elements vcardElementsIncludingNested = searchUnder.getElementsByClass("vcard");
 
-		//remove nested vcard elements
-		Iterator<Element> it = vcardElements.iterator();
-		while (it.hasNext()) {
-			Element element = it.next();
-			if (isChildOf(element, vcardElements)) {
-				it.remove();
-			}
-		}
+		//@formatter:off
+		Elements vcardElementsWithoutNested = new Elements(vcardElementsIncludingNested.stream()
+			.filter(element -> !isChildOf(element, vcardElementsIncludingNested))
+		.collect(Collectors.toList()));
+		//@formatter:on
 
-		vcardElementsIt = vcardElements.iterator();
+		vcardElementsIt = vcardElementsWithoutNested.iterator();
 	}
 
 	/**
@@ -246,8 +242,7 @@ public class HCardParser extends StreamReader {
 	 */
 	private HCardParser(Element embeddedVCard, String pageUrl) {
 		this.pageUrl = pageUrl;
-		vcardElements = new Elements(embeddedVCard);
-		vcardElementsIt = vcardElements.iterator();
+		vcardElementsIt = new Elements(embeddedVCard).iterator();
 	}
 
 	@Override
