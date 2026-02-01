@@ -44,7 +44,7 @@ public final class StringUtils {
 	/**
 	 * The local computer's newline character sequence.
 	 */
-	public static final String NEWLINE = System.getProperty("line.separator");
+	public static final String NEWLINE = System.lineSeparator();
 
 	/**
 	 * Creates a copy of the given map, converting its keys and values to
