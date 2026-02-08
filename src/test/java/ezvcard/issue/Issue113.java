@@ -6,7 +6,6 @@ import ezvcard.VCardVersion;
 import ezvcard.property.Geo;
 import ezvcard.util.DefaultLocaleRule;
 
-import static ezvcard.util.TestUtils.date;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Rule;
@@ -25,7 +24,7 @@ import java.util.Locale;
  * @see "https://github.com/mangstadt/ez-vcard/issues/113"
  */
 public class Issue113 {
-	private final Locale nonWesternLocale = new Locale("fa", "ir", "u-un-arabext");
+	private final Locale nonWesternLocale = new Locale("hi", "IN");
 
 	@Rule
 	public final DefaultLocaleRule defaultLocaleRule = new DefaultLocaleRule(nonWesternLocale);
@@ -60,17 +59,17 @@ public class Issue113 {
 	@Test
 	public void root_locale_numbers() {
 		double number = 1.23;
-		assertEquals("۱٫۲۳۰۰۰۰", String.format("%f", number));
+		assertEquals("१.२३००००", String.format("%f", number));
 		assertEquals("1.230000", String.format(Locale.ROOT, "%f", number));
 	}
 
 	@Test
-	public void root_locale_dates() {
-		Date date = date("2020-10-28 12:00:00");
+	public void root_locale_dates() throws Exception {
 		String pattern = "yyyy-MM-dd HH:mm";
+		Date date = new SimpleDateFormat(pattern).parse("2020-10-28 12:00");
 
 		DateFormat df = new SimpleDateFormat(pattern);
-		assertEquals("۲۰۲۰-۱۰-۲۸ ۱۲:۰۰", df.format(date));
+		assertEquals("२०२०-१०-२८ १२:००", df.format(date));
 
 		df = new SimpleDateFormat(pattern, Locale.ROOT);
 		assertEquals("2020-10-28 12:00", df.format(date));
@@ -79,7 +78,7 @@ public class Issue113 {
 	@Test
 	public void decimal_format() {
 		NumberFormat nf = new DecimalFormat("00");
-		assertEquals("۰۸", nf.format(8));
+		assertEquals("०८", nf.format(8));
 
 		nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));
 		assertEquals("08", nf.format(8));
