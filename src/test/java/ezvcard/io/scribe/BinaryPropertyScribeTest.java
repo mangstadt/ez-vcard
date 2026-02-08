@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.Encoding;
@@ -190,6 +191,11 @@ public class BinaryPropertyScribeTest {
 
 				//without encoding
 				sensei.assertParseText(base64Data).dataType(null).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
+				
+				//data URI
+				sensei.assertParseText(dataUri).dataType(VCardDataType.URI).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
+				sensei.assertParseText(dataUri).dataType(VCardDataType.URL).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
+				sensei.assertParseText(dataUri).dataType(null).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
 			}
 
 			//without TYPE
@@ -202,6 +208,11 @@ public class BinaryPropertyScribeTest {
 
 				//without encoding
 				sensei.assertParseText(base64Data).dataType(null).versions(versions).run(hasData(data, null));
+				
+				//data URI
+				sensei.assertParseText(dataUri).dataType(VCardDataType.URI).versions(versions).run(hasData(data, ImageType.JPEG));
+				sensei.assertParseText(dataUri).dataType(VCardDataType.URL).versions(versions).run(hasData(data, ImageType.JPEG));
+				sensei.assertParseText(dataUri).dataType(null).versions(versions).run(hasData(data, ImageType.JPEG));
 			}
 		}
 

@@ -328,6 +328,17 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * @return the parsed property
 	 */
 	protected T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
+		/*
+		 * If the value is a data URI, just parse it, no matter what the version
+		 * is or what parameters are set. 2.1 and 3.0 technically don't support
+		 * data URIs--parse for convenience.
+		 */
+		try {
+			return parseAsDataUri(value);
+		} catch (IllegalArgumentException e) {
+			//not a data URI
+		}
+
 		U contentType = parseContentTypeFromValueAndParameters(value, parameters, version);
 
 		switch (version) {
@@ -346,18 +357,24 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 
 			break;
 		case V4_0:
-			try {
-				//parse as data URI
-				DataUri uri = DataUri.parse(value);
-				contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
-				return _newInstance(uri.getData(), contentType);
-			} catch (IllegalArgumentException e) {
-				//not a data URI
-			}
+			//already checked for data URI
 			break;
 		}
 
 		return cannotUnmarshalValue(value, version, contentType);
+	}
+
+	/**
+	 * Attempts to parse the given string as a data URI.
+	 * @param value the string to parse
+	 * @return the data URI
+	 * @throws IllegalArgumentException if the given value is not a valid data
+	 * URI
+	 */
+	protected T parseAsDataUri(String value) throws IllegalArgumentException {
+		DataUri uri = DataUri.parse(value);
+		U contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
+		return _newInstance(uri.getData(), contentType);
 	}
 
 	private String write(T property, VCardVersion version) {
