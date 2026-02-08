@@ -48,6 +48,7 @@ import ezvcard.property.Uid;
 import ezvcard.property.Url;
 import ezvcard.util.TelUri;
 import ezvcard.util.UtcOffset;
+import freemarker.template.TemplateException;
 
 /*
  Copyright (c) 2012-2023, Michael Angstadt
@@ -510,7 +511,7 @@ public class HCardPageTest {
 	 * @param vcards the vCards to add to the page
 	 * @return the HTML page
 	 */
-	private Document generate(VCard... vcards) {
+	private Document generate(VCard... vcards) throws TemplateException {
 		HCardPage template = new HCardPage();
 		for (VCard vcard : vcards) {
 			template.add(vcard);

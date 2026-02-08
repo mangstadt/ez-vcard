@@ -116,8 +116,9 @@ public class HCardPage {
 	/**
 	 * Writes the HTML document to a string.
 	 * @return the HTML document
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public String write() {
+	public String write() throws TemplateException {
 		StringWriter sw = new StringWriter();
 		try {
 			write(sw);
@@ -132,8 +133,9 @@ public class HCardPage {
 	 * Writes the HTML document to an output stream.
 	 * @param out the output stream
 	 * @throws IOException if there's a problem writing to the output stream
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void write(OutputStream out) throws IOException {
+	public void write(OutputStream out) throws IOException, TemplateException {
 		write(new OutputStreamWriter(out));
 	}
 
@@ -141,8 +143,9 @@ public class HCardPage {
 	 * Writes the HTML document to a file.
 	 * @param file the file
 	 * @throws IOException if there's a problem writing to the file
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void write(File file) throws IOException {
+	public void write(File file) throws IOException, TemplateException {
 		FileWriter writer = new FileWriter(file);
 		try {
 			write(writer);
@@ -155,8 +158,9 @@ public class HCardPage {
 	 * Writes the HTML document to a writer.
 	 * @param writer the writer
 	 * @throws IOException if there's a problem writing to the writer
+	 * @throws TemplateException if there's a problem processing the template
 	 */
-	public void write(Writer writer) throws IOException {
+	public void write(Writer writer) throws IOException, TemplateException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vcards", vcards);
 		map.put("utils", new TemplateUtils());
@@ -165,11 +169,8 @@ public class HCardPage {
 		map.put("ezVCardVersion", Ezvcard.VERSION);
 		map.put("ezVCardUrl", Ezvcard.URL);
 		map.put("scribeIndex", new ScribeIndex());
-		try {
-			template.process(map, writer);
-		} catch (TemplateException e) {
-			throw new RuntimeException(e);
-		}
+
+		template.process(map, writer);
 		writer.flush();
 	}
 
