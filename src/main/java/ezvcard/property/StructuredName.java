@@ -184,7 +184,11 @@ public class StructuredName extends VCardProperty implements HasAltId {
 	 * "Adboville" if the family name is "d'Aboville") or null to remove
 	 */
 	public void setSortAs(String family) {
-		parameters.setSortAs(family);
+		if (family == null) {
+			parameters.setSortAs();
+		} else {
+			parameters.setSortAs(family);
+		}
 	}
 
 	/**
