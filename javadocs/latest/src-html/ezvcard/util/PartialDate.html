@@ -17,654 +17,712 @@
 <span class="sourceLineNo">009</span>import java.util.Locale;<a name="line.9"></a>
 <span class="sourceLineNo">010</span>import java.util.regex.Matcher;<a name="line.10"></a>
 <span class="sourceLineNo">011</span>import java.util.regex.Pattern;<a name="line.11"></a>
-<span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>import ezvcard.Messages;<a name="line.13"></a>
-<span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span>/*<a name="line.15"></a>
-<span class="sourceLineNo">016</span> Copyright (c) 2012-2023, Michael Angstadt<a name="line.16"></a>
-<span class="sourceLineNo">017</span> All rights reserved.<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span> Redistribution and use in source and binary forms, with or without<a name="line.19"></a>
-<span class="sourceLineNo">020</span> modification, are permitted provided that the following conditions are met: <a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.22"></a>
-<span class="sourceLineNo">023</span> list of conditions and the following disclaimer. <a name="line.23"></a>
-<span class="sourceLineNo">024</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.24"></a>
-<span class="sourceLineNo">025</span> this list of conditions and the following disclaimer in the documentation<a name="line.25"></a>
-<span class="sourceLineNo">026</span> and/or other materials provided with the distribution. <a name="line.26"></a>
-<span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.28"></a>
-<span class="sourceLineNo">029</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.29"></a>
-<span class="sourceLineNo">030</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.30"></a>
-<span class="sourceLineNo">031</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.31"></a>
-<span class="sourceLineNo">032</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.32"></a>
-<span class="sourceLineNo">033</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.33"></a>
-<span class="sourceLineNo">034</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.34"></a>
-<span class="sourceLineNo">035</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.35"></a>
-<span class="sourceLineNo">036</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.36"></a>
-<span class="sourceLineNo">037</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span> The views and conclusions contained in the software and documentation are those<a name="line.39"></a>
-<span class="sourceLineNo">040</span> of the authors and should not be interpreted as representing official policies, <a name="line.40"></a>
-<span class="sourceLineNo">041</span> either expressed or implied, of the FreeBSD Project.<a name="line.41"></a>
-<span class="sourceLineNo">042</span> */<a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>/**<a name="line.44"></a>
-<span class="sourceLineNo">045</span> * &lt;p&gt;<a name="line.45"></a>
-<span class="sourceLineNo">046</span> * Represents a date in which some of the components are missing. This is used<a name="line.46"></a>
-<span class="sourceLineNo">047</span> * to represent reduced accuracy and truncated dates, as defined in ISO8601.<a name="line.47"></a>
-<span class="sourceLineNo">048</span> * &lt;/p&gt;<a name="line.48"></a>
-<span class="sourceLineNo">049</span> * &lt;p&gt;<a name="line.49"></a>
-<span class="sourceLineNo">050</span> * A &lt;b&gt;reduced accuracy date&lt;/b&gt; is a date where the "lesser" components are<a name="line.50"></a>
-<span class="sourceLineNo">051</span> * missing. For example, "12:30" is reduced accuracy because the "seconds"<a name="line.51"></a>
-<span class="sourceLineNo">052</span> * component is missing.<a name="line.52"></a>
-<span class="sourceLineNo">053</span> * &lt;/p&gt;<a name="line.53"></a>
-<span class="sourceLineNo">054</span> * <a name="line.54"></a>
-<span class="sourceLineNo">055</span> * &lt;pre class="brush:java"&gt;<a name="line.55"></a>
-<span class="sourceLineNo">056</span> * PartialDate date = PartialDate.builder().hour(12).minute(30).build();<a name="line.56"></a>
-<span class="sourceLineNo">057</span> * &lt;/pre&gt;<a name="line.57"></a>
-<span class="sourceLineNo">058</span> * <a name="line.58"></a>
-<span class="sourceLineNo">059</span> * &lt;p&gt;<a name="line.59"></a>
-<span class="sourceLineNo">060</span> * A &lt;b&gt;truncated date&lt;/b&gt; is a date where the "greater" components are missing.<a name="line.60"></a>
-<span class="sourceLineNo">061</span> * For example, "April 20" is truncated because the "year" component is missing.<a name="line.61"></a>
-<span class="sourceLineNo">062</span> * &lt;/p&gt;<a name="line.62"></a>
-<span class="sourceLineNo">063</span> * <a name="line.63"></a>
-<span class="sourceLineNo">064</span> * &lt;pre class="brush:java"&gt;<a name="line.64"></a>
-<span class="sourceLineNo">065</span> * PartialDate date = PartialDate.builder().month(4).date(20).build();<a name="line.65"></a>
-<span class="sourceLineNo">066</span> * &lt;/pre&gt;<a name="line.66"></a>
-<span class="sourceLineNo">067</span> * @author Michael Angstadt<a name="line.67"></a>
-<span class="sourceLineNo">068</span> */<a name="line.68"></a>
-<span class="sourceLineNo">069</span>public final class PartialDate {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        private static final int YEAR = 0;<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        private static final int MONTH = 1;<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        private static final int DATE = 2;<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        private static final int HOUR = 3;<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        private static final int MINUTE = 4;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        private static final int SECOND = 5;<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        private static final int OFFSET_HOUR = 6;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        private static final int OFFSET_MINUTE = 7;<a name="line.77"></a>
-<span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span>        //@formatter:off<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        private static final Format dateFormats[] = new Format[] {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                new Format("(\\d{4})", YEAR),<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                new Format("(\\d{4})-(\\d{2})", YEAR, MONTH),<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                new Format("(\\d{4})-?(\\d{2})-?(\\d{2})", YEAR, MONTH, DATE),<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                new Format("--(\\d{2})-?(\\d{2})", MONTH, DATE),<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                new Format("--(\\d{2})", MONTH),<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                new Format("---(\\d{2})", DATE)<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        };<a name="line.87"></a>
-<span class="sourceLineNo">088</span>        //@formatter:on<a name="line.88"></a>
-<span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>        private static final String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        //@formatter:off<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        private static final Format timeFormats[] = new Format[] {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                new Format("-(\\d{2}):?(\\d{2})" + offsetRegex, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.97"></a>
-<span class="sourceLineNo">098</span>                new Format("-(\\d{2})" + offsetRegex, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                new Format("--(\\d{2})" + offsetRegex, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE)<a name="line.99"></a>
-<span class="sourceLineNo">100</span>        };<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        //@formatter:on<a name="line.101"></a>
-<span class="sourceLineNo">102</span><a name="line.102"></a>
-<span class="sourceLineNo">103</span>        private final Integer[] components;<a name="line.103"></a>
-<span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * @param components the date/time components array<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         */<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        private PartialDate(Integer[] components) {<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                this.components = components;<a name="line.109"></a>
-<span class="sourceLineNo">110</span>        }<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>        /**<a name="line.112"></a>
-<span class="sourceLineNo">113</span>         * Creates a builder object.<a name="line.113"></a>
-<span class="sourceLineNo">114</span>         * @return the builder<a name="line.114"></a>
-<span class="sourceLineNo">115</span>         */<a name="line.115"></a>
-<span class="sourceLineNo">116</span>        public static Builder builder() {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                return new Builder();<a name="line.117"></a>
-<span class="sourceLineNo">118</span>        }<a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span>        /**<a name="line.120"></a>
-<span class="sourceLineNo">121</span>         * Creates a builder object.<a name="line.121"></a>
-<span class="sourceLineNo">122</span>         * @param orig the object to copy<a name="line.122"></a>
-<span class="sourceLineNo">123</span>         * @return the builder<a name="line.123"></a>
-<span class="sourceLineNo">124</span>         */<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        public static Builder builder(PartialDate orig) {<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                return new Builder(orig);<a name="line.126"></a>
-<span class="sourceLineNo">127</span>        }<a name="line.127"></a>
-<span class="sourceLineNo">128</span><a name="line.128"></a>
-<span class="sourceLineNo">129</span>        /**<a name="line.129"></a>
-<span class="sourceLineNo">130</span>         * Parses a partial date from a string.<a name="line.130"></a>
-<span class="sourceLineNo">131</span>         * @param string the string (e.g. "--0420T15")<a name="line.131"></a>
-<span class="sourceLineNo">132</span>         * @return the parsed date<a name="line.132"></a>
-<span class="sourceLineNo">133</span>         * @throws IllegalArgumentException if there's a problem parsing the date<a name="line.133"></a>
-<span class="sourceLineNo">134</span>         * string<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         */<a name="line.135"></a>
-<span class="sourceLineNo">136</span>        public static PartialDate parse(String string) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                int t = string.indexOf('T');<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                String beforeT, afterT;<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                if (t &lt; 0) {<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                        beforeT = string;<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                        afterT = null;<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                } else {<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                        beforeT = string.substring(0, t);<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                        afterT = (t &lt; string.length() - 1) ? string.substring(t + 1) : null;<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                }<a name="line.145"></a>
+<span class="sourceLineNo">012</span>import java.util.stream.IntStream;<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span>import ezvcard.Messages;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span>/*<a name="line.16"></a>
+<span class="sourceLineNo">017</span> Copyright (c) 2012-2026, Michael Angstadt<a name="line.17"></a>
+<span class="sourceLineNo">018</span> All rights reserved.<a name="line.18"></a>
+<span class="sourceLineNo">019</span><a name="line.19"></a>
+<span class="sourceLineNo">020</span> Redistribution and use in source and binary forms, with or without<a name="line.20"></a>
+<span class="sourceLineNo">021</span> modification, are permitted provided that the following conditions are met: <a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span> 1. Redistributions of source code must retain the above copyright notice, this<a name="line.23"></a>
+<span class="sourceLineNo">024</span> list of conditions and the following disclaimer. <a name="line.24"></a>
+<span class="sourceLineNo">025</span> 2. Redistributions in binary form must reproduce the above copyright notice,<a name="line.25"></a>
+<span class="sourceLineNo">026</span> this list of conditions and the following disclaimer in the documentation<a name="line.26"></a>
+<span class="sourceLineNo">027</span> and/or other materials provided with the distribution. <a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND<a name="line.29"></a>
+<span class="sourceLineNo">030</span> ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED<a name="line.30"></a>
+<span class="sourceLineNo">031</span> WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE<a name="line.31"></a>
+<span class="sourceLineNo">032</span> DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR<a name="line.32"></a>
+<span class="sourceLineNo">033</span> ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES<a name="line.33"></a>
+<span class="sourceLineNo">034</span> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;<a name="line.34"></a>
+<span class="sourceLineNo">035</span> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND<a name="line.35"></a>
+<span class="sourceLineNo">036</span> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT<a name="line.36"></a>
+<span class="sourceLineNo">037</span> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS<a name="line.37"></a>
+<span class="sourceLineNo">038</span> SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span> The views and conclusions contained in the software and documentation are those<a name="line.40"></a>
+<span class="sourceLineNo">041</span> of the authors and should not be interpreted as representing official policies, <a name="line.41"></a>
+<span class="sourceLineNo">042</span> either expressed or implied, of the FreeBSD Project.<a name="line.42"></a>
+<span class="sourceLineNo">043</span> */<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>/**<a name="line.45"></a>
+<span class="sourceLineNo">046</span> * &lt;p&gt;<a name="line.46"></a>
+<span class="sourceLineNo">047</span> * Represents a date in which some of the components are missing. This is used<a name="line.47"></a>
+<span class="sourceLineNo">048</span> * to represent reduced accuracy and truncated dates, as defined in ISO8601.<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * &lt;/p&gt;<a name="line.49"></a>
+<span class="sourceLineNo">050</span> * &lt;p&gt;<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * A &lt;b&gt;reduced accuracy date&lt;/b&gt; is a date where the "lesser" components are<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * missing. For example, "12:30" is reduced accuracy because the "seconds"<a name="line.52"></a>
+<span class="sourceLineNo">053</span> * component is missing.<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * &lt;/p&gt;<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * <a name="line.55"></a>
+<span class="sourceLineNo">056</span> * &lt;pre class="brush:java"&gt;<a name="line.56"></a>
+<span class="sourceLineNo">057</span> * PartialDate date = PartialDate.builder().hour(12).minute(30).build();<a name="line.57"></a>
+<span class="sourceLineNo">058</span> * &lt;/pre&gt;<a name="line.58"></a>
+<span class="sourceLineNo">059</span> * <a name="line.59"></a>
+<span class="sourceLineNo">060</span> * &lt;p&gt;<a name="line.60"></a>
+<span class="sourceLineNo">061</span> * A &lt;b&gt;truncated date&lt;/b&gt; is a date where the "greater" components are missing.<a name="line.61"></a>
+<span class="sourceLineNo">062</span> * For example, "April 20" is truncated because the "year" component is missing.<a name="line.62"></a>
+<span class="sourceLineNo">063</span> * &lt;/p&gt;<a name="line.63"></a>
+<span class="sourceLineNo">064</span> * <a name="line.64"></a>
+<span class="sourceLineNo">065</span> * &lt;pre class="brush:java"&gt;<a name="line.65"></a>
+<span class="sourceLineNo">066</span> * PartialDate date = PartialDate.builder().month(4).date(20).build();<a name="line.66"></a>
+<span class="sourceLineNo">067</span> * &lt;/pre&gt;<a name="line.67"></a>
+<span class="sourceLineNo">068</span> * @author Michael Angstadt<a name="line.68"></a>
+<span class="sourceLineNo">069</span> */<a name="line.69"></a>
+<span class="sourceLineNo">070</span>public final class PartialDate {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        private static final int YEAR = 0;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        private static final int MONTH = 1;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        private static final int DATE = 2;<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        private static final int HOUR = 3;<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        private static final int MINUTE = 4;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        private static final int SECOND = 5;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        private static final int OFFSET_HOUR = 6;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        private static final int OFFSET_MINUTE = 7;<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>        //@formatter:off<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        private static final Format[] dateFormats = new Format[] {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                new Format("(\\d{4})", YEAR),<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                new Format("(\\d{4})-(\\d{2})", YEAR, MONTH),<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                new Format("(\\d{4})-?(\\d{2})-?(\\d{2})", YEAR, MONTH, DATE),<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                new Format("--(\\d{2})-?(\\d{2})", MONTH, DATE),<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                new Format("--(\\d{2})", MONTH),<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                new Format("---(\\d{2})", DATE)<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        };<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        //@formatter:on<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        private static final Format[] timeFormats;<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        static {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                String offsetRegex = "(([-+]\\d{1,2}):?(\\d{2})?)?";<a name="line.93"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
+<span class="sourceLineNo">095</span>                //@formatter:off<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                timeFormats = new Format[] {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                        new Format("(\\d{2})" + offsetRegex, HOUR, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                        new Format("(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                        new Format("(\\d{2}):?(\\d{2}):?(\\d{2})" + offsetRegex, HOUR, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                        new Format("-(\\d{2}):?(\\d{2})" + offsetRegex, MINUTE, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                        new Format("-(\\d{2})" + offsetRegex, MINUTE, null, OFFSET_HOUR, OFFSET_MINUTE),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                        new Format("--(\\d{2})" + offsetRegex, SECOND, null, OFFSET_HOUR, OFFSET_MINUTE)<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                };<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                //@formatter:on<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>        private final Integer[] components;<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        /**<a name="line.109"></a>
+<span class="sourceLineNo">110</span>         * @param components the date/time components array<a name="line.110"></a>
+<span class="sourceLineNo">111</span>         */<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        private PartialDate(Integer[] components) {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                this.components = components;<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        }<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>        /**<a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * Creates a builder object.<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         * @return the builder<a name="line.118"></a>
+<span class="sourceLineNo">119</span>         */<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        public static Builder builder() {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                return new Builder();<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        }<a name="line.122"></a>
+<span class="sourceLineNo">123</span><a name="line.123"></a>
+<span class="sourceLineNo">124</span>        /**<a name="line.124"></a>
+<span class="sourceLineNo">125</span>         * Creates a builder object.<a name="line.125"></a>
+<span class="sourceLineNo">126</span>         * @param orig the object to copy<a name="line.126"></a>
+<span class="sourceLineNo">127</span>         * @return the builder<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         */<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        public static Builder builder(PartialDate orig) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                return new Builder(orig);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * Parses a partial date from a string.<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         * @param string the string (e.g. "--0420T15")<a name="line.135"></a>
+<span class="sourceLineNo">136</span>         * @return the parsed date<a name="line.136"></a>
+<span class="sourceLineNo">137</span>         * @throws IllegalArgumentException if there's a problem parsing the date<a name="line.137"></a>
+<span class="sourceLineNo">138</span>         * string<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         */<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        public static PartialDate parse(String string) {<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                return new Parser(string).parse();<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        }<a name="line.142"></a>
+<span class="sourceLineNo">143</span><a name="line.143"></a>
+<span class="sourceLineNo">144</span>        private static class Parser {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                private final String string;<a name="line.145"></a>
 <span class="sourceLineNo">146</span><a name="line.146"></a>
-<span class="sourceLineNo">147</span>                Builder builder = new Builder();<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                boolean success;<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                if (afterT == null) {<a name="line.149"></a>
-<span class="sourceLineNo">150</span>                        //date or time<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                        success = parseDate(beforeT, builder) || parseTime(beforeT, builder);<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                } else if (beforeT.isEmpty()) {<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                        //time<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                        success = parseTime(afterT, builder);<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                } else {<a name="line.155"></a>
-<span class="sourceLineNo">156</span>                        //date and time<a name="line.156"></a>
-<span class="sourceLineNo">157</span>                        success = parseDate(beforeT, builder) &amp;&amp; parseTime(afterT, builder);<a name="line.157"></a>
-<span class="sourceLineNo">158</span>                }<a name="line.158"></a>
-<span class="sourceLineNo">159</span><a name="line.159"></a>
-<span class="sourceLineNo">160</span>                if (!success) {<a name="line.160"></a>
-<span class="sourceLineNo">161</span>                        throw Messages.INSTANCE.getIllegalArgumentException(36, string);<a name="line.161"></a>
-<span class="sourceLineNo">162</span>                }<a name="line.162"></a>
-<span class="sourceLineNo">163</span>                return builder.build();<a name="line.163"></a>
-<span class="sourceLineNo">164</span>        }<a name="line.164"></a>
-<span class="sourceLineNo">165</span><a name="line.165"></a>
-<span class="sourceLineNo">166</span>        private static boolean parseDate(String value, Builder builder) {<a name="line.166"></a>
-<span class="sourceLineNo">167</span>                return parseFormats(value, builder, dateFormats);<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        }<a name="line.168"></a>
-<span class="sourceLineNo">169</span><a name="line.169"></a>
-<span class="sourceLineNo">170</span>        private static boolean parseTime(String value, Builder builder) {<a name="line.170"></a>
-<span class="sourceLineNo">171</span>                return parseFormats(value, builder, timeFormats);<a name="line.171"></a>
-<span class="sourceLineNo">172</span>        }<a name="line.172"></a>
-<span class="sourceLineNo">173</span><a name="line.173"></a>
-<span class="sourceLineNo">174</span>        private static boolean parseFormats(String value, Builder builder, Format formats[]) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>                for (Format regex : formats) {<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                        if (regex.parse(builder, value)) {<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                                return true;<a name="line.177"></a>
+<span class="sourceLineNo">147</span>                public Parser(String string) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                        this.string = string;<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>                public PartialDate parse() {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                        int t = string.indexOf('T');<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                        String beforeT;<a name="line.153"></a>
+<span class="sourceLineNo">154</span>                        String afterT;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                        if (t &lt; 0) {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                                beforeT = string;<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                                afterT = null;<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                        } else {<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                                beforeT = (t == 0) ? null : string.substring(0, t);<a name="line.159"></a>
+<span class="sourceLineNo">160</span>                                afterT = (t &lt; string.length() - 1) ? string.substring(t + 1) : null;<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                        }<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>                        Builder builder = new Builder();<a name="line.163"></a>
+<span class="sourceLineNo">164</span>                        boolean success;<a name="line.164"></a>
+<span class="sourceLineNo">165</span>                        if (afterT == null) {<a name="line.165"></a>
+<span class="sourceLineNo">166</span>                                //date OR time<a name="line.166"></a>
+<span class="sourceLineNo">167</span>                                success = parseDate(beforeT, builder) || parseTime(beforeT, builder);<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                        } else if (beforeT == null) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                                //time<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                                success = parseTime(afterT, builder);<a name="line.170"></a>
+<span class="sourceLineNo">171</span>                        } else {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                                //date AND time<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                                success = parseDate(beforeT, builder) &amp;&amp; parseTime(afterT, builder);<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>                        if (!success) {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                                throw Messages.INSTANCE.getIllegalArgumentException(36, string);<a name="line.177"></a>
 <span class="sourceLineNo">178</span>                        }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                }<a name="line.179"></a>
-<span class="sourceLineNo">180</span>                return false;<a name="line.180"></a>
-<span class="sourceLineNo">181</span>        }<a name="line.181"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>                        return builder.build();<a name="line.180"></a>
+<span class="sourceLineNo">181</span>                }<a name="line.181"></a>
 <span class="sourceLineNo">182</span><a name="line.182"></a>
-<span class="sourceLineNo">183</span>        /**<a name="line.183"></a>
-<span class="sourceLineNo">184</span>         * Gets the year component.<a name="line.184"></a>
-<span class="sourceLineNo">185</span>         * @return the year component or null if not set<a name="line.185"></a>
-<span class="sourceLineNo">186</span>         */<a name="line.186"></a>
-<span class="sourceLineNo">187</span>        public Integer getYear() {<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                return components[YEAR];<a name="line.188"></a>
-<span class="sourceLineNo">189</span>        }<a name="line.189"></a>
+<span class="sourceLineNo">183</span>                private boolean parseDate(String value, Builder builder) {<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                        return parseFormats(value, builder, dateFormats);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                }<a name="line.185"></a>
+<span class="sourceLineNo">186</span><a name="line.186"></a>
+<span class="sourceLineNo">187</span>                private boolean parseTime(String value, Builder builder) {<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                        return parseFormats(value, builder, timeFormats);<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                }<a name="line.189"></a>
 <span class="sourceLineNo">190</span><a name="line.190"></a>
-<span class="sourceLineNo">191</span>        /**<a name="line.191"></a>
-<span class="sourceLineNo">192</span>         * Determines if the year component is set.<a name="line.192"></a>
-<span class="sourceLineNo">193</span>         * @return true if the component is set, false if not<a name="line.193"></a>
-<span class="sourceLineNo">194</span>         */<a name="line.194"></a>
-<span class="sourceLineNo">195</span>        private boolean hasYear() {<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                return getYear() != null;<a name="line.196"></a>
-<span class="sourceLineNo">197</span>        }<a name="line.197"></a>
-<span class="sourceLineNo">198</span><a name="line.198"></a>
-<span class="sourceLineNo">199</span>        /**<a name="line.199"></a>
-<span class="sourceLineNo">200</span>         * Gets the month component.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>         * @return the month component or null if not set<a name="line.201"></a>
-<span class="sourceLineNo">202</span>         */<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        public Integer getMonth() {<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                return components[MONTH];<a name="line.204"></a>
-<span class="sourceLineNo">205</span>        }<a name="line.205"></a>
-<span class="sourceLineNo">206</span><a name="line.206"></a>
-<span class="sourceLineNo">207</span>        /**<a name="line.207"></a>
-<span class="sourceLineNo">208</span>         * Determines if the month component is set.<a name="line.208"></a>
-<span class="sourceLineNo">209</span>         * @return true if the component is set, false if not<a name="line.209"></a>
-<span class="sourceLineNo">210</span>         */<a name="line.210"></a>
-<span class="sourceLineNo">211</span>        private boolean hasMonth() {<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                return getMonth() != null;<a name="line.212"></a>
-<span class="sourceLineNo">213</span>        }<a name="line.213"></a>
-<span class="sourceLineNo">214</span><a name="line.214"></a>
-<span class="sourceLineNo">215</span>        /**<a name="line.215"></a>
-<span class="sourceLineNo">216</span>         * Gets the date component.<a name="line.216"></a>
-<span class="sourceLineNo">217</span>         * @return the date component or null if not set<a name="line.217"></a>
-<span class="sourceLineNo">218</span>         */<a name="line.218"></a>
-<span class="sourceLineNo">219</span>        public Integer getDate() {<a name="line.219"></a>
-<span class="sourceLineNo">220</span>                return components[DATE];<a name="line.220"></a>
-<span class="sourceLineNo">221</span>        }<a name="line.221"></a>
-<span class="sourceLineNo">222</span><a name="line.222"></a>
-<span class="sourceLineNo">223</span>        /**<a name="line.223"></a>
-<span class="sourceLineNo">224</span>         * Determines if the date component is set.<a name="line.224"></a>
-<span class="sourceLineNo">225</span>         * @return true if the component is set, false if not<a name="line.225"></a>
-<span class="sourceLineNo">226</span>         */<a name="line.226"></a>
-<span class="sourceLineNo">227</span>        private boolean hasDate() {<a name="line.227"></a>
-<span class="sourceLineNo">228</span>                return getDate() != null;<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        }<a name="line.229"></a>
-<span class="sourceLineNo">230</span><a name="line.230"></a>
-<span class="sourceLineNo">231</span>        /**<a name="line.231"></a>
-<span class="sourceLineNo">232</span>         * Gets the hour component.<a name="line.232"></a>
-<span class="sourceLineNo">233</span>         * @return the hour component or null if not set<a name="line.233"></a>
-<span class="sourceLineNo">234</span>         */<a name="line.234"></a>
-<span class="sourceLineNo">235</span>        public Integer getHour() {<a name="line.235"></a>
-<span class="sourceLineNo">236</span>                return components[HOUR];<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
-<span class="sourceLineNo">238</span><a name="line.238"></a>
-<span class="sourceLineNo">239</span>        /**<a name="line.239"></a>
-<span class="sourceLineNo">240</span>         * Determines if the hour component is set.<a name="line.240"></a>
-<span class="sourceLineNo">241</span>         * @return true if the component is set, false if not<a name="line.241"></a>
-<span class="sourceLineNo">242</span>         */<a name="line.242"></a>
-<span class="sourceLineNo">243</span>        private boolean hasHour() {<a name="line.243"></a>
-<span class="sourceLineNo">244</span>                return getHour() != null;<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        }<a name="line.245"></a>
-<span class="sourceLineNo">246</span><a name="line.246"></a>
-<span class="sourceLineNo">247</span>        /**<a name="line.247"></a>
-<span class="sourceLineNo">248</span>         * Gets the minute component.<a name="line.248"></a>
-<span class="sourceLineNo">249</span>         * @return the minute component or null if not set<a name="line.249"></a>
-<span class="sourceLineNo">250</span>         */<a name="line.250"></a>
-<span class="sourceLineNo">251</span>        public Integer getMinute() {<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                return components[MINUTE];<a name="line.252"></a>
-<span class="sourceLineNo">253</span>        }<a name="line.253"></a>
-<span class="sourceLineNo">254</span><a name="line.254"></a>
-<span class="sourceLineNo">255</span>        /**<a name="line.255"></a>
-<span class="sourceLineNo">256</span>         * Determines if the minute component is set.<a name="line.256"></a>
-<span class="sourceLineNo">257</span>         * @return true if the component is set, false if not<a name="line.257"></a>
-<span class="sourceLineNo">258</span>         */<a name="line.258"></a>
-<span class="sourceLineNo">259</span>        private boolean hasMinute() {<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                return getMinute() != null;<a name="line.260"></a>
-<span class="sourceLineNo">261</span>        }<a name="line.261"></a>
-<span class="sourceLineNo">262</span><a name="line.262"></a>
-<span class="sourceLineNo">263</span>        /**<a name="line.263"></a>
-<span class="sourceLineNo">264</span>         * Gets the second component.<a name="line.264"></a>
-<span class="sourceLineNo">265</span>         * @return the second component or null if not set<a name="line.265"></a>
-<span class="sourceLineNo">266</span>         */<a name="line.266"></a>
-<span class="sourceLineNo">267</span>        public Integer getSecond() {<a name="line.267"></a>
-<span class="sourceLineNo">268</span>                return components[SECOND];<a name="line.268"></a>
-<span class="sourceLineNo">269</span>        }<a name="line.269"></a>
-<span class="sourceLineNo">270</span><a name="line.270"></a>
-<span class="sourceLineNo">271</span>        /**<a name="line.271"></a>
-<span class="sourceLineNo">272</span>         * Determines if the second component is set.<a name="line.272"></a>
-<span class="sourceLineNo">273</span>         * @return true if the component is set, false if not<a name="line.273"></a>
-<span class="sourceLineNo">274</span>         */<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        private boolean hasSecond() {<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                return getSecond() != null;<a name="line.276"></a>
-<span class="sourceLineNo">277</span>        }<a name="line.277"></a>
-<span class="sourceLineNo">278</span><a name="line.278"></a>
-<span class="sourceLineNo">279</span>        /**<a name="line.279"></a>
-<span class="sourceLineNo">280</span>         * Gets the UTC offset.<a name="line.280"></a>
-<span class="sourceLineNo">281</span>         * @return the UTC offset or null if not set<a name="line.281"></a>
-<span class="sourceLineNo">282</span>         */<a name="line.282"></a>
-<span class="sourceLineNo">283</span>        public ZoneOffset getUtcOffset() {<a name="line.283"></a>
-<span class="sourceLineNo">284</span>                Integer hour = components[OFFSET_HOUR];<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                if (hour == null) {<a name="line.285"></a>
-<span class="sourceLineNo">286</span>                        return null;<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                }<a name="line.287"></a>
-<span class="sourceLineNo">288</span><a name="line.288"></a>
-<span class="sourceLineNo">289</span>                Integer minute = components[OFFSET_MINUTE];<a name="line.289"></a>
-<span class="sourceLineNo">290</span>                if (minute == null) {<a name="line.290"></a>
-<span class="sourceLineNo">291</span>                        return ZoneOffset.ofHours(hour);<a name="line.291"></a>
-<span class="sourceLineNo">292</span>                }<a name="line.292"></a>
-<span class="sourceLineNo">293</span><a name="line.293"></a>
-<span class="sourceLineNo">294</span>                return ZoneOffset.ofHoursMinutes(hour, minute);<a name="line.294"></a>
-<span class="sourceLineNo">295</span>        }<a name="line.295"></a>
-<span class="sourceLineNo">296</span><a name="line.296"></a>
-<span class="sourceLineNo">297</span>        /**<a name="line.297"></a>
-<span class="sourceLineNo">298</span>         * Determines if there are any date components.<a name="line.298"></a>
-<span class="sourceLineNo">299</span>         * @return true if it has at least one date component, false if not<a name="line.299"></a>
-<span class="sourceLineNo">300</span>         */<a name="line.300"></a>
-<span class="sourceLineNo">301</span>        public boolean hasDateComponent() {<a name="line.301"></a>
-<span class="sourceLineNo">302</span>                return hasYear() || hasMonth() || hasDate();<a name="line.302"></a>
-<span class="sourceLineNo">303</span>        }<a name="line.303"></a>
-<span class="sourceLineNo">304</span><a name="line.304"></a>
-<span class="sourceLineNo">305</span>        /**<a name="line.305"></a>
-<span class="sourceLineNo">306</span>         * Determines if there are any time components.<a name="line.306"></a>
-<span class="sourceLineNo">307</span>         * @return true if there is at least one time component, false if not<a name="line.307"></a>
-<span class="sourceLineNo">308</span>         */<a name="line.308"></a>
-<span class="sourceLineNo">309</span>        public boolean hasTimeComponent() {<a name="line.309"></a>
-<span class="sourceLineNo">310</span>                return hasHour() || hasMinute() || hasSecond();<a name="line.310"></a>
-<span class="sourceLineNo">311</span>        }<a name="line.311"></a>
-<span class="sourceLineNo">312</span><a name="line.312"></a>
-<span class="sourceLineNo">313</span>        /**<a name="line.313"></a>
-<span class="sourceLineNo">314</span>         * Converts this partial date to its ISO 8601 representation.<a name="line.314"></a>
-<span class="sourceLineNo">315</span>         * @param extended true to use extended format, false to use basic<a name="line.315"></a>
-<span class="sourceLineNo">316</span>         * @return the ISO 8601 representation (e.g. "--0416")<a name="line.316"></a>
-<span class="sourceLineNo">317</span>         * @throws IllegalStateException if an ISO 8601 representation of the date<a name="line.317"></a>
-<span class="sourceLineNo">318</span>         * cannot be created because the date's components are invalid. This will<a name="line.318"></a>
-<span class="sourceLineNo">319</span>         * not happen if the partial date is constructed using the<a name="line.319"></a>
-<span class="sourceLineNo">320</span>         * {@link #builder()} method<a name="line.320"></a>
+<span class="sourceLineNo">191</span>                private boolean parseFormats(String value, Builder builder, Format[] formats) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                        return Arrays.stream(formats).anyMatch(regex -&gt; regex.parse(builder, value));<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
+<span class="sourceLineNo">195</span><a name="line.195"></a>
+<span class="sourceLineNo">196</span>        /**<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         * Gets the year component.<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * @return the year component or null if not set<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         */<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        public Integer getYear() {<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                return components[YEAR];<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
+<span class="sourceLineNo">203</span><a name="line.203"></a>
+<span class="sourceLineNo">204</span>        /**<a name="line.204"></a>
+<span class="sourceLineNo">205</span>         * Determines if the year component is set.<a name="line.205"></a>
+<span class="sourceLineNo">206</span>         * @return true if the component is set, false if not<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         */<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        private boolean hasYear() {<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                return getYear() != null;<a name="line.209"></a>
+<span class="sourceLineNo">210</span>        }<a name="line.210"></a>
+<span class="sourceLineNo">211</span><a name="line.211"></a>
+<span class="sourceLineNo">212</span>        /**<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         * Gets the month component.<a name="line.213"></a>
+<span class="sourceLineNo">214</span>         * @return the month component or null if not set<a name="line.214"></a>
+<span class="sourceLineNo">215</span>         */<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        public Integer getMonth() {<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                return components[MONTH];<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        }<a name="line.218"></a>
+<span class="sourceLineNo">219</span><a name="line.219"></a>
+<span class="sourceLineNo">220</span>        /**<a name="line.220"></a>
+<span class="sourceLineNo">221</span>         * Determines if the month component is set.<a name="line.221"></a>
+<span class="sourceLineNo">222</span>         * @return true if the component is set, false if not<a name="line.222"></a>
+<span class="sourceLineNo">223</span>         */<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        private boolean hasMonth() {<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                return getMonth() != null;<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
+<span class="sourceLineNo">227</span><a name="line.227"></a>
+<span class="sourceLineNo">228</span>        /**<a name="line.228"></a>
+<span class="sourceLineNo">229</span>         * Gets the date component.<a name="line.229"></a>
+<span class="sourceLineNo">230</span>         * @return the date component or null if not set<a name="line.230"></a>
+<span class="sourceLineNo">231</span>         */<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        public Integer getDate() {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                return components[DATE];<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        }<a name="line.234"></a>
+<span class="sourceLineNo">235</span><a name="line.235"></a>
+<span class="sourceLineNo">236</span>        /**<a name="line.236"></a>
+<span class="sourceLineNo">237</span>         * Determines if the date component is set.<a name="line.237"></a>
+<span class="sourceLineNo">238</span>         * @return true if the component is set, false if not<a name="line.238"></a>
+<span class="sourceLineNo">239</span>         */<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        private boolean hasDate() {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                return getDate() != null;<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        }<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>        /**<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * Gets the hour component.<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         * @return the hour component or null if not set<a name="line.246"></a>
+<span class="sourceLineNo">247</span>         */<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        public Integer getHour() {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                return components[HOUR];<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        }<a name="line.250"></a>
+<span class="sourceLineNo">251</span><a name="line.251"></a>
+<span class="sourceLineNo">252</span>        /**<a name="line.252"></a>
+<span class="sourceLineNo">253</span>         * Determines if the hour component is set.<a name="line.253"></a>
+<span class="sourceLineNo">254</span>         * @return true if the component is set, false if not<a name="line.254"></a>
+<span class="sourceLineNo">255</span>         */<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        private boolean hasHour() {<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                return getHour() != null;<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        }<a name="line.258"></a>
+<span class="sourceLineNo">259</span><a name="line.259"></a>
+<span class="sourceLineNo">260</span>        /**<a name="line.260"></a>
+<span class="sourceLineNo">261</span>         * Gets the minute component.<a name="line.261"></a>
+<span class="sourceLineNo">262</span>         * @return the minute component or null if not set<a name="line.262"></a>
+<span class="sourceLineNo">263</span>         */<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        public Integer getMinute() {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                return components[MINUTE];<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>        /**<a name="line.268"></a>
+<span class="sourceLineNo">269</span>         * Determines if the minute component is set.<a name="line.269"></a>
+<span class="sourceLineNo">270</span>         * @return true if the component is set, false if not<a name="line.270"></a>
+<span class="sourceLineNo">271</span>         */<a name="line.271"></a>
+<span class="sourceLineNo">272</span>        private boolean hasMinute() {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                return getMinute() != null;<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        }<a name="line.274"></a>
+<span class="sourceLineNo">275</span><a name="line.275"></a>
+<span class="sourceLineNo">276</span>        /**<a name="line.276"></a>
+<span class="sourceLineNo">277</span>         * Gets the second component.<a name="line.277"></a>
+<span class="sourceLineNo">278</span>         * @return the second component or null if not set<a name="line.278"></a>
+<span class="sourceLineNo">279</span>         */<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        public Integer getSecond() {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                return components[SECOND];<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        }<a name="line.282"></a>
+<span class="sourceLineNo">283</span><a name="line.283"></a>
+<span class="sourceLineNo">284</span>        /**<a name="line.284"></a>
+<span class="sourceLineNo">285</span>         * Determines if the second component is set.<a name="line.285"></a>
+<span class="sourceLineNo">286</span>         * @return true if the component is set, false if not<a name="line.286"></a>
+<span class="sourceLineNo">287</span>         */<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        private boolean hasSecond() {<a name="line.288"></a>
+<span class="sourceLineNo">289</span>                return getSecond() != null;<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        }<a name="line.290"></a>
+<span class="sourceLineNo">291</span><a name="line.291"></a>
+<span class="sourceLineNo">292</span>        /**<a name="line.292"></a>
+<span class="sourceLineNo">293</span>         * Gets the UTC offset.<a name="line.293"></a>
+<span class="sourceLineNo">294</span>         * @return the UTC offset or null if not set<a name="line.294"></a>
+<span class="sourceLineNo">295</span>         */<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        public ZoneOffset getUtcOffset() {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                Integer hour = components[OFFSET_HOUR];<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                if (hour == null) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>                        return null;<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                }<a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>                Integer minute = components[OFFSET_MINUTE];<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                if (minute == null) {<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                        return ZoneOffset.ofHours(hour);<a name="line.304"></a>
+<span class="sourceLineNo">305</span>                }<a name="line.305"></a>
+<span class="sourceLineNo">306</span><a name="line.306"></a>
+<span class="sourceLineNo">307</span>                return ZoneOffset.ofHoursMinutes(hour, minute);<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>        /**<a name="line.310"></a>
+<span class="sourceLineNo">311</span>         * Determines if there are any date components.<a name="line.311"></a>
+<span class="sourceLineNo">312</span>         * @return true if it has at least one date component, false if not<a name="line.312"></a>
+<span class="sourceLineNo">313</span>         */<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        public boolean hasDateComponent() {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                return hasYear() || hasMonth() || hasDate();<a name="line.315"></a>
+<span class="sourceLineNo">316</span>        }<a name="line.316"></a>
+<span class="sourceLineNo">317</span><a name="line.317"></a>
+<span class="sourceLineNo">318</span>        /**<a name="line.318"></a>
+<span class="sourceLineNo">319</span>         * Determines if there are any time components.<a name="line.319"></a>
+<span class="sourceLineNo">320</span>         * @return true if there is at least one time component, false if not<a name="line.320"></a>
 <span class="sourceLineNo">321</span>         */<a name="line.321"></a>
-<span class="sourceLineNo">322</span>        public String toISO8601(boolean extended) {<a name="line.322"></a>
-<span class="sourceLineNo">323</span>                /*<a name="line.323"></a>
-<span class="sourceLineNo">324</span>                 * Micro-optimization: The max length a timestamp string can possibly be<a name="line.324"></a>
-<span class="sourceLineNo">325</span>                 * is 25. Example: 2012-07-01T14:21:10-05:00<a name="line.325"></a>
-<span class="sourceLineNo">326</span>                 */<a name="line.326"></a>
-<span class="sourceLineNo">327</span>                final int maxPossibleLength = 25;<a name="line.327"></a>
-<span class="sourceLineNo">328</span><a name="line.328"></a>
-<span class="sourceLineNo">329</span>                StringBuilder sb = new StringBuilder(maxPossibleLength);<a name="line.329"></a>
-<span class="sourceLineNo">330</span>                NumberFormat nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));<a name="line.330"></a>
-<span class="sourceLineNo">331</span><a name="line.331"></a>
-<span class="sourceLineNo">332</span>                String yearStr = hasYear() ? getYear().toString() : null;<a name="line.332"></a>
-<span class="sourceLineNo">333</span>                String monthStr = hasMonth() ? nf.format(getMonth()) : null;<a name="line.333"></a>
-<span class="sourceLineNo">334</span>                String dateStr = hasDate() ? nf.format(getDate()) : null;<a name="line.334"></a>
-<span class="sourceLineNo">335</span><a name="line.335"></a>
-<span class="sourceLineNo">336</span>                String dash = extended ? "-" : "";<a name="line.336"></a>
-<span class="sourceLineNo">337</span>                if (hasYear() &amp;&amp; !hasMonth() &amp;&amp; !hasDate()) {<a name="line.337"></a>
-<span class="sourceLineNo">338</span>                        sb.append(yearStr);<a name="line.338"></a>
-<span class="sourceLineNo">339</span>                } else if (!hasYear() &amp;&amp; hasMonth() &amp;&amp; !hasDate()) {<a name="line.339"></a>
-<span class="sourceLineNo">340</span>                        sb.append("--").append(monthStr);<a name="line.340"></a>
-<span class="sourceLineNo">341</span>                } else if (!hasYear() &amp;&amp; !hasMonth() &amp;&amp; hasDate()) {<a name="line.341"></a>
-<span class="sourceLineNo">342</span>                        sb.append("---").append(dateStr);<a name="line.342"></a>
-<span class="sourceLineNo">343</span>                } else if (hasYear() &amp;&amp; hasMonth() &amp;&amp; !hasDate()) {<a name="line.343"></a>
-<span class="sourceLineNo">344</span>                        sb.append(yearStr).append("-").append(monthStr);<a name="line.344"></a>
-<span class="sourceLineNo">345</span>                } else if (!hasYear() &amp;&amp; hasMonth() &amp;&amp; hasDate()) {<a name="line.345"></a>
-<span class="sourceLineNo">346</span>                        sb.append("--").append(monthStr).append(dash).append(dateStr);<a name="line.346"></a>
-<span class="sourceLineNo">347</span>                } else if (hasYear() &amp;&amp; !hasMonth() &amp;&amp; hasDate()) {<a name="line.347"></a>
-<span class="sourceLineNo">348</span>                        //this is checked for in the builder and should never be thrown here<a name="line.348"></a>
-<span class="sourceLineNo">349</span>                        throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));<a name="line.349"></a>
-<span class="sourceLineNo">350</span>                } else if (hasYear() &amp;&amp; hasMonth() &amp;&amp; hasDate()) {<a name="line.350"></a>
-<span class="sourceLineNo">351</span>                        sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);<a name="line.351"></a>
-<span class="sourceLineNo">352</span>                }<a name="line.352"></a>
+<span class="sourceLineNo">322</span>        public boolean hasTimeComponent() {<a name="line.322"></a>
+<span class="sourceLineNo">323</span>                return hasHour() || hasMinute() || hasSecond();<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
+<span class="sourceLineNo">325</span><a name="line.325"></a>
+<span class="sourceLineNo">326</span>        /**<a name="line.326"></a>
+<span class="sourceLineNo">327</span>         * Converts this partial date to its ISO 8601 representation.<a name="line.327"></a>
+<span class="sourceLineNo">328</span>         * @param extended true to use extended format, false to use basic<a name="line.328"></a>
+<span class="sourceLineNo">329</span>         * @return the ISO 8601 representation (e.g. "--0416")<a name="line.329"></a>
+<span class="sourceLineNo">330</span>         * @throws IllegalStateException if an ISO 8601 representation of the date<a name="line.330"></a>
+<span class="sourceLineNo">331</span>         * cannot be created because the date's components are invalid. This will<a name="line.331"></a>
+<span class="sourceLineNo">332</span>         * not happen if the partial date is constructed using the<a name="line.332"></a>
+<span class="sourceLineNo">333</span>         * {@link #builder()} method<a name="line.333"></a>
+<span class="sourceLineNo">334</span>         */<a name="line.334"></a>
+<span class="sourceLineNo">335</span>        public String toISO8601(boolean extended) {<a name="line.335"></a>
+<span class="sourceLineNo">336</span>                //these are checked for in the builder and should never be thrown here<a name="line.336"></a>
+<span class="sourceLineNo">337</span>                if (hasYear() &amp;&amp; !hasMonth() &amp;&amp; hasDate()) {<a name="line.337"></a>
+<span class="sourceLineNo">338</span>                        throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(38));<a name="line.338"></a>
+<span class="sourceLineNo">339</span>                }<a name="line.339"></a>
+<span class="sourceLineNo">340</span>                if (hasHour() &amp;&amp; !hasMinute() &amp;&amp; hasSecond()) {<a name="line.340"></a>
+<span class="sourceLineNo">341</span>                        throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));<a name="line.341"></a>
+<span class="sourceLineNo">342</span>                }<a name="line.342"></a>
+<span class="sourceLineNo">343</span><a name="line.343"></a>
+<span class="sourceLineNo">344</span>                return new ISO8601Writer(extended).write();<a name="line.344"></a>
+<span class="sourceLineNo">345</span>        }<a name="line.345"></a>
+<span class="sourceLineNo">346</span><a name="line.346"></a>
+<span class="sourceLineNo">347</span>        private class ISO8601Writer {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>                /**<a name="line.348"></a>
+<span class="sourceLineNo">349</span>                 * Micro-optimization: The max length a timestamp string can possibly be<a name="line.349"></a>
+<span class="sourceLineNo">350</span>                 * is 25. Example: 2012-07-01T14:21:10-05:00<a name="line.350"></a>
+<span class="sourceLineNo">351</span>                 */<a name="line.351"></a>
+<span class="sourceLineNo">352</span>                private static final int MAX_POSSIBLE_LENGTH = 25;<a name="line.352"></a>
 <span class="sourceLineNo">353</span><a name="line.353"></a>
-<span class="sourceLineNo">354</span>                if (hasTimeComponent()) {<a name="line.354"></a>
-<span class="sourceLineNo">355</span>                        sb.append('T');<a name="line.355"></a>
-<span class="sourceLineNo">356</span><a name="line.356"></a>
-<span class="sourceLineNo">357</span>                        String hourStr = hasHour() ? nf.format(getHour()) : null;<a name="line.357"></a>
-<span class="sourceLineNo">358</span>                        String minuteStr = hasMinute() ? nf.format(getMinute()) : null;<a name="line.358"></a>
-<span class="sourceLineNo">359</span>                        String secondStr = hasSecond() ? nf.format(getSecond()) : null;<a name="line.359"></a>
-<span class="sourceLineNo">360</span><a name="line.360"></a>
-<span class="sourceLineNo">361</span>                        dash = extended ? ":" : "";<a name="line.361"></a>
-<span class="sourceLineNo">362</span>                        if (hasHour() &amp;&amp; !hasMinute() &amp;&amp; !hasSecond()) {<a name="line.362"></a>
-<span class="sourceLineNo">363</span>                                sb.append(hourStr);<a name="line.363"></a>
-<span class="sourceLineNo">364</span>                        } else if (!hasHour() &amp;&amp; hasMinute() &amp;&amp; !hasSecond()) {<a name="line.364"></a>
-<span class="sourceLineNo">365</span>                                sb.append("-").append(minuteStr);<a name="line.365"></a>
-<span class="sourceLineNo">366</span>                        } else if (!hasHour() &amp;&amp; !hasMinute() &amp;&amp; hasSecond()) {<a name="line.366"></a>
-<span class="sourceLineNo">367</span>                                sb.append("--").append(secondStr);<a name="line.367"></a>
-<span class="sourceLineNo">368</span>                        } else if (hasHour() &amp;&amp; hasMinute() &amp;&amp; !hasSecond()) {<a name="line.368"></a>
-<span class="sourceLineNo">369</span>                                sb.append(hourStr).append(dash).append(minuteStr);<a name="line.369"></a>
-<span class="sourceLineNo">370</span>                        } else if (!hasHour() &amp;&amp; hasMinute() &amp;&amp; hasSecond()) {<a name="line.370"></a>
-<span class="sourceLineNo">371</span>                                sb.append("-").append(minuteStr).append(dash).append(secondStr);<a name="line.371"></a>
-<span class="sourceLineNo">372</span>                        } else if (hasHour() &amp;&amp; !hasMinute() &amp;&amp; hasSecond()) {<a name="line.372"></a>
-<span class="sourceLineNo">373</span>                                //this is checked for in the builder and should never be thrown here<a name="line.373"></a>
-<span class="sourceLineNo">374</span>                                throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(39));<a name="line.374"></a>
-<span class="sourceLineNo">375</span>                        } else if (hasHour() &amp;&amp; hasMinute() &amp;&amp; hasSecond()) {<a name="line.375"></a>
-<span class="sourceLineNo">376</span>                                sb.append(hourStr).append(dash).append(minuteStr).append(dash).append(secondStr);<a name="line.376"></a>
-<span class="sourceLineNo">377</span>                        }<a name="line.377"></a>
-<span class="sourceLineNo">378</span><a name="line.378"></a>
-<span class="sourceLineNo">379</span>                        Integer offsetHour = components[OFFSET_HOUR];<a name="line.379"></a>
-<span class="sourceLineNo">380</span>                        if (offsetHour != null) {<a name="line.380"></a>
-<span class="sourceLineNo">381</span>                                Integer offsetMinute = components[OFFSET_MINUTE];<a name="line.381"></a>
-<span class="sourceLineNo">382</span>                                String offsetHourStr = nf.format(Math.abs(offsetHour));<a name="line.382"></a>
-<span class="sourceLineNo">383</span>                                String offsetMinuteStr = nf.format(Math.abs(offsetMinute));<a name="line.383"></a>
-<span class="sourceLineNo">384</span><a name="line.384"></a>
-<span class="sourceLineNo">385</span>                                sb.append((offsetHour &lt; 0 || offsetMinute &lt; 0) ? '-' : '+');<a name="line.385"></a>
-<span class="sourceLineNo">386</span>                                sb.append(offsetHourStr).append(dash).append(offsetMinuteStr);<a name="line.386"></a>
-<span class="sourceLineNo">387</span>                        }<a name="line.387"></a>
-<span class="sourceLineNo">388</span>                }<a name="line.388"></a>
-<span class="sourceLineNo">389</span><a name="line.389"></a>
-<span class="sourceLineNo">390</span>                return sb.toString();<a name="line.390"></a>
-<span class="sourceLineNo">391</span>        }<a name="line.391"></a>
-<span class="sourceLineNo">392</span><a name="line.392"></a>
-<span class="sourceLineNo">393</span>        @Override<a name="line.393"></a>
-<span class="sourceLineNo">394</span>        public int hashCode() {<a name="line.394"></a>
-<span class="sourceLineNo">395</span>                final int prime = 31;<a name="line.395"></a>
-<span class="sourceLineNo">396</span>                int result = 1;<a name="line.396"></a>
-<span class="sourceLineNo">397</span>                result = prime * result + Arrays.hashCode(components);<a name="line.397"></a>
-<span class="sourceLineNo">398</span>                return result;<a name="line.398"></a>
-<span class="sourceLineNo">399</span>        }<a name="line.399"></a>
-<span class="sourceLineNo">400</span><a name="line.400"></a>
-<span class="sourceLineNo">401</span>        @Override<a name="line.401"></a>
-<span class="sourceLineNo">402</span>        public boolean equals(Object obj) {<a name="line.402"></a>
-<span class="sourceLineNo">403</span>                if (this == obj) return true;<a name="line.403"></a>
-<span class="sourceLineNo">404</span>                if (obj == null) return false;<a name="line.404"></a>
-<span class="sourceLineNo">405</span>                if (getClass() != obj.getClass()) return false;<a name="line.405"></a>
-<span class="sourceLineNo">406</span>                PartialDate other = (PartialDate) obj;<a name="line.406"></a>
-<span class="sourceLineNo">407</span>                if (!Arrays.equals(components, other.components)) return false;<a name="line.407"></a>
-<span class="sourceLineNo">408</span>                return true;<a name="line.408"></a>
-<span class="sourceLineNo">409</span>        }<a name="line.409"></a>
-<span class="sourceLineNo">410</span><a name="line.410"></a>
-<span class="sourceLineNo">411</span>        @Override<a name="line.411"></a>
-<span class="sourceLineNo">412</span>        public String toString() {<a name="line.412"></a>
-<span class="sourceLineNo">413</span>                return toISO8601(true);<a name="line.413"></a>
-<span class="sourceLineNo">414</span>        }<a name="line.414"></a>
-<span class="sourceLineNo">415</span><a name="line.415"></a>
-<span class="sourceLineNo">416</span>        /**<a name="line.416"></a>
-<span class="sourceLineNo">417</span>         * Represents a string format that a partial date can be in.<a name="line.417"></a>
-<span class="sourceLineNo">418</span>         */<a name="line.418"></a>
-<span class="sourceLineNo">419</span>        private static class Format {<a name="line.419"></a>
-<span class="sourceLineNo">420</span>                private Pattern regex;<a name="line.420"></a>
-<span class="sourceLineNo">421</span>                private Integer[] componentIndexes;<a name="line.421"></a>
-<span class="sourceLineNo">422</span><a name="line.422"></a>
-<span class="sourceLineNo">423</span>                /**<a name="line.423"></a>
-<span class="sourceLineNo">424</span>                 * @param regex the regular expression that describes the format<a name="line.424"></a>
-<span class="sourceLineNo">425</span>                 * @param componentIndexes the indexes of the<a name="line.425"></a>
-<span class="sourceLineNo">426</span>                 * {@link PartialDate#components} array to assign the value of each<a name="line.426"></a>
-<span class="sourceLineNo">427</span>                 * regex group to, or null to ignore the group<a name="line.427"></a>
-<span class="sourceLineNo">428</span>                 */<a name="line.428"></a>
-<span class="sourceLineNo">429</span>                public Format(String regex, Integer... componentIndexes) {<a name="line.429"></a>
-<span class="sourceLineNo">430</span>                        this.regex = Pattern.compile('^' + regex + '$');<a name="line.430"></a>
-<span class="sourceLineNo">431</span>                        this.componentIndexes = componentIndexes;<a name="line.431"></a>
+<span class="sourceLineNo">354</span>                private final StringBuilder sb;<a name="line.354"></a>
+<span class="sourceLineNo">355</span>                private final NumberFormat nf;<a name="line.355"></a>
+<span class="sourceLineNo">356</span>                private final String dash;<a name="line.356"></a>
+<span class="sourceLineNo">357</span>                private final String colon;<a name="line.357"></a>
+<span class="sourceLineNo">358</span><a name="line.358"></a>
+<span class="sourceLineNo">359</span>                public ISO8601Writer(boolean extended) {<a name="line.359"></a>
+<span class="sourceLineNo">360</span>                        sb = new StringBuilder(MAX_POSSIBLE_LENGTH);<a name="line.360"></a>
+<span class="sourceLineNo">361</span>                        nf = new DecimalFormat("00", DecimalFormatSymbols.getInstance(Locale.ROOT));<a name="line.361"></a>
+<span class="sourceLineNo">362</span>                        dash = extended ? "-" : "";<a name="line.362"></a>
+<span class="sourceLineNo">363</span>                        colon = extended ? ":" : "";<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                }<a name="line.364"></a>
+<span class="sourceLineNo">365</span><a name="line.365"></a>
+<span class="sourceLineNo">366</span>                public String write() {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>                        writeDateComponent();<a name="line.367"></a>
+<span class="sourceLineNo">368</span><a name="line.368"></a>
+<span class="sourceLineNo">369</span>                        if (hasTimeComponent()) {<a name="line.369"></a>
+<span class="sourceLineNo">370</span>                                writeTimeComponent();<a name="line.370"></a>
+<span class="sourceLineNo">371</span>                        }<a name="line.371"></a>
+<span class="sourceLineNo">372</span><a name="line.372"></a>
+<span class="sourceLineNo">373</span>                        return sb.toString();<a name="line.373"></a>
+<span class="sourceLineNo">374</span>                }<a name="line.374"></a>
+<span class="sourceLineNo">375</span><a name="line.375"></a>
+<span class="sourceLineNo">376</span>                private void writeDateComponent() {<a name="line.376"></a>
+<span class="sourceLineNo">377</span>                        String yearStr = hasYear() ? getYear().toString() : null;<a name="line.377"></a>
+<span class="sourceLineNo">378</span>                        String monthStr = hasMonth() ? nf.format(getMonth()) : null;<a name="line.378"></a>
+<span class="sourceLineNo">379</span>                        String dateStr = hasDate() ? nf.format(getDate()) : null;<a name="line.379"></a>
+<span class="sourceLineNo">380</span><a name="line.380"></a>
+<span class="sourceLineNo">381</span>                        if (hasYear() &amp;&amp; !hasMonth() &amp;&amp; !hasDate()) {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>                                sb.append(yearStr);<a name="line.382"></a>
+<span class="sourceLineNo">383</span>                        } else if (!hasYear() &amp;&amp; hasMonth() &amp;&amp; !hasDate()) {<a name="line.383"></a>
+<span class="sourceLineNo">384</span>                                sb.append("--").append(monthStr);<a name="line.384"></a>
+<span class="sourceLineNo">385</span>                        } else if (!hasYear() &amp;&amp; !hasMonth() &amp;&amp; hasDate()) {<a name="line.385"></a>
+<span class="sourceLineNo">386</span>                                sb.append("---").append(dateStr);<a name="line.386"></a>
+<span class="sourceLineNo">387</span>                        } else if (hasYear() &amp;&amp; hasMonth() &amp;&amp; !hasDate()) {<a name="line.387"></a>
+<span class="sourceLineNo">388</span>                                sb.append(yearStr).append("-").append(monthStr);<a name="line.388"></a>
+<span class="sourceLineNo">389</span>                        } else if (!hasYear() &amp;&amp; hasMonth() &amp;&amp; hasDate()) {<a name="line.389"></a>
+<span class="sourceLineNo">390</span>                                sb.append("--").append(monthStr).append(dash).append(dateStr);<a name="line.390"></a>
+<span class="sourceLineNo">391</span>                        } else if (hasYear() &amp;&amp; hasMonth() &amp;&amp; hasDate()) {<a name="line.391"></a>
+<span class="sourceLineNo">392</span>                                sb.append(yearStr).append(dash).append(monthStr).append(dash).append(dateStr);<a name="line.392"></a>
+<span class="sourceLineNo">393</span>                        }<a name="line.393"></a>
+<span class="sourceLineNo">394</span>                }<a name="line.394"></a>
+<span class="sourceLineNo">395</span><a name="line.395"></a>
+<span class="sourceLineNo">396</span>                private void writeTimeComponent() {<a name="line.396"></a>
+<span class="sourceLineNo">397</span>                        sb.append('T');<a name="line.397"></a>
+<span class="sourceLineNo">398</span><a name="line.398"></a>
+<span class="sourceLineNo">399</span>                        String hourStr = hasHour() ? nf.format(getHour()) : null;<a name="line.399"></a>
+<span class="sourceLineNo">400</span>                        String minuteStr = hasMinute() ? nf.format(getMinute()) : null;<a name="line.400"></a>
+<span class="sourceLineNo">401</span>                        String secondStr = hasSecond() ? nf.format(getSecond()) : null;<a name="line.401"></a>
+<span class="sourceLineNo">402</span><a name="line.402"></a>
+<span class="sourceLineNo">403</span>                        if (hasHour() &amp;&amp; !hasMinute() &amp;&amp; !hasSecond()) {<a name="line.403"></a>
+<span class="sourceLineNo">404</span>                                sb.append(hourStr);<a name="line.404"></a>
+<span class="sourceLineNo">405</span>                        } else if (!hasHour() &amp;&amp; hasMinute() &amp;&amp; !hasSecond()) {<a name="line.405"></a>
+<span class="sourceLineNo">406</span>                                sb.append("-").append(minuteStr);<a name="line.406"></a>
+<span class="sourceLineNo">407</span>                        } else if (!hasHour() &amp;&amp; !hasMinute() &amp;&amp; hasSecond()) {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                                sb.append("--").append(secondStr);<a name="line.408"></a>
+<span class="sourceLineNo">409</span>                        } else if (hasHour() &amp;&amp; hasMinute() &amp;&amp; !hasSecond()) {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>                                sb.append(hourStr).append(colon).append(minuteStr);<a name="line.410"></a>
+<span class="sourceLineNo">411</span>                        } else if (!hasHour() &amp;&amp; hasMinute() &amp;&amp; hasSecond()) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>                                sb.append("-").append(minuteStr).append(colon).append(secondStr);<a name="line.412"></a>
+<span class="sourceLineNo">413</span>                        } else if (hasHour() &amp;&amp; hasMinute() &amp;&amp; hasSecond()) {<a name="line.413"></a>
+<span class="sourceLineNo">414</span>                                sb.append(hourStr).append(colon).append(minuteStr).append(colon).append(secondStr);<a name="line.414"></a>
+<span class="sourceLineNo">415</span>                        }<a name="line.415"></a>
+<span class="sourceLineNo">416</span><a name="line.416"></a>
+<span class="sourceLineNo">417</span>                        writeOffsetIfPresent();<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                }<a name="line.418"></a>
+<span class="sourceLineNo">419</span><a name="line.419"></a>
+<span class="sourceLineNo">420</span>                private void writeOffsetIfPresent() {<a name="line.420"></a>
+<span class="sourceLineNo">421</span>                        Integer offsetHour = components[OFFSET_HOUR];<a name="line.421"></a>
+<span class="sourceLineNo">422</span>                        if (offsetHour == null) {<a name="line.422"></a>
+<span class="sourceLineNo">423</span>                                return;<a name="line.423"></a>
+<span class="sourceLineNo">424</span>                        }<a name="line.424"></a>
+<span class="sourceLineNo">425</span><a name="line.425"></a>
+<span class="sourceLineNo">426</span>                        Integer offsetMinute = components[OFFSET_MINUTE];<a name="line.426"></a>
+<span class="sourceLineNo">427</span>                        String offsetHourStr = nf.format(Math.abs(offsetHour));<a name="line.427"></a>
+<span class="sourceLineNo">428</span>                        String offsetMinuteStr = nf.format(Math.abs(offsetMinute));<a name="line.428"></a>
+<span class="sourceLineNo">429</span><a name="line.429"></a>
+<span class="sourceLineNo">430</span>                        sb.append((offsetHour &lt; 0 || offsetMinute &lt; 0) ? '-' : '+');<a name="line.430"></a>
+<span class="sourceLineNo">431</span>                        sb.append(offsetHourStr).append(colon).append(offsetMinuteStr);<a name="line.431"></a>
 <span class="sourceLineNo">432</span>                }<a name="line.432"></a>
-<span class="sourceLineNo">433</span><a name="line.433"></a>
-<span class="sourceLineNo">434</span>                /**<a name="line.434"></a>
-<span class="sourceLineNo">435</span>                 * Tries to parse a given string.<a name="line.435"></a>
-<span class="sourceLineNo">436</span>                 * @param builder the object to assign the parsed data to<a name="line.436"></a>
-<span class="sourceLineNo">437</span>                 * @param value the string to parse<a name="line.437"></a>
-<span class="sourceLineNo">438</span>                 * @return true if the string matches this format's regex, false if not<a name="line.438"></a>
-<span class="sourceLineNo">439</span>                 * @throws IllegalArgumentException if a value in the date string is<a name="line.439"></a>
-<span class="sourceLineNo">440</span>                 * invalid (e.g. "13" for the month)<a name="line.440"></a>
-<span class="sourceLineNo">441</span>                 */<a name="line.441"></a>
-<span class="sourceLineNo">442</span>                public boolean parse(Builder builder, String value) {<a name="line.442"></a>
-<span class="sourceLineNo">443</span>                        Matcher m = regex.matcher(value);<a name="line.443"></a>
-<span class="sourceLineNo">444</span>                        if (!m.find()) {<a name="line.444"></a>
-<span class="sourceLineNo">445</span>                                return false;<a name="line.445"></a>
-<span class="sourceLineNo">446</span>                        }<a name="line.446"></a>
-<span class="sourceLineNo">447</span><a name="line.447"></a>
-<span class="sourceLineNo">448</span>                        /*<a name="line.448"></a>
-<span class="sourceLineNo">449</span>                         * All this complicated handling of the offset is due to:<a name="line.449"></a>
-<span class="sourceLineNo">450</span>                         * <a name="line.450"></a>
-<span class="sourceLineNo">451</span>                         * The hour portion can be zero, and zero can't be negative (e.g.<a name="line.451"></a>
-<span class="sourceLineNo">452</span>                         * "-00:30").<a name="line.452"></a>
-<span class="sourceLineNo">453</span>                         * <a name="line.453"></a>
-<span class="sourceLineNo">454</span>                         * There is no positive or negative sign next to the minute portion<a name="line.454"></a>
-<span class="sourceLineNo">455</span>                         * in the string.<a name="line.455"></a>
-<span class="sourceLineNo">456</span>                         */<a name="line.456"></a>
-<span class="sourceLineNo">457</span>                        boolean offsetPositive = false;<a name="line.457"></a>
-<span class="sourceLineNo">458</span>                        Integer offsetHour = null, offsetMinute = null;<a name="line.458"></a>
-<span class="sourceLineNo">459</span><a name="line.459"></a>
-<span class="sourceLineNo">460</span>                        for (int i = 0; i &lt; componentIndexes.length; i++) {<a name="line.460"></a>
-<span class="sourceLineNo">461</span>                                Integer index = componentIndexes[i];<a name="line.461"></a>
-<span class="sourceLineNo">462</span>                                if (index == null) {<a name="line.462"></a>
-<span class="sourceLineNo">463</span>                                        continue;<a name="line.463"></a>
-<span class="sourceLineNo">464</span>                                }<a name="line.464"></a>
-<span class="sourceLineNo">465</span><a name="line.465"></a>
-<span class="sourceLineNo">466</span>                                int group = i + 1;<a name="line.466"></a>
-<span class="sourceLineNo">467</span>                                String groupStr = m.group(group);<a name="line.467"></a>
-<span class="sourceLineNo">468</span>                                if (groupStr != null) {<a name="line.468"></a>
-<span class="sourceLineNo">469</span>                                        boolean startsWithPlus = groupStr.startsWith("+");<a name="line.469"></a>
-<span class="sourceLineNo">470</span>                                        if (startsWithPlus) {<a name="line.470"></a>
-<span class="sourceLineNo">471</span>                                                groupStr = groupStr.substring(1);<a name="line.471"></a>
-<span class="sourceLineNo">472</span>                                        }<a name="line.472"></a>
-<span class="sourceLineNo">473</span><a name="line.473"></a>
-<span class="sourceLineNo">474</span>                                        int component = Integer.parseInt(groupStr);<a name="line.474"></a>
-<span class="sourceLineNo">475</span>                                        if (index == YEAR) {<a name="line.475"></a>
-<span class="sourceLineNo">476</span>                                                builder.year(component);<a name="line.476"></a>
-<span class="sourceLineNo">477</span>                                        } else if (index == MONTH) {<a name="line.477"></a>
-<span class="sourceLineNo">478</span>                                                builder.month(component);<a name="line.478"></a>
-<span class="sourceLineNo">479</span>                                        } else if (index == DATE) {<a name="line.479"></a>
-<span class="sourceLineNo">480</span>                                                builder.date(component);<a name="line.480"></a>
-<span class="sourceLineNo">481</span>                                        } else if (index == HOUR) {<a name="line.481"></a>
-<span class="sourceLineNo">482</span>                                                builder.hour(component);<a name="line.482"></a>
-<span class="sourceLineNo">483</span>                                        } else if (index == MINUTE) {<a name="line.483"></a>
-<span class="sourceLineNo">484</span>                                                builder.minute(component);<a name="line.484"></a>
-<span class="sourceLineNo">485</span>                                        } else if (index == SECOND) {<a name="line.485"></a>
-<span class="sourceLineNo">486</span>                                                builder.second(component);<a name="line.486"></a>
-<span class="sourceLineNo">487</span>                                        } else if (index == OFFSET_HOUR) {<a name="line.487"></a>
-<span class="sourceLineNo">488</span>                                                offsetHour = component;<a name="line.488"></a>
-<span class="sourceLineNo">489</span>                                                offsetPositive = startsWithPlus;<a name="line.489"></a>
-<span class="sourceLineNo">490</span>                                        } else if (index == OFFSET_MINUTE) {<a name="line.490"></a>
-<span class="sourceLineNo">491</span>                                                offsetMinute = component;<a name="line.491"></a>
-<span class="sourceLineNo">492</span>                                        }<a name="line.492"></a>
-<span class="sourceLineNo">493</span>                                }<a name="line.493"></a>
-<span class="sourceLineNo">494</span>                        }<a name="line.494"></a>
-<span class="sourceLineNo">495</span><a name="line.495"></a>
-<span class="sourceLineNo">496</span>                        if (offsetHour != null) {<a name="line.496"></a>
-<span class="sourceLineNo">497</span>                                if (offsetMinute == null) {<a name="line.497"></a>
-<span class="sourceLineNo">498</span>                                        offsetMinute = 0;<a name="line.498"></a>
-<span class="sourceLineNo">499</span>                                }<a name="line.499"></a>
-<span class="sourceLineNo">500</span>                                if (!offsetPositive) {<a name="line.500"></a>
-<span class="sourceLineNo">501</span>                                        offsetMinute *= -1;<a name="line.501"></a>
-<span class="sourceLineNo">502</span>                                }<a name="line.502"></a>
-<span class="sourceLineNo">503</span><a name="line.503"></a>
-<span class="sourceLineNo">504</span>                                ZoneOffset offset;<a name="line.504"></a>
-<span class="sourceLineNo">505</span>                                try {<a name="line.505"></a>
-<span class="sourceLineNo">506</span>                                        offset = ZoneOffset.ofHoursMinutes(offsetHour, offsetMinute);<a name="line.506"></a>
-<span class="sourceLineNo">507</span>                                } catch (DateTimeException e) {<a name="line.507"></a>
-<span class="sourceLineNo">508</span>                                        throw new IllegalArgumentException(e);<a name="line.508"></a>
-<span class="sourceLineNo">509</span>                                }<a name="line.509"></a>
-<span class="sourceLineNo">510</span>                                builder.offset(offset);<a name="line.510"></a>
-<span class="sourceLineNo">511</span>                        }<a name="line.511"></a>
-<span class="sourceLineNo">512</span><a name="line.512"></a>
-<span class="sourceLineNo">513</span>                        return true;<a name="line.513"></a>
-<span class="sourceLineNo">514</span>                }<a name="line.514"></a>
-<span class="sourceLineNo">515</span>        }<a name="line.515"></a>
-<span class="sourceLineNo">516</span><a name="line.516"></a>
-<span class="sourceLineNo">517</span>        /**<a name="line.517"></a>
-<span class="sourceLineNo">518</span>         * Constructs instances of the {@link PartialDate} class.<a name="line.518"></a>
-<span class="sourceLineNo">519</span>         * @author Michael Angstadt<a name="line.519"></a>
-<span class="sourceLineNo">520</span>         */<a name="line.520"></a>
-<span class="sourceLineNo">521</span>        public static class Builder {<a name="line.521"></a>
-<span class="sourceLineNo">522</span>                private final Integer[] components;<a name="line.522"></a>
-<span class="sourceLineNo">523</span><a name="line.523"></a>
-<span class="sourceLineNo">524</span>                public Builder() {<a name="line.524"></a>
-<span class="sourceLineNo">525</span>                        components = new Integer[8];<a name="line.525"></a>
-<span class="sourceLineNo">526</span>                }<a name="line.526"></a>
-<span class="sourceLineNo">527</span><a name="line.527"></a>
-<span class="sourceLineNo">528</span>                /**<a name="line.528"></a>
-<span class="sourceLineNo">529</span>                 * @param original the partial date to copy<a name="line.529"></a>
-<span class="sourceLineNo">530</span>                 */<a name="line.530"></a>
-<span class="sourceLineNo">531</span>                public Builder(PartialDate original) {<a name="line.531"></a>
-<span class="sourceLineNo">532</span>                        components = original.components.clone();<a name="line.532"></a>
-<span class="sourceLineNo">533</span>                }<a name="line.533"></a>
+<span class="sourceLineNo">433</span>        }<a name="line.433"></a>
+<span class="sourceLineNo">434</span><a name="line.434"></a>
+<span class="sourceLineNo">435</span>        @Override<a name="line.435"></a>
+<span class="sourceLineNo">436</span>        public int hashCode() {<a name="line.436"></a>
+<span class="sourceLineNo">437</span>                final int prime = 31;<a name="line.437"></a>
+<span class="sourceLineNo">438</span>                int result = 1;<a name="line.438"></a>
+<span class="sourceLineNo">439</span>                result = prime * result + Arrays.hashCode(components);<a name="line.439"></a>
+<span class="sourceLineNo">440</span>                return result;<a name="line.440"></a>
+<span class="sourceLineNo">441</span>        }<a name="line.441"></a>
+<span class="sourceLineNo">442</span><a name="line.442"></a>
+<span class="sourceLineNo">443</span>        @Override<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        public boolean equals(Object obj) {<a name="line.444"></a>
+<span class="sourceLineNo">445</span>                if (this == obj) return true;<a name="line.445"></a>
+<span class="sourceLineNo">446</span>                if (obj == null) return false;<a name="line.446"></a>
+<span class="sourceLineNo">447</span>                if (getClass() != obj.getClass()) return false;<a name="line.447"></a>
+<span class="sourceLineNo">448</span>                PartialDate other = (PartialDate) obj;<a name="line.448"></a>
+<span class="sourceLineNo">449</span>                return Arrays.equals(components, other.components);<a name="line.449"></a>
+<span class="sourceLineNo">450</span>        }<a name="line.450"></a>
+<span class="sourceLineNo">451</span><a name="line.451"></a>
+<span class="sourceLineNo">452</span>        @Override<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        public String toString() {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>                return toISO8601(true);<a name="line.454"></a>
+<span class="sourceLineNo">455</span>        }<a name="line.455"></a>
+<span class="sourceLineNo">456</span><a name="line.456"></a>
+<span class="sourceLineNo">457</span>        /**<a name="line.457"></a>
+<span class="sourceLineNo">458</span>         * Represents a string format that a partial date can be in.<a name="line.458"></a>
+<span class="sourceLineNo">459</span>         */<a name="line.459"></a>
+<span class="sourceLineNo">460</span>        private static class Format {<a name="line.460"></a>
+<span class="sourceLineNo">461</span>                private final Pattern regex;<a name="line.461"></a>
+<span class="sourceLineNo">462</span>                private final Integer[] componentIndexes;<a name="line.462"></a>
+<span class="sourceLineNo">463</span><a name="line.463"></a>
+<span class="sourceLineNo">464</span>                /**<a name="line.464"></a>
+<span class="sourceLineNo">465</span>                 * @param regex the regular expression that describes the format<a name="line.465"></a>
+<span class="sourceLineNo">466</span>                 * @param componentIndexes the indexes of the<a name="line.466"></a>
+<span class="sourceLineNo">467</span>                 * {@link PartialDate#components} array to assign the value of each<a name="line.467"></a>
+<span class="sourceLineNo">468</span>                 * regex group to, or null to ignore the group<a name="line.468"></a>
+<span class="sourceLineNo">469</span>                 */<a name="line.469"></a>
+<span class="sourceLineNo">470</span>                public Format(String regex, Integer... componentIndexes) {<a name="line.470"></a>
+<span class="sourceLineNo">471</span>                        this.regex = Pattern.compile('^' + regex + '$');<a name="line.471"></a>
+<span class="sourceLineNo">472</span>                        this.componentIndexes = componentIndexes;<a name="line.472"></a>
+<span class="sourceLineNo">473</span>                }<a name="line.473"></a>
+<span class="sourceLineNo">474</span><a name="line.474"></a>
+<span class="sourceLineNo">475</span>                /**<a name="line.475"></a>
+<span class="sourceLineNo">476</span>                 * Tries to parse a given string.<a name="line.476"></a>
+<span class="sourceLineNo">477</span>                 * @param builder the object to assign the parsed data to<a name="line.477"></a>
+<span class="sourceLineNo">478</span>                 * @param value the string to parse<a name="line.478"></a>
+<span class="sourceLineNo">479</span>                 * @return true if the string matches this format's regex, false if not<a name="line.479"></a>
+<span class="sourceLineNo">480</span>                 * @throws IllegalArgumentException if a value in the date string is<a name="line.480"></a>
+<span class="sourceLineNo">481</span>                 * invalid (e.g. "13" for the month)<a name="line.481"></a>
+<span class="sourceLineNo">482</span>                 */<a name="line.482"></a>
+<span class="sourceLineNo">483</span>                public boolean parse(Builder builder, String value) {<a name="line.483"></a>
+<span class="sourceLineNo">484</span>                        return new FormatParser(builder, value).parse();<a name="line.484"></a>
+<span class="sourceLineNo">485</span>                }<a name="line.485"></a>
+<span class="sourceLineNo">486</span><a name="line.486"></a>
+<span class="sourceLineNo">487</span>                private class FormatParser {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>                        private final Builder builder;<a name="line.488"></a>
+<span class="sourceLineNo">489</span>                        private final Matcher m;<a name="line.489"></a>
+<span class="sourceLineNo">490</span><a name="line.490"></a>
+<span class="sourceLineNo">491</span>                        private boolean offsetPositive;<a name="line.491"></a>
+<span class="sourceLineNo">492</span>                        private Integer offsetHour;<a name="line.492"></a>
+<span class="sourceLineNo">493</span>                        private Integer offsetMinute;<a name="line.493"></a>
+<span class="sourceLineNo">494</span><a name="line.494"></a>
+<span class="sourceLineNo">495</span>                        public FormatParser(Builder builder, String value) {<a name="line.495"></a>
+<span class="sourceLineNo">496</span>                                this.builder = builder;<a name="line.496"></a>
+<span class="sourceLineNo">497</span>                                m = regex.matcher(value);<a name="line.497"></a>
+<span class="sourceLineNo">498</span>                        }<a name="line.498"></a>
+<span class="sourceLineNo">499</span><a name="line.499"></a>
+<span class="sourceLineNo">500</span>                        public boolean parse() {<a name="line.500"></a>
+<span class="sourceLineNo">501</span>                                if (!m.find()) {<a name="line.501"></a>
+<span class="sourceLineNo">502</span>                                        return false;<a name="line.502"></a>
+<span class="sourceLineNo">503</span>                                }<a name="line.503"></a>
+<span class="sourceLineNo">504</span><a name="line.504"></a>
+<span class="sourceLineNo">505</span>                                /*<a name="line.505"></a>
+<span class="sourceLineNo">506</span>                                 * All this complicated handling of the offset is due to:<a name="line.506"></a>
+<span class="sourceLineNo">507</span>                                 * <a name="line.507"></a>
+<span class="sourceLineNo">508</span>                                 * The hour portion can be zero, and zero can't be negative<a name="line.508"></a>
+<span class="sourceLineNo">509</span>                                 * (e.g. "-00:30").<a name="line.509"></a>
+<span class="sourceLineNo">510</span>                                 * <a name="line.510"></a>
+<span class="sourceLineNo">511</span>                                 * There is no positive or negative sign next to the minute<a name="line.511"></a>
+<span class="sourceLineNo">512</span>                                 * portion in the string.<a name="line.512"></a>
+<span class="sourceLineNo">513</span>                                 */<a name="line.513"></a>
+<span class="sourceLineNo">514</span><a name="line.514"></a>
+<span class="sourceLineNo">515</span>                                //@formatter:off<a name="line.515"></a>
+<span class="sourceLineNo">516</span>                                IntStream.range(0, componentIndexes.length)<a name="line.516"></a>
+<span class="sourceLineNo">517</span>                                        .filter(i -&gt; componentIndexes[i] != null)<a name="line.517"></a>
+<span class="sourceLineNo">518</span>                                        .filter(i -&gt; m.group(i + 1) != null)<a name="line.518"></a>
+<span class="sourceLineNo">519</span>                                .forEach(i -&gt; processComponent(componentIndexes[i], m.group(i + 1)));<a name="line.519"></a>
+<span class="sourceLineNo">520</span>                                //@formatter:on<a name="line.520"></a>
+<span class="sourceLineNo">521</span><a name="line.521"></a>
+<span class="sourceLineNo">522</span>                                if (offsetHour != null) {<a name="line.522"></a>
+<span class="sourceLineNo">523</span>                                        handleZoneOffset();<a name="line.523"></a>
+<span class="sourceLineNo">524</span>                                }<a name="line.524"></a>
+<span class="sourceLineNo">525</span><a name="line.525"></a>
+<span class="sourceLineNo">526</span>                                return true;<a name="line.526"></a>
+<span class="sourceLineNo">527</span>                        }<a name="line.527"></a>
+<span class="sourceLineNo">528</span><a name="line.528"></a>
+<span class="sourceLineNo">529</span>                        private void processComponent(Integer index, String groupStr) {<a name="line.529"></a>
+<span class="sourceLineNo">530</span>                                boolean startsWithPlus = groupStr.startsWith("+");<a name="line.530"></a>
+<span class="sourceLineNo">531</span>                                if (startsWithPlus) {<a name="line.531"></a>
+<span class="sourceLineNo">532</span>                                        groupStr = groupStr.substring(1);<a name="line.532"></a>
+<span class="sourceLineNo">533</span>                                }<a name="line.533"></a>
 <span class="sourceLineNo">534</span><a name="line.534"></a>
-<span class="sourceLineNo">535</span>                /**<a name="line.535"></a>
-<span class="sourceLineNo">536</span>                 * Sets the year component.<a name="line.536"></a>
-<span class="sourceLineNo">537</span>                 * @param year the year<a name="line.537"></a>
-<span class="sourceLineNo">538</span>                 * @return this<a name="line.538"></a>
-<span class="sourceLineNo">539</span>                 */<a name="line.539"></a>
-<span class="sourceLineNo">540</span>                public Builder year(Integer year) {<a name="line.540"></a>
-<span class="sourceLineNo">541</span>                        components[YEAR] = year;<a name="line.541"></a>
-<span class="sourceLineNo">542</span>                        return this;<a name="line.542"></a>
-<span class="sourceLineNo">543</span>                }<a name="line.543"></a>
-<span class="sourceLineNo">544</span><a name="line.544"></a>
-<span class="sourceLineNo">545</span>                /**<a name="line.545"></a>
-<span class="sourceLineNo">546</span>                 * Sets the month component.<a name="line.546"></a>
-<span class="sourceLineNo">547</span>                 * @param month the month (1-12)<a name="line.547"></a>
-<span class="sourceLineNo">548</span>                 * @return this<a name="line.548"></a>
-<span class="sourceLineNo">549</span>                 * @throws IllegalArgumentException if the month is not between 1 and 12<a name="line.549"></a>
-<span class="sourceLineNo">550</span>                 * inclusive<a name="line.550"></a>
-<span class="sourceLineNo">551</span>                 */<a name="line.551"></a>
-<span class="sourceLineNo">552</span>                public Builder month(Integer month) {<a name="line.552"></a>
-<span class="sourceLineNo">553</span>                        if (month != null &amp;&amp; (month &lt; 1 || month &gt; 12)) {<a name="line.553"></a>
-<span class="sourceLineNo">554</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Month", 1, 12);<a name="line.554"></a>
-<span class="sourceLineNo">555</span>                        }<a name="line.555"></a>
-<span class="sourceLineNo">556</span><a name="line.556"></a>
-<span class="sourceLineNo">557</span>                        components[MONTH] = month;<a name="line.557"></a>
-<span class="sourceLineNo">558</span>                        return this;<a name="line.558"></a>
-<span class="sourceLineNo">559</span>                }<a name="line.559"></a>
-<span class="sourceLineNo">560</span><a name="line.560"></a>
-<span class="sourceLineNo">561</span>                /**<a name="line.561"></a>
-<span class="sourceLineNo">562</span>                 * Sets the date component.<a name="line.562"></a>
-<span class="sourceLineNo">563</span>                 * @param date the date<a name="line.563"></a>
-<span class="sourceLineNo">564</span>                 * @return this<a name="line.564"></a>
-<span class="sourceLineNo">565</span>                 * @throws IllegalArgumentException if the date is not between 1 and 31<a name="line.565"></a>
-<span class="sourceLineNo">566</span>                 * inclusive<a name="line.566"></a>
-<span class="sourceLineNo">567</span>                 */<a name="line.567"></a>
-<span class="sourceLineNo">568</span>                public Builder date(Integer date) {<a name="line.568"></a>
-<span class="sourceLineNo">569</span>                        if (date != null &amp;&amp; (date &lt; 1 || date &gt; 31)) {<a name="line.569"></a>
-<span class="sourceLineNo">570</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Date", 1, 31);<a name="line.570"></a>
+<span class="sourceLineNo">535</span>                                int component = Integer.parseInt(groupStr);<a name="line.535"></a>
+<span class="sourceLineNo">536</span>                                if (index == YEAR) {<a name="line.536"></a>
+<span class="sourceLineNo">537</span>                                        builder.year(component);<a name="line.537"></a>
+<span class="sourceLineNo">538</span>                                } else if (index == MONTH) {<a name="line.538"></a>
+<span class="sourceLineNo">539</span>                                        builder.month(component);<a name="line.539"></a>
+<span class="sourceLineNo">540</span>                                } else if (index == DATE) {<a name="line.540"></a>
+<span class="sourceLineNo">541</span>                                        builder.date(component);<a name="line.541"></a>
+<span class="sourceLineNo">542</span>                                } else if (index == HOUR) {<a name="line.542"></a>
+<span class="sourceLineNo">543</span>                                        builder.hour(component);<a name="line.543"></a>
+<span class="sourceLineNo">544</span>                                } else if (index == MINUTE) {<a name="line.544"></a>
+<span class="sourceLineNo">545</span>                                        builder.minute(component);<a name="line.545"></a>
+<span class="sourceLineNo">546</span>                                } else if (index == SECOND) {<a name="line.546"></a>
+<span class="sourceLineNo">547</span>                                        builder.second(component);<a name="line.547"></a>
+<span class="sourceLineNo">548</span>                                } else if (index == OFFSET_HOUR) {<a name="line.548"></a>
+<span class="sourceLineNo">549</span>                                        offsetHour = component;<a name="line.549"></a>
+<span class="sourceLineNo">550</span>                                        offsetPositive = startsWithPlus;<a name="line.550"></a>
+<span class="sourceLineNo">551</span>                                } else if (index == OFFSET_MINUTE) {<a name="line.551"></a>
+<span class="sourceLineNo">552</span>                                        offsetMinute = component;<a name="line.552"></a>
+<span class="sourceLineNo">553</span>                                }<a name="line.553"></a>
+<span class="sourceLineNo">554</span>                        }<a name="line.554"></a>
+<span class="sourceLineNo">555</span><a name="line.555"></a>
+<span class="sourceLineNo">556</span>                        private void handleZoneOffset() {<a name="line.556"></a>
+<span class="sourceLineNo">557</span>                                if (offsetMinute == null) {<a name="line.557"></a>
+<span class="sourceLineNo">558</span>                                        offsetMinute = 0;<a name="line.558"></a>
+<span class="sourceLineNo">559</span>                                }<a name="line.559"></a>
+<span class="sourceLineNo">560</span>                                if (!offsetPositive) {<a name="line.560"></a>
+<span class="sourceLineNo">561</span>                                        offsetMinute *= -1;<a name="line.561"></a>
+<span class="sourceLineNo">562</span>                                }<a name="line.562"></a>
+<span class="sourceLineNo">563</span><a name="line.563"></a>
+<span class="sourceLineNo">564</span>                                ZoneOffset offset;<a name="line.564"></a>
+<span class="sourceLineNo">565</span>                                try {<a name="line.565"></a>
+<span class="sourceLineNo">566</span>                                        offset = ZoneOffset.ofHoursMinutes(offsetHour, offsetMinute);<a name="line.566"></a>
+<span class="sourceLineNo">567</span>                                } catch (DateTimeException e) {<a name="line.567"></a>
+<span class="sourceLineNo">568</span>                                        throw new IllegalArgumentException(e);<a name="line.568"></a>
+<span class="sourceLineNo">569</span>                                }<a name="line.569"></a>
+<span class="sourceLineNo">570</span>                                builder.offset(offset);<a name="line.570"></a>
 <span class="sourceLineNo">571</span>                        }<a name="line.571"></a>
-<span class="sourceLineNo">572</span><a name="line.572"></a>
-<span class="sourceLineNo">573</span>                        components[DATE] = date;<a name="line.573"></a>
-<span class="sourceLineNo">574</span>                        return this;<a name="line.574"></a>
-<span class="sourceLineNo">575</span>                }<a name="line.575"></a>
-<span class="sourceLineNo">576</span><a name="line.576"></a>
-<span class="sourceLineNo">577</span>                /**<a name="line.577"></a>
-<span class="sourceLineNo">578</span>                 * Sets the hour component.<a name="line.578"></a>
-<span class="sourceLineNo">579</span>                 * @param hour the hour<a name="line.579"></a>
-<span class="sourceLineNo">580</span>                 * @return this<a name="line.580"></a>
-<span class="sourceLineNo">581</span>                 * @throws IllegalArgumentException if the hour is not between 0 and 23<a name="line.581"></a>
-<span class="sourceLineNo">582</span>                 * inclusive<a name="line.582"></a>
-<span class="sourceLineNo">583</span>                 */<a name="line.583"></a>
-<span class="sourceLineNo">584</span>                public Builder hour(Integer hour) {<a name="line.584"></a>
-<span class="sourceLineNo">585</span>                        if (hour != null &amp;&amp; (hour &lt; 0 || hour &gt; 23)) {<a name="line.585"></a>
-<span class="sourceLineNo">586</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Hour", 0, 23);<a name="line.586"></a>
-<span class="sourceLineNo">587</span>                        }<a name="line.587"></a>
-<span class="sourceLineNo">588</span><a name="line.588"></a>
-<span class="sourceLineNo">589</span>                        components[HOUR] = hour;<a name="line.589"></a>
-<span class="sourceLineNo">590</span>                        return this;<a name="line.590"></a>
+<span class="sourceLineNo">572</span>                }<a name="line.572"></a>
+<span class="sourceLineNo">573</span>        }<a name="line.573"></a>
+<span class="sourceLineNo">574</span><a name="line.574"></a>
+<span class="sourceLineNo">575</span>        /**<a name="line.575"></a>
+<span class="sourceLineNo">576</span>         * Constructs instances of the {@link PartialDate} class.<a name="line.576"></a>
+<span class="sourceLineNo">577</span>         * @author Michael Angstadt<a name="line.577"></a>
+<span class="sourceLineNo">578</span>         */<a name="line.578"></a>
+<span class="sourceLineNo">579</span>        public static class Builder {<a name="line.579"></a>
+<span class="sourceLineNo">580</span>                private final Integer[] components;<a name="line.580"></a>
+<span class="sourceLineNo">581</span><a name="line.581"></a>
+<span class="sourceLineNo">582</span>                public Builder() {<a name="line.582"></a>
+<span class="sourceLineNo">583</span>                        components = new Integer[8];<a name="line.583"></a>
+<span class="sourceLineNo">584</span>                }<a name="line.584"></a>
+<span class="sourceLineNo">585</span><a name="line.585"></a>
+<span class="sourceLineNo">586</span>                /**<a name="line.586"></a>
+<span class="sourceLineNo">587</span>                 * @param original the partial date to copy<a name="line.587"></a>
+<span class="sourceLineNo">588</span>                 */<a name="line.588"></a>
+<span class="sourceLineNo">589</span>                public Builder(PartialDate original) {<a name="line.589"></a>
+<span class="sourceLineNo">590</span>                        components = original.components.clone();<a name="line.590"></a>
 <span class="sourceLineNo">591</span>                }<a name="line.591"></a>
 <span class="sourceLineNo">592</span><a name="line.592"></a>
 <span class="sourceLineNo">593</span>                /**<a name="line.593"></a>
-<span class="sourceLineNo">594</span>                 * Sets the minute component.<a name="line.594"></a>
-<span class="sourceLineNo">595</span>                 * @param minute the minute<a name="line.595"></a>
+<span class="sourceLineNo">594</span>                 * Sets the year component.<a name="line.594"></a>
+<span class="sourceLineNo">595</span>                 * @param year the year<a name="line.595"></a>
 <span class="sourceLineNo">596</span>                 * @return this<a name="line.596"></a>
-<span class="sourceLineNo">597</span>                 * @throws IllegalArgumentException if the minute is not between 0 and<a name="line.597"></a>
-<span class="sourceLineNo">598</span>                 * 59 inclusive<a name="line.598"></a>
-<span class="sourceLineNo">599</span>                 */<a name="line.599"></a>
-<span class="sourceLineNo">600</span>                public Builder minute(Integer minute) {<a name="line.600"></a>
-<span class="sourceLineNo">601</span>                        if (minute != null &amp;&amp; (minute &lt; 0 || minute &gt; 59)) {<a name="line.601"></a>
-<span class="sourceLineNo">602</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Minute", 0, 59);<a name="line.602"></a>
-<span class="sourceLineNo">603</span>                        }<a name="line.603"></a>
-<span class="sourceLineNo">604</span><a name="line.604"></a>
-<span class="sourceLineNo">605</span>                        components[MINUTE] = minute;<a name="line.605"></a>
-<span class="sourceLineNo">606</span>                        return this;<a name="line.606"></a>
-<span class="sourceLineNo">607</span>                }<a name="line.607"></a>
-<span class="sourceLineNo">608</span><a name="line.608"></a>
-<span class="sourceLineNo">609</span>                /**<a name="line.609"></a>
-<span class="sourceLineNo">610</span>                 * Sets the second component.<a name="line.610"></a>
-<span class="sourceLineNo">611</span>                 * @param second the second<a name="line.611"></a>
-<span class="sourceLineNo">612</span>                 * @return this<a name="line.612"></a>
-<span class="sourceLineNo">613</span>                 * @throws IllegalArgumentException if the second is not between 0 and<a name="line.613"></a>
-<span class="sourceLineNo">614</span>                 * 59 inclusive<a name="line.614"></a>
-<span class="sourceLineNo">615</span>                 */<a name="line.615"></a>
-<span class="sourceLineNo">616</span>                public Builder second(Integer second) {<a name="line.616"></a>
-<span class="sourceLineNo">617</span>                        if (second != null &amp;&amp; (second &lt; 0 || second &gt; 59)) {<a name="line.617"></a>
-<span class="sourceLineNo">618</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Second", 0, 59);<a name="line.618"></a>
-<span class="sourceLineNo">619</span>                        }<a name="line.619"></a>
-<span class="sourceLineNo">620</span><a name="line.620"></a>
-<span class="sourceLineNo">621</span>                        components[SECOND] = second;<a name="line.621"></a>
-<span class="sourceLineNo">622</span>                        return this;<a name="line.622"></a>
-<span class="sourceLineNo">623</span>                }<a name="line.623"></a>
-<span class="sourceLineNo">624</span><a name="line.624"></a>
-<span class="sourceLineNo">625</span>                /**<a name="line.625"></a>
-<span class="sourceLineNo">626</span>                 * Sets the timezone offset.<a name="line.626"></a>
-<span class="sourceLineNo">627</span>                 * @param offset the offset<a name="line.627"></a>
-<span class="sourceLineNo">628</span>                 * @return this<a name="line.628"></a>
-<span class="sourceLineNo">629</span>                 */<a name="line.629"></a>
-<span class="sourceLineNo">630</span>                public Builder offset(ZoneOffset offset) {<a name="line.630"></a>
-<span class="sourceLineNo">631</span>                        if (offset == null) {<a name="line.631"></a>
-<span class="sourceLineNo">632</span>                                components[OFFSET_HOUR] = null;<a name="line.632"></a>
-<span class="sourceLineNo">633</span>                                components[OFFSET_MINUTE] = null;<a name="line.633"></a>
-<span class="sourceLineNo">634</span>                        } else {<a name="line.634"></a>
-<span class="sourceLineNo">635</span>                                components[OFFSET_HOUR] = offset.getTotalSeconds() / 3600;<a name="line.635"></a>
-<span class="sourceLineNo">636</span>                                components[OFFSET_MINUTE] = (offset.getTotalSeconds() % 3600) / 60;<a name="line.636"></a>
-<span class="sourceLineNo">637</span>                        }<a name="line.637"></a>
-<span class="sourceLineNo">638</span>                        return this;<a name="line.638"></a>
-<span class="sourceLineNo">639</span>                }<a name="line.639"></a>
-<span class="sourceLineNo">640</span><a name="line.640"></a>
-<span class="sourceLineNo">641</span>                /**<a name="line.641"></a>
-<span class="sourceLineNo">642</span>                 * Builds the {@link PartialDate} object.<a name="line.642"></a>
-<span class="sourceLineNo">643</span>                 * @return the {@link PartialDate} object<a name="line.643"></a>
-<span class="sourceLineNo">644</span>                 * @throws IllegalArgumentException if the year and date are defined,<a name="line.644"></a>
-<span class="sourceLineNo">645</span>                 * but the month is not, or if the hour and second are defined, but the<a name="line.645"></a>
-<span class="sourceLineNo">646</span>                 * minute is not<a name="line.646"></a>
-<span class="sourceLineNo">647</span>                 */<a name="line.647"></a>
-<span class="sourceLineNo">648</span>                public PartialDate build() {<a name="line.648"></a>
-<span class="sourceLineNo">649</span>                        if (components[YEAR] != null &amp;&amp; components[MONTH] == null &amp;&amp; components[DATE] != null) {<a name="line.649"></a>
-<span class="sourceLineNo">650</span>                                throw Messages.INSTANCE.getIllegalArgumentException(38);<a name="line.650"></a>
-<span class="sourceLineNo">651</span>                        }<a name="line.651"></a>
-<span class="sourceLineNo">652</span>                        if (components[HOUR] != null &amp;&amp; components[MINUTE] == null &amp;&amp; components[SECOND] != null) {<a name="line.652"></a>
-<span class="sourceLineNo">653</span>                                throw Messages.INSTANCE.getIllegalArgumentException(39);<a name="line.653"></a>
-<span class="sourceLineNo">654</span>                        }<a name="line.654"></a>
-<span class="sourceLineNo">655</span><a name="line.655"></a>
-<span class="sourceLineNo">656</span>                        return new PartialDate(components);<a name="line.656"></a>
-<span class="sourceLineNo">657</span>                }<a name="line.657"></a>
-<span class="sourceLineNo">658</span>        }<a name="line.658"></a>
-<span class="sourceLineNo">659</span>}<a name="line.659"></a>
+<span class="sourceLineNo">597</span>                 */<a name="line.597"></a>
+<span class="sourceLineNo">598</span>                public Builder year(Integer year) {<a name="line.598"></a>
+<span class="sourceLineNo">599</span>                        components[YEAR] = year;<a name="line.599"></a>
+<span class="sourceLineNo">600</span>                        return this;<a name="line.600"></a>
+<span class="sourceLineNo">601</span>                }<a name="line.601"></a>
+<span class="sourceLineNo">602</span><a name="line.602"></a>
+<span class="sourceLineNo">603</span>                /**<a name="line.603"></a>
+<span class="sourceLineNo">604</span>                 * Sets the month component.<a name="line.604"></a>
+<span class="sourceLineNo">605</span>                 * @param month the month (1-12)<a name="line.605"></a>
+<span class="sourceLineNo">606</span>                 * @return this<a name="line.606"></a>
+<span class="sourceLineNo">607</span>                 * @throws IllegalArgumentException if the month is not between 1 and 12<a name="line.607"></a>
+<span class="sourceLineNo">608</span>                 * inclusive<a name="line.608"></a>
+<span class="sourceLineNo">609</span>                 */<a name="line.609"></a>
+<span class="sourceLineNo">610</span>                public Builder month(Integer month) {<a name="line.610"></a>
+<span class="sourceLineNo">611</span>                        if (month != null &amp;&amp; (month &lt; 1 || month &gt; 12)) {<a name="line.611"></a>
+<span class="sourceLineNo">612</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Month", 1, 12);<a name="line.612"></a>
+<span class="sourceLineNo">613</span>                        }<a name="line.613"></a>
+<span class="sourceLineNo">614</span><a name="line.614"></a>
+<span class="sourceLineNo">615</span>                        components[MONTH] = month;<a name="line.615"></a>
+<span class="sourceLineNo">616</span>                        return this;<a name="line.616"></a>
+<span class="sourceLineNo">617</span>                }<a name="line.617"></a>
+<span class="sourceLineNo">618</span><a name="line.618"></a>
+<span class="sourceLineNo">619</span>                /**<a name="line.619"></a>
+<span class="sourceLineNo">620</span>                 * Sets the date component.<a name="line.620"></a>
+<span class="sourceLineNo">621</span>                 * @param date the date<a name="line.621"></a>
+<span class="sourceLineNo">622</span>                 * @return this<a name="line.622"></a>
+<span class="sourceLineNo">623</span>                 * @throws IllegalArgumentException if the date is not between 1 and 31<a name="line.623"></a>
+<span class="sourceLineNo">624</span>                 * inclusive<a name="line.624"></a>
+<span class="sourceLineNo">625</span>                 */<a name="line.625"></a>
+<span class="sourceLineNo">626</span>                public Builder date(Integer date) {<a name="line.626"></a>
+<span class="sourceLineNo">627</span>                        if (date != null &amp;&amp; (date &lt; 1 || date &gt; 31)) {<a name="line.627"></a>
+<span class="sourceLineNo">628</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Date", 1, 31);<a name="line.628"></a>
+<span class="sourceLineNo">629</span>                        }<a name="line.629"></a>
+<span class="sourceLineNo">630</span><a name="line.630"></a>
+<span class="sourceLineNo">631</span>                        components[DATE] = date;<a name="line.631"></a>
+<span class="sourceLineNo">632</span>                        return this;<a name="line.632"></a>
+<span class="sourceLineNo">633</span>                }<a name="line.633"></a>
+<span class="sourceLineNo">634</span><a name="line.634"></a>
+<span class="sourceLineNo">635</span>                /**<a name="line.635"></a>
+<span class="sourceLineNo">636</span>                 * Sets the hour component.<a name="line.636"></a>
+<span class="sourceLineNo">637</span>                 * @param hour the hour<a name="line.637"></a>
+<span class="sourceLineNo">638</span>                 * @return this<a name="line.638"></a>
+<span class="sourceLineNo">639</span>                 * @throws IllegalArgumentException if the hour is not between 0 and 23<a name="line.639"></a>
+<span class="sourceLineNo">640</span>                 * inclusive<a name="line.640"></a>
+<span class="sourceLineNo">641</span>                 */<a name="line.641"></a>
+<span class="sourceLineNo">642</span>                public Builder hour(Integer hour) {<a name="line.642"></a>
+<span class="sourceLineNo">643</span>                        if (hour != null &amp;&amp; (hour &lt; 0 || hour &gt; 23)) {<a name="line.643"></a>
+<span class="sourceLineNo">644</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Hour", 0, 23);<a name="line.644"></a>
+<span class="sourceLineNo">645</span>                        }<a name="line.645"></a>
+<span class="sourceLineNo">646</span><a name="line.646"></a>
+<span class="sourceLineNo">647</span>                        components[HOUR] = hour;<a name="line.647"></a>
+<span class="sourceLineNo">648</span>                        return this;<a name="line.648"></a>
+<span class="sourceLineNo">649</span>                }<a name="line.649"></a>
+<span class="sourceLineNo">650</span><a name="line.650"></a>
+<span class="sourceLineNo">651</span>                /**<a name="line.651"></a>
+<span class="sourceLineNo">652</span>                 * Sets the minute component.<a name="line.652"></a>
+<span class="sourceLineNo">653</span>                 * @param minute the minute<a name="line.653"></a>
+<span class="sourceLineNo">654</span>                 * @return this<a name="line.654"></a>
+<span class="sourceLineNo">655</span>                 * @throws IllegalArgumentException if the minute is not between 0 and<a name="line.655"></a>
+<span class="sourceLineNo">656</span>                 * 59 inclusive<a name="line.656"></a>
+<span class="sourceLineNo">657</span>                 */<a name="line.657"></a>
+<span class="sourceLineNo">658</span>                public Builder minute(Integer minute) {<a name="line.658"></a>
+<span class="sourceLineNo">659</span>                        if (minute != null &amp;&amp; (minute &lt; 0 || minute &gt; 59)) {<a name="line.659"></a>
+<span class="sourceLineNo">660</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Minute", 0, 59);<a name="line.660"></a>
+<span class="sourceLineNo">661</span>                        }<a name="line.661"></a>
+<span class="sourceLineNo">662</span><a name="line.662"></a>
+<span class="sourceLineNo">663</span>                        components[MINUTE] = minute;<a name="line.663"></a>
+<span class="sourceLineNo">664</span>                        return this;<a name="line.664"></a>
+<span class="sourceLineNo">665</span>                }<a name="line.665"></a>
+<span class="sourceLineNo">666</span><a name="line.666"></a>
+<span class="sourceLineNo">667</span>                /**<a name="line.667"></a>
+<span class="sourceLineNo">668</span>                 * Sets the second component.<a name="line.668"></a>
+<span class="sourceLineNo">669</span>                 * @param second the second<a name="line.669"></a>
+<span class="sourceLineNo">670</span>                 * @return this<a name="line.670"></a>
+<span class="sourceLineNo">671</span>                 * @throws IllegalArgumentException if the second is not between 0 and<a name="line.671"></a>
+<span class="sourceLineNo">672</span>                 * 59 inclusive<a name="line.672"></a>
+<span class="sourceLineNo">673</span>                 */<a name="line.673"></a>
+<span class="sourceLineNo">674</span>                public Builder second(Integer second) {<a name="line.674"></a>
+<span class="sourceLineNo">675</span>                        if (second != null &amp;&amp; (second &lt; 0 || second &gt; 59)) {<a name="line.675"></a>
+<span class="sourceLineNo">676</span>                                throw Messages.INSTANCE.getIllegalArgumentException(37, "Second", 0, 59);<a name="line.676"></a>
+<span class="sourceLineNo">677</span>                        }<a name="line.677"></a>
+<span class="sourceLineNo">678</span><a name="line.678"></a>
+<span class="sourceLineNo">679</span>                        components[SECOND] = second;<a name="line.679"></a>
+<span class="sourceLineNo">680</span>                        return this;<a name="line.680"></a>
+<span class="sourceLineNo">681</span>                }<a name="line.681"></a>
+<span class="sourceLineNo">682</span><a name="line.682"></a>
+<span class="sourceLineNo">683</span>                /**<a name="line.683"></a>
+<span class="sourceLineNo">684</span>                 * Sets the timezone offset.<a name="line.684"></a>
+<span class="sourceLineNo">685</span>                 * @param offset the offset<a name="line.685"></a>
+<span class="sourceLineNo">686</span>                 * @return this<a name="line.686"></a>
+<span class="sourceLineNo">687</span>                 */<a name="line.687"></a>
+<span class="sourceLineNo">688</span>                public Builder offset(ZoneOffset offset) {<a name="line.688"></a>
+<span class="sourceLineNo">689</span>                        if (offset == null) {<a name="line.689"></a>
+<span class="sourceLineNo">690</span>                                components[OFFSET_HOUR] = null;<a name="line.690"></a>
+<span class="sourceLineNo">691</span>                                components[OFFSET_MINUTE] = null;<a name="line.691"></a>
+<span class="sourceLineNo">692</span>                        } else {<a name="line.692"></a>
+<span class="sourceLineNo">693</span>                                components[OFFSET_HOUR] = offset.getTotalSeconds() / 3600;<a name="line.693"></a>
+<span class="sourceLineNo">694</span>                                components[OFFSET_MINUTE] = (offset.getTotalSeconds() % 3600) / 60;<a name="line.694"></a>
+<span class="sourceLineNo">695</span>                        }<a name="line.695"></a>
+<span class="sourceLineNo">696</span>                        return this;<a name="line.696"></a>
+<span class="sourceLineNo">697</span>                }<a name="line.697"></a>
+<span class="sourceLineNo">698</span><a name="line.698"></a>
+<span class="sourceLineNo">699</span>                /**<a name="line.699"></a>
+<span class="sourceLineNo">700</span>                 * Builds the {@link PartialDate} object.<a name="line.700"></a>
+<span class="sourceLineNo">701</span>                 * @return the {@link PartialDate} object<a name="line.701"></a>
+<span class="sourceLineNo">702</span>                 * @throws IllegalArgumentException if the year and date are defined,<a name="line.702"></a>
+<span class="sourceLineNo">703</span>                 * but the month is not, or if the hour and second are defined, but the<a name="line.703"></a>
+<span class="sourceLineNo">704</span>                 * minute is not<a name="line.704"></a>
+<span class="sourceLineNo">705</span>                 */<a name="line.705"></a>
+<span class="sourceLineNo">706</span>                public PartialDate build() {<a name="line.706"></a>
+<span class="sourceLineNo">707</span>                        if (components[YEAR] != null &amp;&amp; components[MONTH] == null &amp;&amp; components[DATE] != null) {<a name="line.707"></a>
+<span class="sourceLineNo">708</span>                                throw Messages.INSTANCE.getIllegalArgumentException(38);<a name="line.708"></a>
+<span class="sourceLineNo">709</span>                        }<a name="line.709"></a>
+<span class="sourceLineNo">710</span>                        if (components[HOUR] != null &amp;&amp; components[MINUTE] == null &amp;&amp; components[SECOND] != null) {<a name="line.710"></a>
+<span class="sourceLineNo">711</span>                                throw Messages.INSTANCE.getIllegalArgumentException(39);<a name="line.711"></a>
+<span class="sourceLineNo">712</span>                        }<a name="line.712"></a>
+<span class="sourceLineNo">713</span><a name="line.713"></a>
+<span class="sourceLineNo">714</span>                        return new PartialDate(components);<a name="line.714"></a>
+<span class="sourceLineNo">715</span>                }<a name="line.715"></a>
+<span class="sourceLineNo">716</span>        }<a name="line.716"></a>
+<span class="sourceLineNo">717</span>}<a name="line.717"></a>
 
 
 
