@@ -1,7 +1,7 @@
 package ezvcard.io.text;
 
 /*
- Copyright (c) 2012-2023, Michael Angstadt
+ Copyright (c) 2012-2026, Michael Angstadt
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
