@@ -99,7 +99,7 @@ public final class Ezvcard {
 	/**
 	 * The version of the library.
 	 */
-	public static final String VERSION = "0.12.2-SNAPSHOT";
+	public static final String VERSION = "0.12.2";
 
 	/**
 	 * The Maven group ID.
