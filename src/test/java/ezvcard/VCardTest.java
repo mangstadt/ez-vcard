@@ -282,7 +282,6 @@ public class VCardTest {
 		vcard.addProperty(null2);
 
 		//@formatter:off
-		@SuppressWarnings("unchecked")
 		List<List<HasAltIdImpl>> expected = asList(
 			asList(one1, one2),
 			asList(two1),
