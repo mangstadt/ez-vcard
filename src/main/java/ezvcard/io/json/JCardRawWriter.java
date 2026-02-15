@@ -174,7 +174,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 			throw new IllegalStateException(Messages.INSTANCE.getExceptionMessage(1));
 		}
 
-		generator.setCurrentValue(JCardPrettyPrinter.PROPERTY_VALUE);
+		generator.assignCurrentValue(JCardPrettyPrinter.PROPERTY_VALUE);
 
 		generator.writeStartArray();
 
@@ -198,7 +198,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 
 		generator.writeEndArray();
 
-		generator.setCurrentValue(null);
+		generator.assignCurrentValue(null);
 	}
 
 	private void writeParametersAndGroup(VCardParameters parameters, String group) throws IOException {

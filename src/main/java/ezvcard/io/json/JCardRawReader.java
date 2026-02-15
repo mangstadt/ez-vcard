@@ -79,7 +79,7 @@ public class JCardRawReader implements Closeable {
 	 * @return the line number
 	 */
 	public int getLineNum() {
-		return (parser == null) ? 0 : parser.getCurrentLocation().getLineNr();
+		return (parser == null) ? 0 : parser.currentLocation().getLineNr();
 	}
 
 	/**

@@ -189,7 +189,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 *         available
 	 */
 	private Object getCurrentValue() {
-		return (generator == null) ? null : generator.getCurrentValue();
+		return (generator == null) ? null : generator.currentValue();
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 */
 	private void setCurrentValue(Object value) {
 		if (generator != null) {
-			generator.setCurrentValue(value);
+			generator.assignCurrentValue(value);
 		}
 	}
 
