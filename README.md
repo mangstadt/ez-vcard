@@ -53,6 +53,10 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 
 # News
 
+**February 15, 2026**
+
+[Version 0.12.2](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release includes a few bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
+
 **August 27, 2023**
 
 [Version 0.12.1](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release includes a few bug fixes.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
@@ -60,12 +64,6 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 **February 4, 2023**
 
 [Version 0.12.0](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release updates to Java 1.8 and a few other things.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-**September 11, 2021**
-
-[Version 0.11.3](https://github.com/mangstadt/ez-vcard/wiki/Downloads) released.  This release fixes several issues, including a security vulnerability.  Please see the [changelog](https://github.com/mangstadt/ez-vcard/wiki/Changelog) for details.
-
-[Old News](https://github.com/mangstadt/ez-vcard/wiki/Old-News)
 
 # Maven/Gradle
 
@@ -75,14 +73,14 @@ String str = Ezvcard.write(vcard).version(VCardVersion.V4_0).go();
 <dependency>
    <groupId>com.googlecode.ez-vcard</groupId>
    <artifactId>ez-vcard</artifactId>
-   <version>0.12.1</version>
+   <version>0.12.2</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-compile 'com.googlecode.ez-vcard:ez-vcard:0.12.1'
+compile 'com.googlecode.ez-vcard:ez-vcard:0.12.2'
 ```
 
 # Build Instructions
@@ -156,6 +154,7 @@ Edward Hetherington ([plain text KEY issue](https://github.com/mangstadt/ez-vcar
 [isindir](https://github.com/isindir) ([Javadoc fix](https://github.com/mangstadt/ez-vcard/pull/53))  
 knutolav ([Issue 1](https://github.com/mangstadt/ez-vcard/issues/1), [Issue 2](https://github.com/mangstadt/ez-vcard/issues/2))  
 [Nico Lehmann](https://github.com/ekorn) ([Windows 10 Contacts compatibility issue](https://github.com/mangstadt/ez-vcard/issues/56))  
+[Mike](https://github.com/Miha-x64) ([Make Ezvcard.parse() iterable and streamable](https://github.com/mangstadt/ez-vcard/pull/157))  
 [Alexander Myltsev](https://github.com/alexander-myltsev) ([Issue with folding quoted printable values](https://github.com/mangstadt/ez-vcard/issues/80))  
 David Nault ([Issue 3](https://github.com/mangstadt/ez-vcard/issues/3), [Issue 7](https://github.com/mangstadt/ez-vcard/issues/7))  
 [NeverWise](https://github.com/NeverWise) ([chaining parser & custom scribes issue](https://github.com/mangstadt/ez-vcard/issues/81))  
