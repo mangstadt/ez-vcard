@@ -3,6 +3,7 @@ package ezvcard.io;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +149,10 @@ public abstract class StreamReader implements Closeable {
 	 * @return the warnings or empty list if there were no warnings
 	 */
 	public List<ParseWarning> getWarnings() {
-		return new ArrayList<>(warnings);
+		switch (warnings.size()) {
+			case 0: return Collections.emptyList();
+			case 1: return Collections.singletonList(warnings.get(0));
+			default: return new ArrayList<>(warnings);
+		}
 	}
 }
