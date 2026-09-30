@@ -93,6 +93,7 @@ public class HCardPage {
 	public HCardPage() {
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 		cfg.setClassForTemplateLoading(HCardPage.class, "");
+		cfg.setLocalizedLookup(false);
 		cfg.setWhitespaceStripping(true);
 		try {
 			template = cfg.getTemplate("hcard-template.html");
