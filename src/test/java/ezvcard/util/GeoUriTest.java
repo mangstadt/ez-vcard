@@ -302,4 +302,11 @@ public class GeoUriTest {
 		GeoUri two = new GeoUri.Builder(1.0, 2.0).crs("CRS").parameter("NAME", "VALUE").build();
 		assertEqualsAndHash(one, two);
 	}
+
+	@Test
+	public void toString_large_uncertainty() {
+		GeoUri uri = new GeoUri.Builder(12.34, 56.78).uncertainty(1234.5).build();
+		assertEquals("geo:12.34,56.78;u=1234.5", uri.toString());
+		assertEquals(uri, GeoUri.parse(uri.toString()));
+	}
 }
