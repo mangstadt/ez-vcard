@@ -54,6 +54,7 @@ public class VCardFloatFormatter {
 	 * @param decimals the max number of decimal places
 	 */
 	public VCardFloatFormatter(int decimals) {
+		nf.setGroupingUsed(false);
 		nf.setMaximumFractionDigits(decimals);
 		if (decimals > 0) {
 			nf.setMinimumFractionDigits(1);

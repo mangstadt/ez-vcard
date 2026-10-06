@@ -82,4 +82,12 @@ public class VCardFloatFormatterTest {
 			Locale.setDefault(defaultLocale);
 		}
 	}
+
+	@Test
+	public void format_without_grouping_separators() {
+		VCardFloatFormatter formatter = new VCardFloatFormatter();
+		assertEquals("1234.5", formatter.format(1234.5));
+		assertEquals("-1234567.5", formatter.format(-1234567.5));
+		assertEquals("1235", new VCardFloatFormatter(0).format(1234.6));
+	}
 }
