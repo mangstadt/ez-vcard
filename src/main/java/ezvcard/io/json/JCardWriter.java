@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -168,7 +169,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 			}
 
 			String group = property.getGroup();
-			String name = scribe.getPropertyName().toLowerCase();
+			String name = scribe.getPropertyName().toLowerCase(Locale.ROOT);
 			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
 			removeUnsupportedParameters(parameters);
 			VCardDataType dataType = scribe.dataType(property, targetVersion);

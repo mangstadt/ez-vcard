@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -1559,7 +1560,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	@Override
 	protected String sanitizeKey(String key) {
-		return (key == null) ? null : key.toUpperCase();
+		return (key == null) ? null : key.toUpperCase(Locale.ROOT);
 	}
 
 	@Override
@@ -1572,7 +1573,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 		return 1 + stream().mapToInt(entry -> {
 			String key = entry.getKey();
-			int keyHash = ((key == null) ? 0 : key.toLowerCase().hashCode());
+			int keyHash = ((key == null) ? 0 : key.toLowerCase(Locale.ROOT).hashCode());
 
 			List<String> value = entry.getValue();
 			//@formatter:off

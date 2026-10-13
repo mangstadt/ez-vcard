@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -609,7 +610,7 @@ public class XCardDocument {
 			for (Element root : roots) { // foreach "<parameters>" element (there should only be 1 though)
 				List<Element> parameterElements = XmlUtils.toElementList(root.getChildNodes());
 				for (Element parameterElement : parameterElements) {
-					String name = parameterElement.getLocalName().toUpperCase();
+					String name = parameterElement.getLocalName().toUpperCase(Locale.ROOT);
 					List<Element> valueElements = XmlUtils.toElementList(parameterElement.getChildNodes());
 					for (Element valueElement : valueElements) {
 						String value = valueElement.getTextContent();
@@ -727,10 +728,10 @@ public class XCardDocument {
 			Element parametersElement = createElement(PARAMETERS);
 
 			for (Map.Entry<String, List<String>> parameter : parameters) {
-				String parameterName = parameter.getKey().toLowerCase();
+				String parameterName = parameter.getKey().toLowerCase(Locale.ROOT);
 				Element parameterElement = createElement(parameterName);
 				VCardDataType dataType = parameterDataTypes.get(parameterName);
-				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase(Locale.ROOT);
 
 				for (String parameterValue : parameter.getValue()) {
 					Element dataTypeElement = createElement(dataTypeElementName);

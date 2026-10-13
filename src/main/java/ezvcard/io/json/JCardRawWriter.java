@@ -5,6 +5,7 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -185,7 +186,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 		writeParametersAndGroup(parameters, group);
 
 		//write data type
-		generator.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase());
+		generator.writeString((dataType == null) ? "unknown" : dataType.getName().toLowerCase(Locale.ROOT));
 
 		//write value
 		if (value.getValues().isEmpty()) {
@@ -205,7 +206,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 		generator.writeStartObject();
 
 		for (Map.Entry<String, List<String>> entry : parameters) {
-			String name = entry.getKey().toLowerCase();
+			String name = entry.getKey().toLowerCase(Locale.ROOT);
 			List<String> values = entry.getValue();
 			if (values.isEmpty()) {
 				continue;

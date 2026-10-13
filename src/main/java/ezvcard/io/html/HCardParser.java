@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -100,10 +101,10 @@ public class HCardParser extends StreamReader {
 	private Nickname nickname;
 	private Categories categories;
 
-	private final String urlPropertyName = index.getPropertyScribe(Url.class).getPropertyName().toLowerCase();
-	private final String categoriesName = index.getPropertyScribe(Categories.class).getPropertyName().toLowerCase();
-	private final String emailName = index.getPropertyScribe(Email.class).getPropertyName().toLowerCase();
-	private final String telName = index.getPropertyScribe(Telephone.class).getPropertyName().toLowerCase();
+	private final String urlPropertyName = index.getPropertyScribe(Url.class).getPropertyName().toLowerCase(Locale.ROOT);
+	private final String categoriesName = index.getPropertyScribe(Categories.class).getPropertyName().toLowerCase(Locale.ROOT);
+	private final String emailName = index.getPropertyScribe(Email.class).getPropertyName().toLowerCase(Locale.ROOT);
+	private final String telName = index.getPropertyScribe(Telephone.class).getPropertyName().toLowerCase(Locale.ROOT);
 
 	/**
 	 * Creates an hCard document.
