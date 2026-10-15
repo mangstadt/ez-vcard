@@ -226,7 +226,7 @@
 					<links>
 						<link>https://mangstadt.github.io/vinnie/javadocs/latest/</link>
 						<link>https://freemarker.apache.org/docs/api</link>
-						<link>https://jsoup.org/apidocs/</link>
+						<link>https://javadoc.io/doc/org.jsoup/jsoup/latest/</link>
 						<link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/</link>
 					</links>
 					<quiet>true</quiet>
