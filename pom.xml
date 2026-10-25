@@ -152,7 +152,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.4.0</version>
+				<version>5.1.9</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -168,7 +168,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4.3</version>
+				<version>3.5.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>
@@ -176,7 +176,7 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.16.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>${java.version}</source>
@@ -184,9 +184,15 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.6.0</version>
+			</plugin>
+
 			<!-- Copy the project's dependencies into a folder -->
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.11.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -205,7 +211,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>3.4.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -219,14 +225,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.12.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<linksource>true</linksource>
 					<links>
 						<link>https://mangstadt.github.io/vinnie/javadocs/latest/</link>
 						<link>https://freemarker.apache.org/docs/api</link>
-						<link>http://jsoup.org/apidocs/</link>
+						<link>https://javadoc.io/doc/org.jsoup/jsoup/latest/</link>
 						<link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/</link>
 					</links>
 					<quiet>true</quiet>
@@ -274,7 +280,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.4</version>
+				<version>3.0.5</version>
 			</plugin>
 
 			<!--
@@ -285,7 +291,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.6</version>
+				<version>3.28.0</version>
 				<configuration>
 					<targetJdk>${java.version}</targetJdk>
 				</configuration>
@@ -298,7 +304,7 @@
 			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
-				<version>1.1.10</version>
+				<version>1.30.1</version>
 				<configuration>
 					<targetClasses>
 						<param>ezvcard.*</param>
@@ -319,7 +325,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.5.201505241946</version>
+				<version>0.8.15</version>
 				<executions>
 					<execution>
 						<goals>
@@ -338,6 +344,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.5.1</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -354,7 +361,7 @@
 			<plugin>
 				<groupId>org.sonatype.central</groupId>
 				<artifactId>central-publishing-maven-plugin</artifactId>
-				<version>0.9.0</version>
+				<version>0.12.0</version>
 				<extensions>true</extensions>
 				<configuration>
 					<publishingServerId>central</publishingServerId>
@@ -381,7 +388,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.4</version>
+						<version>3.2.8</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -412,7 +419,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
+							<doclint>none</doclint>
 						</configuration>
 					</plugin>
 				</plugins>
