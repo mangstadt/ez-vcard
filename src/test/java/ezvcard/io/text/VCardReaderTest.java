@@ -90,14 +90,14 @@ public class VCardReaderTest {
 			VCardAsserter asserter = read(
 			"BEGIN:VCARD\r\n" +
 				"VERSION:" + version + "\r\n" +
-				"PROP;TYPE=\"one,two,,three\";FOO=\"four,five,,six\":\r\n" +
+				"PROP;TYPE=\"one,two,,three\",four;FOO=\"four,five,,six\":\r\n" +
 			"END:VCARD\r\n"
 			);
 	
 			asserter.next(version);
 	
 			asserter.rawProperty("PROP")
-				.param("TYPE", "\"one,two,,three\"")
+				.param("TYPE", "\"one,two,,three\",four")
 				.param("FOO", "\"four,five,,six\"")
 				.value("")
 			.noMore();
@@ -110,14 +110,14 @@ public class VCardReaderTest {
 			VCardAsserter asserter = read(
 			"BEGIN:VCARD\r\n" +
 				"VERSION:" + v + "\r\n" +
-				"PROP;TYPE=\"one,two,,three\";FOO=\"four,five,,six\":\r\n" +
+				"PROP;TYPE=\"one,two,,three\",four;FOO=\"four,five,,six\":\r\n" +
 			"END:VCARD\r\n"
 			);
 	
 			asserter.next(v);
 	
 			asserter.rawProperty("PROP")
-				.param("TYPE", "one", "two", "", "three")
+				.param("TYPE", "one", "two", "", "three", "four")
 				.param("FOO", "four,five,,six")
 				.value("")
 			.noMore();

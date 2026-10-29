@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.mangstadt.vinnie.VObjectProperty;
 import com.github.mangstadt.vinnie.io.Context;
@@ -542,29 +542,19 @@ public class VCardReader extends StreamReader {
 			}
 
 			List<String> types = parameters.getTypes();
-			if (types.isEmpty()) {
+			boolean commaFound = types.stream().anyMatch(value -> value.indexOf(',') >= 0);
+			if (!commaFound) {
 				return;
 			}
 
 			//@formatter:off
-			Optional<String> valueWithCommaOpt = types.stream()
-				.filter(value -> value.indexOf(',') >= 0)
-			.findFirst();
+			List<String> typesNew = types.stream()
+				.map(type -> type.split(","))
+				.flatMap(Arrays::stream)
+			.collect(Collectors.toList());
 			//@formatter:on
 
-			if (!valueWithCommaOpt.isPresent()) {
-				return;
-			}
-
-			String valueWithComma = valueWithCommaOpt.get();
-			types.clear();
-			int prev = -1;
-			int cur;
-			while ((cur = valueWithComma.indexOf(',', prev + 1)) >= 0) {
-				types.add(valueWithComma.substring(prev + 1, cur));
-				prev = cur;
-			}
-			types.add(valueWithComma.substring(prev + 1));
+			parameters.replace(VCardParameters.TYPE, typesNew);
 		}
 	}
 
