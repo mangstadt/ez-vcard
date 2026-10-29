@@ -869,6 +869,34 @@ public class VCardReaderTest {
 	}
 
 	@Test
+	public void missing_end_vcard_component() throws Exception {
+		//@formatter:off
+		VCardAsserter asserter = read(
+		"BEGIN:VCARD\r\n" +
+			"VERSION:invalid\r\n" +
+			"ADR;TYPE=home:;;123 Main St.;Austin;TX;91827;USA\r\n" +
+			"LABEL;TYPE=home:123 Main St.\\nAustin\\, TX 91827\\nUSA\r\n"
+		);
+
+		asserter.next(V2_1); //default to 2.1
+		asserter.rawProperty("VERSION")
+			.value("invalid")
+		.noMore();
+		asserter.address()
+			.streetAddress("123 Main St.")
+			.locality("Austin")
+			.region("TX")
+			.postalCode("91827")
+			.country("USA")
+			.label("123 Main St." + NEWLINE + "Austin, TX 91827" + NEWLINE + "USA")
+			.types(AddressType.HOME)
+		.noMore();
+		asserter.warnings(27);
+		asserter.done();
+		//@formatter:on
+	}
+
+	@Test
 	public void skip_non_vcard_components() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
