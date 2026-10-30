@@ -268,14 +268,14 @@
 			</plugin>
 			
 			<!--
-			FindBugs plugin
-			To run: mvn findbugs:findbugs
-			To view the results: mvn findbugs:gui
+			SpotBugs plugin
+			To run: mvn spotbugs:spotbugs
+			To view the results: mvn spotbugs:gui
 			-->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.5</version>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.8.6.8</version>
 			</plugin>
 
 			<!--
