@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class VCardReader extends StreamReader {
 
 	/**
 	 * Creates a new vCard reader.
-	 * @param in the input stream to read from
+	 * @param in the input stream to read from (using UTF-8)
 	 */
 	public VCardReader(InputStream in) {
 		this(in, VCardVersion.V2_1);
@@ -122,17 +123,17 @@ public class VCardReader extends StreamReader {
 
 	/**
 	 * Creates a new vCard reader.
-	 * @param in the input stream to read from
+	 * @param in the input stream to read from (using UTF-8)
 	 * @param defaultVersion the version to assume the vCard is in until a
 	 * VERSION property is encountered (defaults to 2.1)
 	 */
 	public VCardReader(InputStream in, VCardVersion defaultVersion) {
-		this(new InputStreamReader(in), defaultVersion);
+		this(new InputStreamReader(in, StandardCharsets.UTF_8), defaultVersion);
 	}
 
 	/**
 	 * Creates a new vCard reader.
-	 * @param file the file to read from
+	 * @param file the file to read from (using UTF-8)
 	 * @throws IOException if there is a problem opening the file
 	 */
 	public VCardReader(Path file) throws IOException {
@@ -141,7 +142,7 @@ public class VCardReader extends StreamReader {
 
 	/**
 	 * Creates a new vCard reader.
-	 * @param file the file to read from
+	 * @param file the file to read from (using UTF-8)
 	 * @param defaultVersion the version to assume the vCard is in until a
 	 * VERSION property is encountered (defaults to 2.1)
 	 * @throws IOException if there is a problem opening the file

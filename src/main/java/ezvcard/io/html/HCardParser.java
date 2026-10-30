@@ -115,7 +115,8 @@ public class HCardParser extends StreamReader {
 	}
 
 	/**
-	 * Creates an hCard document.
+	 * Creates an hCard document. Will attempt to determine the character
+	 * encoding from the HTML, falling back to UTF-8.
 	 * @param in the input stream to the HTML page
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
@@ -124,18 +125,20 @@ public class HCardParser extends StreamReader {
 	}
 
 	/**
-	 * Creates an hCard document.
+	 * Creates an hCard document. Will attempt to determine the character
+	 * encoding from the HTML, falling back to UTF-8.
 	 * @param in the input stream to the HTML page
 	 * @param pageUrl the original URL of the HTML page (used to resolve
 	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML page
 	 */
 	public HCardParser(InputStream in, String pageUrl) throws IOException {
-		this((pageUrl == null) ? Jsoup.parse(in, null, "") : Jsoup.parse(in, null, pageUrl), pageUrl);
+		this(Jsoup.parse(in, null, (pageUrl == null) ? "" : pageUrl), pageUrl);
 	}
 
 	/**
-	 * Creates an hCard document.
+	 * Creates an hCard document. Will attempt to determine the character
+	 * encoding from the HTML, falling back to UTF-8.
 	 * @param file the HTML file
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
@@ -144,14 +147,15 @@ public class HCardParser extends StreamReader {
 	}
 
 	/**
-	 * Creates an hCard document.
+	 * Creates an hCard document. Will attempt to determine the character
+	 * encoding from the HTML, falling back to UTF-8.
 	 * @param file the HTML file
 	 * @param pageUrl the original URL of the HTML page (used to resolve
 	 * relative links)
 	 * @throws IOException if there's a problem reading the HTML file
 	 */
 	public HCardParser(Path file, String pageUrl) throws IOException {
-		this((pageUrl == null) ? Jsoup.parse(file.toFile(), null, "") : Jsoup.parse(file.toFile(), null, pageUrl), pageUrl);
+		this(Jsoup.parse(file.toFile(), null, (pageUrl == null) ? "" : pageUrl), pageUrl);
 	}
 
 	/**

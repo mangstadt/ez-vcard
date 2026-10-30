@@ -107,14 +107,14 @@ public class XCardWriter extends XCardWriterBase {
 	private boolean started = false;
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 */
 	public XCardWriter(OutputStream out) {
 		this(out, (Integer) null);
 	}
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 * @param indent the number of indent spaces to use for pretty-printing or
 	 * null to disable pretty-printing (disabled by default)
 	 */
@@ -123,7 +123,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 * @param indent the number of indent spaces to use for pretty-printing or
 	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
@@ -137,7 +137,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 * @param outputProperties properties to assign to the JAXP transformer (see
 	 * {@link Transformer#setOutputProperty})
 	 */
@@ -146,7 +146,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @throws IOException if there is a problem opening the file
 	 */
 	public XCardWriter(Path file) throws IOException {
@@ -154,7 +154,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @param indent the number of indent spaces to use for pretty-printing or
 	 * null to disable pretty-printing (disabled by default)
 	 * @throws IOException if there is a problem opening the file
@@ -164,7 +164,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @param indent the number of indent spaces to use for pretty-printing or
 	 * null to disable pretty-printing (disabled by default)
 	 * @param xmlVersion the XML version to use (defaults to "1.0") (Note: Many
@@ -179,7 +179,7 @@ public class XCardWriter extends XCardWriterBase {
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @param outputProperties properties to assign to the JAXP transformer (see
 	 * {@link Transformer#setOutputProperty})
 	 * @throws IOException if there is a problem opening the file

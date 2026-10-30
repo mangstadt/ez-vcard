@@ -181,7 +181,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * The vCard will be marshalled to whatever vCard version is assigned to
 	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
-	 * set, then it will be marshalled to 3.0.
+	 * set, then it will be marshalled to 3.0. UTF-8 encoding will be used.
 	 * </p>
 	 * <p>
 	 * Use the {@link VCardWriter} class for more control over the marshalling
@@ -205,7 +205,7 @@ public class VCard implements Iterable<VCardProperty> {
 	 * <p>
 	 * The vCard will be marshalled to whatever vCard version is assigned to
 	 * this object (see {@link #setVersion(VCardVersion)}). If no version is
-	 * set, then it will be marshalled to 3.0.
+	 * set, then it will be marshalled to 3.0. UTF-8 encoding will be used.
 	 * </p>
 	 * <p>
 	 * Use the {@link VCardWriter} class for more control over the marshalling
@@ -267,6 +267,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its XML representation (xCard).
 	 * </p>
 	 * <p>
+	 * UTF-8 encoding will be used, per xCard specification.
+	 * </p>
+	 * <p>
 	 * Use the {@link XCardWriter} class for more control over the marshalling
 	 * process and to write multiple vCards to the same stream.
 	 * </p>
@@ -283,6 +286,9 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Marshals this vCard to its XML representation (xCard).
+	 * </p>
+	 * <p>
+	 * UTF-8 encoding will be used, per xCard specification.
 	 * </p>
 	 * <p>
 	 * Use the {@link XCardWriter} class for more control over the marshalling
@@ -341,6 +347,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to a basic HTML page (hCard).
 	 * </p>
 	 * <p>
+	 * UTF-8 encoding will be used.
+	 * </p>
+	 * <p>
 	 * Use the {@link HCardPage} class for more control over the marshalling
 	 * process and to write multiple vCards to the same stream.
 	 * </p>
@@ -361,6 +370,9 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Marshals this vCard to a basic HTML page (hCard).
+	 * </p>
+	 * <p>
+	 * UTF-8 encoding will be used.
 	 * </p>
 	 * <p>
 	 * Use the {@link HCardPage} class for more control over the marshalling
@@ -423,6 +435,9 @@ public class VCard implements Iterable<VCardProperty> {
 	 * Marshals this vCard to its JSON representation (jCard).
 	 * </p>
 	 * <p>
+	 * UTF-8 encoding will be used, per jCard specification.
+	 * </p>
+	 * <p>
 	 * Use the {@link JCardWriter} class for more control over the marshalling
 	 * process and to write multiple vCards to the same stream.
 	 * </p>
@@ -438,6 +453,9 @@ public class VCard implements Iterable<VCardProperty> {
 	/**
 	 * <p>
 	 * Marshals this vCard to its JSON representation (jCard).
+	 * </p>
+	 * <p>
+	 * UTF-8 encoding will be used, per jCard specification.
 	 * </p>
 	 * <p>
 	 * Use the {@link JCardWriter} class for more control over the marshalling

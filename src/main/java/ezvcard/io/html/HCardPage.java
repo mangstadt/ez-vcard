@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -138,17 +139,17 @@ public class HCardPage {
 	}
 
 	/**
-	 * Writes the HTML document to an output stream.
+	 * Writes the HTML document to an output stream (using UTF-8).
 	 * @param out the output stream
 	 * @throws IOException if there's a problem writing to the output stream
 	 * @throws TemplateException if there's a problem processing the template
 	 */
 	public void write(OutputStream out) throws IOException, TemplateException {
-		write(new OutputStreamWriter(out));
+		write(new OutputStreamWriter(out, StandardCharsets.UTF_8));
 	}
 
 	/**
-	 * Writes the HTML document to a file.
+	 * Writes the HTML document to a file (using UTF-8).
 	 * @param file the file
 	 * @throws IOException if there's a problem writing to the file
 	 * @throws TemplateException if there's a problem processing the template

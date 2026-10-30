@@ -85,18 +85,18 @@ public class JCardReader extends StreamReader {
 	}
 
 	/**
-	 * @param in the input stream to read from
+	 * @param in the input stream to read from (using UTF-8)
 	 */
 	public JCardReader(InputStream in) {
 		this(new InputStreamReader(in, StandardCharsets.UTF_8));
 	}
 
 	/**
-	 * @param file the file to read from
+	 * @param file the file to read from (using UTF-8)
 	 * @throws IOException if there is a problem reading the file
 	 */
 	public JCardReader(Path file) throws IOException {
-		this(Files.newBufferedReader(file, StandardCharsets.UTF_8));
+		this(Files.newBufferedReader(file));
 	}
 
 	/**

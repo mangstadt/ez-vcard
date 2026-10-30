@@ -111,18 +111,16 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	private Boolean includeTrailingSemicolons;
 
 	/**
-	 * @param out the output stream to write to
-	 * @param targetVersion the version that the vCards should conform to (if
-	 * set to "4.0", vCards will be written in UTF-8 encoding)
+	 * @param out the output stream to write to (using UTF-8)
+	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
-		this(new OutputStreamWriter(out, (targetVersion == VCardVersion.V4_0) ? StandardCharsets.UTF_8 : Charset.defaultCharset()), targetVersion);
+		this(new OutputStreamWriter(out, StandardCharsets.UTF_8), targetVersion);
 	}
 
 	/**
-	 * @param file the file to write to
-	 * @param targetVersion the version that the vCards should conform to (if
-	 * set to "4.0", vCards will be written in UTF-8 encoding)
+	 * @param file the file to write to (using UTF-8)
+	 * @param targetVersion the version that the vCards should conform to
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(Path file, VCardVersion targetVersion) throws IOException {
@@ -130,11 +128,10 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * @param file the file to write to
+	 * @param file the file to write to (using UTF-8)
 	 * @param append true to append to the end of the file, false to overwrite
 	 * it
-	 * @param targetVersion the version that the vCards should conform to (if
-	 * set to "4.0", vCards will be written in UTF-8 encoding)
+	 * @param targetVersion the version that the vCards should conform to
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(Path file, boolean append, VCardVersion targetVersion) throws IOException {
@@ -142,7 +139,6 @@ public class VCardWriter extends StreamWriter implements Flushable {
 		this(
 			Files.newBufferedWriter(
 				file,
-				(targetVersion == VCardVersion.V4_0) ? StandardCharsets.UTF_8 : Charset.defaultCharset(),
 				append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING
 			),
 			targetVersion

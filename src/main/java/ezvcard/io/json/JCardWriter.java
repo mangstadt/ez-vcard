@@ -79,14 +79,14 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	private JsonGenerator generator = null;
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 */
 	public JCardWriter(OutputStream out) {
 		this(new OutputStreamWriter(out, StandardCharsets.UTF_8));
 	}
 
 	/**
-	 * @param out the output stream to write to (UTF-8 encoding will be used)
+	 * @param out the output stream to write to (using UTF-8)
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
 	 */
@@ -95,21 +95,21 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(Path file) throws IOException {
-		this(Files.newBufferedWriter(file, StandardCharsets.UTF_8));
+		this(Files.newBufferedWriter(file));
 	}
 
 	/**
-	 * @param file the file to write to (UTF-8 encoding will be used)
+	 * @param file the file to write to (using UTF-8)
 	 * @param wrapInArray true to enclose all written vCards in a JSON array,
 	 * false not to
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public JCardWriter(Path file, boolean wrapInArray) throws IOException {
-		this(Files.newBufferedWriter(file, StandardCharsets.UTF_8), wrapInArray);
+		this(Files.newBufferedWriter(file), wrapInArray);
 	}
 
 	/**
