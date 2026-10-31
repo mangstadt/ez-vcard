@@ -1,5 +1,7 @@
 package ezvcard.io.scribe;
 
+import java.util.Locale;
+
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
@@ -87,7 +89,7 @@ public class ClientPidMapScribe extends VCardPropertyScribe<ClientPidMap> {
 		String uri = element.first(VCardDataType.URI);
 
 		if (uri == null && sourceid == null) {
-			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(), "sourceid");
+			throw missingXmlElements(VCardDataType.URI.getName().toLowerCase(Locale.ROOT), "sourceid");
 		}
 		if (uri == null) {
 			throw missingXmlElements(VCardDataType.URI);

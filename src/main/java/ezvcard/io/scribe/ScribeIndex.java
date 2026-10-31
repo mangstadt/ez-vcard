@@ -1,6 +1,7 @@
 package ezvcard.io.scribe;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -147,7 +148,7 @@ public class ScribeIndex {
 	 * @return the property scribe or null if not found
 	 */
 	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String propertyName) {
-		propertyName = propertyName.toUpperCase();
+		propertyName = propertyName.toUpperCase(Locale.ROOT);
 
 		VCardPropertyScribe<? extends VCardProperty> scribe = extendedByName.get(propertyName);
 		if (scribe != null) {
@@ -215,7 +216,7 @@ public class ScribeIndex {
 		}
 
 		if (VCardVersion.V4_0.getXmlNamespace().equals(qname.getNamespaceURI())) {
-			return new RawPropertyScribe(qname.getLocalPart().toUpperCase());
+			return new RawPropertyScribe(qname.getLocalPart().toUpperCase(Locale.ROOT));
 		}
 
 		return getPropertyScribe(Xml.class);
@@ -226,7 +227,7 @@ public class ScribeIndex {
 	 * @param scribe the scribe to register
 	 */
 	public void register(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		extendedByName.put(scribe.getPropertyName().toUpperCase(), scribe);
+		extendedByName.put(scribe.getPropertyName().toUpperCase(Locale.ROOT), scribe);
 		extendedByClass.put(scribe.getPropertyClass(), scribe);
 		extendedByQName.put(scribe.getQName(), scribe);
 	}
@@ -236,13 +237,13 @@ public class ScribeIndex {
 	 * @param scribe the scribe to unregister
 	 */
 	public void unregister(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		extendedByName.remove(scribe.getPropertyName().toUpperCase());
+		extendedByName.remove(scribe.getPropertyName().toUpperCase(Locale.ROOT));
 		extendedByClass.remove(scribe.getPropertyClass());
 		extendedByQName.remove(scribe.getQName());
 	}
 
 	private static void registerStandard(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		standardByName.put(scribe.getPropertyName().toUpperCase(), scribe);
+		standardByName.put(scribe.getPropertyName().toUpperCase(Locale.ROOT), scribe);
 		standardByClass.put(scribe.getPropertyClass(), scribe);
 		standardByQName.put(scribe.getQName(), scribe);
 	}

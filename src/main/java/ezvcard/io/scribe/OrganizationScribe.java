@@ -1,6 +1,7 @@
 package ezvcard.io.scribe;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
@@ -72,7 +73,7 @@ public class OrganizationScribe extends VCardPropertyScribe<Organization> {
 
 	@Override
 	protected void _writeXml(Organization property, XCardElement parent) {
-		parent.append(VCardDataType.TEXT.getName().toLowerCase(), property.getValues());
+		parent.append(VCardDataType.TEXT.getName().toLowerCase(Locale.ROOT), property.getValues());
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package ezvcard.util;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 import ezvcard.Messages;
@@ -88,7 +89,7 @@ public final class DataUri {
 	}
 
 	private DataUri(String contentType, byte[] data, String text) {
-		this.contentType = (contentType == null) ? "" : contentType.toLowerCase();
+		this.contentType = (contentType == null) ? "" : contentType.toLowerCase(Locale.ROOT);
 		this.data = data;
 		this.text = text;
 	}
@@ -154,9 +155,9 @@ public final class DataUri {
 		private void handleComma() {
 			String token = uri.substring(tokenStart, it.index());
 			if (contentType == null) {
-				contentType = token.toLowerCase();
+				contentType = token.toLowerCase(Locale.ROOT);
 			} else {
-				if (token.toLowerCase().startsWith("charset=")) {
+				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
 					int equals = token.indexOf('=');
 					charset = token.substring(equals + 1);
 				} else if ("base64".equalsIgnoreCase(token)) {
@@ -170,9 +171,9 @@ public final class DataUri {
 		private void handleSemicolon() {
 			String token = uri.substring(tokenStart, it.index());
 			if (contentType == null) {
-				contentType = token.toLowerCase();
+				contentType = token.toLowerCase(Locale.ROOT);
 			} else {
-				if (token.toLowerCase().startsWith("charset=")) {
+				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
 					int equals = token.indexOf('=');
 					charset = token.substring(equals + 1);
 				} else if ("base64".equalsIgnoreCase(token)) {

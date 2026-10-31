@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
@@ -234,7 +235,7 @@ public class XCardElement {
 	 * @return the local name (e.g. "text")
 	 */
 	private static String toLocalName(VCardDataType dataType) {
-		return (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+		return (dataType == null) ? "unknown" : dataType.getName().toLowerCase(Locale.ROOT);
 	}
 
 	/**
