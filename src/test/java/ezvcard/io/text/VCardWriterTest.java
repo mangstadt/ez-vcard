@@ -4,9 +4,8 @@ import static ezvcard.util.TestUtils.assertValidate;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.charset.UnmappableCharacterException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 
@@ -301,49 +300,34 @@ public class VCardWriterTest {
 
 		Path file = tempFolder.newFile().toPath();
 
-		//should be written as UTF-8
-		{
-			try (VCardWriter writer = new VCardWriter(file, false, VCardVersion.V4_0)) {
-				writer.setAddProdId(false);
-				writer.write(vcard);
-			}
-
+		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String expected = 
 			"BEGIN:VCARD\r\n" +
-				"VERSION:4.0\r\n" +
+				"VERSION:" + version + "\r\n" +
 				"NOTE:\u019dote\r\n" +
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
-			assertEquals(expected, actual);
-		}
+			{
+				try (VCardWriter writer = new VCardWriter(file, false, version)) {
+					writer.setAddProdId(false);
+					writer.write(vcard);
+				}
 
-		//should be written using default encoding
-		if (!Charset.defaultCharset().name().equalsIgnoreCase("UTF-8")) { //don't test if the local machine's default encoding is UTF-8
-			try (VCardWriter writer = new VCardWriter(file, VCardVersion.V3_0)) {
-				writer.setAddProdId(false);
-				writer.write(vcard);
-			} catch (UnmappableCharacterException e) {
-				/*
-				 * This exception may be thrown if the character can't be
-				 * written in the system's default character set. If so, end
-				 * the test early.
-				 */
-				return;
+				String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
+				assertEquals(expected, actual);
 			}
 
-			//@formatter:off
-			String expected = 
-			"BEGIN:VCARD\r\n" +
-				"VERSION:3.0\r\n" +
-				"NOTE:?ote\r\n" +
-			"END:VCARD\r\n";
-			//@formatter:on
+			{
+				try (VCardWriter writer = new VCardWriter(Files.newOutputStream(file), version)) {
+					writer.setAddProdId(false);
+					writer.write(vcard);
+				}
 
-			String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
-			assertEquals(expected, actual);
+				String actual = new Gobble(file).asString(StandardCharsets.UTF_8);
+				assertEquals(expected, actual);
+			}
 		}
 	}
 

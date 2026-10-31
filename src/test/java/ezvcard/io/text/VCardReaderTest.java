@@ -16,11 +16,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.github.mangstadt.vinnie.codec.QuotedPrintableCodec;
 
@@ -78,6 +83,9 @@ import ezvcard.property.asserter.VCardAsserter;
  * @author Michael Angstadt
  */
 public class VCardReaderTest {
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
+
 	/**
 	 * Account for an error in the 4.0 specification, which places multi-valued
 	 * TYPE parameters in double quotes.
@@ -835,7 +843,7 @@ public class VCardReaderTest {
 			assertNoMoreVCards(reader);
 		}
 	}
-	
+
 	@Test
 	public void missing_version() throws Exception {
 		//@formatter:off
@@ -921,6 +929,32 @@ public class VCardReaderTest {
 	
 			asserter.done();
 			//@formatter:on
+		}
+	}
+
+	@Test
+	public void utf8() throws Throwable {
+		for (VCardVersion version : VCardVersion.values()) {
+			//@formatter:off
+			String content = 
+			"BEGIN:VCARD\r\n" +
+				"VERSION:" + version + "\r\n" +
+				"NOTE:\u019dote\r\n" +
+			"END:VCARD\r\n";
+			//@formatter:on
+
+			Path file = tempFolder.newFile().toPath();
+			Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+
+			try (VCardReader reader = new VCardReader(file)) {
+				VCard vcard = reader.readNext();
+				assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+			}
+
+			try (VCardReader reader = new VCardReader(Files.newInputStream(file))) {
+				VCard vcard = reader.readNext();
+				assertEquals("\u019dote", vcard.getNotes().get(0).getValue());
+			}
 		}
 	}
 
