@@ -1,6 +1,7 @@
 package ezvcard.io.xml;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ezvcard.VCardDataType;
@@ -91,7 +92,7 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * @param dataType the data type or null to remove
 	 */
 	public void registerParameterDataType(String parameterName, VCardDataType dataType) {
-		parameterName = parameterName.toLowerCase();
+		parameterName = parameterName.toLowerCase(Locale.ROOT);
 		if (dataType == null) {
 			parameterDataTypes.remove(parameterName);
 		} else {

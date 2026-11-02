@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -413,12 +414,12 @@ public class XCardWriter extends XCardWriterBase {
 		start(PARAMETERS);
 
 		for (Map.Entry<String, List<String>> parameter : parameters) {
-			String parameterName = parameter.getKey().toLowerCase();
+			String parameterName = parameter.getKey().toLowerCase(Locale.ROOT);
 			start(parameterName);
 
 			for (String parameterValue : parameter.getValue()) {
 				VCardDataType dataType = parameterDataTypes.get(parameterName);
-				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
+				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase(Locale.ROOT);
 
 				start(dataTypeElementName);
 				text(parameterValue);

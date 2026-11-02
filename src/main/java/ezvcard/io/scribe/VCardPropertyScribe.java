@@ -3,6 +3,7 @@ package ezvcard.io.scribe;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.xml.namespace.QName;
@@ -69,7 +70,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param propertyName the property name (e.g. "FN")
 	 */
 	protected VCardPropertyScribe(Class<T> clazz, String propertyName) {
-		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()));
+		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase(Locale.ROOT)));
 	}
 
 	/**
@@ -620,7 +621,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected static CannotParseException missingXmlElements(VCardDataType... dataTypes) {
 		//@formatter:off
 		String[] elements = Arrays.stream(dataTypes)
-			.map(dataType -> (dataType == null) ? "unknown" : dataType.getName().toLowerCase())
+			.map(dataType -> (dataType == null) ? "unknown" : dataType.getName().toLowerCase(Locale.ROOT))
 		.toArray(len -> new String[len]);
 		//@formatter:on
 

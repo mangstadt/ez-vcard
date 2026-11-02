@@ -2,6 +2,7 @@ package ezvcard.util;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public final class StringUtils {
 	}
 
 	private static String toLowerCase(String s) {
-		return (s == null) ? null : s.toLowerCase();
+		return (s == null) ? null : s.toLowerCase(Locale.ROOT);
 	}
 
 	/**
@@ -122,7 +123,7 @@ public final class StringUtils {
 		//@formatter:off
 		IntStream.range(0, objects.length)
 			.filter(i -> objects[i] instanceof String)
-		.forEach(i -> objects[i] = ((String) objects[i]).toLowerCase());
+		.forEach(i -> objects[i] = ((String) objects[i]).toLowerCase(Locale.ROOT));
 		//@formatter:on
 
 		return Objects.hash(objects);

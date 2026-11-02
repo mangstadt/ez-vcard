@@ -1,5 +1,7 @@
 package ezvcard.io.scribe;
 
+import java.util.Locale;
+
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
@@ -66,7 +68,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 		String sex = it.next();
 		if (sex != null) {
-			sex = sex.toUpperCase();
+			sex = sex.toUpperCase(Locale.ROOT);
 		}
 		String text = it.next();
 
@@ -114,7 +116,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 		String sex = it.nextValue();
 		if (sex != null) {
-			sex = sex.toUpperCase();
+			sex = sex.toUpperCase(Locale.ROOT);
 		}
 		String text = it.nextValue();
 

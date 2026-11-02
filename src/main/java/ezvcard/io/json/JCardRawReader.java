@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -152,7 +153,7 @@ public class JCardRawReader implements Closeable {
 	private void parseProperty() throws IOException {
 		//get property name
 		checkCurrent(JsonToken.VALUE_STRING);
-		String propertyName = parser.getValueAsString().toLowerCase();
+		String propertyName = parser.getValueAsString().toLowerCase(Locale.ROOT);
 
 		//get parameters
 		VCardParameters parameters = parseParameters();
@@ -163,7 +164,7 @@ public class JCardRawReader implements Closeable {
 
 		//get data type
 		checkNext(JsonToken.VALUE_STRING);
-		String dataTypeStr = parser.getText().toLowerCase();
+		String dataTypeStr = parser.getText().toLowerCase(Locale.ROOT);
 		VCardDataType dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
 
 		//get property value(s)

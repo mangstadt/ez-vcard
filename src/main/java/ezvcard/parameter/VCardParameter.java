@@ -1,5 +1,6 @@
 package ezvcard.parameter;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import ezvcard.SupportedVersions;
@@ -60,7 +61,7 @@ public class VCardParameter {
 	 * it to lower-case
 	 */
 	protected VCardParameter(String value, boolean preserveCase) {
-		this.value = (value == null || preserveCase) ? value : value.toLowerCase();
+		this.value = (value == null || preserveCase) ? value : value.toLowerCase(Locale.ROOT);
 	}
 
 	/**
