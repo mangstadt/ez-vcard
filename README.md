@@ -5,7 +5,6 @@
 | Continuous Integration: | [![](https://travis-ci.org/mangstadt/ez-vcard.svg?branch=master)](https://travis-ci.org/mangstadt/ez-vcard) |
 | Code Coverage: | [![codecov.io](http://codecov.io/github/mangstadt/ez-vcard/coverage.svg?branch=master)](http://codecov.io/github/mangstadt/ez-vcard?branch=master) |
 | Maven Central: | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.googlecode.ez-vcard/ez-vcard) |
-| Chat Room: | [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mangstadt/ez-vcard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) |
 | License: | [![FreeBSD License](https://img.shields.io/badge/License-FreeBSD-red.svg)](https://github.com/mangstadt/ez-vcard/blob/master/LICENSE) |
 
 ez-vcard is a vCard library written in Java.  It can read and write vCards in many different formats.  The "ez" stands for "easy" because the goal is to create a library that's easy to use.
@@ -95,12 +94,9 @@ To build a JAR: `mvn package`
 
 # Questions / Feedback
 
-You have some options:
-
  * [Issue tracker](https://github.com/mangstadt/ez-vcard/issues)
- * [Gitter chat room](https://gitter.im/mangstadt/ez-vcard)
+ * Start a [discussion](https://github.com/mangstadt/ez-vcard/discussions)
  * [Post a question to StackOverflow](http://stackoverflow.com/questions/ask) with `vcard` as a tag.
- * Email me directly: [mike.angstadt@gmail.com](mailto:mike.angstadt@gmail.com)
 
 Please submit bug reports and feature requests to the [issue tracker](https://github.com/mangstadt/ez-vcard/issues).  Contributors are listed in the project credits.
 
