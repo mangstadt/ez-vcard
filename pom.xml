@@ -41,7 +41,7 @@
 	</scm>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -245,7 +245,8 @@
 						<script src="doc-files/shCore.js" type="text/javascript"></script>
 						<script src="doc-files/shBrushJava.js" type="text/javascript"></script>
 					]]></top>
-					<footer><![CDATA[
+					<bottom><![CDATA[
+						Copyright &#169; {inceptionYear}&#x2013;{currentYear} {organizationName}. All rights reserved.
 						<script type="text/javascript">
 							SyntaxHighlighter.defaults["auto-links"] = false;
 							SyntaxHighlighter.defaults["gutter"] = false;
@@ -253,9 +254,8 @@
 							SyntaxHighlighter.defaults["toolbar"] = false;
 							SyntaxHighlighter.all();
 						</script>
-					]]></footer>
+					]]></bottom>
 					<docfilessubdirs>true</docfilessubdirs>
-					<stylesheetfile>src/main/javadoc/syntaxhighlighter.css</stylesheetfile>
 				</configuration>
 				<executions>
 					<execution>
@@ -428,6 +428,60 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!--
+		When building with JDK 9 or later, compile against the Java 8 API.
+		-->
+		<profile>
+			<id>jdk9-release</id>
+			<activation>
+				<jdk>[9,)</jdk>
+			</activation>
+			<properties>
+				<maven.compiler.release>${java.version}</maven.compiler.release>
+			</properties>
+		</profile>
+
+		<!--
+		JDK 8 cannot add a stylesheet to the default one, so the whole stylesheet is replaced.
+		-->
+		<profile>
+			<id>javadoc-stylesheet-jdk8</id>
+			<activation>
+				<jdk>[1.8,9)</jdk>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<stylesheetfile>src/main/javadoc/stylesheet-jdk8.css</stylesheetfile>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>javadoc-stylesheet-jdk11</id>
+			<activation>
+				<jdk>[11,)</jdk>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<addStylesheets>
+								<addStylesheet>doc-files/syntaxhighlighter.css</addStylesheet>
+							</addStylesheets>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
