@@ -20,6 +20,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.CannotParseException;
@@ -100,10 +102,10 @@ public class HCardParser extends StreamReader {
 	private Nickname nickname;
 	private Categories categories;
 
-	private final String urlPropertyName = index.getPropertyScribe(Url.class).getPropertyName().toLowerCase();
-	private final String categoriesName = index.getPropertyScribe(Categories.class).getPropertyName().toLowerCase();
-	private final String emailName = index.getPropertyScribe(Email.class).getPropertyName().toLowerCase();
-	private final String telName = index.getPropertyScribe(Telephone.class).getPropertyName().toLowerCase();
+	private final LaciToken urlPropertyName = index.getPropertyScribe(Url.class).getPropertyName();
+	private final LaciToken categoriesName = index.getPropertyScribe(Categories.class).getPropertyName();
+	private final LaciToken emailName = index.getPropertyScribe(Email.class).getPropertyName();
+	private final LaciToken telName = index.getPropertyScribe(Telephone.class).getPropertyName();
 
 	/**
 	 * Creates an hCard document.
@@ -291,7 +293,7 @@ public class HCardParser extends StreamReader {
 	private void visit(Element element) {
 		int embeddedVCardCount = embeddedVCards.size();
 
-		Set<String> classNames = adjustClassNames(element);
+		Set<LaciToken> classNames = parseClassNames(element);
 
 		classNames.forEach(className -> parseProperty(element, className));
 
@@ -302,30 +304,30 @@ public class HCardParser extends StreamReader {
 		}
 	}
 
-	private Set<String> adjustClassNames(Element element) {
+	private Set<LaciToken> parseClassNames(Element element) {
 		//@formatter:off
-		Set<String> classNamesToLower = element.classNames().stream()
-			.map(String::toLowerCase)
+		Set<LaciToken> classNames = element.classNames().stream()
+			.map(LaciToken::new)
 		.collect(Collectors.toSet());
 
-		return classNamesToLower.stream()
-			.map(className -> adjustClassName(className, element, classNamesToLower))
+		return classNames.stream()
+			.map(className -> adjustClassName(className, element, classNames))
 		.collect(Collectors.toSet());
 		//@formatter:on
 	}
 
-	private String adjustClassName(String className, Element element, Set<String> origClassNames) {
+	private LaciToken adjustClassName(LaciToken className, Element element, Set<LaciToken> origClassNames) {
 		/*
 		 * hCard uses a different name for the CATEGORIES property.
 		 */
-		if ("category".equals(className)) {
+		if (className.equalsIgnoreCase("category")) {
 			return categoriesName;
 		}
 
 		/*
 		 * Give special treatment to certain URLs.
 		 */
-		if (urlPropertyName.equals(className)) {
+		if (className.equals(urlPropertyName)) {
 			String href = element.attr("href");
 			if (!origClassNames.contains(emailName) && href.matches("(?i)mailto:.*")) {
 				return emailName;
@@ -358,7 +360,7 @@ public class HCardParser extends StreamReader {
 		}
 	}
 
-	private VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String className) {
+	private VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(LaciToken className) {
 		VCardPropertyScribe<? extends VCardProperty> scribe = index.getPropertyScribe(className);
 
 		if (scribe == null) {
@@ -367,7 +369,8 @@ public class HCardParser extends StreamReader {
 			 * "x-", then it must be an arbitrary CSS class that has nothing to
 			 * do with vCard
 			 */
-			if (!className.startsWith("x-")) {
+			String classNameUpper = className.toUpperCase();
+			if (!classNameUpper.startsWith("X-")) {
 				return null;
 			}
 
@@ -388,7 +391,7 @@ public class HCardParser extends StreamReader {
 		}
 	}
 
-	private void parseProperty(Element element, String className) {
+	private void parseProperty(Element element, LaciToken className) {
 		if (urlPropertyName.equals(className)) {
 			VCardProperty impp = tryToParseAsImpp(element);
 			if (impp != null) {

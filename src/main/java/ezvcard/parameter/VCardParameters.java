@@ -6,6 +6,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
 import com.github.mangstadt.vinnie.validate.VObjectValidator;
@@ -70,7 +72,7 @@ import ezvcard.util.StringUtils;
  * Stores the parameters (also known as "sub types") that belong to a property.
  * @author Michael Angstadt
  */
-public class VCardParameters extends ListMultimap<String, String> {
+public class VCardParameters extends ListMultimap<LaciToken, String> {
 	/**
 	 * <p>
 	 * Used to specify that the property value is an alternative representation
@@ -100,7 +102,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-18">RFC 6350
 	 * p.18</a>
 	 */
-	public static final String ALTID = "ALTID";
+	public static final LaciToken ALTID = new LaciToken("ALTID");
 
 	/**
 	 * <p>
@@ -113,7 +115,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-20">RFC 6350
 	 * p.20</a>
 	 */
-	public static final String CALSCALE = "CALSCALE";
+	public static final LaciToken CALSCALE = new LaciToken("CALSCALE");
 
 	/**
 	 * <p>
@@ -126,7 +128,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
-	public static final String CHARSET = "CHARSET";
+	public static final LaciToken CHARSET = new LaciToken("CHARSET");
 
 	/**
 	 * <p>
@@ -139,7 +141,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.19</a>
 	 */
-	public static final String ENCODING = "ENCODING";
+	public static final LaciToken ENCODING = new LaciToken("ENCODING");
 
 	/**
 	 * <p>
@@ -152,7 +154,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 */
-	public static final String GEO = "GEO";
+	public static final LaciToken GEO = new LaciToken("GEO");
 
 	/**
 	 * <p>
@@ -167,7 +169,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-7">RFC 6715
 	 * p.7</a>
 	 */
-	public static final String INDEX = "INDEX";
+	public static final LaciToken INDEX = new LaciToken("INDEX");
 
 	/**
 	 * <p>
@@ -180,7 +182,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-33">RFC 6350
 	 * p.33</a>
 	 */
-	public static final String LABEL = "LABEL";
+	public static final LaciToken LABEL = new LaciToken("LABEL");
 
 	/**
 	 * <p>
@@ -195,7 +197,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-6">RFC 2426 p.6</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
-	public static final String LANGUAGE = "LANGUAGE";
+	public static final LaciToken LANGUAGE = new LaciToken("LANGUAGE");
 
 	/**
 	 * <p>
@@ -209,7 +211,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="https://tools.ietf.org/html/rfc6715#page-8">RFC 6715
 	 * p.8</a>
 	 */
-	public static final String LEVEL = "LEVEL";
+	public static final LaciToken LEVEL = new LaciToken("LEVEL");
 
 	/**
 	 * <p>
@@ -223,7 +225,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-20">RFC 6350
 	 * p.20</a>
 	 */
-	public static final String MEDIATYPE = "MEDIATYPE";
+	public static final LaciToken MEDIATYPE = new LaciToken("MEDIATYPE");
 
 	/**
 	 * <p>
@@ -244,7 +246,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-19">RFC 6350
 	 * p.19</a>
 	 */
-	public static final String PID = "PID";
+	public static final LaciToken PID = new LaciToken("PID");
 
 	/**
 	 * <p>
@@ -270,7 +272,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-17">RFC 6350
 	 * p.17</a>
 	 */
-	public static final String PREF = "PREF";
+	public static final LaciToken PREF = new LaciToken("PREF");
 
 	/**
 	 * <p>
@@ -295,7 +297,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-21">RFC 6350
 	 * p.21</a>
 	 */
-	public static final String SORT_AS = "SORT-AS";
+	public static final LaciToken SORT_AS = new LaciToken("SORT-AS");
 
 	/**
 	 * <p>
@@ -309,7 +311,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-6">RFC 2426 p.6</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1</a>
 	 */
-	public static final String TYPE = "TYPE";
+	public static final LaciToken TYPE = new LaciToken("TYPE");
 
 	/**
 	 * <p>
@@ -323,7 +325,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc6350#page-22">RFC 6350
 	 * p.22</a>
 	 */
-	public static final String TZ = "TZ";
+	public static final LaciToken TZ = new LaciToken("TZ");
 
 	/**
 	 * <p>
@@ -339,11 +341,11 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://tools.ietf.org/html/rfc2426#page-6">RFC 2426 p.6</a>
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
-	public static final String VALUE = "VALUE";
+	public static final LaciToken VALUE = new LaciToken("VALUE");
 
-	private static final Map<String, Set<VCardVersion>> supportedVersions;
+	private static final Map<LaciToken, Set<VCardVersion>> supportedVersions;
 	static {
-		Map<String, Set<VCardVersion>> m = new HashMap<>();
+		Map<LaciToken, Set<VCardVersion>> m = new HashMap<>();
 		m.put(ALTID, EnumSet.of(VCardVersion.V4_0));
 		m.put(CALSCALE, EnumSet.of(VCardVersion.V4_0));
 		m.put(CHARSET, EnumSet.of(VCardVersion.V2_1));
@@ -393,17 +395,13 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * made to the given map will effect the parameter list and vice versa.
 	 * </p>
 	 * <p>
-	 * Care must be taken to ensure that the given map's keys are all in
-	 * uppercase.
-	 * </p>
-	 * <p>
 	 * To avoid problems, it is highly recommended that the given map NOT be
 	 * modified by anything other than this {@link VCardParameters} class after
 	 * being passed into this constructor.
 	 * </p>
 	 * @param map the map
 	 */
-	public VCardParameters(Map<String, List<String>> map) {
+	public VCardParameters(Map<LaciToken, List<String>> map) {
 		super(map);
 	}
 
@@ -1316,7 +1314,85 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.doc">vCard 2.1 p.20</a>
 	 */
 	public void setValue(VCardDataType dataType) {
-		replace(VALUE, (dataType == null) ? null : dataType.getName());
+		replace(VALUE, (dataType == null) ? null : dataType.getName().toLowerCase());
+	}
+
+	/**
+	 * Gets the first value that's associated with a parameter.
+	 * @param name the parameter name
+	 * @return the first value or null if the key doesn't exist
+	 */
+	public String first(String name) {
+		return first(LaciToken.create(name));
+	}
+
+	/**
+	 * Gets the values associated with a parameter. Changes to the returned list
+	 * will update the underlying multimap, and vice versa.
+	 * @param name the parameter name
+	 * @return the list of values or empty list if the key doesn't exist
+	 */
+	public List<String> get(String name) {
+		return get(LaciToken.create(name));
+	}
+
+	/**
+	 * Adds a value to the multimap.
+	 * @param name the parameter name
+	 * @param value the value to add
+	 */
+	public void put(String name, String value) {
+		put(LaciToken.create(name), value);
+	}
+
+	/**
+	 * Adds multiple values to the multimap.
+	 * @param name the parameter name
+	 * @param values the values to add
+	 */
+	public void putAll(String name, Collection<String> values) {
+		putAll(LaciToken.create(name), values);
+	}
+
+	/**
+	 * Replaces all values with the given value.
+	 * @param name the parameter name
+	 * @param value the value with which to replace all existing values, or null
+	 * to remove all values
+	 * @return the values that were replaced (this list is immutable)
+	 */
+	public List<String> replace(String name, String value) {
+		return replace(LaciToken.create(name), value);
+	}
+
+	/**
+	 * Replaces all values with the given values.
+	 * @param name the parameter name
+	 * @param values the values with which to replace all existing values
+	 * @return the values that were replaced (this list is immutable)
+	 */
+	public List<String> replace(String name, Collection<String> values) {
+		return replace(LaciToken.create(name), values);
+	}
+
+	/**
+	 * Removes a particular value.
+	 * @param name the parameter name
+	 * @param value the value to remove
+	 * @return true if the multimap contained the value, false if not
+	 */
+	public boolean remove(String name, String value) {
+		return remove(LaciToken.create(name), value);
+	}
+
+	/**
+	 * Removes all the values associated with a parameter.
+	 * @param name the parameter name
+	 * @return the removed values or an empty list if the key doesn't exist
+	 * (this list is immutable)
+	 */
+	public List<String> removeAll(String name) {
+		return removeAll(LaciToken.create(name));
 	}
 
 	/**
@@ -1360,20 +1436,20 @@ public class VCardParameters extends ListMultimap<String, String> {
 
 	private void checkForInvalidChars(VCardVersion version, List<ValidationWarning> warnings) {
 		SyntaxStyle syntax = version.getSyntaxStyle();
-		Stream<Map.Entry<String, List<String>>> stream = stream();
+		Stream<Map.Entry<LaciToken, List<String>>> stream = stream();
 
 		/*
 		 * Don't check LABEL parameter for 2.1 and 3.0 because this parameter is
 		 * converted to a property in those versions.
 		 */
 		if (version != VCardVersion.V4_0) {
-			stream = stream.filter(entry -> !LABEL.equalsIgnoreCase(entry.getKey()));
+			stream = stream.filter(entry -> !LABEL.equals(entry.getKey()));
 		}
 
 		//@formatter:off
 		stream.forEach(entry -> {
-			String name = entry.getKey();
-			checkForInvalidCharsInParamName(name, syntax, warnings);
+			LaciToken name = entry.getKey();
+			checkForInvalidCharsInParamName(name.toUpperCase(), syntax, warnings);
 
 			List<String> values = entry.getValue();
 			values.forEach(value -> checkForInvalidCharsInParamValue(name, value, syntax, warnings));
@@ -1386,7 +1462,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 			return;
 		}
 
-		if (syntax == SyntaxStyle.OLD) {
+		if (syntax == SyntaxStyle.LEGACY) {
 			AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterName(syntax, true).flip();
 			warnings.add(new ValidationWarning(30, name, notAllowed.toString(true)));
 		} else {
@@ -1394,12 +1470,12 @@ public class VCardParameters extends ListMultimap<String, String> {
 		}
 	}
 
-	private void checkForInvalidCharsInParamValue(String name, String value, SyntaxStyle syntax, List<ValidationWarning> warnings) {
+	private void checkForInvalidCharsInParamValue(LaciToken name, String value, SyntaxStyle syntax, List<ValidationWarning> warnings) {
 		/*
 		 * Newlines are allowed in LABEL parameters, but are not allowed by
 		 * vobject, so remove them from the value before validating.
 		 */
-		if (LABEL.equalsIgnoreCase(name)) {
+		if (LABEL.equals(name)) {
 			value = value.replaceAll("\r\n|\r|\n", "");
 		}
 
@@ -1408,7 +1484,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 		}
 
 		AllowedCharacters notAllowed = VObjectValidator.allowedCharactersParameterValue(syntax, false, true).flip();
-		int code = (syntax == SyntaxStyle.OLD) ? 31 : 25;
+		int code = (syntax == SyntaxStyle.LEGACY) ? 31 : 25;
 		warnings.add(new ValidationWarning(code, name, value, notAllowed.toString(true)));
 	}
 
@@ -1558,21 +1634,16 @@ public class VCardParameters extends ListMultimap<String, String> {
 	}
 
 	@Override
-	protected String sanitizeKey(String key) {
-		return (key == null) ? null : key.toUpperCase();
-	}
-
-	@Override
 	public int hashCode() {
 		/*
-		 * Remember: Keys are case-insensitive, key order does not matter, and
-		 * value order does not matter
+		 * Key order does not matter, value order does not matter, value case
+		 * does not matter.
 		 */
 		final int prime = 31;
 
 		return 1 + stream().mapToInt(entry -> {
-			String key = entry.getKey();
-			int keyHash = ((key == null) ? 0 : key.toLowerCase().hashCode());
+			LaciToken key = entry.getKey();
+			int keyHash = Objects.hashCode(key);
 
 			List<String> value = entry.getValue();
 			//@formatter:off
@@ -1616,7 +1687,7 @@ public class VCardParameters extends ListMultimap<String, String> {
 		if (size() != other.size()) return false;
 
 		return stream().allMatch(entry -> {
-			String key = entry.getKey();
+			LaciToken key = entry.getKey();
 			List<String> value = entry.getValue();
 			List<String> otherValue = other.get(key);
 			return StringUtils.equalsIgnoreCaseIgnoreOrder(value, otherValue);
@@ -1658,6 +1729,10 @@ public class VCardParameters extends ListMultimap<String, String> {
 			super(parameterName);
 		}
 
+		protected EnumParameterList(LaciToken parameterName) {
+			super(parameterName);
+		}
+
 		@Override
 		protected String _asString(T value) {
 			return value.getValue();
@@ -1680,13 +1755,20 @@ public class VCardParameters extends ListMultimap<String, String> {
 	 * </p>
 	 */
 	public abstract class VCardParameterList<T> extends AbstractList<T> {
-		protected final String parameterName;
+		protected final LaciToken parameterName;
 		protected final List<String> parameterValues;
 
 		/**
 		 * @param parameterName the name of the parameter (case insensitive)
 		 */
 		protected VCardParameterList(String parameterName) {
+			this(new LaciToken(parameterName));
+		}
+
+		/**
+		 * @param parameterName the name of the parameter
+		 */
+		protected VCardParameterList(LaciToken parameterName) {
 			this.parameterName = parameterName;
 			parameterValues = VCardParameters.this.get(parameterName);
 		}

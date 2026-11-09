@@ -16,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -259,8 +261,8 @@ public class Sensei<T extends VCardProperty> {
 				VCardParameters actual = scribe.prepareParameters(property, version, vcard);
 				assertEquals("Actual: " + actual, expected.size(), actual.size());
 
-				for (Map.Entry<String, List<String>> entry : expected) {
-					String expectedKey = entry.getKey();
+				for (Map.Entry<LaciToken, List<String>> entry : expected) {
+					LaciToken expectedKey = entry.getKey();
 					List<String> expectedValues = entry.getValue();
 
 					List<String> actualValues = actual.get(expectedKey);

@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCard;
@@ -60,7 +61,7 @@ import ezvcard.util.VCardDateFormat;
  */
 public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	protected final Class<T> clazz;
-	protected final String propertyName;
+	protected final LaciToken propertyName;
 	protected final QName qname;
 
 	/**
@@ -68,8 +69,31 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param clazz the property class
 	 * @param propertyName the property name (e.g. "FN")
 	 */
+	protected VCardPropertyScribe(Class<T> clazz, LaciToken propertyName) {
+		this.clazz = clazz;
+		this.propertyName = propertyName;
+		this.qname = new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase());
+	}
+
+	/**
+	 * Creates a new scribe.
+	 * @param clazz the property class
+	 * @param propertyName the property name (case-insensitive, e.g. "FN")
+	 */
 	protected VCardPropertyScribe(Class<T> clazz, String propertyName) {
-		this(clazz, propertyName, new QName(VCardVersion.V4_0.getXmlNamespace(), propertyName.toLowerCase()));
+		this(clazz, new LaciToken(propertyName));
+	}
+
+	/**
+	 * Creates a new scribe.
+	 * @param clazz the property class
+	 * @param propertyName the property name (case-insensitive, e.g. "FN")
+	 * @param qname the XML element name and namespace to use for xCard
+	 * documents (by default, the XML element name is set to the lower-cased
+	 * property name, and the element namespace is set to the xCard namespace)
+	 */
+	protected VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname) {
+		this(clazz, new LaciToken(propertyName), qname);
 	}
 
 	/**
@@ -80,7 +104,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * documents (by default, the XML element name is set to the lower-cased
 	 * property name, and the element namespace is set to the xCard namespace)
 	 */
-	protected VCardPropertyScribe(Class<T> clazz, String propertyName, QName qname) {
+	protected VCardPropertyScribe(Class<T> clazz, LaciToken propertyName, QName qname) {
 		this.clazz = clazz;
 		this.propertyName = propertyName;
 		this.qname = qname;
@@ -98,7 +122,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * Gets the property name.
 	 * @return the property name (e.g. "FN")
 	 */
-	public String getPropertyName() {
+	public LaciToken getPropertyName() {
 		return propertyName;
 	}
 

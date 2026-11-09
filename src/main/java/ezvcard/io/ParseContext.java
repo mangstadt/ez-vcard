@@ -3,6 +3,8 @@ package ezvcard.io;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -42,7 +44,7 @@ public class ParseContext {
 	private VCardVersion version;
 	private List<ParseWarning> warnings = new ArrayList<>();
 	private Integer lineNumber;
-	private String propertyName;
+	private LaciToken propertyName;
 
 	/**
 	 * Gets the version of the vCard being parsed.
@@ -80,7 +82,7 @@ public class ParseContext {
 	 * Gets the name of the property that the parser is currently parsing.
 	 * @return the property name (e.g. "FN") or null if not applicable
 	 */
-	public String getPropertyName() {
+	public LaciToken getPropertyName() {
 		return propertyName;
 	}
 
@@ -90,6 +92,15 @@ public class ParseContext {
 	 * applicable
 	 */
 	public void setPropertyName(String propertyName) {
+		setPropertyName(LaciToken.create(propertyName));
+	}
+
+	/**
+	 * Sets the name of the property that the parser is currently parsing.
+	 * @param propertyName the property name (e.g. "FN") or null if not
+	 * applicable
+	 */
+	public void setPropertyName(LaciToken propertyName) {
 		this.propertyName = propertyName;
 	}
 

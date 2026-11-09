@@ -2,6 +2,7 @@ package ezvcard.io.scribe;
 
 import java.util.List;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCardDataType;
@@ -57,7 +58,17 @@ import ezvcard.property.RawProperty;
  * loss.
  */
 public class RawPropertyScribe extends VCardPropertyScribe<RawProperty> {
+	/**
+	 * @param propertyName the property name (case-insensitive)
+	 */
 	public RawPropertyScribe(String propertyName) {
+		super(RawProperty.class, propertyName);
+	}
+
+	/**
+	 * @param propertyName the property name
+	 */
+	public RawPropertyScribe(LaciToken propertyName) {
 		super(RawProperty.class, propertyName);
 	}
 

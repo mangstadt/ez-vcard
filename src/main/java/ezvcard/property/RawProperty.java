@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
 import com.github.mangstadt.vinnie.validate.VObjectValidator;
@@ -13,7 +14,6 @@ import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.ValidationWarning;
-import ezvcard.util.StringUtils;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -50,7 +50,7 @@ import ezvcard.util.StringUtils;
  * @author Michael Angstadt
  */
 public class RawProperty extends TextProperty {
-	private String propertyName;
+	private LaciToken propertyName;
 	private VCardDataType dataType;
 
 	/**
@@ -59,6 +59,15 @@ public class RawProperty extends TextProperty {
 	 * @param value the property value
 	 */
 	public RawProperty(String propertyName, String value) {
+		this(LaciToken.create(propertyName), value);
+	}
+
+	/**
+	 * Creates a raw property.
+	 * @param propertyName the property name (e.g. "X-GENDER")
+	 * @param value the property value
+	 */
+	public RawProperty(LaciToken propertyName, String value) {
 		this(propertyName, value, null);
 	}
 
@@ -69,6 +78,16 @@ public class RawProperty extends TextProperty {
 	 * @param dataType the value's data type
 	 */
 	public RawProperty(String propertyName, String value, VCardDataType dataType) {
+		this(LaciToken.create(propertyName), value, dataType);
+	}
+
+	/**
+	 * Creates a raw property.
+	 * @param propertyName the property name (e.g. "X-GENDER")
+	 * @param value the property value
+	 * @param dataType the value's data type
+	 */
+	public RawProperty(LaciToken propertyName, String value, VCardDataType dataType) {
 		super(value);
 		this.propertyName = propertyName;
 		this.dataType = dataType;
@@ -88,7 +107,7 @@ public class RawProperty extends TextProperty {
 	 * Gets the name of the property.
 	 * @return the property name
 	 */
-	public String getPropertyName() {
+	public LaciToken getPropertyName() {
 		return propertyName;
 	}
 
@@ -97,7 +116,7 @@ public class RawProperty extends TextProperty {
 	 * @param propertyName the property name
 	 */
 	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
+		this.propertyName = new LaciToken(propertyName);
 	}
 
 	/**
@@ -120,8 +139,8 @@ public class RawProperty extends TextProperty {
 	protected void _validate(List<ValidationWarning> warnings, VCardVersion version, VCard vcard) {
 		SyntaxStyle syntax = version.getSyntaxStyle();
 		AllowedCharacters allowed = VObjectValidator.allowedCharactersParameterName(syntax, true);
-		if (!allowed.check(propertyName)) {
-			if (syntax == SyntaxStyle.OLD) {
+		if (!allowed.check(propertyName.toUpperCase())) {
+			if (syntax == SyntaxStyle.LEGACY) {
 				AllowedCharacters notAllowed = allowed.flip();
 				warnings.add(new ValidationWarning(33, propertyName, notAllowed.toString(true)));
 			} else {
@@ -148,7 +167,7 @@ public class RawProperty extends TextProperty {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + StringUtils.hashIgnoreCase(dataType, propertyName);
+		result = prime * result + Objects.hash(dataType, propertyName);
 		return result;
 	}
 
@@ -158,6 +177,6 @@ public class RawProperty extends TextProperty {
 		if (!super.equals(obj)) return false;
 		if (getClass() != obj.getClass()) return false;
 		RawProperty other = (RawProperty) obj;
-		return Objects.equals(dataType, other.dataType) && StringUtils.equalsIgnoreCase(propertyName, other.propertyName);
+		return Objects.equals(dataType, other.dataType) && Objects.equals(propertyName, other.propertyName);
 	}
 }

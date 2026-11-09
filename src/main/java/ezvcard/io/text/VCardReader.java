@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.VObjectProperty;
 import com.github.mangstadt.vinnie.io.Context;
 import com.github.mangstadt.vinnie.io.SyntaxRules;
@@ -231,9 +232,10 @@ public class VCardReader extends StreamReader {
 	private class VObjectDataListenerImpl implements VObjectDataListener {
 		private VCard root;
 		private final VCardStack stack = new VCardStack();
+		private final LaciToken vcardComponentName = new LaciToken("VCARD");
 		private EmbeddedVCardException embeddedVCardException;
 
-		public void onComponentBegin(String name, Context context) {
+		public void onComponentBegin(LaciToken name, Context context) {
 			if (!isVCardComponent(name)) {
 				//ignore non-VCARD components
 				return;
@@ -251,7 +253,7 @@ public class VCardReader extends StreamReader {
 			}
 		}
 
-		public void onComponentEnd(String name, Context context) {
+		public void onComponentEnd(LaciToken name, Context context) {
 			if (!isVCardComponent(name)) {
 				//ignore non-VCARD components
 				return;
@@ -312,7 +314,7 @@ public class VCardReader extends StreamReader {
 
 		private VCardProperty parseProperty(VObjectProperty vobjectProperty, VCardVersion version, int lineNumber) {
 			String group = vobjectProperty.getGroup();
-			String name = vobjectProperty.getName();
+			LaciToken name = new LaciToken(vobjectProperty.getName());
 			VCardParameters parameters = new VCardParameters(vobjectProperty.getParameters().getMap());
 			String value = vobjectProperty.getValue();
 
@@ -373,7 +375,7 @@ public class VCardReader extends StreamReader {
 			return property;
 		}
 
-		private void handleSkippedProperty(String propertyName, int lineNumber, SkipMeException e) {
+		private void handleSkippedProperty(LaciToken propertyName, int lineNumber, SkipMeException e) {
 			//@formatter:off
 			warnings.add(new ParseWarning.Builder(context)
 				.message(22, e.getMessage())
@@ -382,7 +384,7 @@ public class VCardReader extends StreamReader {
 			//@formatter:on
 		}
 
-		private VCardProperty handleUnparseableProperty(String name, VCardParameters parameters, String value, VCardDataType dataType, int lineNumber, VCardVersion version, CannotParseException e) {
+		private VCardProperty handleUnparseableProperty(LaciToken name, VCardParameters parameters, String value, VCardDataType dataType, int lineNumber, VCardVersion version, CannotParseException e) {
 			//@formatter:off
 			warnings.add(new ParseWarning.Builder(context)
 				.message(e)
@@ -394,7 +396,7 @@ public class VCardReader extends StreamReader {
 			return scribe.parseText(value, dataType, parameters, null);
 		}
 
-		private void handledEmbeddedVCard(String name, String value, int lineNumber, EmbeddedVCardException exception) {
+		private void handledEmbeddedVCard(LaciToken name, String value, int lineNumber, EmbeddedVCardException exception) {
 			/*
 			 * If the property does not have a value, a nested vCard is expected
 			 * to be next (2.1 style).
@@ -479,16 +481,16 @@ public class VCardReader extends StreamReader {
 			//@formatter:on
 		}
 
-		private boolean inVCardComponent(List<String> parentComponents) {
+		private boolean inVCardComponent(List<LaciToken> parentComponents) {
 			if (parentComponents.isEmpty()) {
 				return false;
 			}
-			String last = parentComponents.get(parentComponents.size() - 1);
+			LaciToken last = parentComponents.get(parentComponents.size() - 1);
 			return isVCardComponent(last);
 		}
 
-		private boolean isVCardComponent(String componentName) {
-			return "VCARD".equals(componentName);
+		private boolean isVCardComponent(LaciToken componentName) {
+			return vcardComponentName.equals(componentName);
 		}
 
 		/**
@@ -497,9 +499,9 @@ public class VCardReader extends StreamReader {
 		 * @param parameters the parameters
 		 */
 		private void processNamelessParameters(VCardParameters parameters) {
-			List<String> namelessValues = parameters.removeAll(null);
+			List<String> namelessValues = parameters.removeAll((String) null);
 			for (String value : namelessValues) {
-				String name = guessParameterName(value);
+				LaciToken name = guessParameterName(value);
 				parameters.put(name, value);
 			}
 		}
@@ -509,7 +511,7 @@ public class VCardReader extends StreamReader {
 		 * @param value the parameter value (e.g. "HOME")
 		 * @return the guessed name (e.g. "TYPE")
 		 */
-		private String guessParameterName(String value) {
+		private LaciToken guessParameterName(String value) {
 			if (VCardDataType.find(value) != null) {
 				return VCardParameters.VALUE;
 			}

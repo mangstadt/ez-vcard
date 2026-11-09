@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.github.mangstadt.vinnie.LaciToken;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -141,6 +142,7 @@ public class JCardReader extends StreamReader {
 	}
 
 	private class JCardDataStreamListenerImpl implements JCardDataStreamListener {
+		private final LaciToken VERSION = new LaciToken("version");
 		private VCard vcard = null;
 		private boolean versionFound = false;
 
@@ -149,12 +151,14 @@ public class JCardReader extends StreamReader {
 			vcard.setVersion(VCardVersion.V4_0);
 		}
 
-		public void readProperty(String group, String propertyName, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
+		public void readProperty(String group, String propertyNameStr, VCardParameters parameters, VCardDataType dataType, JCardValue value) {
+			LaciToken propertyName = new LaciToken(propertyNameStr);
+
 			context.getWarnings().clear();
 			context.setLineNumber(reader.getLineNum());
 			context.setPropertyName(propertyName);
 
-			if ("version".equalsIgnoreCase(propertyName)) {
+			if (VERSION.equals(propertyName)) {
 				//don't unmarshal "version" because we don't treat it as a property
 				versionFound = true;
 

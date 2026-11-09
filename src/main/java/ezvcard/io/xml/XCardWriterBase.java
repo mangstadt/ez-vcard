@@ -3,6 +3,8 @@ package ezvcard.io.xml;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.StreamWriter;
@@ -48,7 +50,7 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * Defines the names (data types) of the XML elements that are used to hold
 	 * each parameter's value.
 	 */
-	protected final Map<String, VCardDataType> parameterDataTypes = new HashMap<>();
+	protected final Map<LaciToken, VCardDataType> parameterDataTypes = new HashMap<>();
 
 	protected XCardWriterBase() {
 		registerParameterDataType(VCardParameters.ALTID, VCardDataType.TEXT);
@@ -91,7 +93,16 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * @param dataType the data type or null to remove
 	 */
 	public void registerParameterDataType(String parameterName, VCardDataType dataType) {
-		parameterName = parameterName.toLowerCase();
+		registerParameterDataType(new LaciToken(parameterName), dataType);
+	}
+
+	/**
+	 * Registers the data type of an experimental parameter. Experimental
+	 * parameters use the "unknown" data type by default.
+	 * @param parameterName the parameter name (e.g. "x-foo")
+	 * @param dataType the data type or null to remove
+	 */
+	public void registerParameterDataType(LaciToken parameterName, VCardDataType dataType) {
 		if (dataType == null) {
 			parameterDataTypes.remove(parameterName);
 		} else {

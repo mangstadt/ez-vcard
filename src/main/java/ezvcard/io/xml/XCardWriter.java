@@ -36,6 +36,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.io.EmbeddedVCardException;
@@ -412,9 +414,10 @@ public class XCardWriter extends XCardWriterBase {
 
 		start(PARAMETERS);
 
-		for (Map.Entry<String, List<String>> parameter : parameters) {
-			String parameterName = parameter.getKey().toLowerCase();
-			start(parameterName);
+		for (Map.Entry<LaciToken, List<String>> parameter : parameters) {
+			LaciToken parameterName = parameter.getKey();
+			String parameterNameLower = parameterName.toLowerCase();
+			start(parameterNameLower);
 
 			for (String parameterValue : parameter.getValue()) {
 				VCardDataType dataType = parameterDataTypes.get(parameterName);
@@ -425,7 +428,7 @@ public class XCardWriter extends XCardWriterBase {
 				end(dataTypeElementName);
 			}
 
-			end(parameterName);
+			end(parameterNameLower);
 		}
 
 		end(PARAMETERS);

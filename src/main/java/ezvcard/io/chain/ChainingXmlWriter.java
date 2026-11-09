@@ -13,6 +13,8 @@ import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -55,7 +57,7 @@ import ezvcard.property.VCardProperty;
  */
 public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	private final XCardOutputProperties outputProperties = new XCardOutputProperties();
-	private final Map<String, VCardDataType> parameterDataTypes = new HashMap<>(0);
+	private final Map<LaciToken, VCardDataType> parameterDataTypes = new HashMap<>(0);
 
 	/**
 	 * @param vcards the vCards to write
@@ -135,7 +137,7 @@ public class ChainingXmlWriter extends ChainingWriter<ChainingXmlWriter> {
 	 * @return this
 	 */
 	public ChainingXmlWriter register(String parameterName, VCardDataType dataType) {
-		parameterDataTypes.put(parameterName, dataType);
+		parameterDataTypes.put(new LaciToken(parameterName), dataType);
 		return this;
 	}
 

@@ -7,6 +7,8 @@ import static org.junit.Assert.assertFalse;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.property.VCardProperty;
 
 /*
@@ -66,6 +68,10 @@ public abstract class PropertyImplAsserter<T, P extends VCardProperty> {
 	}
 
 	public T param(String name, String... values) {
+		return param(LaciToken.create(name), values);
+	}
+
+	public T param(LaciToken name, String... values) {
 		expected.getParameters().putAll(name, asList(values));
 		return this_;
 	}

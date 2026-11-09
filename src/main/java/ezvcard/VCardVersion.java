@@ -71,19 +71,19 @@ public enum VCardVersion {
 	 * The original vCard specification.
 	 * @see <a href="http://www.imc.org/pdi/vcard-21.rtf">2.1 specs</a>
 	 */
-	V2_1("2.1", SyntaxStyle.OLD, null),
+	V2_1("2.1", SyntaxStyle.LEGACY, null),
 
 	/**
 	 * Version 3.0.
 	 * @see <a href="http://tools.ietf.org/html/rfc2426">RFC 2426</a>
 	 */
-	V3_0("3.0", SyntaxStyle.NEW, null),
+	V3_0("3.0", SyntaxStyle.MODERN, null),
 
 	/**
 	 * The lastest specification.
 	 * @see <a href="http://tools.ietf.org/html/rfc6350">RFC 6350</a>
 	 */
-	V4_0("4.0", SyntaxStyle.NEW, "urn:ietf:params:xml:ns:vcard-4.0");
+	V4_0("4.0", SyntaxStyle.MODERN, "urn:ietf:params:xml:ns:vcard-4.0");
 
 	private final String version;
 	private final SyntaxStyle syntaxStyle;

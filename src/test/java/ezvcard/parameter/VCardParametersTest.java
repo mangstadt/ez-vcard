@@ -306,8 +306,8 @@ public class VCardParametersTest {
 		assertEquals(Arrays.asList("1"), parameters.get("numbers"));
 		parameters.put("numbers", "2");
 		assertEquals(Arrays.asList("1", "2"), parameters.get("NUMBERS"));
-		parameters.put(null, "3");
-		assertEquals(Arrays.asList("3"), parameters.get(null));
+		parameters.put((String) null, "3");
+		assertEquals(Arrays.asList("3"), parameters.get((String) null));
 	}
 
 	@Test
@@ -327,7 +327,7 @@ public class VCardParametersTest {
 		assertNull(parameters.getValue());
 
 		parameters.setValue(VCardDataType.TEXT);
-		assertEquals(VCardDataType.TEXT.getName(), parameters.first(VALUE));
+		assertEquals(VCardDataType.TEXT.getName().toLowerCase(), parameters.first(VALUE));
 		assertEquals(VCardDataType.TEXT, parameters.getValue());
 
 		parameters.setValue(null);
@@ -601,14 +601,14 @@ public class VCardParametersTest {
 		one.put("super", "man");
 		one.put("super", "bad");
 		one.put("hello", "world");
-		one.put(null, "null");
+		one.put((String) null, "null");
 
 		VCardParameters two = new VCardParameters();
 		two.put("hello", "world");
 		two.put("super", "MAN");
 		two.put("foo", "bar");
 		two.put("super", "bad");
-		two.put(null, "null");
+		two.put((String) null, "null");
 
 		assertEqualsAndHash(one, two);
 	}

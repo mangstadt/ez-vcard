@@ -3,10 +3,11 @@ package ezvcard.util;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Locale;
 import java.util.Objects;
 
 import ezvcard.Messages;
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -88,7 +89,7 @@ public final class DataUri {
 	}
 
 	private DataUri(String contentType, byte[] data, String text) {
-		this.contentType = (contentType == null) ? "" : contentType.toLowerCase();
+		this.contentType = (contentType == null) ? "" : contentType.toLowerCase(Locale.ROOT);
 		this.data = data;
 		this.text = text;
 	}
@@ -154,9 +155,9 @@ public final class DataUri {
 		private void handleComma() {
 			String token = uri.substring(tokenStart, it.index());
 			if (contentType == null) {
-				contentType = token.toLowerCase();
+				contentType = token.toLowerCase(Locale.ROOT);
 			} else {
-				if (token.toLowerCase().startsWith("charset=")) {
+				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
 					int equals = token.indexOf('=');
 					charset = token.substring(equals + 1);
 				} else if ("base64".equalsIgnoreCase(token)) {
@@ -170,9 +171,9 @@ public final class DataUri {
 		private void handleSemicolon() {
 			String token = uri.substring(tokenStart, it.index());
 			if (contentType == null) {
-				contentType = token.toLowerCase();
+				contentType = token.toLowerCase(Locale.ROOT);
 			} else {
-				if (token.toLowerCase().startsWith("charset=")) {
+				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
 					int equals = token.indexOf('=');
 					charset = token.substring(equals + 1);
 				} else if ("base64".equalsIgnoreCase(token)) {
@@ -189,7 +190,7 @@ public final class DataUri {
 
 			if (base64) {
 				dataStr = dataStr.replaceAll("\\s", "");
-				data = Base64.decodeBase64(dataStr);
+				data = Base64.getDecoder().decode(dataStr);
 				if (charset != null) {
 					try {
 						text = new String(data, charset);
@@ -254,7 +255,7 @@ public final class DataUri {
 
 		if (data != null) {
 			sb.append(";base64,");
-			sb.append(Base64.encodeBase64String(data));
+			sb.append(Base64.getEncoder().encodeToString(data));
 		} else if (text != null) {
 			if (charset == null) {
 				sb.append(',').append(text);
@@ -262,7 +263,7 @@ public final class DataUri {
 				byte[] textBytes = text.getBytes(charset);
 				sb.append(";charset=").append(charset.name());
 				sb.append(";base64,");
-				sb.append(Base64.encodeBase64String(textBytes));
+				sb.append(Base64.getEncoder().encodeToString(textBytes));
 			}
 		} else {
 			sb.append(',');

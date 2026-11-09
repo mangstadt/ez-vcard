@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.github.mangstadt.vinnie.LaciToken;
 
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
@@ -152,7 +153,7 @@ public class JCardRawReader implements Closeable {
 	private void parseProperty() throws IOException {
 		//get property name
 		checkCurrent(JsonToken.VALUE_STRING);
-		String propertyName = parser.getValueAsString().toLowerCase();
+		String propertyName = parser.getValueAsString();
 
 		//get parameters
 		VCardParameters parameters = parseParameters();
@@ -163,8 +164,8 @@ public class JCardRawReader implements Closeable {
 
 		//get data type
 		checkNext(JsonToken.VALUE_STRING);
-		String dataTypeStr = parser.getText().toLowerCase();
-		VCardDataType dataType = "unknown".equals(dataTypeStr) ? null : VCardDataType.get(dataTypeStr);
+		LaciToken dataTypeStr = new LaciToken(parser.getText());
+		VCardDataType dataType = dataTypeStr.equalsIgnoreCase("unknown") ? null : VCardDataType.get(dataTypeStr);
 
 		//get property value(s)
 		List<JsonValue> values = parseValues();
@@ -178,7 +179,7 @@ public class JCardRawReader implements Closeable {
 
 		VCardParameters parameters = new VCardParameters();
 		while (parser.nextToken() != JsonToken.END_OBJECT) {
-			String parameterName = parser.getText();
+			LaciToken parameterName = new LaciToken(parser.getText());
 
 			if (parser.nextToken() == JsonToken.START_ARRAY) {
 				//multi-valued parameter

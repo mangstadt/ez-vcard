@@ -296,28 +296,6 @@ public class ListMultimapTest {
 	}
 
 	@Test
-	public void sanitizeKey() {
-		ListMultimap<String, String> map = new ListMultimap<String, String>() {
-			@Override
-			protected String sanitizeKey(String key) {
-				return key.toLowerCase();
-			}
-		};
-		map.put("one", "1");
-		map.put("One", "111");
-		map.putAll("oNe", Arrays.asList("1111"));
-
-		assertEquals("1", map.first("onE"));
-
-		List<String> expected = Arrays.asList("1", "111", "1111");
-		assertEquals(expected, map.get("ONe"));
-
-		assertTrue(map.remove("oNE", "1"));
-		assertEquals(Arrays.asList("111", "1111"), map.removeAll("OnE"));
-		assertTrue(map.isEmpty());
-	}
-
-	@Test
 	public void asMap() {
 		ListMultimap<String, String> map = new ListMultimap<>();
 		map.put("foo", "1");

@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
 import ezvcard.io.scribe.ScribeIndex;
@@ -34,7 +36,7 @@ public class Issue119 {
 		List<String> actual = new ArrayList<>();
 		for (VCardProperty property : vcard) {
 			VCardPropertyScribe scribe = index.getPropertyScribe(property); //compiler: raw type warning
-			String name = scribe.getPropertyName();
+			LaciToken name = scribe.getPropertyName();
 			String value = scribe.writeText(property, context); //compiler: type safety warning
 			actual.add(name + " = " + value);
 		}

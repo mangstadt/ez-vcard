@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardDataType;
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
@@ -88,7 +90,7 @@ public class RawPropertyScribeTest {
 
 	private Check<RawProperty> has(final String name, final String value, final VCardDataType dataType) {
 		return property -> {
-			assertEquals(name, property.getPropertyName());
+			assertEquals(new LaciToken(name), property.getPropertyName());
 			assertEquals(value, property.getValue());
 			assertEquals(dataType, property.getDataType());
 		};

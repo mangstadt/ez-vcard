@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.property.Gender;
 import ezvcard.property.HasAltId;
 import ezvcard.property.Note;
@@ -167,13 +169,13 @@ public class VCardTest {
 		assertEquals(asList(), vcard.getExtendedProperties());
 
 		RawProperty property = vcard.addExtendedProperty("NAME", "value");
-		assertEquals("NAME", property.getPropertyName());
+		assertEquals(new LaciToken("NAME"), property.getPropertyName());
 		assertEquals("value", property.getValue());
 		assertNull(property.getDataType());
 		assertEquals(asList(property), vcard.getExtendedProperties());
 
 		RawProperty property2 = vcard.addExtendedProperty("NAME", "value", VCardDataType.TEXT);
-		assertEquals("NAME", property2.getPropertyName());
+		assertEquals(new LaciToken("NAME"), property2.getPropertyName());
 		assertEquals("value", property2.getValue());
 		assertEquals(VCardDataType.TEXT, property2.getDataType());
 		assertEquals(asList(property, property2), vcard.getExtendedProperties());
@@ -185,13 +187,13 @@ public class VCardTest {
 		assertEquals(asList(), vcard.getExtendedProperties());
 
 		RawProperty property = vcard.setExtendedProperty("NAME", "value");
-		assertEquals("NAME", property.getPropertyName());
+		assertEquals(new LaciToken("NAME"), property.getPropertyName());
 		assertEquals("value", property.getValue());
 		assertNull(property.getDataType());
 		assertEquals(asList(property), vcard.getExtendedProperties());
 
 		RawProperty property2 = vcard.setExtendedProperty("NAME", "value", VCardDataType.TEXT);
-		assertEquals("NAME", property2.getPropertyName());
+		assertEquals(new LaciToken("NAME"), property2.getPropertyName());
 		assertEquals("value", property2.getValue());
 		assertEquals(VCardDataType.TEXT, property2.getDataType());
 		assertEquals(asList(property2), vcard.getExtendedProperties());

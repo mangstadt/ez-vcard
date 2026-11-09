@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.SyntaxStyle;
 import com.github.mangstadt.vinnie.validate.AllowedCharacters;
 import com.github.mangstadt.vinnie.validate.VObjectValidator;
@@ -142,7 +143,7 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 			SyntaxStyle syntax = version.getSyntaxStyle();
 			AllowedCharacters allowed = VObjectValidator.allowedCharactersGroup(syntax, true);
 			if (!allowed.check(group)) {
-				if (syntax == SyntaxStyle.OLD) {
+				if (syntax == SyntaxStyle.LEGACY) {
 					AllowedCharacters notAllowed = allowed.flip();
 					warnings.add(new ValidationWarning(32, group, notAllowed.toString(true)));
 				} else {
@@ -197,11 +198,29 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	}
 
 	/**
+	 * Gets the first value of a parameter.
+	 * @param name the parameter name (e.g. "LANGUAGE")
+	 * @return the parameter value or null if not found
+	 */
+	public String getParameter(LaciToken name) {
+		return parameters.first(name);
+	}
+
+	/**
 	 * Gets all values of a parameter.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @return the parameter values (this list is immutable)
 	 */
 	public List<String> getParameters(String name) {
+		return Collections.unmodifiableList(parameters.get(name));
+	}
+
+	/**
+	 * Gets all values of a parameter.
+	 * @param name the parameter name (e.g. "LANGUAGE")
+	 * @return the parameter values (this list is immutable)
+	 */
+	public List<String> getParameters(LaciToken name) {
 		return Collections.unmodifiableList(parameters.get(name));
 	}
 
@@ -215,6 +234,15 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	}
 
 	/**
+	 * Replaces all existing values of a parameter with the given value.
+	 * @param name the parameter name (e.g. "LANGUAGE")
+	 * @param value the parameter value
+	 */
+	public void setParameter(LaciToken name, String value) {
+		parameters.replace(name, value);
+	}
+
+	/**
 	 * Adds a value to a parameter.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 * @param value the parameter value
@@ -224,10 +252,27 @@ public abstract class VCardProperty implements Comparable<VCardProperty> {
 	}
 
 	/**
+	 * Adds a value to a parameter.
+	 * @param name the parameter name (e.g. "LANGUAGE")
+	 * @param value the parameter value
+	 */
+	public void addParameter(LaciToken name, String value) {
+		parameters.put(name, value);
+	}
+
+	/**
 	 * Removes a parameter from the property.
 	 * @param name the parameter name (case insensitive, e.g. "LANGUAGE")
 	 */
 	public void removeParameter(String name) {
+		parameters.removeAll(name);
+	}
+
+	/**
+	 * Removes a parameter from the property.
+	 * @param name the parameter name (e.g. "LANGUAGE")
+	 */
+	public void removeParameter(LaciToken name) {
 		parameters.removeAll(name);
 	}
 

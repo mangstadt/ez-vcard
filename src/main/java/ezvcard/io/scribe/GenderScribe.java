@@ -1,5 +1,6 @@
 package ezvcard.io.scribe;
 
+import com.github.mangstadt.vinnie.LaciToken;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.SemiStructuredValueIterator;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueBuilder;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues.StructuredValueIterator;
@@ -55,7 +56,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	@Override
 	protected String _writeText(Gender property, WriteContext context) {
 		StructuredValueBuilder builder = new StructuredValueBuilder();
-		builder.append(property.getGender());
+		builder.append(getCodeInUpperCase(property));
 		builder.append(property.getText());
 		return builder.build(false);
 	}
@@ -64,10 +65,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	protected Gender _parseText(String value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		SemiStructuredValueIterator it = new SemiStructuredValueIterator(value, 2);
 
-		String sex = it.next();
-		if (sex != null) {
-			sex = sex.toUpperCase();
-		}
+		LaciToken sex = LaciToken.create(it.next());
 		String text = it.next();
 
 		Gender property = new Gender(sex);
@@ -77,7 +75,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 	@Override
 	protected void _writeXml(Gender property, XCardElement parent) {
-		parent.append("sex", property.getGender());
+		parent.append("sex", getCodeInUpperCase(property));
 
 		String text = property.getText();
 		if (text != null) {
@@ -87,7 +85,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 	@Override
 	protected Gender _parseXml(XCardElement element, VCardParameters parameters, ParseContext context) {
-		String sex = element.first("sex");
+		LaciToken sex = LaciToken.create(element.first("sex"));
 		if (sex != null) {
 			Gender property = new Gender(sex);
 			property.setText(element.first("identity")); //optional field
@@ -99,7 +97,7 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 
 	@Override
 	protected JCardValue _writeJson(Gender property) {
-		String gender = property.getGender();
+		String gender = getCodeInUpperCase(property);
 		String text = property.getText();
 
 		if (text == null) {
@@ -112,14 +110,16 @@ public class GenderScribe extends VCardPropertyScribe<Gender> {
 	protected Gender _parseJson(JCardValue value, VCardDataType dataType, VCardParameters parameters, ParseContext context) {
 		StructuredValueIterator it = new StructuredValueIterator(value.asStructured());
 
-		String sex = it.nextValue();
-		if (sex != null) {
-			sex = sex.toUpperCase();
-		}
+		LaciToken sex = LaciToken.create(it.nextValue());
 		String text = it.nextValue();
 
 		Gender property = new Gender(sex);
 		property.setText(text);
 		return property;
+	}
+
+	private static String getCodeInUpperCase(Gender property) {
+		LaciToken code = property.getGender();
+		return (code == null) ? null : code.toUpperCase();
 	}
 }

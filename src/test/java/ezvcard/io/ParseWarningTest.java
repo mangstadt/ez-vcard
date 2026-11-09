@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.Messages;
 
 /*
@@ -52,7 +54,7 @@ public class ParseWarningTest {
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.lineNumber(1).propertyName("PROP").message("message").build();
 		assertIntEquals(1, warning.getLineNumber());
-		assertEquals("PROP", warning.getPropertyName());
+		assertEquals(new LaciToken("PROP"), warning.getPropertyName());
 		assertNull(warning.getCode());
 		assertEquals("message", warning.getMessage());
 	}
@@ -62,7 +64,7 @@ public class ParseWarningTest {
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.lineNumber(1).propertyName("PROP").message(2, "arg").build();
 		assertIntEquals(1, warning.getLineNumber());
-		assertEquals("PROP", warning.getPropertyName());
+		assertEquals(new LaciToken("PROP"), warning.getPropertyName());
 		assertIntEquals(2, warning.getCode());
 		assertEquals(Messages.INSTANCE.getParseMessage(2, "arg"), warning.getMessage());
 	}
@@ -97,7 +99,7 @@ public class ParseWarningTest {
 		ParseWarning.Builder builder = new ParseWarning.Builder(context);
 		ParseWarning warning = builder.build();
 		assertIntEquals(1, warning.getLineNumber());
-		assertEquals("PROP", warning.getPropertyName());
+		assertEquals(new LaciToken("PROP"), warning.getPropertyName());
 		assertNull(warning.getCode());
 		assertNull(warning.getMessage());
 	}

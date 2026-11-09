@@ -40,6 +40,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
@@ -609,7 +611,7 @@ public class XCardDocument {
 			for (Element root : roots) { // foreach "<parameters>" element (there should only be 1 though)
 				List<Element> parameterElements = XmlUtils.toElementList(root.getChildNodes());
 				for (Element parameterElement : parameterElements) {
-					String name = parameterElement.getLocalName().toUpperCase();
+					LaciToken name = new LaciToken(parameterElement.getLocalName());
 					List<Element> valueElements = XmlUtils.toElementList(parameterElement.getChildNodes());
 					for (Element valueElement : valueElements) {
 						String value = valueElement.getTextContent();
@@ -726,9 +728,9 @@ public class XCardDocument {
 		private Element marshalParameters(VCardParameters parameters) {
 			Element parametersElement = createElement(PARAMETERS);
 
-			for (Map.Entry<String, List<String>> parameter : parameters) {
-				String parameterName = parameter.getKey().toLowerCase();
-				Element parameterElement = createElement(parameterName);
+			for (Map.Entry<LaciToken, List<String>> parameter : parameters) {
+				LaciToken parameterName = parameter.getKey();
+				Element parameterElement = createElement(parameterName.toLowerCase());
 				VCardDataType dataType = parameterDataTypes.get(parameterName);
 				String dataTypeElementName = (dataType == null) ? "unknown" : dataType.getName().toLowerCase();
 

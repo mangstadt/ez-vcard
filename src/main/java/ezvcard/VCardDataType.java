@@ -6,6 +6,8 @@ import static ezvcard.VCardVersion.V4_0;
 
 import java.util.Collection;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.util.CaseClasses;
 import ezvcard.util.SupportedVersionsHelper;
 
@@ -43,15 +45,15 @@ import ezvcard.util.SupportedVersionsHelper;
  * @author Michael Angstadt
  */
 public class VCardDataType {
-	private static final CaseClasses<VCardDataType, String> enums = new CaseClasses<VCardDataType, String>(VCardDataType.class) {
+	private static final CaseClasses<VCardDataType, LaciToken> enums = new CaseClasses<VCardDataType, LaciToken>(VCardDataType.class) {
 		@Override
-		protected VCardDataType create(String value) {
+		protected VCardDataType create(LaciToken value) {
 			return new VCardDataType(value);
 		}
 
 		@Override
-		protected boolean matches(VCardDataType dataType, String value) {
-			return dataType.name.equalsIgnoreCase(value);
+		protected boolean matches(VCardDataType dataType, LaciToken value) {
+			return dataType.name.equals(value);
 		}
 	};
 
@@ -151,12 +153,19 @@ public class VCardDataType {
 	@SupportedVersions(V4_0)
 	public static final VCardDataType LANGUAGE_TAG = new VCardDataType("language-tag");
 
-	private final String name;
+	private final LaciToken name;
 
 	/**
 	 * @param name the data type name
 	 */
 	private VCardDataType(String name) {
+		this(new LaciToken(name));
+	}
+
+	/**
+	 * @param name the data type name
+	 */
+	private VCardDataType(LaciToken name) {
 		this.name = name;
 	}
 
@@ -164,7 +173,7 @@ public class VCardDataType {
 	 * Gets the name of the data type.
 	 * @return the name of the data type (e.g. "text")
 	 */
-	public String getName() {
+	public LaciToken getName() {
 		return name;
 	}
 
@@ -205,7 +214,17 @@ public class VCardDataType {
 
 	@Override
 	public String toString() {
-		return name;
+		return name.toString();
+	}
+
+	/**
+	 * Searches for a data type that is defined as a static constant in this
+	 * class.
+	 * @param dataType the data type name (case-insensitive, e.g. "text")
+	 * @return the data type or null if not found
+	 */
+	public static VCardDataType find(String dataType) {
+		return find(new LaciToken(dataType));
 	}
 
 	/**
@@ -214,8 +233,19 @@ public class VCardDataType {
 	 * @param dataType the data type name (e.g. "text")
 	 * @return the data type or null if not found
 	 */
-	public static VCardDataType find(String dataType) {
+	public static VCardDataType find(LaciToken dataType) {
 		return enums.find(dataType);
+	}
+
+	/**
+	 * Searches for a data type and creates one if it cannot be found. All
+	 * objects are guaranteed to be unique, so they can be compared with
+	 * {@code ==} equality.
+	 * @param dataType data type name (case-insenitive, e.g. "text")
+	 * @return the data type
+	 */
+	public static VCardDataType get(String dataType) {
+		return get(new LaciToken(dataType));
 	}
 
 	/**
@@ -225,7 +255,7 @@ public class VCardDataType {
 	 * @param dataType data type name (e.g. "text")
 	 * @return the data type
 	 */
-	public static VCardDataType get(String dataType) {
+	public static VCardDataType get(LaciToken dataType) {
 		return enums.get(dataType);
 	}
 

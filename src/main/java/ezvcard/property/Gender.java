@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -81,13 +83,13 @@ import ezvcard.ValidationWarning;
  */
 @SupportedVersions(VCardVersion.V4_0)
 public class Gender extends VCardProperty {
-	public static final String MALE = "M";
-	public static final String FEMALE = "F";
-	public static final String OTHER = "O";
-	public static final String NONE = "N";
-	public static final String UNKNOWN = "U";
+	public static final LaciToken MALE = new LaciToken("M");
+	public static final LaciToken FEMALE = new LaciToken("F");
+	public static final LaciToken OTHER = new LaciToken("O");
+	public static final LaciToken NONE = new LaciToken("N");
+	public static final LaciToken UNKNOWN = new LaciToken("U");
 
-	private String genderCode;
+	private LaciToken genderCode;
 	private String text;
 
 	/**
@@ -96,6 +98,15 @@ public class Gender extends VCardProperty {
 	 * @param genderCode the gender value (e.g. "F")
 	 */
 	public Gender(String genderCode) {
+		this(LaciToken.create(genderCode));
+	}
+
+	/**
+	 * Creates a gender property. Use of this constructor is discouraged. Please
+	 * use one of the static factory methods to create a new GENDER property.
+	 * @param genderCode the gender value (e.g. "F")
+	 */
+	public Gender(LaciToken genderCode) {
 		this.genderCode = genderCode;
 	}
 
@@ -127,18 +138,27 @@ public class Gender extends VCardProperty {
 
 	/**
 	 * Gets the gender value.
-	 * @return the gender value (see static strings for the possible values)
+	 * @return the gender value (see static fields for the possible values)
 	 */
-	public String getGender() {
+	public LaciToken getGender() {
 		return genderCode;
 	}
 
 	/**
 	 * Sets the gender value.
-	 * @param genderCode the gender value (see static strings for the possible
+	 * @param genderCode the gender value (see static fields for the possible
 	 * values)
 	 */
 	public void setGender(String genderCode) {
+		setGender(LaciToken.create(genderCode));
+	}
+
+	/**
+	 * Sets the gender value.
+	 * @param genderCode the gender value (see static fields for the possible
+	 * values)
+	 */
+	public void setGender(LaciToken genderCode) {
 		this.genderCode = genderCode;
 	}
 

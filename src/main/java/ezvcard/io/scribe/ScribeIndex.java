@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardVersion;
 import ezvcard.property.RawProperty;
 import ezvcard.property.VCardProperty;
@@ -75,7 +77,7 @@ import ezvcard.property.Xml;
  */
 public class ScribeIndex {
 	//define standard property scribes
-	private static final Map<String, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<>();
+	private static final Map<LaciToken, VCardPropertyScribe<? extends VCardProperty>> standardByName = new HashMap<>();
 	private static final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> standardByClass = new HashMap<>();
 	private static final Map<QName, VCardPropertyScribe<? extends VCardProperty>> standardByQName = new HashMap<>();
 	static {
@@ -137,18 +139,16 @@ public class ScribeIndex {
 		registerStandard(new HobbyScribe());
 	}
 
-	private final Map<String, VCardPropertyScribe<? extends VCardProperty>> extendedByName = new HashMap<>(0);
+	private final Map<LaciToken, VCardPropertyScribe<? extends VCardProperty>> extendedByName = new HashMap<>(0);
 	private final Map<Class<? extends VCardProperty>, VCardPropertyScribe<? extends VCardProperty>> extendedByClass = new HashMap<>(0);
 	private final Map<QName, VCardPropertyScribe<? extends VCardProperty>> extendedByQName = new HashMap<>(0);
 
 	/**
 	 * Gets a property scribe by name.
-	 * @param propertyName the property name (case-insensitive, e.g. "FN")
+	 * @param propertyName the property name (e.g. "FN")
 	 * @return the property scribe or null if not found
 	 */
-	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(String propertyName) {
-		propertyName = propertyName.toUpperCase();
-
+	public VCardPropertyScribe<? extends VCardProperty> getPropertyScribe(LaciToken propertyName) {
 		VCardPropertyScribe<? extends VCardProperty> scribe = extendedByName.get(propertyName);
 		if (scribe != null) {
 			return scribe;
@@ -215,7 +215,7 @@ public class ScribeIndex {
 		}
 
 		if (VCardVersion.V4_0.getXmlNamespace().equals(qname.getNamespaceURI())) {
-			return new RawPropertyScribe(qname.getLocalPart().toUpperCase());
+			return new RawPropertyScribe(qname.getLocalPart());
 		}
 
 		return getPropertyScribe(Xml.class);
@@ -226,7 +226,7 @@ public class ScribeIndex {
 	 * @param scribe the scribe to register
 	 */
 	public void register(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		extendedByName.put(scribe.getPropertyName().toUpperCase(), scribe);
+		extendedByName.put(scribe.getPropertyName(), scribe);
 		extendedByClass.put(scribe.getPropertyClass(), scribe);
 		extendedByQName.put(scribe.getQName(), scribe);
 	}
@@ -236,13 +236,13 @@ public class ScribeIndex {
 	 * @param scribe the scribe to unregister
 	 */
 	public void unregister(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		extendedByName.remove(scribe.getPropertyName().toUpperCase());
+		extendedByName.remove(scribe.getPropertyName());
 		extendedByClass.remove(scribe.getPropertyClass());
 		extendedByQName.remove(scribe.getQName());
 	}
 
 	private static void registerStandard(VCardPropertyScribe<? extends VCardProperty> scribe) {
-		standardByName.put(scribe.getPropertyName().toUpperCase(), scribe);
+		standardByName.put(scribe.getPropertyName(), scribe);
 		standardByClass.put(scribe.getPropertyClass(), scribe);
 		standardByQName.put(scribe.getQName(), scribe);
 	}

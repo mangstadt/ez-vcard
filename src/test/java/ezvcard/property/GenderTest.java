@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardVersion;
 
 /*
@@ -56,7 +58,7 @@ public class GenderTest {
 		assertNull(property.getText());
 
 		property = new Gender("male");
-		assertEquals("male", property.getGender());
+		assertEquals(new LaciToken("male"), property.getGender());
 		assertNull(property.getText());
 	}
 
@@ -65,11 +67,11 @@ public class GenderTest {
 		Gender property = new Gender("male");
 
 		property.setText("text");
-		assertEquals("male", property.getGender());
+		assertEquals(new LaciToken("male"), property.getGender());
 		assertEquals("text", property.getText());
 
 		property.setGender("female");
-		assertEquals("female", property.getGender());
+		assertEquals(new LaciToken("female"), property.getGender());
 		assertEquals("text", property.getText());
 	}
 
@@ -126,31 +128,31 @@ public class GenderTest {
 	@Test
 	public void male() {
 		Gender gender = Gender.male();
-		assertEquals("M", gender.getGender());
+		assertEquals(Gender.MALE, gender.getGender());
 	}
 
 	@Test
 	public void female() {
 		Gender gender = Gender.female();
-		assertEquals("F", gender.getGender());
+		assertEquals(Gender.FEMALE, gender.getGender());
 	}
 
 	@Test
 	public void other() {
 		Gender gender = Gender.other();
-		assertEquals("O", gender.getGender());
+		assertEquals(Gender.OTHER, gender.getGender());
 	}
 
 	@Test
 	public void none() {
 		Gender gender = Gender.none();
-		assertEquals("N", gender.getGender());
+		assertEquals(Gender.NONE, gender.getGender());
 	}
 
 	@Test
 	public void unknown() {
 		Gender gender = Gender.unknown();
-		assertEquals("U", gender.getGender());
+		assertEquals(Gender.UNKNOWN, gender.getGender());
 	}
 
 	@Test

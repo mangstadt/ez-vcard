@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mangstadt.vinnie.VObjectParameters;
+import com.github.mangstadt.vinnie.io.FoldedLineWriter;
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 import com.github.mangstadt.vinnie.io.VObjectWriter;
 
@@ -135,15 +135,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(Path file, boolean append, VCardVersion targetVersion) throws IOException {
-		//@formatter:off
-		this(
-			Files.newBufferedWriter(
-				file,
-				append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING
-			),
-			targetVersion
-		);
-		//@formatter:on
+		this(writerFromPath(file, append, targetVersion), targetVersion);
 	}
 
 	/**
@@ -151,16 +143,59 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(Writer writer, VCardVersion targetVersion) {
-		this.writer = new VObjectWriter(writer, targetVersion.getSyntaxStyle());
-		this.targetVersion = targetVersion;
+		this(writer, targetVersion, true);
 	}
 
 	/**
-	 * Gets the writer that this object uses to write data to the output stream.
-	 * @return the writer
+	 * Creates a vCard writer using custom line folding settings.
+	 * @param writer the writer to write to
+	 * @param targetVersion the version that the vCards should conform to
 	 */
-	public VObjectWriter getVObjectWriter() {
-		return writer;
+	public VCardWriter(FoldedLineWriter writer, VCardVersion targetVersion) {
+		this((Writer) writer, targetVersion);
+	}
+
+	/**
+	 * Creates a vCard writer that doesn't use line folding.
+	 * @param file the file to write to (using UTF-8)
+	 * @param append true to append to the end of the file, false to overwrite
+	 * it
+	 * @param targetVersion the version that the vCards should conform to
+	 * @return the vCard writer
+	 * @throws IOException if there's a problem opening the file
+	 */
+	public static VCardWriter withoutLineFolding(Path file, boolean append, VCardVersion targetVersion) throws IOException {
+		Writer writer = writerFromPath(file, append, targetVersion);
+		return withoutLineFolding(writer, targetVersion);
+	}
+
+	/**
+	 * Creates a vCard writer that doesn't use line folding.
+	 * @param writer the writer to write to
+	 * @param targetVersion the version that the vCards should conform to
+	 * @return the vCard writer
+	 */
+	public static VCardWriter withoutLineFolding(Writer writer, VCardVersion targetVersion) {
+		return new VCardWriter(writer, targetVersion, false);
+	}
+
+	private static Writer writerFromPath(Path file, boolean append, VCardVersion targetVersion) throws IOException {
+		StandardOpenOption option = append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING;
+		return Files.newBufferedWriter(file, option);
+	}
+
+	/**
+	 * @param writer the writer to write to
+	 * @param targetVersion the version that the vCards should conform to
+	 */
+	private VCardWriter(Writer writer, VCardVersion targetVersion, boolean useLineFolding) {
+		if (useLineFolding) {
+			this.writer = new VObjectWriter(writer, targetVersion.getSyntaxStyle());
+		} else {
+			this.writer = VObjectWriter.withoutLineFolding(writer, targetVersion.getSyntaxStyle());
+		}
+
+		this.targetVersion = targetVersion;
 	}
 
 	/**
@@ -333,7 +368,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			handleLabelParameter(property, parameters);
 			handleQuotedPrintableEncodingParameter(property, parameters);
 
-			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), value);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName().toUpperCase(), new VObjectParameters(parameters.getMap()), value);
 
 			fixBinaryPropertyForOutlook(property);
 		}
@@ -345,7 +380,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	private void writeNestedVCard(VCard nestedVCard, VCardProperty property, VCardPropertyScribe scribe, VCardParameters parameters, String value) throws IOException {
 		if (targetVersion == VCardVersion.V2_1) {
 			//write a nested vCard (2.1 style)
-			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), value);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName().toUpperCase(), new VObjectParameters(parameters.getMap()), value);
 			prodIdStack.add(addProdId);
 			addProdId = false;
 			write(nestedVCard);
@@ -353,8 +388,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 		} else {
 			//write an embedded vCard (3.0 style)
 			StringWriter sw = new StringWriter();
-			try (VCardWriter agentWriter = new VCardWriter(sw, targetVersion)) {
-				agentWriter.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+			try (VCardWriter agentWriter = VCardWriter.withoutLineFolding(sw, targetVersion)) {
 				agentWriter.setAddProdId(false);
 				agentWriter.setCaretEncodingEnabled(isCaretEncodingEnabled());
 				agentWriter.setIncludeTrailingSemicolons(this.includeTrailingSemicolons);
@@ -368,7 +402,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 
 			String vcardStr = sw.toString();
 			vcardStr = VObjectPropertyValues.escape(vcardStr);
-			writer.writeProperty(property.getGroup(), scribe.getPropertyName(), new VObjectParameters(parameters.getMap()), vcardStr);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName().toUpperCase(), new VObjectParameters(parameters.getMap()), vcardStr);
 		}
 	}
 
@@ -473,7 +507,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			return;
 		}
 
-		writer.getFoldedLineWriter().writeln();
+		writer.getWriter().write("\r\n");
 	}
 
 	/**

@@ -179,8 +179,7 @@ public class VCardWriterTest {
 		agentVcard.setAgent(secondAgent);
 
 		StringWriter sw = new StringWriter();
-		VCardWriter vcw = new VCardWriter(sw, VCardVersion.V3_0);
-		vcw.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+		VCardWriter vcw = VCardWriter.withoutLineFolding(sw, VCardVersion.V3_0);
 		vcw.setAddProdId(false);
 		vcw.write(vcard);
 		String actual = sw.toString();
@@ -783,8 +782,7 @@ public class VCardWriterTest {
 	@Test
 	public void rfc2426_example() throws Throwable {
 		StringWriter sw = new StringWriter();
-		try (VCardWriter writer = new VCardWriter(sw, VCardVersion.V3_0)) {
-			writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
+		try (VCardWriter writer = VCardWriter.withoutLineFolding(sw, VCardVersion.V3_0)) {
 			writer.setAddProdId(false);
 
 			{

@@ -3,6 +3,7 @@ package ezvcard.io.html;
 import static ezvcard.util.StringUtils.NEWLINE;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -148,7 +149,7 @@ public class HCardElement {
 	public List<String> types() {
 		//@formatter:off
 		return allValues("type").stream()
-			.map(String::toLowerCase)
+			.map(type -> type.toLowerCase(Locale.ROOT))
 		.collect(Collectors.toList());
 		//@formatter:on
 	}

@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.github.mangstadt.vinnie.LaciToken;
+
 import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.util.XmlUtils;
@@ -244,7 +246,8 @@ public class XCardElement {
 	 * @return the data type or null for "unknown"
 	 */
 	private static VCardDataType toDataType(String localName) {
-		return "unknown".equals(localName) ? null : VCardDataType.get(localName);
+		LaciToken dataTypeName = new LaciToken(localName);
+		return dataTypeName.equalsIgnoreCase("unknown") ? null : VCardDataType.get(dataTypeName);
 	}
 
 	/**

@@ -212,7 +212,8 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the file
 	 */
 	public void go(Path file, boolean append) throws IOException {
-		try (VCardWriter writer = new VCardWriter(file, append, getVCardWriterConstructorVersion())) {
+		VCardVersion ver = getVCardWriterConstructorVersion();
+		try (VCardWriter writer = foldLines ? new VCardWriter(file, append, ver) : VCardWriter.withoutLineFolding(file, append, ver)) {
 			go(writer);
 		}
 	}
@@ -223,7 +224,8 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 	 * @throws IOException if there's a problem writing to the writer
 	 */
 	public void go(Writer writer) throws IOException {
-		go(new VCardWriter(writer, getVCardWriterConstructorVersion()));
+		VCardVersion ver = getVCardWriterConstructorVersion();
+		go(foldLines ? new VCardWriter(writer, ver) : VCardWriter.withoutLineFolding(writer, ver));
 	}
 
 	private void go(VCardWriter writer) throws IOException {
@@ -231,9 +233,6 @@ public class ChainingTextWriter extends ChainingWriter<ChainingTextWriter> {
 		writer.setCaretEncodingEnabled(caretEncoding);
 		writer.setVersionStrict(versionStrict);
 		writer.setIncludeTrailingSemicolons(includeTrailingSemicolons);
-		if (!foldLines) {
-			writer.getVObjectWriter().getFoldedLineWriter().setLineLength(null);
-		}
 		writer.setTargetApplication(targetApplication);
 		if (index != null) {
 			writer.setScribeIndex(index);

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.core.PrettyPrinter;
+import com.github.mangstadt.vinnie.LaciToken;
 
 import ezvcard.Messages;
 import ezvcard.VCardDataType;
@@ -204,7 +205,7 @@ public class JCardRawWriter implements Closeable, Flushable {
 	private void writeParametersAndGroup(VCardParameters parameters, String group) throws IOException {
 		generator.writeStartObject();
 
-		for (Map.Entry<String, List<String>> entry : parameters) {
+		for (Map.Entry<LaciToken, List<String>> entry : parameters) {
 			String name = entry.getKey().toLowerCase();
 			List<String> values = entry.getValue();
 			if (values.isEmpty()) {
