@@ -1,9 +1,12 @@
 package ezvcard.util;
 
+import static ezvcard.util.StringUtils.decodeBase64Lenient;
+import static ezvcard.util.StringUtils.encodeBase64;
+import static ezvcard.util.StringUtils.startsWithIgnoreCase;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -105,6 +108,17 @@ public final class DataUri {
 		return new Parser(uri).parse();
 	}
 
+	/**
+	 * Determines if the given string starts with the "data:" URI scheme. This
+	 * method does NOT determine whether the string is a fully parseable data
+	 * URI.
+	 * @param uri the URI
+	 * @return true if the URI begins with "data:", false if not
+	 */
+	public static boolean hasDataScheme(String uri) {
+		return startsWithIgnoreCase(uri, SCHEME);
+	}
+
 	private static class Parser {
 		private final String uri;
 		private final CharIterator it;
@@ -117,17 +131,12 @@ public final class DataUri {
 
 		public Parser(String uri) {
 			this.uri = uri;
-			checkScheme();
+			if (!hasDataScheme(uri)) {
+				throw Messages.INSTANCE.getIllegalArgumentException(18, SCHEME);
+			}
 
 			tokenStart = SCHEME.length();
 			it = new CharIterator(uri, tokenStart);
-		}
-
-		private void checkScheme() {
-			if (uri.length() < SCHEME.length() || !uri.substring(0, SCHEME.length()).equalsIgnoreCase(SCHEME)) {
-				//not a data URI
-				throw Messages.INSTANCE.getIllegalArgumentException(18, SCHEME);
-			}
 		}
 
 		public DataUri parse() {
@@ -153,35 +162,27 @@ public final class DataUri {
 		}
 
 		private void handleComma() {
-			String token = uri.substring(tokenStart, it.index());
-			if (contentType == null) {
-				contentType = token.toLowerCase(Locale.ROOT);
-			} else {
-				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
-					int equals = token.indexOf('=');
-					charset = token.substring(equals + 1);
-				} else if ("base64".equalsIgnoreCase(token)) {
-					base64 = true;
-				}
-			}
-
+			handleEndOfToken();
 			dataStr = uri.substring(it.index() + 1);
 		}
 
 		private void handleSemicolon() {
+			handleEndOfToken();
+			tokenStart = it.index() + 1;
+		}
+
+		private void handleEndOfToken() {
 			String token = uri.substring(tokenStart, it.index());
 			if (contentType == null) {
 				contentType = token.toLowerCase(Locale.ROOT);
 			} else {
-				if (token.toLowerCase(Locale.ROOT).startsWith("charset=")) {
+				if (startsWithIgnoreCase(token, "charset=")) {
 					int equals = token.indexOf('=');
 					charset = token.substring(equals + 1);
 				} else if ("base64".equalsIgnoreCase(token)) {
 					base64 = true;
 				}
 			}
-
-			tokenStart = it.index() + 1;
 		}
 
 		private DataUri build() {
@@ -189,8 +190,7 @@ public final class DataUri {
 			byte[] data = null;
 
 			if (base64) {
-				dataStr = dataStr.replaceAll("\\s", "");
-				data = Base64.getDecoder().decode(dataStr);
+				data = decodeBase64Lenient(dataStr);
 				if (charset != null) {
 					try {
 						text = new String(data, charset);
@@ -255,7 +255,7 @@ public final class DataUri {
 
 		if (data != null) {
 			sb.append(";base64,");
-			sb.append(Base64.getEncoder().encodeToString(data));
+			sb.append(encodeBase64(data));
 		} else if (text != null) {
 			if (charset == null) {
 				sb.append(',').append(text);
@@ -263,7 +263,7 @@ public final class DataUri {
 				byte[] textBytes = text.getBytes(charset);
 				sb.append(";charset=").append(charset.name());
 				sb.append(";base64,");
-				sb.append(Base64.getEncoder().encodeToString(textBytes));
+				sb.append(encodeBase64(textBytes));
 			}
 		} else {
 			sb.append(',');

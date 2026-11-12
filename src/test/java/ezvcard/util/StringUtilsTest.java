@@ -1,9 +1,11 @@
 package ezvcard.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -124,5 +126,30 @@ public class StringUtilsTest {
 		expected.put("one", "two");
 
 		assertEquals(expected.hashCode(), StringUtils.hashIgnoreCase(actual));
+	}
+
+	@Test
+	public void startsWithIgnoreCase() {
+		assertTrue(StringUtils.startsWithIgnoreCase("abcdefg", "ABC"));
+		assertTrue(StringUtils.startsWithIgnoreCase("abc", "abc"));
+		assertFalse(StringUtils.startsWithIgnoreCase("abcdefg", "bcd"));
+		assertFalse(StringUtils.startsWithIgnoreCase("abc", "abcd"));
+	}
+
+	@Test
+	public void decodeBase64Lenient() {
+		byte[] expected = "test".getBytes(StandardCharsets.UTF_8);
+		String encoded = StringUtils.encodeBase64(expected);
+		String encodedWithWithspace = encoded.substring(0, 1) + " " + encoded.substring(1, 2) + "\t" + encoded.substring(2);
+		byte[] actual = StringUtils.decodeBase64Lenient(encodedWithWithspace);
+		assertArrayEquals(expected, actual);
+	}
+
+	@Test
+	public void encodeBase64() {
+		byte[] data = "test".getBytes(StandardCharsets.UTF_8);
+		String actual = StringUtils.encodeBase64(data);
+		String expected = "dGVzdA==";
+		assertEquals(expected, actual);
 	}
 }

@@ -1,18 +1,19 @@
 package ezvcard.util;
 
+import static ezvcard.util.StringUtils.encodeBase64;
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertNothingIsEqual;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
-
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -49,7 +50,7 @@ import ezvcard.util.org.apache.commons.codec.binary.Base64;
 public class DataUriTest {
 	private final String dataString = "test-data";
 	private final byte[] dataBytes = dataString.getBytes(StandardCharsets.UTF_8);
-	private final String dataBase64 = Base64.encodeBase64String(dataBytes);
+	private final String dataBase64 = encodeBase64(dataBytes);
 
 	@Test
 	public void constructor() {
@@ -160,6 +161,15 @@ public class DataUriTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void parse_bad_charset() {
 		DataUri.parse("data:text/plain;charset=foobar;base64," + dataBase64);
+	}
+
+	@Test
+	public void hasDataScheme() {
+		assertTrue(DataUri.hasDataScheme("data:foo"));
+		assertTrue(DataUri.hasDataScheme("data:"));
+		assertTrue(DataUri.hasDataScheme("DATA:foo"));
+		assertFalse(DataUri.hasDataScheme("https://www.google.com"));
+		assertFalse(DataUri.hasDataScheme("data"));
 	}
 
 	@Test

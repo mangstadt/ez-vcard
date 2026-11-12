@@ -1,5 +1,9 @@
 package ezvcard.io.scribe;
 
+import static ezvcard.util.StringUtils.decodeBase64Lenient;
+import static ezvcard.util.StringUtils.encodeBase64;
+import static ezvcard.util.StringUtils.startsWithIgnoreCase;
+
 import com.github.mangstadt.vinnie.io.VObjectPropertyValues;
 
 import ezvcard.VCard;
@@ -16,7 +20,6 @@ import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -175,24 +178,20 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			throw new CannotParseException(2);
 		}
 
-		try {
-			DataUri uri = DataUri.parse(data);
-			U mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
-
-			return _newInstance(uri.getData(), mediaType);
-		} catch (IllegalArgumentException e) {
-			//not a data URI
-			U mediaType;
-			String type = element.attr("type");
-			if (type.isEmpty()) {
-				String extension = getFileExtension(data);
-				mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
-			} else {
-				mediaType = _mediaTypeFromMediaTypeParameter(type);
-			}
-
-			return _newInstance(data, mediaType);
+		if (DataUri.hasDataScheme(data)) {
+			return newInstanceFromDataUri(data);
 		}
+
+		U mediaType;
+		String type = element.attr("type");
+		if (type.isEmpty()) {
+			String extension = getFileExtension(data);
+			mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
+		} else {
+			mediaType = _mediaTypeFromMediaTypeParameter(type);
+		}
+
+		return _newInstance(data, mediaType);
 	}
 
 	@Override
@@ -212,22 +211,19 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 * @param value the value
 	 * @param version the version of the vCard
 	 * @param contentType the content type of the resource of null if unknown
-	 * @return the unmarshalled property object or null if it cannot be
-	 * unmarshalled
+	 * @return the unmarshalled property object
 	 */
 	protected T cannotUnmarshalValue(String value, VCardVersion version, U contentType) {
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			if (value.startsWith("http")) {
-				return _newInstance(value, contentType);
-			}
-
-			return _newInstance(Base64.decodeBase64(value), contentType);
-		case V4_0:
+		if (startsWithIgnoreCase(value, "http")) {
 			return _newInstance(value, contentType);
 		}
-		return null;
+
+		try {
+			byte[] data = decodeBase64Lenient(value);
+			return _newInstance(data, contentType);
+		} catch (IllegalArgumentException e) {
+			return _newInstance(value, contentType);
+		}
 	}
 
 	/**
@@ -327,50 +323,54 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 	 */
 	protected T parse(String value, VCardDataType dataType, VCardParameters parameters, VCardVersion version) {
 		/*
-		 * If the value is a data URI, just parse it, no matter what the version
-		 * is or what parameters are set. 2.1 and 3.0 technically don't support
-		 * data URIs--parse for convenience.
+		 * If the value is a data URI, parse it as such (even though 2.1 and 3.0
+		 * technically don't support them).
 		 */
-		try {
-			return parseAsDataUri(value);
-		} catch (IllegalArgumentException e) {
-			//not a data URI
+		if (DataUri.hasDataScheme(value)) {
+			return newInstanceFromDataUri(value);
 		}
 
 		U contentType = parseContentTypeFromValueAndParameters(value, parameters, version);
 
-		switch (version) {
-		case V2_1:
-		case V3_0:
-			//parse as URL
-			if (dataType == VCardDataType.URL || dataType == VCardDataType.URI) {
-				return _newInstance(value, contentType);
-			}
+		/*
+		 * If the data type is explicitly set to URI, parse it as such.
+		 */
+		if (dataType == VCardDataType.URL || dataType == VCardDataType.URI) {
+			return _newInstance(value, contentType);
+		}
 
-			//parse as binary
-			Encoding encodingSubType = parameters.getEncoding();
-			if (encodingSubType == Encoding.BASE64 || encodingSubType == Encoding.B) {
-				return _newInstance(Base64.decodeBase64(value), contentType);
+		/*
+		 * If the encoding is explicitly set to base64, decode it as such.
+		 */
+		Encoding encoding = parameters.getEncoding();
+		if (encoding == Encoding.BASE64 || encoding == Encoding.B) {
+			try {
+				byte[] data = decodeBase64Lenient(value);
+				return _newInstance(data, contentType);
+			} catch (IllegalArgumentException e) {
+				throw new CannotParseException(40, e.getMessage());
 			}
-
-			break;
-		case V4_0:
-			//already checked for data URI
-			break;
 		}
 
 		return cannotUnmarshalValue(value, version, contentType);
 	}
 
 	/**
-	 * Attempts to parse the given string as a data URI.
+	 * Attempts to create a new property instance by parsing its value as a data
+	 * URI.
 	 * @param value the string to parse
-	 * @return the data URI
-	 * @throws IllegalArgumentException if the given value is not a valid data
-	 * URI
+	 * @return the property
+	 * @throws CannotParseException if there is a problem parsing the value as a
+	 * data URI
 	 */
-	protected T parseAsDataUri(String value) throws IllegalArgumentException {
-		DataUri uri = DataUri.parse(value);
+	protected T newInstanceFromDataUri(String value) throws CannotParseException {
+		DataUri uri;
+		try {
+			uri = DataUri.parse(value);
+		} catch (IllegalArgumentException e) {
+			throw new CannotParseException(41, e.getMessage());
+		}
+
 		U contentType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
 		return _newInstance(uri.getData(), contentType);
 	}
@@ -386,7 +386,7 @@ public abstract class BinaryPropertyScribe<T extends BinaryProperty<U>, U extend
 			switch (version) {
 			case V2_1:
 			case V3_0:
-				return Base64.encodeBase64String(data);
+				return encodeBase64(data);
 			case V4_0:
 				U contentType = property.getContentType();
 				String mediaType = (contentType == null || contentType.getMediaType() == null) ? "application/octet-stream" : contentType.getMediaType();

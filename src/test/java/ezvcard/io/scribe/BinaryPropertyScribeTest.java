@@ -5,6 +5,7 @@ import static ezvcard.VCardDataType.URL;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
+import static ezvcard.util.StringUtils.encodeBase64;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -18,7 +19,6 @@ import ezvcard.parameter.Encoding;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.BinaryProperty;
 import ezvcard.util.DataUri;
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -60,8 +60,10 @@ public class BinaryPropertyScribeTest {
 	private final String urlUnknownExtension = "http://example.com/image.aaa";
 	private final String urlWithoutExtension = "http://example.com/image";
 	private final byte[] data = "data".getBytes();
-	private final String base64Data = Base64.encodeBase64String(data);
+	private final String base64Data = encodeBase64(data);
+	private final String base64DataInvalid = base64Data + "a";
 	private final String dataUri = new DataUri("image/jpeg", data).toString();
+	private final String dataUriInvalid = dataUri + "a";
 	private final String dataUriNoContentType = new DataUri("application/octet-stream", data).toString();
 
 	private final BinaryPropertyImpl withUrl = new BinaryPropertyImpl();
@@ -191,7 +193,7 @@ public class BinaryPropertyScribeTest {
 
 				//without encoding
 				sensei.assertParseText(base64Data).dataType(null).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
-				
+
 				//data URI
 				sensei.assertParseText(dataUri).dataType(VCardDataType.URI).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
 				sensei.assertParseText(dataUri).dataType(VCardDataType.URL).versions(versions).param("TYPE", "JPEG").run(hasData(data, ImageType.JPEG));
@@ -208,7 +210,7 @@ public class BinaryPropertyScribeTest {
 
 				//without encoding
 				sensei.assertParseText(base64Data).dataType(null).versions(versions).run(hasData(data, null));
-				
+
 				//data URI
 				sensei.assertParseText(dataUri).dataType(VCardDataType.URI).versions(versions).run(hasData(data, ImageType.JPEG));
 				sensei.assertParseText(dataUri).dataType(VCardDataType.URL).versions(versions).run(hasData(data, ImageType.JPEG));
@@ -226,6 +228,12 @@ public class BinaryPropertyScribeTest {
 			//with MEDIATYPE (parameter should be ignored)
 			sensei.assertParseText(dataUri).versions(version).param("MEDIATYPE", "image/png").run(hasData(data, ImageType.JPEG));
 		}
+	}
+
+	@Test
+	public void parseText_binary_invalid() {
+		sensei.assertParseText(base64DataInvalid).dataType(null).versions(VCardVersion.V2_1).param("ENCODING", "b").cannotParse(40);
+		sensei.assertParseText(dataUriInvalid).dataType(null).versions(VCardVersion.V2_1).cannotParse(41);
 	}
 
 	@Test
@@ -247,6 +255,9 @@ public class BinaryPropertyScribeTest {
 
 		//without MEDIATYPE
 		sensei.assertParseXml("<uri>" + dataUri + "</uri>").run(hasData(data, ImageType.JPEG));
+
+		//invalid URI
+		sensei.assertParseXml("<uri>" + dataUriInvalid + "</uri>").cannotParse(41);
 	}
 
 	@Test
@@ -278,6 +289,7 @@ public class BinaryPropertyScribeTest {
 	public void parseHtml_invalid() {
 		sensei.assertParseHtml("<object type=\"image/gif\" />").cannotParse(2);
 		sensei.assertParseHtml("<div />").cannotParse(1);
+		sensei.assertParseHtml("<object data=\"" + dataUriInvalid + "\" />").cannotParse(41);
 	}
 
 	@Test
@@ -300,6 +312,9 @@ public class BinaryPropertyScribeTest {
 
 		//without MEDIATYPE
 		sensei.assertParseJson(dataUri).run(hasData(data, ImageType.JPEG));
+
+		//invalid data URI
+		sensei.assertParseJson(dataUriInvalid).cannotParse(41);
 	}
 
 	private static class BinaryPropertyScribeImpl extends BinaryPropertyScribe<BinaryPropertyImpl, ImageType> {

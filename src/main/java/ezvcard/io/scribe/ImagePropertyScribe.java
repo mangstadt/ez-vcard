@@ -69,15 +69,12 @@ public abstract class ImagePropertyScribe<T extends ImageProperty> extends Binar
 			throw new CannotParseException(13);
 		}
 
-		try {
-			DataUri uri = DataUri.parse(src);
-			ImageType mediaType = _mediaTypeFromMediaTypeParameter(uri.getContentType());
-			return _newInstance(uri.getData(), mediaType);
-		} catch (IllegalArgumentException e) {
-			//not a data URI
-			String extension = getFileExtension(src);
-			ImageType mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
-			return _newInstance(src, mediaType);
+		if (DataUri.hasDataScheme(src)) {
+			return newInstanceFromDataUri(src);
 		}
+
+		String extension = getFileExtension(src);
+		ImageType mediaType = (extension == null) ? null : _mediaTypeFromFileExtension(extension);
+		return _newInstance(src, mediaType);
 	}
 }

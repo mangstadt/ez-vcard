@@ -6,6 +6,7 @@ import static ezvcard.VCardDataType.URL;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
+import static ezvcard.util.StringUtils.encodeBase64;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -16,7 +17,6 @@ import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.KeyType;
 import ezvcard.property.Key;
 import ezvcard.util.DataUri;
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -56,7 +56,7 @@ public class KeyScribeTest {
 
 	private final String url = "http://example.com/key.pgp";
 	private final byte[] data = "data".getBytes();
-	private final String base64Data = Base64.encodeBase64String(data);
+	private final String base64Data = encodeBase64(data);
 	private final String dataUri = new DataUri(KeyType.GPG.getMediaType(), data).toString();
 	private final String text = "text";
 

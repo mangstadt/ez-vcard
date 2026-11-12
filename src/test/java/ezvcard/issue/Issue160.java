@@ -3,12 +3,13 @@ package ezvcard.issue;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Base64;
+
 import org.junit.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.property.Photo;
-import ezvcard.util.org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Michael Angstadt
@@ -27,6 +28,6 @@ public class Issue160 {
 		Photo photo = vcard.getPhotos().get(0);
 
 		assertEquals("image/png", photo.getContentType().getMediaType());
-		assertArrayEquals(Base64.decodeBase64("dGVzdA=="), photo.getData());
+		assertArrayEquals(Base64.getDecoder().decode("dGVzdA=="), photo.getData());
 	}
 }
