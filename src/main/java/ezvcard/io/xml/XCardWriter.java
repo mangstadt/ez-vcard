@@ -46,6 +46,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
+import ezvcard.util.CopyOnModify;
 import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
 
@@ -351,7 +352,7 @@ public class XCardWriter extends XCardWriterBase {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void write(VCardProperty property, VCard vcard) throws SAXException {
 		VCardPropertyScribe scribe = index.getPropertyScribe(property);
-		VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+		CopyOnModify<VCardParameters> parameters = scribe.prepareParameters(property, targetVersion, vcard);
 
 		removeUnsupportedParameters(parameters);
 
@@ -376,7 +377,7 @@ public class XCardWriter extends XCardWriterBase {
 
 		start(propertyElement);
 
-		write(parameters);
+		write(parameters.get());
 		write(propertyElement);
 
 		end(propertyElement);

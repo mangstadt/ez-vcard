@@ -22,6 +22,7 @@ import ezvcard.io.StreamWriter;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -169,11 +170,11 @@ public class JCardWriter extends StreamWriter implements Flushable {
 
 			String group = property.getGroup();
 			String name = scribe.getPropertyName().toLowerCase();
-			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+			CopyOnModify<VCardParameters> parameters = scribe.prepareParameters(property, targetVersion, vcard);
 			removeUnsupportedParameters(parameters);
 			VCardDataType dataType = scribe.dataType(property, targetVersion);
 
-			writer.writeProperty(group, name, parameters, dataType, value);
+			writer.writeProperty(group, name, parameters.get(), dataType, value);
 		}
 
 		writer.writeEndVCard();
@@ -184,9 +185,8 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	/**
 	 * If this object has a {@link JsonGenerator), and the generator has an
 	 * output context, gets the current value of the output context.
-	 * 
 	 * @return the value of the object that is currently being serialized, if
-	 *         available
+	 * available
 	 */
 	private Object getCurrentValue() {
 		return (generator == null) ? null : generator.currentValue();
@@ -195,9 +195,7 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	/**
 	 * If this object has a {@link JsonGenerator), and the generator has an
 	 * output context, sets the current value of the output context.
-	 * 
-	 * @param value
-	 *            the object that is currently being serialized
+	 * @param value the object that is currently being serialized
 	 */
 	private void setCurrentValue(Object value) {
 		if (generator != null) {
@@ -244,10 +242,16 @@ public class JCardWriter extends StreamWriter implements Flushable {
 	 * Removes parameters that are not supported by jCard.
 	 * @param parameters the property parameters
 	 */
-	private void removeUnsupportedParameters(VCardParameters parameters) {
-		parameters.setCharset(null);
-		parameters.setEncoding(null);
-		parameters.setValue(null);
+	private void removeUnsupportedParameters(CopyOnModify<VCardParameters> parameters) {
+		if (parameters.get().getCharset() != null) {
+			parameters.modify().setCharset(null);
+		}
+		if (parameters.get().getEncoding() != null) {
+			parameters.modify().setEncoding(null);
+		}
+		if (parameters.get().getValue() != null) {
+			parameters.modify().setValue(null);
+		}
 	}
 
 	/**

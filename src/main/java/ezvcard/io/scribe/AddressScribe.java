@@ -17,6 +17,7 @@ import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Address;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -58,7 +59,7 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 	}
 
 	@Override
-	protected void _prepareParameters(Address property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Address property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 
 		if (version == VCardVersion.V2_1 || version == VCardVersion.V3_0) {
@@ -67,7 +68,9 @@ public class AddressScribe extends VCardPropertyScribe<Address> {
 			 * reached, VCardWriter will have created a LABEL property from this
 			 * property's LABEL parameter
 			 */
-			copy.setLabel(null);
+			if (copy.get().getLabel() != null) {
+				copy.modify().setLabel(null);
+			}
 		}
 	}
 

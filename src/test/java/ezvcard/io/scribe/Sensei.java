@@ -258,7 +258,7 @@ public class Sensei<T extends VCardProperty> {
 		 */
 		public void run() {
 			for (VCardVersion version : versions) {
-				VCardParameters actual = scribe.prepareParameters(property, version, vcard);
+				VCardParameters actual = scribe.prepareParameters(property, version, vcard).get();
 				assertEquals("Actual: " + actual, expected.size(), actual.size());
 
 				for (Map.Entry<LaciToken, List<String>> entry : expected) {

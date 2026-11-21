@@ -21,6 +21,7 @@ import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Impp;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -66,7 +67,7 @@ public class ImppScribe extends VCardPropertyScribe<Impp> {
 	}
 
 	@Override
-	protected void _prepareParameters(Impp property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Impp property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 

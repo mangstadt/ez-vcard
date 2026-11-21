@@ -55,6 +55,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
 import ezvcard.property.Xml;
+import ezvcard.util.CopyOnModify;
 import ezvcard.util.ListMultimap;
 import ezvcard.util.XmlUtils;
 
@@ -714,10 +715,10 @@ public class XCardDocument {
 			}
 
 			//marshal the parameters
-			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+			CopyOnModify<VCardParameters> parameters = scribe.prepareParameters(property, targetVersion, vcard);
 			removeUnsupportedParameters(parameters);
-			if (!parameters.isEmpty()) {
-				Element parametersElement = marshalParameters(parameters);
+			if (!parameters.get().isEmpty()) {
+				Element parametersElement = marshalParameters(parameters.get());
 				Node firstChild = propertyElement.getFirstChild();
 				propertyElement.insertBefore(parametersElement, firstChild);
 			}

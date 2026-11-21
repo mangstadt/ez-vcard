@@ -8,6 +8,7 @@ import ezvcard.io.ParseContext;
 import ezvcard.io.html.HCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Email;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -44,7 +45,7 @@ public class EmailScribe extends StringPropertyScribe<Email> {
 	}
 
 	@Override
-	protected void _prepareParameters(Email property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Email property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 

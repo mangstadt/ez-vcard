@@ -9,6 +9,7 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.StreamWriter;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -80,10 +81,16 @@ abstract class XCardWriterBase extends StreamWriter {
 	 * Removes parameters that are not supported by xCard.
 	 * @param parameters the property parameters
 	 */
-	protected void removeUnsupportedParameters(VCardParameters parameters) {
-		parameters.setCharset(null);
-		parameters.setEncoding(null);
-		parameters.setValue(null);
+	protected void removeUnsupportedParameters(CopyOnModify<VCardParameters> parameters) {
+		if (parameters.get().getCharset() != null) {
+			parameters.modify().setCharset(null);
+		}
+		if (parameters.get().getEncoding() != null) {
+			parameters.modify().setEncoding(null);
+		}
+		if (parameters.get().getValue() != null) {
+			parameters.modify().setValue(null);
+		}
 	}
 
 	/**

@@ -14,6 +14,7 @@ import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Telephone;
+import ezvcard.util.CopyOnModify;
 import ezvcard.util.TelUri;
 
 /*
@@ -70,7 +71,7 @@ public class TelephoneScribe extends VCardPropertyScribe<Telephone> {
 	}
 
 	@Override
-	protected void _prepareParameters(Telephone property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Telephone property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		handlePrefParam(property, copy, version, vcard);
 	}
 

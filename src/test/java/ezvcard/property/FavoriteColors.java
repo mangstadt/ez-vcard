@@ -17,6 +17,7 @@ import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.io.text.WriteContext;
 import ezvcard.io.xml.XCardElement;
 import ezvcard.parameter.VCardParameters;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -101,9 +102,9 @@ public class FavoriteColors extends VCardProperty {
 		//optional
 		//tweaks the property's parameters before the property is written
 		@Override
-		protected void _prepareParameters(FavoriteColors property, VCardParameters copy, VCardVersion version, VCard vcard) {
-			if (copy.getLanguage() == null) {
-				copy.setLanguage("en");
+		protected void _prepareParameters(FavoriteColors property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
+			if (copy.get().getLanguage() == null) {
+				copy.modify().setLanguage("en");
 			}
 		}
 

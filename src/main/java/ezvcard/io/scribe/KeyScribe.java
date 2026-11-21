@@ -13,6 +13,7 @@ import ezvcard.parameter.KeyType;
 import ezvcard.parameter.MediaTypeParameter;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.Key;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -69,23 +70,23 @@ public class KeyScribe extends BinaryPropertyScribe<Key, KeyType> {
 	}
 
 	@Override
-	protected void _prepareParameters(Key property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(Key property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		if (property.getText() != null) {
 			MediaTypeParameter contentType = property.getContentType();
 			if (contentType == null) {
 				contentType = new MediaTypeParameter(null, null, null);
 			}
 
-			copy.setEncoding(null);
+			copy.modify().setEncoding(null);
 
 			switch (version) {
 			case V2_1:
 			case V3_0:
-				copy.setType(contentType.getValue());
-				copy.setMediaType(null);
+				copy.modify().setType(contentType.getValue());
+				copy.modify().setMediaType(null);
 				break;
 			case V4_0:
-				copy.setMediaType(contentType.getMediaType());
+				copy.modify().setMediaType(contentType.getMediaType());
 				break;
 			}
 

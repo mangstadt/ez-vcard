@@ -31,6 +31,7 @@ import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.CopyOnModify;
 import ezvcard.util.DefaultTimezoneRule;
 
 /*
@@ -129,13 +130,13 @@ public class VCardPropertyScribeTest {
 	public void prepareParameters() {
 		VCardPropertyScribeImpl m = new VCardPropertyScribeImpl() {
 			@Override
-			protected void _prepareParameters(TestProperty property, VCardParameters copy, VCardVersion version, VCard vcard) {
-				copy.put("PARAM", "value");
+			protected void _prepareParameters(TestProperty property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
+				copy.modify().put("PARAM", "value");
 			}
 		};
 
 		TestProperty property = new TestProperty("value");
-		VCardParameters copy = m.prepareParameters(property, V4_0, new VCard());
+		VCardParameters copy = m.prepareParameters(property, V4_0, new VCard()).get();
 
 		assertNotSame(property.getParameters(), copy);
 		assertEquals("value", copy.first("PARAM"));
@@ -159,24 +160,24 @@ public class VCardPropertyScribeTest {
 		//no change
 		for (VCardVersion version : each(V2_1, V3_0)) {
 			for (TestProperty p : vcard.getProperties(TestProperty.class)) {
-				VCardParameters copy = new VCardParameters(p.getParameters());
+				CopyOnModify<VCardParameters> copy = CopyOnModify.parameters(p);
 				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
-				assertEquals(p.getParameters(), copy);
+				assertEquals(p.getParameters(), copy.get());
 			}
 		}
 
 		{
 			VCardVersion version = V4_0;
 
-			VCardParameters copy = new VCardParameters(one.getParameters());
+			CopyOnModify<VCardParameters> copy = CopyOnModify.parameters(one);
 			VCardPropertyScribe.handlePrefParam(one, copy, version, vcard);
-			assertIntEquals(1, copy.getPref());
-			assertNull(copy.getType());
+			assertIntEquals(1, copy.get().getPref());
+			assertNull(copy.get().getType());
 
 			for (TestProperty p : each(two, three)) {
-				copy = new VCardParameters(p.getParameters());
+				copy = CopyOnModify.parameters(p);
 				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
-				assertEquals(p.getParameters(), copy);
+				assertEquals(p.getParameters(), copy.get());
 			}
 		}
 	}
@@ -208,23 +209,23 @@ public class VCardPropertyScribeTest {
 		{
 			VCardVersion version = V4_0;
 			for (TestProperty p : vcard.getProperties(TestProperty.class)) {
-				VCardParameters copy = new VCardParameters(p.getParameters());
+				CopyOnModify<VCardParameters> copy = CopyOnModify.parameters(p);
 				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
-				assertEquals(p.getParameters(), copy);
+				assertEquals(p.getParameters(), copy.get());
 			}
 		}
 
 		for (VCardVersion version : each(V2_1, V3_0)) {
-			VCardParameters copy = new VCardParameters(one.getParameters());
+			CopyOnModify<VCardParameters> copy = CopyOnModify.parameters(one);
 			VCardPropertyScribe.handlePrefParam(one, copy, version, vcard);
-			assertEquals("pref", copy.getType());
-			assertNull(copy.getPref());
+			assertEquals("pref", copy.get().getType());
+			assertNull(copy.get().getPref());
 
 			for (TestProperty p : each(nullPref, invalidPref, two, three)) {
-				copy = new VCardParameters(p.getParameters());
+				copy = CopyOnModify.parameters(p);
 				VCardPropertyScribe.handlePrefParam(p, copy, version, vcard);
-				assertNull(copy.getType());
-				assertNull(copy.getPref());
+				assertNull(copy.get().getType());
+				assertNull(copy.get().getPref());
 			}
 		}
 	}

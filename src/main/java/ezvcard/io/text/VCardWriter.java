@@ -33,6 +33,7 @@ import ezvcard.property.Address;
 import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.CopyOnModify;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -357,10 +358,10 @@ public class VCardWriter extends StreamWriter implements Flushable {
 				nestedVCard = e.getVCard();
 			}
 
-			VCardParameters parameters = scribe.prepareParameters(property, targetVersion, vcard);
+			CopyOnModify<VCardParameters> parameters = scribe.prepareParameters(property, targetVersion, vcard);
 
 			if (nestedVCard != null) {
-				writeNestedVCard(nestedVCard, property, scribe, parameters, value);
+				writeNestedVCard(nestedVCard, property, scribe, parameters.get(), value);
 				continue;
 			}
 
@@ -368,7 +369,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			handleLabelParameter(property, parameters);
 			handleQuotedPrintableEncodingParameter(property, parameters);
 
-			writer.writeProperty(property.getGroup(), scribe.getPropertyName().toUpperCase(), new VObjectParameters(parameters.getMap()), value);
+			writer.writeProperty(property.getGroup(), scribe.getPropertyName().toUpperCase(), new VObjectParameters(parameters.get().getMap()), value);
 
 			fixBinaryPropertyForOutlook(property);
 		}
@@ -422,7 +423,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param parameters the property parameters
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void handleValueParameter(VCardProperty property, VCardPropertyScribe scribe, VCardParameters parameters) {
+	private void handleValueParameter(VCardProperty property, VCardPropertyScribe scribe, CopyOnModify<VCardParameters> parameters) {
 		VCardDataType dataType = scribe.dataType(property, targetVersion);
 		if (dataType == null) {
 			return;
@@ -437,7 +438,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 			return;
 		}
 
-		parameters.setValue(dataType);
+		parameters.modify().setValue(dataType);
 	}
 
 	/**
@@ -452,18 +453,18 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param property the property
 	 * @param parameters the property parameters
 	 */
-	private void handleLabelParameter(VCardProperty property, VCardParameters parameters) {
+	private void handleLabelParameter(VCardProperty property, CopyOnModify<VCardParameters> parameters) {
 		if (!(property instanceof Address)) {
 			return;
 		}
 
-		String label = parameters.getLabel();
+		String label = parameters.get().getLabel();
 		if (label == null) {
 			return;
 		}
 
 		label = escapeNewlines(label);
-		parameters.setLabel(label);
+		parameters.modify().setLabel(label);
 	}
 
 	/**
@@ -472,14 +473,14 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param property the property
 	 * @param parameters the property parameters
 	 */
-	private void handleQuotedPrintableEncodingParameter(VCardProperty property, VCardParameters parameters) {
+	private void handleQuotedPrintableEncodingParameter(VCardProperty property, CopyOnModify<VCardParameters> parameters) {
 		if (targetVersion == VCardVersion.V2_1) {
 			return;
 		}
 
-		if (parameters.getEncoding() == Encoding.QUOTED_PRINTABLE) {
-			parameters.setEncoding(null);
-			parameters.setCharset(null);
+		if (parameters.get().getEncoding() == Encoding.QUOTED_PRINTABLE) {
+			parameters.modify().setEncoding(null);
+			parameters.modify().setCharset(null);
 		}
 	}
 

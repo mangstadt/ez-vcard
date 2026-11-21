@@ -27,6 +27,7 @@ import ezvcard.io.xml.XCardElement;
 import ezvcard.io.xml.XCardElement.XCardValue;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.CopyOnModify;
 import ezvcard.util.VCardDateFormat;
 
 /*
@@ -135,17 +136,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	}
 
 	/**
-	 * Sanitizes a property's parameters (called before the property is
-	 * written). Note that a copy of the parameters is returned so that the
-	 * property object does not get modified.
+	 * Sanitizes a property's parameters before the property is written.
 	 * @param property the property
 	 * @param version the version of the vCard that is being generated
 	 * @param vcard the vCard that the property belongs to
 	 * @return the sanitized parameters
 	 */
-	public final VCardParameters prepareParameters(T property, VCardVersion version, VCard vcard) {
-		//make a copy because the property should not get modified when it is marshalled
-		VCardParameters copy = new VCardParameters(property.getParameters());
+	public final CopyOnModify<VCardParameters> prepareParameters(T property, VCardVersion version, VCard vcard) {
+		CopyOnModify<VCardParameters> copy = CopyOnModify.parameters(property);
 		_prepareParameters(property, copy, version, vcard);
 		return copy;
 	}
@@ -307,7 +305,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param version the version of the vCard that is being generated
 	 * @param vcard the vCard that the property belongs to
 	 */
-	protected void _prepareParameters(T property, VCardParameters copy, VCardVersion version, VCard vcard) {
+	protected void _prepareParameters(T property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
 		//do nothing
 	}
 
@@ -674,15 +672,17 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 	 * @param version the vCard version that the vCard is being marshalled to
 	 * @param vcard the vCard that's being marshalled
 	 */
-	protected static void handlePrefParam(VCardProperty property, VCardParameters parameters, VCardVersion version, VCard vcard) {
+	protected static void handlePrefParam(VCardProperty property, CopyOnModify<VCardParameters> parameters, VCardVersion version, VCard vcard) {
 		switch (version) {
 		case V2_1:
 		case V3_0:
-			parameters.setPref(null);
+			if (parameters.get().get(VCardParameters.PREF) != null) {
+				parameters.modify().setPref(null);
+			}
 
 			VCardProperty mostPreferred = findPropertyWithLowestPref(property.getClass(), vcard);
 			if (property == mostPreferred) {
-				parameters.put(VCardParameters.TYPE, "pref");
+				parameters.modify().put(VCardParameters.TYPE, "pref");
 			}
 
 			break;
@@ -694,8 +694,8 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 			//@formatter:on
 
 			if (prefType.isPresent()) {
-				parameters.remove(VCardParameters.TYPE, prefType.get());
-				parameters.setPref(1);
+				parameters.modify().remove(VCardParameters.TYPE, prefType.get());
+				parameters.modify().setPref(1);
 			}
 			break;
 		}
@@ -706,13 +706,7 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		Integer lowestPref = null;
 
 		for (VCardProperty property : vcard.getProperties(clazz)) {
-			Integer pref;
-			try {
-				pref = property.getParameters().getPref();
-			} catch (IllegalStateException e) {
-				continue;
-			}
-
+			Integer pref = getPref(property);
 			if (pref == null) {
 				continue;
 			}
@@ -724,6 +718,14 @@ public abstract class VCardPropertyScribe<T extends VCardProperty> {
 		}
 
 		return mostPreferred;
+	}
+
+	private static Integer getPref(VCardProperty property) {
+		try {
+			return property.getParameters().getPref();
+		} catch (IllegalStateException e) {
+			return null;
+		}
 	}
 
 	/**
