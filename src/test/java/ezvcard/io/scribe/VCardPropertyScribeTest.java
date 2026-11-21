@@ -27,7 +27,6 @@ import ezvcard.VCardDataType;
 import ezvcard.VCardVersion;
 import ezvcard.io.ParseContext;
 import ezvcard.io.json.JCardValue;
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.io.text.WriteContext;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
@@ -260,12 +259,10 @@ public class VCardPropertyScribeTest {
 		sensei.assertParseXml(
 		"<ignore xmlns=\"http://example.com\">ignore-me</ignore>" +
 		"<integer>value</integer>" +
-		"<text>ignore-me</text>").params(params).warnings((Integer)null).run(new Check<TestProperty>(){
-			public void check(TestProperty property){
-				assertEquals("value", property.value);
-				assertEquals(VCardDataType.INTEGER, property.parsedDataType);
-				assertSame(params,property.getParameters());
-			}
+		"<text>ignore-me</text>").params(params).warnings((Integer)null).run(property -> {
+			assertEquals("value", property.value);
+			assertEquals(VCardDataType.INTEGER, property.parsedDataType);
+			assertSame(params,property.getParameters());
 		});
 		//@formatter:on
 	}

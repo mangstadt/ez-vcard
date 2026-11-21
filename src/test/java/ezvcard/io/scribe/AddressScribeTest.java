@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import ezvcard.VCard;
 import ezvcard.io.json.JCardValue;
-import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.AddressType;
 import ezvcard.property.Address;
 
@@ -313,17 +312,15 @@ public class AddressScribeTest {
 			"<span class=\"region\">TX</span>" +
 			"<span class=\"postal-code\">12345</span>" +
 			"<span class=\"country-name\">USA</span>" +
-		"</div>").run(new Check<Address>(){
-			public void check(Address property) {
-				assertEquals("P.O. Box 1234;", property.getPoBox());
-				assertEquals("Apt, 11", property.getExtendedAddress());
-				assertEquals("123 Main St", property.getStreetAddress());
-				assertEquals("Austin", property.getLocality());
-				assertEquals("TX", property.getRegion());
-				assertEquals("12345", property.getPostalCode());
-				assertEquals("USA", property.getCountry());
-				assertEquals(Arrays.asList(AddressType.HOME, AddressType.POSTAL, AddressType.get("other")), property.getTypes());
-			}
+		"</div>").run(property -> {
+			assertEquals("P.O. Box 1234;", property.getPoBox());
+			assertEquals("Apt, 11", property.getExtendedAddress());
+			assertEquals("123 Main St", property.getStreetAddress());
+			assertEquals("Austin", property.getLocality());
+			assertEquals("TX", property.getRegion());
+			assertEquals("12345", property.getPostalCode());
+			assertEquals("USA", property.getCountry());
+			assertEquals(Arrays.asList(AddressType.HOME, AddressType.POSTAL, AddressType.get("other")), property.getTypes());
 		});
 		//@formatter:on
 	}

@@ -180,11 +180,9 @@ public class TelephoneScribeTest {
 			"<span class=\"type\">cell</span>" +
 			"<span class=\"type\">foo</span>" +
 			"<span class=\"value\">" + text + "</span>" +
-		"</div>").run(new Check<Telephone>(){
-			public void check(Telephone property) {
-				assertEquals(text, property.getText());
-				assertEquals(Arrays.asList(TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo")), property.getTypes());
-			}
+		"</div>").run(property -> {
+			assertEquals(text, property.getText());
+			assertEquals(Arrays.asList(TelephoneType.HOME, TelephoneType.CELL, TelephoneType.get("foo")), property.getTypes());
 		});
 
 		sensei.assertParseHtml("<a href=\"" + uri + "\">Call me</a>").run(withUri);
