@@ -72,8 +72,8 @@ public final class Utf8Streams {
 	 * @return the reader
 	 * @throws IOException if there's a problem opening the file
 	 */
-	public static Reader reader(Path path) throws IOException {
-		return Files.newBufferedReader(path);
+	public static Reader reader(Path file) throws IOException {
+		return Files.newBufferedReader(file);
 	}
 
 	/**
