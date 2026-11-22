@@ -8,8 +8,6 @@ import static ezvcard.util.TestUtils.assertVersion;
 import static org.junit.Assert.assertEquals;
 
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -45,6 +43,7 @@ import ezvcard.property.VCardProperty;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.Utf8Streams;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -366,7 +365,7 @@ public class JCardReaderTest {
 		"]";
 
 		Path file = tempFolder.newFile().toPath();
-		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+		try (Writer writer = Utf8Streams.writer(file)) {
 			writer.write(json);
 		}
 

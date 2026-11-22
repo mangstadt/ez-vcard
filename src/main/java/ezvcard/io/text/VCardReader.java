@@ -2,12 +2,9 @@ package ezvcard.io.text;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +37,7 @@ import ezvcard.property.Label;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.IOUtils;
 import ezvcard.util.StringUtils;
+import ezvcard.util.Utf8Streams;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -129,7 +127,7 @@ public class VCardReader extends StreamReader {
 	 * VERSION property is encountered (defaults to 2.1)
 	 */
 	public VCardReader(InputStream in, VCardVersion defaultVersion) {
-		this(new InputStreamReader(in, StandardCharsets.UTF_8), defaultVersion);
+		this(Utf8Streams.reader(in), defaultVersion);
 	}
 
 	/**
@@ -149,7 +147,7 @@ public class VCardReader extends StreamReader {
 	 * @throws IOException if there is a problem opening the file
 	 */
 	public VCardReader(Path file, VCardVersion defaultVersion) throws IOException {
-		this(Files.newBufferedReader(file), defaultVersion);
+		this(Utf8Streams.reader(file), defaultVersion);
 	}
 
 	/**

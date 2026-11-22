@@ -127,7 +127,7 @@ public class XCardReader extends StreamReader {
 	 * @param in the input stream to read from
 	 */
 	public XCardReader(InputStream in) {
-		source = new StreamSource(in);
+		source = new StreamSource(in); //detect encoding from XML header
 		stream = in;
 	}
 
@@ -136,7 +136,7 @@ public class XCardReader extends StreamReader {
 	 * @throws IOException if there is a problem opening the file
 	 */
 	public XCardReader(Path file) throws IOException {
-		this(new BufferedInputStream(Files.newInputStream(file)));
+		this(new BufferedInputStream(Files.newInputStream(file))); //detect encoding from XML header
 	}
 
 	/**

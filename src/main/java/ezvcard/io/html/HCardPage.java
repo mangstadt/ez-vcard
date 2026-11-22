@@ -2,12 +2,9 @@ package ezvcard.io.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,6 +23,7 @@ import ezvcard.io.scribe.ScribeIndex;
 import ezvcard.parameter.ImageType;
 import ezvcard.property.Photo;
 import ezvcard.util.DataUri;
+import ezvcard.util.Utf8Streams;
 import ezvcard.util.VCardDateFormat;
 import ezvcard.util.VCardFloatFormatter;
 import freemarker.template.Configuration;
@@ -145,7 +143,7 @@ public class HCardPage {
 	 * @throws TemplateException if there's a problem processing the template
 	 */
 	public void write(OutputStream out) throws IOException, TemplateException {
-		write(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+		write(Utf8Streams.writer(out));
 	}
 
 	/**
@@ -155,7 +153,7 @@ public class HCardPage {
 	 * @throws TemplateException if there's a problem processing the template
 	 */
 	public void write(Path file) throws IOException, TemplateException {
-		try (Writer writer = Files.newBufferedWriter(file)) {
+		try (Writer writer = Utf8Streams.writer(file)) {
 			write(writer);
 		}
 	}

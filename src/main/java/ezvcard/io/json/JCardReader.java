@@ -2,11 +2,8 @@ package ezvcard.io.json;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -25,6 +22,7 @@ import ezvcard.io.scribe.RawPropertyScribe;
 import ezvcard.io.scribe.VCardPropertyScribe;
 import ezvcard.parameter.VCardParameters;
 import ezvcard.property.VCardProperty;
+import ezvcard.util.Utf8Streams;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -89,7 +87,7 @@ public class JCardReader extends StreamReader {
 	 * @param in the input stream to read from (using UTF-8)
 	 */
 	public JCardReader(InputStream in) {
-		this(new InputStreamReader(in, StandardCharsets.UTF_8));
+		this(Utf8Streams.reader(in));
 	}
 
 	/**
@@ -97,7 +95,7 @@ public class JCardReader extends StreamReader {
 	 * @throws IOException if there is a problem reading the file
 	 */
 	public JCardReader(Path file) throws IOException {
-		this(Files.newBufferedReader(file));
+		this(Utf8Streams.reader(file));
 	}
 
 	/**

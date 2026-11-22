@@ -5,13 +5,9 @@ import static com.github.mangstadt.vinnie.Utils.escapeNewlines;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +30,7 @@ import ezvcard.property.BinaryProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.VCardProperty;
 import ezvcard.util.CopyOnModify;
+import ezvcard.util.Utf8Streams;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -116,7 +113,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @param targetVersion the version that the vCards should conform to
 	 */
 	public VCardWriter(OutputStream out, VCardVersion targetVersion) {
-		this(new OutputStreamWriter(out, StandardCharsets.UTF_8), targetVersion);
+		this(Utf8Streams.writer(out), targetVersion);
 	}
 
 	/**
@@ -136,7 +133,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public VCardWriter(Path file, boolean append, VCardVersion targetVersion) throws IOException {
-		this(writerFromPath(file, append, targetVersion), targetVersion);
+		this(Utf8Streams.writer(file, append), targetVersion);
 	}
 
 	/**
@@ -166,7 +163,7 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public static VCardWriter withoutLineFolding(Path file, boolean append, VCardVersion targetVersion) throws IOException {
-		Writer writer = writerFromPath(file, append, targetVersion);
+		Writer writer = Utf8Streams.writer(file, append);
 		return withoutLineFolding(writer, targetVersion);
 	}
 
@@ -178,11 +175,6 @@ public class VCardWriter extends StreamWriter implements Flushable {
 	 */
 	public static VCardWriter withoutLineFolding(Writer writer, VCardVersion targetVersion) {
 		return new VCardWriter(writer, targetVersion, false);
-	}
-
-	private static Writer writerFromPath(Path file, boolean append, VCardVersion targetVersion) throws IOException {
-		StandardOpenOption option = append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING;
-		return Files.newBufferedWriter(file, option);
 	}
 
 	/**

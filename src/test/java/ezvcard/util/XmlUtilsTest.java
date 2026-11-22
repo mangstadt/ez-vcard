@@ -7,8 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +116,7 @@ public class XmlUtilsTest {
 		//@formatter:on
 
 		Path file = tempFolder.newFile().toPath();
-		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+		try (Writer writer = Utf8Streams.writer(file)) {
 			writer.write(xml);
 		}
 

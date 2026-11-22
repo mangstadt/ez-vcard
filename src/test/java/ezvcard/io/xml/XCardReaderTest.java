@@ -13,8 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.util.Iterator;
@@ -58,6 +56,7 @@ import ezvcard.property.Xml;
 import ezvcard.property.asserter.VCardAsserter;
 import ezvcard.util.PartialDate;
 import ezvcard.util.TelUri;
+import ezvcard.util.Utf8Streams;
 import ezvcard.util.XmlUtils;
 
 /*
@@ -734,7 +733,7 @@ public class XCardReaderTest {
 		"</vcards>";
 
 		Path file = tempFolder.newFile().toPath();
-		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+		try (Writer writer = Utf8Streams.writer(file)) {
 			writer.write(xml);
 		}
 
