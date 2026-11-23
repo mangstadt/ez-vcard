@@ -1,8 +1,9 @@
 package ezvcard.util;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -10,10 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -47,13 +48,13 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class GeoUriTest {
+class GeoUriTest {
 	//Germany uses "," as the decimal separator, but "." should still be used in a geo URI
-	@ClassRule
+	@RegisterExtension
 	public static final DefaultLocaleRule localeRule = new DefaultLocaleRule(Locale.GERMANY);
 
 	@Test
-	public void parse_all() {
+	void parse_all() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78,-21.43;crs=wgs84;u=12;param=value");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -67,7 +68,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_no_params() {
+	void parse_no_params() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78,-21.43;crs=wgs84;u=12");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -80,7 +81,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_no_params_or_u() {
+	void parse_no_params_or_u() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78,-21.43;crs=wgs84");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -93,7 +94,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_no_params_or_crs() {
+	void parse_no_params_or_crs() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78,-21.43;u=12");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -106,7 +107,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_no_params_or_u_or_crs() {
+	void parse_no_params_or_u_or_crs() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78,-21.43");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -119,7 +120,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_no_params_or_u_or_crs_or_coordC() {
+	void parse_no_params_or_u_or_crs_or_coordC() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -132,7 +133,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void parse_invalid_uncertainty() {
+	void parse_invalid_uncertainty() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78;u=invalid");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -145,23 +146,23 @@ public class GeoUriTest {
 		assertEquals(expectedParams, uri.getParameters());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_no_params_or_u_or_crs_or_coordsC_or_coordB() {
-		GeoUri.parse("geo:12.34");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_no_params_or_u_or_crs_or_coordsC_or_coordB_or_coordA() {
-		GeoUri.parse("geo:");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_not_geo_uri() {
-		GeoUri.parse("http://www.ietf.org");
+	@Test
+	void parse_no_params_or_u_or_crs_or_coordsC_or_coordB() {
+		assertThrows(IllegalArgumentException.class, () -> GeoUri.parse("geo:12.34"));
 	}
 
 	@Test
-	public void parse_decode_special_chars_in_param_value() {
+	void parse_no_params_or_u_or_crs_or_coordsC_or_coordB_or_coordA() {
+		assertThrows(IllegalArgumentException.class, () -> GeoUri.parse("geo:"));
+	}
+
+	@Test
+	void parse_not_geo_uri() {
+		assertThrows(IllegalArgumentException.class, () -> GeoUri.parse("http://www.ietf.org"));
+	}
+
+	@Test
+	void parse_decode_special_chars_in_param_value() {
 		GeoUri uri = GeoUri.parse("geo:12.34,56.78;param=with%20%3d%20special%20&%20chars");
 		assertEquals(12.34, uri.getCoordA(), 0.01);
 		assertEquals(56.78, uri.getCoordB(), 0.01);
@@ -169,24 +170,25 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void builder_crs() {
+	void builder_crs() {
 		GeoUri uri = new GeoUri.Builder(12.34, 56.78).crs("123-valid").build();
 		assertEquals("123-valid", uri.getCrs());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_crs_validate_chars() {
-		new GeoUri.Builder(12.34, 56.78).crs("!not-valid!");
+	@Test
+	void builder_crs_validate_chars() {
+		GeoUri.Builder builder = new GeoUri.Builder(12.34, 56.78);
+		assertThrows(IllegalArgumentException.class, () -> builder.crs("!not-valid!"));
 	}
 
 	@Test
-	public void builder_uncertainty() {
+	void builder_uncertainty() {
 		GeoUri uri = new GeoUri.Builder(12.34, 56.78).uncertainty(12.0).build();
 		assertEquals(12.0, uri.getUncertainty().doubleValue(), 0.01);
 	}
 
 	@Test
-	public void builder_parameter() {
+	void builder_parameter() {
 		GeoUri uri = new GeoUri.Builder(12.34, 56.78).parameter("one", "1").parameter("two", "2").parameter("one", null).build();
 		assertNull(uri.getParameter("one")); //parameter was removed
 		assertEquals("2", uri.getParameter("two"));
@@ -197,19 +199,21 @@ public class GeoUriTest {
 		assertEquals(expected, uri.getParameters());
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void getParameters_unmodifiable() {
+	@Test
+	void getParameters_unmodifiable() {
 		GeoUri uri = new GeoUri.Builder(12.34, 56.78).build();
-		uri.getParameters().put("one", "1");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_parameter_validate_param_name_chars() {
-		new GeoUri.Builder(12.34, 56.78).parameter("!not-valid!", "value");
+		Map<String, String> parameters = uri.getParameters();
+		assertThrows(UnsupportedOperationException.class, () -> parameters.put("one", "1"));
 	}
 
 	@Test
-	public void builder_parameter_preserve_insertion_order() {
+	void builder_parameter_validate_param_name_chars() {
+		GeoUri.Builder builder = new GeoUri.Builder(12.34, 56.78);
+		assertThrows(IllegalArgumentException.class, () -> builder.parameter("!not-valid!", "value"));
+	}
+
+	@Test
+	void builder_parameter_preserve_insertion_order() {
 		GeoUri.Builder builder = new GeoUri.Builder(12.34, 56.78);
 		for (int i = 9; i >= 0; i--) {
 			builder.parameter(i + "p", i + "v");
@@ -227,7 +231,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void builder_copy_constructor() {
+	void builder_copy_constructor() {
 		GeoUri orig = new GeoUri.Builder(12.34, 56.78).coordC(90.12).crs("crs").parameter("param", "value").uncertainty(0.01).build();
 		GeoUri copy = new GeoUri.Builder(orig).build();
 
@@ -240,7 +244,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void toUri() {
+	void toUri() {
 		GeoUri uri = new GeoUri.Builder(12.34, 45.67).build();
 
 		URI theUri = uri.toUri();
@@ -249,19 +253,19 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		GeoUri uri = new GeoUri.Builder(12.34, 45.67).coordC(-21.43).crs("theCrs").uncertainty(12.0).parameter("param", "value").parameter("param2", "value2").build();
 		assertEquals("geo:12.34,45.67,-21.43;crs=theCrs;u=12.0;param=value;param2=value2", uri.toString());
 	}
 
 	@Test
-	public void toString_special_chars_in_param_value() {
+	void toString_special_chars_in_param_value() {
 		GeoUri uri = new GeoUri.Builder(12.34, 45.67).parameter("param", "with = special & chars " + (char) 128).build();
 		assertEquals("geo:12.34,45.67;param=with%20%3d%20special%20&%20chars%20%80", uri.toString());
 	}
 
 	@Test
-	public void toString_missing_required_fields() {
+	void toString_missing_required_fields() {
 		GeoUri uri = new GeoUri.Builder(null, null).build();
 		assertEquals("geo:0.0,0.0", uri.toString());
 
@@ -273,7 +277,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void toString_do_not_display_wgs84() {
+	void toString_do_not_display_wgs84() {
 		GeoUri uri = new GeoUri.Builder(12.34, 45.67).crs("wgs84").build();
 		assertEquals("geo:12.34,45.67", uri.toString());
 
@@ -283,7 +287,7 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void toString_precision() {
+	void toString_precision() {
 		GeoUri uri = new GeoUri.Builder(12.3488888888, 45.6711111111).build();
 		assertEquals("geo:12.348889,45.671111", uri.toString());
 		assertEquals("geo:12.3489,45.6711", uri.toString(4));
@@ -292,19 +296,19 @@ public class GeoUriTest {
 	}
 
 	@Test
-	public void equals_contract() {
+	void equals_contract() {
 		EqualsVerifier.forClass(GeoUri.class).usingGetClass().verify();
 	}
 
 	@Test
-	public void equals_ignore_case() {
+	void equals_ignore_case() {
 		GeoUri one = new GeoUri.Builder(1.0, 2.0).crs("crs").parameter("name", "value").build();
 		GeoUri two = new GeoUri.Builder(1.0, 2.0).crs("CRS").parameter("NAME", "VALUE").build();
 		assertEqualsAndHash(one, two);
 	}
 
 	@Test
-	public void toString_large_uncertainty() {
+	void toString_large_uncertainty() {
 		GeoUri uri = new GeoUri.Builder(12.34, 56.78).uncertainty(1234.5).build();
 		assertEquals("geo:12.34,56.78;u=1234.5", uri.toString());
 		assertEquals(uri, GeoUri.parse(uri.toString()));

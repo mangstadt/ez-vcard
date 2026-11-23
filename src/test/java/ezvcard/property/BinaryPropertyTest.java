@@ -4,9 +4,9 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.parameter.ImageType;
 
@@ -51,9 +51,9 @@ import ezvcard.parameter.ImageType;
 /**
  * @author Michael Angstadt
  */
-public class BinaryPropertyTest {
+class BinaryPropertyTest {
 	@Test
-	public void constructors() throws Exception {
+	void constructors() throws Exception {
 		BinaryPropertyImpl property = new BinaryPropertyImpl();
 		assertNull(property.getContentType());
 		assertNull(property.getUrl());
@@ -83,7 +83,7 @@ public class BinaryPropertyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		BinaryPropertyImpl property = new BinaryPropertyImpl();
 
 		property.setUrl("one", ImageType.PNG);
@@ -103,7 +103,7 @@ public class BinaryPropertyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		BinaryPropertyImpl empty = new BinaryPropertyImpl();
 		assertValidate(empty).run(8);
 
@@ -117,13 +117,13 @@ public class BinaryPropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		BinaryPropertyImpl property = new BinaryPropertyImpl();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		BinaryPropertyImpl original = new BinaryPropertyImpl();
 		assertCopy(original);
 
@@ -135,7 +135,7 @@ public class BinaryPropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new BinaryPropertyImpl(),

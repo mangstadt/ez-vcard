@@ -1,9 +1,9 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -37,16 +37,16 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class ClearableStringBuilderTest {
+class ClearableStringBuilderTest {
 	private ClearableStringBuilder sb;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		sb = new ClearableStringBuilder();
 	}
 
 	@Test
-	public void get() {
+	void get() {
 		assertEquals("", sb.get());
 
 		sb.append("foo");
@@ -59,7 +59,7 @@ public class ClearableStringBuilderTest {
 	}
 
 	@Test
-	public void clear() {
+	void clear() {
 		sb.append("foo");
 		assertEquals("foo", sb.get());
 
@@ -68,20 +68,20 @@ public class ClearableStringBuilderTest {
 	}
 
 	@Test
-	public void getAndClear() {
+	void getAndClear() {
 		sb.append("foo");
 		assertEquals("foo", sb.getAndClear());
 		assertEquals("", sb.get());
 	}
 
 	@Test
-	public void append() {
+	void append() {
 		sb.append('f').append("oo").append(" bar!".toCharArray(), 0, 4);
 		assertEquals("foo bar", sb.get());
 	}
 
 	@Test
-	public void length() {
+	void length() {
 		assertEquals(0, sb.length());
 
 		sb.append("foo");

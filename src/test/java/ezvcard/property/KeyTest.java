@@ -4,10 +4,10 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.parameter.KeyType;
@@ -54,9 +54,9 @@ import ezvcard.parameter.KeyType;
 /**
  * @author Michael Angstadt
  */
-public class KeyTest {
+class KeyTest {
 	@Test
-	public void constructors() throws Exception {
+	void constructors() throws Exception {
 		Key property = new Key();
 		assertNull(property.getContentType());
 		assertNull(property.getUrl());
@@ -97,7 +97,7 @@ public class KeyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		Key property = new Key("url", KeyType.PGP);
 		assertEquals("url", property.getUrl());
 		assertNull(property.getData());
@@ -125,7 +125,7 @@ public class KeyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Key empty = new Key();
 		assertValidate(empty).run(8);
 
@@ -139,13 +139,13 @@ public class KeyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Key property = new Key();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Key original = new Key();
 		assertCopy(original);
 
@@ -155,7 +155,7 @@ public class KeyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		Key property = new Key();

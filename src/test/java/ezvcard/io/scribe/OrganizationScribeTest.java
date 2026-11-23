@@ -4,7 +4,7 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.property.Organization;
@@ -41,7 +41,7 @@ import ezvcard.property.Organization;
 /**
  * @author Michael Angstadt
  */
-public class OrganizationScribeTest {
+class OrganizationScribeTest {
 	private final OrganizationScribe scribe = new OrganizationScribe();
 	private final Sensei<Organization> sensei = new Sensei<>(scribe);
 
@@ -58,7 +58,7 @@ public class OrganizationScribeTest {
 	private final Organization empty = new Organization();
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withOneValue).versions(V2_1).run("one,two\\;three");
 		sensei.assertWriteText(withOneValue).versions(V3_0, V4_0).run("one\\,two\\;three");
 		sensei.assertWriteText(withMultipleValues).versions(V2_1).run("one,two\\;three;four");
@@ -67,35 +67,35 @@ public class OrganizationScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withOneValue).run("<text>one,two;three</text>");
 		sensei.assertWriteXml(withMultipleValues).run("<text>one,two;three</text><text>four</text>");
 		sensei.assertWriteXml(empty).run("<text/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withOneValue).run("one,two;three");
 		sensei.assertWriteJson(withMultipleValues).run(JCardValue.structured("one,two;three", "four"));
 		sensei.assertWriteJson(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText("one\\,two\\;three").run(withOneValue);
 		sensei.assertParseText("one\\,two\\;three;four").run(withMultipleValues);
 		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>one,two;three</text>").run(withOneValue);
 		sensei.assertParseXml("<text>one,two;three</text><text>four</text>").run(withMultipleValues);
 		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -132,7 +132,7 @@ public class OrganizationScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson("one,two;three").run(withOneValue);
 		sensei.assertParseJson(JCardValue.structured("one,two;three")).run(withOneValue);
 		sensei.assertParseJson(JCardValue.structured("one,two;three", "four")).run(withMultipleValues);

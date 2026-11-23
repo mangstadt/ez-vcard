@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import ezvcard.property.Revision;
 import ezvcard.util.DefaultTimezoneRule;
@@ -47,8 +47,8 @@ import ezvcard.util.DefaultTimezoneRule;
 /**
  * @author Michael Angstadt
  */
-public class RevisionScribeTest {
-	@ClassRule
+class RevisionScribeTest {
+	@RegisterExtension
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final RevisionScribe scribe = new RevisionScribe();
@@ -62,40 +62,40 @@ public class RevisionScribeTest {
 	private final Revision empty = new Revision((Temporal) null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withValue).versions(V2_1, V4_0).run(datetimeStr);
 		sensei.assertWriteText(withValue).versions(V3_0).run(datetimeStrExt);
 		sensei.assertWriteText(empty).run("");
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withValue).run("<timestamp>" + datetimeStr + "</timestamp>");
 		sensei.assertWriteXml(empty).run("<timestamp/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withValue).run(datetimeStrExt);
 		sensei.assertWriteJson(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(datetimeStr).run(withValue);
 		sensei.assertParseText("invalid").cannotParse(5);
 		sensei.assertParseText("").run(empty);
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<timestamp>" + datetimeStr + "</timestamp>").run(withValue);
 		sensei.assertParseXml("<timestamp>invalid</timestamp>").cannotParse(5);
 		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<time datetime=\"" + datetimeStrExt + "\">June 5, 1980</time>").run(withValue);
 		sensei.assertParseHtml("<time datetime=\"invalid\">June 5, 1980</time>").cannotParse(5);
 
@@ -107,7 +107,7 @@ public class RevisionScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(datetimeStrExt).run(withValue);
 		sensei.assertParseJson("invalid").cannotParse(5);
 		sensei.assertParseJson("").run(empty);

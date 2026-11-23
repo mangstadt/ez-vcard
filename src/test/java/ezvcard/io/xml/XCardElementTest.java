@@ -1,15 +1,15 @@
 package ezvcard.io.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -51,82 +51,82 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class XCardElementTest {
+class XCardElementTest {
 	@Test
-	public void first() {
+	void first() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertEquals("2", xcardElement.first("two"));
 	}
 
 	@Test
-	public void first_data_type() {
+	void first_data_type() {
 		XCardElement xcardElement = build("<prop><one>1</one><text>2</text></prop>");
 		assertEquals("2", xcardElement.first(VCardDataType.TEXT));
 	}
 
 	@Test
-	public void first_unknown() {
+	void first_unknown() {
 		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown></prop>");
 		assertEquals("2", xcardElement.first((VCardDataType) null));
 	}
 
 	@Test
-	public void first_xcard_namespace_with_prefix() {
+	void first_xcard_namespace_with_prefix() {
 		XCardElement xcardElement = build("<v:prop><v:one>1</v:one><v:two>2</v:two></v:prop>", "v");
 		assertEquals("2", xcardElement.first("two"));
 	}
 
 	@Test
-	public void first_empty() {
+	void first_empty() {
 		XCardElement xcardElement = build("<prop><one>1</one><two></two></prop>");
 		assertEquals("", xcardElement.first("two"));
 	}
 
 	@Test
-	public void first_none() {
+	void first_none() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertNull(xcardElement.first("three"));
 	}
 
 	@Test
-	public void first_multiple_names() {
+	void first_multiple_names() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two><three>3</three></prop>");
 		assertEquals("2", xcardElement.first("two", "three"));
 		assertEquals("2", xcardElement.first("three", "two"));
 	}
 
 	@Test
-	public void first_only_xcard_namespace() {
+	void first_only_xcard_namespace() {
 		XCardElement xcardElement = build("<prop><n:four xmlns:n=\"http://example.com\"></n:four></prop>");
 		assertNull(xcardElement.first("four"));
 	}
 
 	@Test
-	public void all() {
+	void all() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two><two /><three>3</three><two>2-2</two></prop>");
 		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all("two"));
 	}
 
 	@Test
-	public void all_data_type() {
+	void all_data_type() {
 		XCardElement xcardElement = build("<prop><one>1</one><text>2</text><two /><three>3</three><text>2-2</text></prop>");
 		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all(VCardDataType.TEXT));
 	}
 
 	@Test
-	public void all_unknown() {
+	void all_unknown() {
 		XCardElement xcardElement = build("<prop><one>1</one><unknown>2</unknown><two /><three>3</three><unknown>2-2</unknown></prop>");
 		assertEquals(Arrays.asList("2", "2-2"), xcardElement.all((VCardDataType) null));
 	}
 
 	@Test
-	public void all_none() {
+	void all_none() {
 		XCardElement xcardElement = build("<prop><one>1</one><two>2</two></prop>");
 		assertTrue(xcardElement.all("three").isEmpty());
 	}
 
 	@Test
-	public void firstValue() {
+	void firstValue() {
 		XCardElement xcardElement = build("<prop><text>one</text></prop>");
 		XCardValue child = xcardElement.firstValue();
 		assertEquals(VCardDataType.TEXT, child.getDataType());
@@ -134,7 +134,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void firstValue_unknown() {
+	void firstValue_unknown() {
 		XCardElement xcardElement = build("<prop><unknown>one</unknown></prop>");
 		XCardValue child = xcardElement.firstValue();
 		assertNull(child.getDataType());
@@ -142,7 +142,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void firstValue_namespace() {
+	void firstValue_namespace() {
 		XCardElement xcardElement = build("<prop><n:foo xmlns:n=\"http://example.com\">one</n:foo><text>two</text></prop>");
 		XCardValue child = xcardElement.firstValue();
 		assertEquals(VCardDataType.TEXT, child.getDataType());
@@ -150,7 +150,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void firstValue_no_xcard_children() {
+	void firstValue_no_xcard_children() {
 		XCardElement xcardElement = build("<prop><n:foo xmlns:n=\"http://example.com\">one</n:foo><n:bar xmlns:n=\"http://example.com\">two</n:bar></prop>");
 		XCardValue child = xcardElement.firstValue();
 		assertNull(child.getDataType());
@@ -158,7 +158,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void append() {
+	void append() {
 		XCardElement xcardElement = build("<prop><one>1</one></prop>");
 		Element appendedElement = xcardElement.append("two", "2");
 		assertEquals("two", appendedElement.getLocalName());
@@ -179,7 +179,7 @@ public class XCardElementTest {
 	}
 
 	@Test
-	public void append_multiple() {
+	void append_multiple() {
 		XCardElement xcardElement = build("<prop />");
 		List<Element> elements = xcardElement.append("number", Arrays.asList("1", "2", "3"));
 		Iterator<Element> it = elements.iterator();

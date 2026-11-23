@@ -4,11 +4,11 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.util.GeoUri;
 
@@ -44,9 +44,9 @@ import ezvcard.util.GeoUri;
 /**
  * @author Michael Angstadt
  */
-public class GeoTest {
+class GeoTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		Geo property = new Geo(12.34, 56.78);
 		assertEquals(12.34, property.getLatitude(), 0.1);
 		assertEquals(56.78, property.getLongitude(), 0.1);
@@ -65,7 +65,7 @@ public class GeoTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		/*
 		 * Make sure the GeoUri value does not loose its other properties when
 		 * setLatitude or setLongitude is called.
@@ -112,7 +112,7 @@ public class GeoTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Geo empty = new Geo((GeoUri) null);
 		assertValidate(empty).run(13, 14);
 
@@ -121,13 +121,13 @@ public class GeoTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Geo property = new Geo(12.34, 56.78);
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Geo original = new Geo((GeoUri) null);
 		assertCopy(original);
 
@@ -137,7 +137,7 @@ public class GeoTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new Geo((GeoUri) null),

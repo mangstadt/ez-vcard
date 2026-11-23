@@ -5,16 +5,15 @@ import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.Writer;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -77,12 +76,9 @@ import ezvcard.util.Utf8Streams;
 /**
  * @author Michael Angstadt
  */
-public class JCardReaderTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+class JCardReaderTest {
 	@Test
-	public void read_single() throws Throwable {
+	void read_single() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[\"vcard\"," +
@@ -104,7 +100,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void read_multiple() throws Throwable {
+	void read_multiple() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[" +
@@ -138,7 +134,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void no_version() throws Exception {
+	void no_version() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[\"vcard\"," +
@@ -160,7 +156,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void invalid_version() throws Exception {
+	void invalid_version() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[\"vcard\"," +
@@ -183,7 +179,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void no_properties() throws Throwable {
+	void no_properties() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[\"vcard\"," +
@@ -199,7 +195,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void no_properties_multiple() throws Throwable {
+	void no_properties_multiple() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[" +
@@ -225,7 +221,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void extendedType() throws Throwable {
+	void extendedType() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readJson(
 		"[\"vcard\"," +
@@ -248,7 +244,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void registerExtendedType() throws Throwable {
+	void registerExtendedType() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -274,7 +270,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void readExtendedType_override_standard_type_classes() throws Throwable {
+	void readExtendedType_override_standard_type_classes() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -300,7 +296,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void skipMeException() throws Throwable {
+	void skipMeException() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -321,7 +317,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void cannotParseException() throws Throwable {
+	void cannotParseException() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -354,7 +350,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void utf8() throws Throwable {
+	void utf8(@TempDir Path tempDir) throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -364,7 +360,7 @@ public class JCardReaderTest {
 			"]" +
 		"]";
 
-		Path file = tempFolder.newFile().toPath();
+		Path file = tempDir.resolve("test.json");
 		try (Writer writer = Utf8Streams.writer(file)) {
 			writer.write(json);
 		}
@@ -423,7 +419,7 @@ public class JCardReaderTest {
 	}
 
 	@Test
-	public void jcard_example() throws Throwable {
+	void jcard_example() throws Throwable {
 		JCardReader reader = new JCardReader(getClass().getResourceAsStream("jcard-example.json"));
 		VCardAsserter asserter = new VCardAsserter(reader);
 

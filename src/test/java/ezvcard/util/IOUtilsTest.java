@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -37,9 +37,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class IOUtilsTest {
+class IOUtilsTest {
 	@Test
-	public void closeQuietly() throws Exception {
+	void closeQuietly() throws Exception {
 		IOUtils.closeQuietly(null);
 
 		Closeable closeable = mock(Closeable.class);

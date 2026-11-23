@@ -1,11 +1,11 @@
 package ezvcard.issue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -17,7 +17,7 @@ import ezvcard.io.chain.ChainingTextWriter;
  */
 public class Issue114 {
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		VCard vcard;
 		try (InputStream in = getClass().getResourceAsStream("issue114.vcf")) {
 			vcard = Ezvcard.parse(in).first();

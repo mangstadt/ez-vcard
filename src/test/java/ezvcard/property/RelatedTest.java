@@ -4,15 +4,15 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.parameter.RelatedType;
@@ -50,12 +50,12 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class RelatedTest {
+class RelatedTest {
 	private final String text = "Edna Smith";
 	private final String uri = "urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af";
 
 	@Test
-	public void constructors() {
+	void constructors() {
 		Related property = new Related();
 		assertNull(property.getUri());
 		assertNull(property.getText());
@@ -68,7 +68,7 @@ public class RelatedTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		Related property = new Related(uri);
 
 		property.setText(text);
@@ -98,7 +98,7 @@ public class RelatedTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Related empty = new Related();
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
@@ -118,34 +118,34 @@ public class RelatedTest {
 	}
 
 	@Test
-	public void email() {
+	void email() {
 		Related property = Related.email("john.doe@example.com");
 		assertNull(property.getText());
 		assertEquals("mailto:john.doe@example.com", property.getUri());
 	}
 
 	@Test
-	public void im() {
+	void im() {
 		Related property = Related.im("aim", "john.doe");
 		assertNull(property.getText());
 		assertEquals("aim:john.doe", property.getUri());
 	}
 
 	@Test
-	public void telephone() {
+	void telephone() {
 		Related property = Related.telephone(new TelUri.Builder("+1-555-555-5555").build());
 		assertNull(property.getText());
 		assertEquals("tel:+1-555-555-5555", property.getUri());
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Related property = new Related(uri);
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Related original = new Related();
 		assertCopy(original);
 
@@ -162,7 +162,7 @@ public class RelatedTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		Related property = new Related();

@@ -3,9 +3,9 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
@@ -43,7 +43,7 @@ import ezvcard.property.VCardProperty;
 /**
  * @author Michael Angstadt
  */
-public class SimplePropertyScribeTest {
+class SimplePropertyScribeTest {
 	private final SimplePropertyScribeImpl scribe = new SimplePropertyScribeImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<>(scribe);
 
@@ -55,44 +55,44 @@ public class SimplePropertyScribeTest {
 	private final TestProperty empty = new TestProperty(null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withValue).versions(V2_1).run(value);
 		sensei.assertWriteText(withValue).versions(V3_0, V4_0).run(valueEscaped);
 		sensei.assertWriteText(empty).run("");
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withValue).run("<text>" + value + "</text>");
 		sensei.assertWriteXml(empty).run("<text/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withValue).run(value);
 		sensei.assertWriteJson(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(valueEscaped).run(withValue);
 		sensei.assertParseText("").run(hasText(""));
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>" + value + "</text>").run(withValue);
 		sensei.assertParseXml("").cannotParse(0);
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<div>" + value + "</div>").run(hasText(valueHtml));
 		sensei.assertParseHtml("<div></div>").run(hasText(""));
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(value).run(withValue);
 		sensei.assertParseJson("").run(hasText(""));
 	}

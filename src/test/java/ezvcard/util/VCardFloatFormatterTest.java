@@ -1,10 +1,10 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -34,33 +34,33 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class VCardFloatFormatterTest {
+class VCardFloatFormatterTest {
 	@Test
-	public void format_truncate() {
+	void format_truncate() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.888889", formatter.format(12.8888888));
 	}
 
 	@Test
-	public void format_no_truncate() {
+	void format_no_truncate() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.88", formatter.format(12.88));
 	}
 
 	@Test
-	public void format_negative() {
+	void format_negative() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("-12.88", formatter.format(-12.88));
 	}
 
 	@Test
-	public void format_no_decimals() {
+	void format_no_decimals() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("12.0", formatter.format(12d));
 	}
 
 	@Test
-	public void format_different_precision() {
+	void format_different_precision() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter(2);
 		assertEquals("12.89", formatter.format(12.888));
 
@@ -69,14 +69,14 @@ public class VCardFloatFormatterTest {
 	}
 
 	@Test
-	public void format_different_locales() {
+	void format_different_locales() {
 		Locale defaultLocale = Locale.getDefault();
 
 		try {
 			for (Locale locale : Locale.getAvailableLocales()) {
 				Locale.setDefault(locale);
 				VCardFloatFormatter formatter = new VCardFloatFormatter();
-				assertEquals("Test failed for locale: " + locale, "-12.388889", formatter.format(-12.3888888));
+				assertEquals("-12.388889", formatter.format(-12.3888888), () -> "Test failed for locale: " + locale);
 			}
 		} finally {
 			Locale.setDefault(defaultLocale);
@@ -84,7 +84,7 @@ public class VCardFloatFormatterTest {
 	}
 
 	@Test
-	public void format_without_grouping_separators() {
+	void format_without_grouping_separators() {
 		VCardFloatFormatter formatter = new VCardFloatFormatter();
 		assertEquals("1234.5", formatter.format(1234.5));
 		assertEquals("-1234567.5", formatter.format(-1234567.5));

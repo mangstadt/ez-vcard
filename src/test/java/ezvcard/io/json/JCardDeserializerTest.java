@@ -1,13 +1,13 @@
 package ezvcard.io.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,18 +49,18 @@ import ezvcard.VCardVersion;
  * @author Buddy Gorven
  * @author Michael Angstadt
  */
-public class JCardDeserializerTest {
+class JCardDeserializerTest {
 	//TODO test setScribe()
 
 	private ObjectMapper mapper;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		mapper = new ObjectMapper();
 	}
 
 	@Test
-	public void deserialize_single() throws Exception {
+	void deserialize_single() throws Exception {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -83,7 +83,7 @@ public class JCardDeserializerTest {
 	}
 
 	@Test
-	public void deserialize_multiple() throws Exception {
+	void deserialize_multiple() throws Exception {
 		//@formatter:off
 		String json =
 		"[" +
@@ -123,7 +123,7 @@ public class JCardDeserializerTest {
 	}
 
 	@Test
-	public void container() throws Exception {
+	void container() throws Exception {
 		//@formatter:off
 		String json =
 		"{" +
@@ -147,7 +147,7 @@ public class JCardDeserializerTest {
 	}
 
 	@Test
-	public void container_null() throws Exception {
+	void container_null() throws Exception {
 		//@formatter:off
 		String json =
 		"{" +

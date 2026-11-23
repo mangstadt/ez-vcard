@@ -1,9 +1,9 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -45,65 +45,65 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class VCardDateFormatTest {
+class VCardDateFormatTest {
 	@Test
-	public void format_date() {
+	void format_date() {
 		LocalDate date = LocalDate.of(2006, 1, 2);
 		assertEquals("20060102", VCardDateFormat.BASIC.format(date));
 		assertEquals("2006-01-02", VCardDateFormat.EXTENDED.format(date));
 	}
 
 	@Test
-	public void format_datetime() {
+	void format_datetime() {
 		LocalDateTime dateTime = LocalDateTime.of(2006, 1, 2, 10, 20, 30);
 		assertEquals("20060102T102030", VCardDateFormat.BASIC.format(dateTime));
 		assertEquals("2006-01-02T10:20:30", VCardDateFormat.EXTENDED.format(dateTime));
 	}
 
 	@Test
-	public void format_offset_positive() {
+	void format_offset_positive() {
 		OffsetDateTime offsetPositive = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(1));
 		assertEquals("20060102T102030+0100", VCardDateFormat.BASIC.format(offsetPositive));
 		assertEquals("2006-01-02T10:20:30+01:00", VCardDateFormat.EXTENDED.format(offsetPositive));
 	}
 
 	@Test
-	public void format_offset_positive_minutes() {
+	void format_offset_positive_minutes() {
 		OffsetDateTime offsetPositiveMinutes = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHoursMinutes(1, 30));
 		assertEquals("20060102T102030+0130", VCardDateFormat.BASIC.format(offsetPositiveMinutes));
 		assertEquals("2006-01-02T10:20:30+01:30", VCardDateFormat.EXTENDED.format(offsetPositiveMinutes));
 	}
 
 	@Test
-	public void format_offset_negative() {
+	void format_offset_negative() {
 		OffsetDateTime offsetNegative = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(-1));
 		assertEquals("20060102T102030-0100", VCardDateFormat.BASIC.format(offsetNegative));
 		assertEquals("2006-01-02T10:20:30-01:00", VCardDateFormat.EXTENDED.format(offsetNegative));
 	}
 
 	@Test
-	public void format_offset_negative_minutes() {
+	void format_offset_negative_minutes() {
 		OffsetDateTime offsetNegativeMinutes = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHoursMinutes(-1, -30));
 		assertEquals("20060102T102030-0130", VCardDateFormat.BASIC.format(offsetNegativeMinutes));
 		assertEquals("2006-01-02T10:20:30-01:30", VCardDateFormat.EXTENDED.format(offsetNegativeMinutes));
 	}
 
 	@Test
-	public void format_instant() {
+	void format_instant() {
 		Instant instant = LocalDateTime.of(2006, 1, 2, 10, 20, 30).toInstant(ZoneOffset.UTC);
 		assertEquals("20060102T102030Z", VCardDateFormat.BASIC.format(instant));
 		assertEquals("2006-01-02T10:20:30Z", VCardDateFormat.EXTENDED.format(instant));
 	}
 
 	@Test
-	public void format_zoned_datetime() {
+	void format_zoned_datetime() {
 		ZonedDateTime zonedDateTime = ZonedDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneId.of("America/New_York"));
 		assertEquals("20060102T102030-0500", VCardDateFormat.BASIC.format(zonedDateTime));
 		assertEquals("2006-01-02T10:20:30-05:00", VCardDateFormat.EXTENDED.format(zonedDateTime));
 	}
 
 	@Test
-	public void format_different_locales() {
+	void format_different_locales() {
 		OffsetDateTime date = OffsetDateTime.of(2006, 1, 2, 10, 20, 30, 0, ZoneOffset.ofHours(1));
 
 		Locale defaultLocale = Locale.getDefault();
@@ -120,33 +120,32 @@ public class VCardDateFormatTest {
 
 	private static void assertLocale(Locale locale, VCardDateFormat df, OffsetDateTime date, String expected) {
 		String actual = df.format(date);
-		String message = "Test failed for " + df.name() + " with locale \"" + locale + "\".";
-		assertEquals(message, expected, actual);
+		assertEquals(expected, actual, () -> "Test failed for " + df.name() + " with locale \"" + locale + "\".");
 	}
 
 	@Test
-	public void parse_date() {
+	void parse_date() {
 		LocalDate date = LocalDate.of(2012, 7, 1);
 		assertEquals(date, VCardDateFormat.parse("20120701"));
 		assertEquals(date, VCardDateFormat.parse("2012-07-01"));
 	}
 
 	@Test
-	public void parse_datetime() {
+	void parse_datetime() {
 		LocalDateTime datetime = LocalDateTime.of(2012, 7, 1, 7, 1, 30);
 		assertEquals(datetime, VCardDateFormat.parse("20120701T070130"));
 		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30"));
 	}
 
 	@Test
-	public void parse_instant() {
+	void parse_instant() {
 		Instant instant = LocalDateTime.of(2012, 7, 1, 7, 1, 30).toInstant(ZoneOffset.UTC);
 		assertEquals(instant, VCardDateFormat.parse("20120701T070130Z"));
 		assertEquals(instant, VCardDateFormat.parse("2012-07-01T07:01:30Z"));
 	}
 
 	@Test
-	public void parse_offset() {
+	void parse_offset() {
 		LocalDateTime datetime = LocalDateTime.of(2012, 7, 1, 7, 1, 30);
 		OffsetDateTime positiveOffset = OffsetDateTime.of(datetime, ZoneOffset.ofHours(3));
 		OffsetDateTime negativeOffset = OffsetDateTime.of(datetime, ZoneOffset.ofHours(-3));
@@ -166,13 +165,13 @@ public class VCardDateFormatTest {
 	 * hCard uses extended format, but does not put a colon in the offset.
 	 */
 	@Test
-	public void parse_hcard() {
+	void parse_hcard() {
 		OffsetDateTime datetime = OffsetDateTime.of(LocalDateTime.of(2012, 7, 1, 7, 1, 30), ZoneOffset.ofHours(3));
 		assertEquals(datetime, VCardDateFormat.parse("2012-07-01T07:01:30+0300"));
 	}
 
 	@Test
-	public void parse_datetime_nanoseconds() {
+	void parse_datetime_nanoseconds() {
 		Instant instant = LocalDateTime.of(2012, 7, 1, 7, 1, 30).toInstant(ZoneOffset.UTC);
 
 		Instant instantWithNanos = instant.plus(100_000_000, ChronoUnit.NANOS);
@@ -189,7 +188,7 @@ public class VCardDateFormatTest {
 	 * Allow single digit month and/or date as long as there are dashes.
 	 */
 	@Test
-	public void parse_single_digit_month_and_date() {
+	void parse_single_digit_month_and_date() {
 		{
 			LocalDate date = LocalDate.of(2012, 7, 1);
 
@@ -209,38 +208,38 @@ public class VCardDateFormatTest {
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid() {
-		VCardDateFormat.parse("invalid");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_month() {
-		VCardDateFormat.parse("19879215");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_date() {
-		VCardDateFormat.parse("19871233");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_hour() {
-		VCardDateFormat.parse("19871231T240000");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_minute() {
-		VCardDateFormat.parse("19871231T006100");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_second() {
-		VCardDateFormat.parse("19871231T000061");
+	@Test
+	void parse_invalid() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("invalid"));
 	}
 
 	@Test
-	public void hasTime() {
+	void parse_invalid_month() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("19879215"));
+	}
+
+	@Test
+	void parse_invalid_date() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("19871233"));
+	}
+
+	@Test
+	void parse_invalid_hour() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("19871231T240000"));
+	}
+
+	@Test
+	void parse_invalid_minute() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("19871231T006100"));
+	}
+
+	@Test
+	void parse_invalid_second() {
+		assertThrows(IllegalArgumentException.class, () -> VCardDateFormat.parse("19871231T000061"));
+	}
+
+	@Test
+	void hasTime() {
 		assertFalse(VCardDateFormat.hasTime(LocalDate.now()));
 		assertTrue(VCardDateFormat.hasTime(LocalDateTime.now()));
 		assertTrue(VCardDateFormat.hasTime(OffsetDateTime.now()));

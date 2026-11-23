@@ -5,11 +5,11 @@ import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static ezvcard.util.TestUtils.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -19,11 +19,8 @@ import java.util.Iterator;
 
 import javax.xml.transform.TransformerException;
 
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.xml.sax.SAXException;
 
 import ezvcard.VCard;
@@ -91,17 +88,9 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class XCardReaderTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
-	@BeforeClass
-	public static void beforeClass() {
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-
+class XCardReaderTest {
 	@Test
-	public void read_single() throws Exception {
+	void read_single() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<!-- ignore -->" +
@@ -139,7 +128,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_multiple() throws Exception {
+	void read_multiple() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -199,7 +188,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_default_namespace() throws Exception {
+	void read_default_namespace() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards>" +
@@ -214,7 +203,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_wrong_namespace() throws Exception {
+	void read_wrong_namespace() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"wrong\">" +
@@ -229,7 +218,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_namespace_prefix() throws Exception {
+	void read_namespace_prefix() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<v:vcards xmlns:v=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -250,7 +239,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_preserve_whitespace() throws Exception {
+	void read_preserve_whitespace() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -271,7 +260,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_ignore_other_namespaces() throws Exception {
+	void read_ignore_other_namespaces() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<root>" +
@@ -305,7 +294,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_identical_element_names() throws Exception {
+	void read_identical_element_names() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -346,7 +335,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_bad_xml() {
+	void read_bad_xml() {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -366,7 +355,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_multiple_vcards_elements() throws Exception {
+	void read_multiple_vcards_elements() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<root>" +
@@ -398,7 +387,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_parameters() throws Exception {
+	void read_parameters() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -472,7 +461,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_groups() throws Exception {
+	void read_groups() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -512,7 +501,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_non_standard_properties() throws Exception {
+	void read_non_standard_properties() throws Exception {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -595,7 +584,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_xml_property() throws Exception {
+	void read_xml_property() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -631,7 +620,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void skipMeException() throws Exception {
+	void skipMeException() throws Exception {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -658,7 +647,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void cannotParseException() throws Exception {
+	void cannotParseException() throws Exception {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -695,7 +684,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void close_before_stream_ends() throws Exception {
+	void close_before_stream_ends() throws Exception {
 		//@formatter:off
 		String xml =
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -722,7 +711,7 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_utf8() throws Exception {
+	void read_utf8(@TempDir Path tempDir) throws Exception {
 		//@formatter:off
 		String xml =
 		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -732,7 +721,7 @@ public class XCardReaderTest {
 			"</vcard>" +
 		"</vcards>";
 
-		Path file = tempFolder.newFile().toPath();
+		Path file = tempDir.resolve("test.xml");
 		try (Writer writer = Utf8Streams.writer(file)) {
 			writer.write(xml);
 		}
@@ -751,13 +740,13 @@ public class XCardReaderTest {
 	}
 
 	@Test
-	public void read_empty() throws Exception {
+	void read_empty() throws Exception {
 		VCardAsserter asserter = readXml("<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />");
 		asserter.done();
 	}
 
 	@Test
-	public void read_rfc6351_example() throws Throwable {
+	void read_rfc6351_example() throws Throwable {
 		VCardAsserter asserter = read("rfc6351-example.xml");
 
 		asserter.next(V4_0);

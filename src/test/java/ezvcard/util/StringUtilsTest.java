@@ -1,9 +1,9 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -46,9 +46,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class StringUtilsTest {
+class StringUtilsTest {
 	@Test
-	public void mapToLowerCase() {
+	void mapToLowerCase() {
 		Map<String, String> input = new HashMap<>();
 		input.put("ONE", "TWO");
 		input.put(null, "THREE");
@@ -65,7 +65,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void equalsIgnoreCase_string() {
+	void equalsIgnoreCase_string() {
 		assertTrue(StringUtils.equalsIgnoreCase((String) null, null));
 		assertFalse(StringUtils.equalsIgnoreCase("a", null));
 		assertFalse(StringUtils.equalsIgnoreCase(null, "A"));
@@ -74,7 +74,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void equalsIgnoreCase_map() {
+	void equalsIgnoreCase_map() {
 		Map<String, String> a = new HashMap<>();
 		a.put("one", "TWO");
 		assertTrue(StringUtils.equalsIgnoreCase((Map<String, String>) null, null));
@@ -96,7 +96,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void equalsIgnoreCaseIgnoreOrder() {
+	void equalsIgnoreCaseIgnoreOrder() {
 		List<String> a = Arrays.asList("a", "b");
 		assertTrue(StringUtils.equalsIgnoreCaseIgnoreOrder(null, null));
 		assertFalse(StringUtils.equalsIgnoreCaseIgnoreOrder(a, null));
@@ -113,13 +113,13 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void hashIgnoreCase_string() {
+	void hashIgnoreCase_string() {
 		Object obj = 1;
 		assertEquals(Objects.hash(obj, "abc"), StringUtils.hashIgnoreCase(obj, "AbC"));
 	}
 
 	@Test
-	public void hashIgnoreCase_map() {
+	void hashIgnoreCase_map() {
 		Map<String, String> actual = new HashMap<>();
 		actual.put("ONE", "TWO");
 		Map<String, String> expected = new HashMap<>();
@@ -129,7 +129,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void startsWithIgnoreCase() {
+	void startsWithIgnoreCase() {
 		assertTrue(StringUtils.startsWithIgnoreCase("abcdefg", "ABC"));
 		assertTrue(StringUtils.startsWithIgnoreCase("abc", "abc"));
 		assertFalse(StringUtils.startsWithIgnoreCase("abcdefg", "bcd"));
@@ -137,7 +137,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void decodeBase64Lenient() {
+	void decodeBase64Lenient() {
 		byte[] expected = "test".getBytes(StandardCharsets.UTF_8);
 		String encoded = StringUtils.encodeBase64(expected);
 		String encodedWithWithspace = encoded.substring(0, 1) + " " + encoded.substring(1, 2) + "\t" + encoded.substring(2);
@@ -146,7 +146,7 @@ public class StringUtilsTest {
 	}
 
 	@Test
-	public void encodeBase64() {
+	void encodeBase64() {
 		byte[] data = "test".getBytes(StandardCharsets.UTF_8);
 		String actual = StringUtils.encodeBase64(data);
 		String expected = "dGVzdA==";

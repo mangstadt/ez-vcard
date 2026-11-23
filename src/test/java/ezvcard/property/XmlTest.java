@@ -4,12 +4,13 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static ezvcard.util.TestUtils.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -49,9 +50,9 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class XmlTest {
+class XmlTest {
 	@Test
-	public void constructors() throws Exception {
+	void constructors() throws Exception {
 		Xml property = new Xml((Document) null);
 		assertNull(property.getValue());
 
@@ -66,13 +67,13 @@ public class XmlTest {
 		assertXMLEqual(XmlUtils.toDocument("<root/>"), property.getValue());
 	}
 
-	@Test(expected = SAXException.class)
-	public void constructors_invalid_xml() throws Throwable {
-		new Xml("not valid XML");
+	@Test
+	void constructors_invalid_xml() throws Throwable {
+		assertThrows(SAXException.class, () -> new Xml("not valid XML"));
 	}
 
 	@Test
-	public void set_value() throws Exception {
+	void set_value() throws Exception {
 		Document value = XmlUtils.toDocument("<root/>");
 		Xml property = new Xml(value);
 
@@ -85,7 +86,7 @@ public class XmlTest {
 	}
 
 	@Test
-	public void validate() throws Throwable {
+	void validate() throws Throwable {
 		Xml empty = new Xml((Document) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
@@ -98,7 +99,7 @@ public class XmlTest {
 	}
 
 	@Test
-	public void toStringValues() throws Exception {
+	void toStringValues() throws Exception {
 		Xml property = new Xml(XmlUtils.toDocument("<root/>"));
 		assertFalse(property.toStringValues().isEmpty());
 
@@ -107,7 +108,7 @@ public class XmlTest {
 	}
 
 	@Test
-	public void copy() throws Exception {
+	void copy() throws Exception {
 		Xml original = new Xml((Document) null);
 		assertCopy(original);
 
@@ -119,7 +120,7 @@ public class XmlTest {
 	}
 
 	@Test
-	public void equals() throws Exception {
+	void equals() throws Exception {
 		//@formatter:off
 		assertNothingIsEqual(
 			new Xml((Document)null),

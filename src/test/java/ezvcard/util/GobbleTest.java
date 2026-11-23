@@ -1,8 +1,8 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -12,9 +12,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -48,15 +47,12 @@ import org.junit.rules.TemporaryFolder;
 /**
  * @author Michael Angstadt
  */
-public class GobbleTest {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-
+class GobbleTest {
 	@Test
-	public void file() throws Exception {
+	void file(@TempDir Path tempDir) throws Exception {
 		String data = "one two three";
 
-		Path file = folder.newFile().toPath();
+		Path file = tempDir.resolve("test.txt");
 		try (Writer writer = Files.newBufferedWriter(file)) {
 			writer.write(data);
 		}
@@ -67,7 +63,7 @@ public class GobbleTest {
 	}
 
 	@Test
-	public void inputStream() throws Exception {
+	void inputStream() throws Exception {
 		String data = "one two three";
 
 		InputStream in = new ByteArrayInputStream(data.getBytes());
@@ -81,7 +77,7 @@ public class GobbleTest {
 	}
 
 	@Test
-	public void reader() throws Exception {
+	void reader() throws Exception {
 		String data = "one two three";
 
 		Reader reader = new StringReader(data);

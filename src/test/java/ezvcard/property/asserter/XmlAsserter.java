@@ -1,6 +1,6 @@
 package ezvcard.property.asserter;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static ezvcard.util.TestUtils.assertXMLEqual;
 
 import java.util.List;
 

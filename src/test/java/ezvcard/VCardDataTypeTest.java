@@ -1,15 +1,15 @@
 package ezvcard;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -43,9 +43,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class VCardDataTypeTest {
+class VCardDataTypeTest {
 	@Test
-	public void get() {
+	void get() {
 		assertSame(VCardDataType.TEXT, VCardDataType.get("tExT"));
 
 		VCardDataType test = VCardDataType.get("test");
@@ -54,7 +54,7 @@ public class VCardDataTypeTest {
 	}
 
 	@Test
-	public void find() {
+	void find() {
 		assertSame(VCardDataType.TEXT, VCardDataType.find("tExT"));
 
 		//find() ignores runtime-defined objects
@@ -63,7 +63,7 @@ public class VCardDataTypeTest {
 	}
 
 	@Test
-	public void all() {
+	void all() {
 		VCardDataType.get("test"); //all() ignores runtime-defined objects
 		Collection<VCardDataType> all = VCardDataType.all();
 
@@ -86,14 +86,14 @@ public class VCardDataTypeTest {
 	}
 
 	@Test
-	public void getSupportedVersions() {
+	void getSupportedVersions() {
 		assertArrayEquals(new VCardVersion[] { VCardVersion.V2_1 }, VCardDataType.CONTENT_ID.getSupportedVersions());
 		assertArrayEquals(VCardVersion.values(), VCardDataType.TEXT.getSupportedVersions());
 		assertArrayEquals(VCardVersion.values(), VCardDataType.get("test").getSupportedVersions());
 	}
 
 	@Test
-	public void isSupportedBy() {
+	void isSupportedBy() {
 		assertTrue(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V2_1));
 		assertFalse(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V3_0));
 		assertFalse(VCardDataType.CONTENT_ID.isSupportedBy(VCardVersion.V4_0));

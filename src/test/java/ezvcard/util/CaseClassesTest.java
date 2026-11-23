@@ -1,15 +1,15 @@
 package ezvcard.util;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -39,16 +39,16 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class CaseClassesTest {
+class CaseClassesTest {
 	private CaseClassesImpl cc;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		cc = new CaseClassesImpl();
 	}
 
 	@Test
-	public void find() {
+	void find() {
 		PrimeNumber found = cc.find(1);
 		assertSame(PrimeNumber.ONE, found);
 
@@ -56,7 +56,7 @@ public class CaseClassesTest {
 	}
 
 	@Test
-	public void get() {
+	void get() {
 		PrimeNumber found = cc.get(3);
 		assertSame(PrimeNumber.THREE, found);
 
@@ -73,7 +73,7 @@ public class CaseClassesTest {
 	}
 
 	@Test
-	public void all() {
+	void all() {
 		Collection<PrimeNumber> dataTypes = cc.all();
 
 		assertEquals(4, dataTypes.size());
@@ -84,7 +84,7 @@ public class CaseClassesTest {
 	}
 
 	@Test
-	public void all_does_not_include_runtime_objects() {
+	void all_does_not_include_runtime_objects() {
 		cc.get(13);
 
 		Collection<PrimeNumber> dataTypes = cc.all();

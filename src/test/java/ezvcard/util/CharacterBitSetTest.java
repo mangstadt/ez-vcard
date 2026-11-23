@@ -2,14 +2,14 @@ package ezvcard.util;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.BitSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -43,9 +43,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class CharacterBitSetTest {
+class CharacterBitSetTest {
 	@Test
-	public void expandCharacterList() {
+	void expandCharacterList() {
 		BitSet actual = new CharacterBitSet("abc123").bitSet();
 		BitSet expected = new BitSet();
 		expected.set('a', 'd');
@@ -102,20 +102,20 @@ public class CharacterBitSetTest {
 	}
 
 	@Test
-	public void characters() {
+	void characters() {
 		CharacterBitSet bitSet = new CharacterBitSet("a-z");
 		assertEquals("a-z", bitSet.characters());
 	}
 
 	@Test
-	public void containsOnly_empty() {
+	void containsOnly_empty() {
 		CharacterBitSet bitSet = new CharacterBitSet("");
 		assertFalse(bitSet.containsOnly("anything"));
 		assertTrue(bitSet.containsOnly(""));
 	}
 
 	@Test
-	public void containsOnly() {
+	void containsOnly() {
 		CharacterBitSet bitSet = new CharacterBitSet("b-f0-9");
 		assertTrue(bitSet.containsOnly("bf3"));
 		assertFalse(bitSet.containsOnly("af3"));
@@ -125,14 +125,14 @@ public class CharacterBitSetTest {
 	}
 
 	@Test
-	public void containsAny_empty() {
+	void containsAny_empty() {
 		CharacterBitSet bitSet = new CharacterBitSet("");
 		assertFalse(bitSet.containsAny("anything"));
 		assertFalse(bitSet.containsAny(""));
 	}
 
 	@Test
-	public void containsAny() {
+	void containsAny() {
 		CharacterBitSet bitSet = new CharacterBitSet("b-f0-9");
 		assertTrue(bitSet.containsAny("bxx"));
 		assertFalse(bitSet.containsAny("aaa"));
@@ -141,7 +141,7 @@ public class CharacterBitSetTest {
 	}
 
 	@Test
-	public void equals_contract() {
+	void equals_contract() {
 		CharacterBitSet one = new CharacterBitSet("b-f0-9");
 		CharacterBitSet two = new CharacterBitSet("0-9f-b");
 		assertEqualsMethodEssentials(one);

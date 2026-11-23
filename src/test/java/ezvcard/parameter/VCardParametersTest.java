@@ -23,14 +23,15 @@ import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertNotEqualsBothWays;
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.util.GeoUri;
@@ -67,23 +68,23 @@ import ezvcard.util.GeoUri;
 /**
  * @author Michael Angstadt
  */
-public class VCardParametersTest {
+class VCardParametersTest {
 	private VCardParameters parameters;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		parameters = new VCardParameters();
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		parameters.put("NAME", "value");
 		VCardParameters copy = new VCardParameters(parameters);
 		assertEquals(copy, parameters);
 	}
 
 	@Test
-	public void validate_non_standard_values() {
+	void validate_non_standard_values() {
 		parameters.setCalscale(Calscale.get("foo"));
 		parameters.setEncoding(Encoding.get("foo"));
 		parameters.setValue(VCardDataType.get("foo"));
@@ -94,7 +95,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_malformed_values() {
+	void validate_malformed_values() {
 		parameters.put(GEO, "invalid");
 		parameters.put(INDEX, "invalid");
 		parameters.put(PREF, "invalid");
@@ -106,7 +107,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_pid() {
+	void validate_pid() {
 		parameters.replace(PID, "invalid"); //ASCII value is after "9"
 		assertValidate(parameters.validate(V2_1), 27, 6);
 		assertValidate(parameters.validate(V3_0), 27, 6);
@@ -144,7 +145,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_index() {
+	void validate_index() {
 		parameters.setIndex(0);
 		assertValidate(parameters.validate(V2_1), 28, 6);
 		assertValidate(parameters.validate(V3_0), 28, 6);
@@ -157,7 +158,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_pref() {
+	void validate_pref() {
 		parameters.setPref(0);
 		assertValidate(parameters.validate(V2_1), 29);
 		assertValidate(parameters.validate(V3_0), 29);
@@ -175,7 +176,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_supported_versions() {
+	void validate_supported_versions() {
 		parameters.setAltId("value");
 		parameters.setCalscale(Calscale.GREGORIAN);
 		parameters.setCharset("UTF-8");
@@ -193,7 +194,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_value_supported_versions() {
+	void validate_value_supported_versions() {
 		parameters.setEncoding(Encoding._7BIT);
 		parameters.setValue(VCardDataType.CONTENT_ID);
 		assertValidate(parameters.validate(V2_1));
@@ -214,7 +215,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_charset() {
+	void validate_charset() {
 		parameters.setCharset("invalid");
 		assertValidate(parameters.validate(V2_1), 22);
 		assertValidate(parameters.validate(V3_0), 6, 22);
@@ -227,7 +228,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_parameter_name() {
+	void validate_parameter_name() {
 		parameters.replace("YES/NO", "value");
 		assertValidate(parameters.validate(V2_1));
 		assertValidate(parameters.validate(V3_0), 26);
@@ -247,7 +248,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void validate_parameter_value_characters() {
+	void validate_parameter_value_characters() {
 		for (char c : ",.:=[]".toCharArray()) {
 			parameters.replace("NAME", "value" + c);
 			assertValidate(parameters.validate(V2_1), 31);
@@ -266,7 +267,7 @@ public class VCardParametersTest {
 	 * a LABEL property for these versions.
 	 */
 	@Test
-	public void validate_label_parameter_value_characters() {
+	void validate_label_parameter_value_characters() {
 		parameters.replace(LABEL, "value.\"");
 		assertValidate(parameters.validate(V2_1));
 		assertValidate(parameters.validate(V3_0));
@@ -283,7 +284,7 @@ public class VCardParametersTest {
 	 * Newlines in LABEL parameter values are ignored for version 4.0.
 	 */
 	@Test
-	public void validate_label_parameter_newlines() {
+	void validate_label_parameter_newlines() {
 		parameters.replace(LABEL, "value\n");
 		assertValidate(parameters.validate(V2_1));
 		assertValidate(parameters.validate(V3_0));
@@ -301,7 +302,7 @@ public class VCardParametersTest {
 	 * sanitizeKey()} is implemented correctly.
 	 */
 	@Test
-	public void case_insensitive() {
+	void case_insensitive() {
 		parameters.put("NUMBERS", "1");
 		assertEquals(Arrays.asList("1"), parameters.get("numbers"));
 		parameters.put("numbers", "2");
@@ -311,7 +312,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void encoding() {
+	void encoding() {
 		assertNull(parameters.getEncoding());
 
 		parameters.setEncoding(Encoding.QUOTED_PRINTABLE);
@@ -323,7 +324,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void value() {
+	void value() {
 		assertNull(parameters.getValue());
 
 		parameters.setValue(VCardDataType.TEXT);
@@ -335,7 +336,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void pref() {
+	void pref() {
 		assertNull(parameters.getPref());
 
 		parameters.setPref(1);
@@ -346,14 +347,14 @@ public class VCardParametersTest {
 		assertNull(parameters.getPref());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void pref_malformed() {
+	@Test
+	void pref_malformed() {
 		parameters.put(PREF, "invalid");
-		parameters.getPref();
+		assertThrows(IllegalStateException.class, parameters::getPref);
 	}
 
 	@Test
-	public void geo() {
+	void geo() {
 		assertNull(parameters.getGeo());
 
 		parameters.setGeo(new GeoUri.Builder(-10.98887888, 20.12344111).build());
@@ -364,14 +365,14 @@ public class VCardParametersTest {
 		assertNull(parameters.first(GEO));
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void geo_malformed() {
+	@Test
+	void geo_malformed() {
 		parameters.put(GEO, "invalid");
-		parameters.getGeo();
+		assertThrows(IllegalStateException.class, parameters::getGeo);
 	}
 
 	@Test
-	public void index() {
+	void index() {
 		assertNull(parameters.getIndex());
 
 		parameters.setIndex(1);
@@ -382,14 +383,14 @@ public class VCardParametersTest {
 		assertNull(parameters.getIndex());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void index_malformed() {
+	@Test
+	void index_malformed() {
 		parameters.put(INDEX, "invalid");
-		parameters.getIndex();
+		assertThrows(IllegalStateException.class, parameters::getIndex);
 	}
 
 	@Test
-	public void calscale() {
+	void calscale() {
 		assertNull(parameters.getCalscale());
 
 		parameters.setCalscale(Calscale.GREGORIAN);
@@ -401,7 +402,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void language() {
+	void language() {
 		assertNull(parameters.getLanguage());
 
 		parameters.setLanguage("en");
@@ -413,7 +414,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void label() {
+	void label() {
 		assertNull(parameters.getLabel());
 
 		parameters.setLabel("value");
@@ -425,7 +426,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void timezone() {
+	void timezone() {
 		assertNull(parameters.getTimezone());
 
 		parameters.setTimezone("value");
@@ -437,7 +438,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void type() {
+	void type() {
 		assertNull(parameters.getType());
 
 		parameters.setType("value");
@@ -449,7 +450,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void altId() {
+	void altId() {
 		assertNull(parameters.getAltId());
 
 		parameters.setAltId("value");
@@ -461,7 +462,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void mediaType() {
+	void mediaType() {
 		assertNull(parameters.getMediaType());
 
 		parameters.setMediaType("value");
@@ -473,7 +474,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void level() {
+	void level() {
 		assertNull(parameters.getLevel());
 
 		parameters.setLevel("value");
@@ -485,7 +486,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void sortAs() {
+	void sortAs() {
 		assertTrue(parameters.getSortAs().isEmpty());
 
 		parameters.setSortAs("one", "two");
@@ -507,14 +508,14 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_essentials() {
+	void equals_essentials() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "bar");
 		assertEqualsMethodEssentials(one);
 	}
 
 	@Test
-	public void equals_different_size() {
+	void equals_different_size() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "one");
 
@@ -526,7 +527,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_different_value_size() {
+	void equals_different_value_size() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "one");
 		one.put("bar", "three");
@@ -539,7 +540,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_case_insensitive() {
+	void equals_case_insensitive() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "bar");
 
@@ -550,7 +551,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_order_does_not_matter() {
+	void equals_order_does_not_matter() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "one");
 		one.put("foo", "two");
@@ -565,7 +566,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_duplicate_values() {
+	void equals_duplicate_values() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "one");
 		one.put("foo", "one");
@@ -580,7 +581,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_different_duplicates_same_value_size() {
+	void equals_different_duplicates_same_value_size() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "one");
 		one.put("foo", "one");
@@ -595,7 +596,7 @@ public class VCardParametersTest {
 	}
 
 	@Test
-	public void equals_multiple_keys() {
+	void equals_multiple_keys() {
 		VCardParameters one = new VCardParameters();
 		one.put("foo", "BAR");
 		one.put("super", "man");

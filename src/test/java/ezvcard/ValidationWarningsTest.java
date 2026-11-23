@@ -1,16 +1,16 @@
 package ezvcard;
 
 import static ezvcard.util.TestUtils.assertSetEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.property.VCardProperty;
 import ezvcard.util.StringUtils;
@@ -43,9 +43,9 @@ import ezvcard.util.StringUtils;
 /**
  * @author Michael Angstadt
  */
-public class ValidationWarningsTest {
+class ValidationWarningsTest {
 	@Test
-	public void isEmpty() {
+	void isEmpty() {
 		ValidationWarnings warnings = new ValidationWarnings();
 		assertTrue(warnings.isEmpty());
 
@@ -54,7 +54,7 @@ public class ValidationWarningsTest {
 	}
 
 	@Test
-	public void getByProperty() {
+	void getByProperty() {
 		ValidationWarnings warnings = new ValidationWarnings();
 
 		ValidationWarning v0 = new ValidationWarning(0);
@@ -74,7 +74,7 @@ public class ValidationWarningsTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		ValidationWarnings warnings = new ValidationWarnings();
 
 		warnings.add(null, new ValidationWarning("one"));

@@ -3,9 +3,10 @@ package ezvcard.io.xml;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static ezvcard.util.TestUtils.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,11 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -102,18 +100,9 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class XCardDocumentTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
-	@BeforeClass
-	public static void beforeClass() {
-		XMLUnit.setIgnoreAttributeOrder(true);
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-
+class XCardDocumentTest {
 	@Test
-	public void getVCards_multiple() throws Throwable {
+	void getVCards_multiple() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -141,7 +130,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void getVCards_single() throws Throwable {
+	void getVCards_single() throws Throwable {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -161,7 +150,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_basicType() throws Throwable {
+	void add_basicType() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -186,7 +175,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_parameters() throws Throwable {
+	void add_parameters() throws Throwable {
 		VCard vcard = new VCard();
 		Note note = new Note("This is a\nnote.");
 		note.setParameter(VCardParameters.ALTID, "value");
@@ -245,7 +234,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void read_parameters() throws Exception {
+	void read_parameters() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -319,7 +308,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_group() throws Throwable {
+	void add_group() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("John Doe");
@@ -373,7 +362,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void read_groups() throws Exception {
+	void read_groups() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readXml(
 		"<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\">" +
@@ -413,7 +402,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_multiple() throws Throwable {
+	void add_multiple() throws Throwable {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName("John Doe");
 
@@ -445,7 +434,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_skipMeException() throws Throwable {
+	void add_skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addProperty(new SkipMeProperty());
 		vcard.addExtendedProperty("x-foo", "value");
@@ -471,19 +460,20 @@ public class XCardDocumentTest {
 		assertXMLEqual(expected, actual);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void add_no_scribe_registered() throws Throwable {
+	@Test
+	void add_no_scribe_registered() throws Throwable {
 		VCard vcard = new VCard();
 
 		SkipMeProperty property = new SkipMeProperty();
 		vcard.addProperty(property);
 
 		XCardDocument xcard = new XCardDocument();
-		xcard.addVCard(vcard);
+		
+		assertThrows(IllegalArgumentException.class, () -> xcard.addVCard(vcard));
 	}
 
 	@Test
-	public void add_xml_property() throws Throwable {
+	void add_xml_property() throws Throwable {
 		VCard vcard = new VCard();
 
 		Xml xmlProperty = new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>");
@@ -525,7 +515,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_xml_property_with_null_value() throws Throwable {
+	void add_xml_property_with_null_value() throws Throwable {
 		VCard vcard = new VCard();
 
 		Xml xmlProperty = new Xml((Document) null);
@@ -550,7 +540,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_extendedTypes() throws Throwable {
+	void add_extendedTypes() throws Throwable {
 		VCard vcard = new VCard();
 
 		//contains marshal methods and QName
@@ -587,11 +577,11 @@ public class XCardDocumentTest {
 		Document expected = XmlUtils.toDocument(xml);
 		//@formatter:on
 
-		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
+		assertXMLEqual(expected, actual);
 	}
 
 	@Test
-	public void write_prettyPrint() throws Throwable {
+	void write_prettyPrint() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -614,11 +604,11 @@ public class XCardDocumentTest {
 		//@formatter:on
 
 		//use "String.contains()" to ignore the XML declaration at the top
-		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
+		assertTrue(actual.contains(expected), () -> "Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual);
 	}
 
 	@Test
-	public void write_prettyPrint_invalid_value() throws Throwable {
+	void write_prettyPrint_invalid_value() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -632,11 +622,11 @@ public class XCardDocumentTest {
 		String expected = "<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\"><vcard><fn><text>John Doe</text></fn></vcard></vcards>";
 
 		//use "String.contains()" to ignore the XML declaration at the top
-		assertTrue("Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual, actual.contains(expected));
+		assertTrue(actual.contains(expected), () -> "Expected:" + NEWLINE + expected + NEWLINE + NEWLINE + "Actual:" + NEWLINE + actual);
 	}
 
 	@Test
-	public void write_xmlVerison_default() throws Throwable {
+	void write_xmlVerison_default() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
@@ -646,7 +636,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void write_xmlVerison_1_1() throws Throwable {
+	void write_xmlVerison_1_1() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
@@ -656,7 +646,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void write_xmlVerison_invalid() throws Throwable {
+	void write_xmlVerison_invalid() throws Throwable {
 		VCard vcard = new VCard();
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
@@ -666,14 +656,14 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void write_utf8() throws Throwable {
+	void write_utf8(@TempDir Path tempDir) throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addNote("\u019dote");
 
 		XCardDocument xcard = new XCardDocument();
 		xcard.addVCard(vcard);
 
-		Path file = tempFolder.newFile().toPath();
+		Path file = tempDir.resolve("test.xml");
 		xcard.write(file);
 
 		String xml = new Gobble(file).asString(StandardCharsets.UTF_8);
@@ -682,7 +672,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_quoted_printable_encoding_not_supported() throws Throwable {
+	void add_quoted_printable_encoding_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedName fn = vcard.setFormattedName("Ömür Öde");
 		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
@@ -707,7 +697,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_embedded_vcards_not_supported() throws Throwable {
+	void add_embedded_vcards_not_supported() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.addProperty(new EmbeddedProperty());
@@ -722,7 +712,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_no_existing_vcards_element() throws Throwable {
+	void add_no_existing_vcards_element() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -750,7 +740,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void add_existing_vcards_element() throws Throwable {
+	void add_existing_vcards_element() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -778,7 +768,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void write_rfc6351_example() throws Throwable {
+	void write_rfc6351_example() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Simon Perreault");
@@ -847,7 +837,7 @@ public class XCardDocumentTest {
 	}
 
 	@Test
-	public void read_rfc6351_example() throws Throwable {
+	void read_rfc6351_example() throws Throwable {
 		VCardAsserter asserter = readFile("rfc6351-example.xml");
 		asserter.next(V4_0);
 
@@ -956,7 +946,7 @@ public class XCardDocumentTest {
 		Document expected = XmlUtils.toDocument(new InputStreamReader(XCardDocumentTest.class.getResourceAsStream(exampleFileName)));
 		Document actual = xcard.getDocument();
 
-		assertXMLEqual(XmlUtils.toString(actual), expected, actual);
+		assertXMLEqual(expected, actual);
 	}
 
 	private static VCardAsserter readFile(String file) throws SAXException, IOException {

@@ -1,9 +1,9 @@
 package ezvcard.issue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -21,7 +21,7 @@ import ezvcard.property.VCardProperty;
  */
 public class Issue136 {
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +

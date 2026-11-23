@@ -1,10 +1,10 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.ImageType;
@@ -43,7 +43,7 @@ import ezvcard.util.DataUri;
 /**
  * @author Michael Angstadt
  */
-public class ImagePropertyScribeTest {
+class ImagePropertyScribeTest {
 	private final ImagePropertyScribeImpl scribe = new ImagePropertyScribeImpl();
 	private final Sensei<ImagePropertyImpl> sensei = new Sensei<>(scribe);
 
@@ -53,7 +53,7 @@ public class ImagePropertyScribeTest {
 	private final String dataUri = new DataUri("image/jpeg", data).toString();
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<img />").cannotParse(13);
 		sensei.assertParseHtml("<img src=\"\" />").cannotParse(13);
 		sensei.assertParseHtml("<img src=\"" + url + "\" />").run(hasUrl(url, ImageType.JPEG));

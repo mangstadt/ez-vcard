@@ -1,11 +1,11 @@
 package ezvcard.issue;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -17,11 +17,11 @@ import ezvcard.util.DefaultLocaleRule;
  * @see "https://github.com/mangstadt/ez-vcard/pull/166"
  */
 public class PR166 {
-	@ClassRule
+	@RegisterExtension
 	public static final DefaultLocaleRule tzRule = new DefaultLocaleRule(new Locale("tr", "TR"));
 
 	@Test
-	public void converting_letter_i_to_lower_case_under_turkish_locale() {
+	void converting_letter_i_to_lower_case_under_turkish_locale() {
 		VCard vcard = new VCard();
 		vcard.getTitles().add(new Title("Director"));
 		String actual = Ezvcard.writeJson(vcard).prodId(false).go();

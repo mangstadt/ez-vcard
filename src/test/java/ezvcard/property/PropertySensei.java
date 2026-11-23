@@ -4,15 +4,16 @@ import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertNotEqualsBothWays;
 import static ezvcard.util.TestUtils.checkCodes;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -160,9 +161,9 @@ public class PropertySensei {
 			try {
 				Method method = original.getClass().getMethod(methodName);
 				Object fromOriginal = method.invoke(original);
-				String message = "Object returned by \"" + methodName + "\" is the same object, but it shouldn't be.";
-				assertNotSame(message, fromOriginal, method.invoke(copyFromConstructor));
-				assertNotSame(message, fromOriginal, method.invoke(copyFromMethod));
+				Supplier<String> message = () -> "Object returned by \"" + methodName + "\" is the same object, but it shouldn't be.";
+				assertNotSame(fromOriginal, method.invoke(copyFromConstructor), message);
+				assertNotSame(fromOriginal, method.invoke(copyFromMethod), message);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -363,7 +364,7 @@ public class PropertySensei {
 	 * @param instance2 the second property instance
 	 */
 	public static <T extends VCardProperty> void assertEqualsBaseClassFields(T instance1, T instance2) {
-		assertNotSame("You must pass two separate object instances into this method.", instance1, instance2);
+		assertNotSame(instance1, instance2, () -> "You must pass two separate object instances into this method.");
 		assertEqualsAndHash(instance1, instance2);
 
 		instance1.setGroup("group");

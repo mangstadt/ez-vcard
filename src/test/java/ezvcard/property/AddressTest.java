@@ -7,16 +7,16 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.parameter.AddressType;
 
@@ -52,9 +52,9 @@ import ezvcard.parameter.AddressType;
 /**
  * @author Michael Angstadt
  */
-public class AddressTest {
+class AddressTest {
 	@Test
-	public void extendedAddress() {
+	void extendedAddress() {
 		Address property = new Address();
 		assertNull(property.getExtendedAddress());
 		assertTrue(property.getExtendedAddresses().isEmpty());
@@ -77,7 +77,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void poBox() {
+	void poBox() {
 		Address property = new Address();
 		assertNull(property.getPoBox());
 		assertTrue(property.getPoBoxes().isEmpty());
@@ -100,7 +100,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void streetAddress() {
+	void streetAddress() {
 		Address property = new Address();
 		assertNull(property.getStreetAddress());
 		assertTrue(property.getStreetAddresses().isEmpty());
@@ -123,7 +123,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void locality() {
+	void locality() {
 		Address property = new Address();
 		assertNull(property.getLocality());
 		assertTrue(property.getLocalities().isEmpty());
@@ -146,7 +146,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void region() {
+	void region() {
 		Address property = new Address();
 		assertNull(property.getRegion());
 		assertTrue(property.getRegions().isEmpty());
@@ -169,7 +169,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void postalCode() {
+	void postalCode() {
 		Address property = new Address();
 		assertNull(property.getPostalCode());
 		assertTrue(property.getPostalCodes().isEmpty());
@@ -192,7 +192,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void country() {
+	void country() {
 		Address property = new Address();
 		assertNull(property.getCountry());
 		assertTrue(property.getCountries().isEmpty());
@@ -215,7 +215,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void getExtendedAddressFull() {
+	void getExtendedAddressFull() {
 		Address property = new Address();
 		assertNull(property.getExtendedAddressFull());
 		property.getExtendedAddresses().add("one");
@@ -224,7 +224,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void getStreetAddressFull() {
+	void getStreetAddressFull() {
 		Address property = new Address();
 		assertNull(property.getStreetAddressFull());
 		property.getStreetAddresses().add("one");
@@ -233,7 +233,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Address property = new Address();
 		assertValidate(property).run();
 
@@ -245,7 +245,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void validate_multi_valued() {
+	void validate_multi_valued() {
 		//zero values
 		assertValidate(new Address()).run();
 
@@ -322,13 +322,13 @@ public class AddressTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Address property = new Address();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Address original = new Address();
 		original.setExtendedAddress("one");
 		original.setPoBox("two");
@@ -351,7 +351,7 @@ public class AddressTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		Address property = new Address();

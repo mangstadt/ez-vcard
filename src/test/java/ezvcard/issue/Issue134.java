@@ -1,12 +1,12 @@
 package ezvcard.issue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -20,7 +20,7 @@ import ezvcard.property.RawProperty;
  */
 public class Issue134 {
 	@Test
-	public void test_2_1() {
+	void test_2_1() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +
@@ -41,7 +41,7 @@ public class Issue134 {
 	}
 
 	@Test
-	public void test_3_0() {
+	void test_3_0() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:3.0\r\n" +
@@ -62,7 +62,7 @@ public class Issue134 {
 	}
 
 	@Test
-	public void test_4_0() {
+	void test_4_0() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:4.0\r\n" +

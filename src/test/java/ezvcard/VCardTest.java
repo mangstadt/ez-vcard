@@ -6,18 +6,18 @@ import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertValidate;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.mangstadt.vinnie.LaciToken;
 
@@ -61,9 +61,9 @@ import ezvcard.util.StringUtils;
 /**
  * @author Michael Angstadt
  */
-public class VCardTest {
+class VCardTest {
 	@Test
-	public void getProperties() {
+	void getProperties() {
 		VCard vcard = new VCard();
 		assertCollectionContains(vcard.getProperties());
 		assertEquals(asList(), vcard.getProperties(Note.class));
@@ -84,7 +84,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void addProperty() {
+	void addProperty() {
 		VCard vcard = new VCard();
 		assertEquals(asList(), vcard.getProperties(Note.class));
 
@@ -98,7 +98,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void setProperty() {
+	void setProperty() {
 		VCard vcard = new VCard();
 
 		Note property1 = new Note("value");
@@ -119,7 +119,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void removeProperty() {
+	void removeProperty() {
 		VCard vcard = new VCard();
 
 		Note property1 = new Note("value");
@@ -132,7 +132,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void removeProperties() {
+	void removeProperties() {
 		VCard vcard = new VCard();
 
 		assertEquals(asList(), vcard.removeProperties(Note.class));
@@ -148,7 +148,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void getExtendedProperty() {
+	void getExtendedProperty() {
 		VCard vcard = new VCard();
 		assertNull(vcard.getExtendedProperty("NAME"));
 
@@ -164,7 +164,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void addExtendedProperty() {
+	void addExtendedProperty() {
 		VCard vcard = new VCard();
 		assertEquals(asList(), vcard.getExtendedProperties());
 
@@ -182,7 +182,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void setExtendedProperty() {
+	void setExtendedProperty() {
 		VCard vcard = new VCard();
 		assertEquals(asList(), vcard.getExtendedProperties());
 
@@ -200,7 +200,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void removeExtendedProperty() {
+	void removeExtendedProperty() {
 		VCard vcard = new VCard();
 		assertEquals(asList(), vcard.removeExtendedProperty("NAME"));
 		assertEquals(asList(), vcard.getExtendedProperties());
@@ -215,7 +215,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void addPropertyAlt() {
+	void addPropertyAlt() {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl one1 = new HasAltIdImpl("1");
@@ -237,7 +237,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void setPropertyAlt() {
+	void setPropertyAlt() {
 		VCard vcard = new VCard();
 
 		HasAltIdImpl property = new HasAltIdImpl(null);
@@ -250,7 +250,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void generateAltId() {
+	void generateAltId() {
 		Collection<HasAltIdImpl> list = asList(new HasAltIdImpl("1"), new HasAltIdImpl("1"), new HasAltIdImpl("2"));
 		assertEquals("3", VCard.generateAltId(list));
 
@@ -268,7 +268,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void getPropertiesAlt() {
+	void getPropertiesAlt() {
 		VCard vcard = new VCard();
 		assertEquals(asList(), vcard.getPropertiesAlt(HasAltIdImpl.class));
 
@@ -295,7 +295,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void validate_vcard() {
+	void validate_vcard() {
 		VCard vcard = new VCard();
 
 		assertValidate(vcard).versions(VCardVersion.V2_1).prop(null, 0).run();
@@ -311,7 +311,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void validate_properties() {
+	void validate_properties() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		VCardPropertyImpl prop = new VCardPropertyImpl();
@@ -323,7 +323,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.setVersion(VCardVersion.V2_1);
@@ -338,14 +338,14 @@ public class VCardTest {
 	}
 
 	@Test
-	public void equals_essentials() {
+	void equals_essentials() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 		assertEqualsMethodEssentials(one);
 	}
 
 	@Test
-	public void equals_different_version() {
+	void equals_different_version() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 		one.setVersion(VCardVersion.V2_1);
@@ -359,7 +359,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void equals_different_number_of_properties() {
+	void equals_different_number_of_properties() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 
@@ -372,7 +372,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void equals_properties_not_equal() {
+	void equals_properties_not_equal() {
 		VCard one = new VCard();
 		one.setFormattedName("John");
 
@@ -384,7 +384,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void equals_ignore_property_order() {
+	void equals_ignore_property_order() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 		one.setGender(Gender.male());
@@ -401,7 +401,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void equals_multiple_identical_properties() {
+	void equals_multiple_identical_properties() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 		one.setGender(Gender.male());
@@ -418,7 +418,7 @@ public class VCardTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		VCard vcard = new VCard();
 		assertEquals("version=3.0", vcard.toString());
 
@@ -435,7 +435,7 @@ public class VCardTest {
 	 * treated as a single property when they are put in a HashSet.
 	 */
 	@Test
-	public void equals_multiple_identical_properties_not_equal() {
+	void equals_multiple_identical_properties_not_equal() {
 		VCard one = new VCard();
 		one.setFormattedName("Name");
 		one.setGender(Gender.male());

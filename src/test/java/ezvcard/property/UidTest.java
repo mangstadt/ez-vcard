@@ -1,8 +1,8 @@
 package ezvcard.property;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -36,9 +36,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class UidTest {
+class UidTest {
 	@Test
-	public void random() {
+	void random() {
 		Uid uid = Uid.random();
 		assertTrue(uid.getValue().matches("urn:uuid:[-\\da-f]+"));
 	}

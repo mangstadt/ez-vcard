@@ -6,7 +6,7 @@ import static ezvcard.VCardVersion.V4_0;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.property.StructuredName;
@@ -43,7 +43,7 @@ import ezvcard.property.StructuredName;
 /**
  * @author Michael Angstadt
  */
-public class StructuredNameScribeTest {
+class StructuredNameScribeTest {
 	private final StructuredNameScribe scribe = new StructuredNameScribe();
 	private final Sensei<StructuredName> sensei = new Sensei<>(scribe);
 
@@ -66,7 +66,7 @@ public class StructuredNameScribeTest {
 	private final StructuredName empty = new StructuredName();
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withAllValues).versions(V2_1).run("Doe;Jonathan;Joh\\;nny,,John;Mr.;III");
 		sensei.assertWriteText(withAllValues).versions(V3_0, V4_0).run("Doe;Jonathan;Joh\\;nny\\,,John;Mr.;III");
 
@@ -79,7 +79,7 @@ public class StructuredNameScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		//@formatter:off
 		sensei.assertWriteXml(withAllValues).run(
 		"<surname>Doe</surname>" +
@@ -110,14 +110,14 @@ public class StructuredNameScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withAllValues).run(JCardValue.structured("Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III"));
 		sensei.assertWriteJson(withEmptyValues).run(JCardValue.structured("", "Jonathan", Arrays.asList("Joh;nny,", "John"), "", ""));
 		sensei.assertWriteJson(empty).run(JCardValue.structured("", "", "", "", ""));
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		StructuredName withAllValuesV2_1 = new StructuredName(withAllValues);
 		withAllValuesV2_1.getAdditionalNames().clear();
 		withAllValuesV2_1.getAdditionalNames().add("Joh;nny,,John");
@@ -135,7 +135,7 @@ public class StructuredNameScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		//@formatter:off
 		sensei.assertParseXml(
 		"<surname>Doe</surname>" +
@@ -166,7 +166,7 @@ public class StructuredNameScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -196,7 +196,7 @@ public class StructuredNameScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		JCardValue value = JCardValue.structured("Doe", "Jonathan", Arrays.asList("Joh;nny,", "John"), "Mr.", "III");
 		sensei.assertParseJson(value).run(withAllValues);
 

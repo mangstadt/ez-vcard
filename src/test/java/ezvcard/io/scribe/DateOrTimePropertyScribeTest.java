@@ -6,16 +6,16 @@ import static ezvcard.VCardDataType.TEXT;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.property.DateOrTimeProperty;
@@ -54,8 +54,8 @@ import ezvcard.util.PartialDate;
 /**
  * @author Michael Angstadt
  */
-public class DateOrTimePropertyScribeTest {
-	@ClassRule
+class DateOrTimePropertyScribeTest {
+	@RegisterExtension
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final DateOrTimeScribeImpl scribe = new DateOrTimeScribeImpl();
@@ -103,7 +103,7 @@ public class DateOrTimePropertyScribeTest {
 	private final DateOrTimePropertyImpl empty = new DateOrTimePropertyImpl();
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withDate).versions(V2_1, V3_0).run(null);
 		sensei.assertDataType(withDate).versions(V4_0).run(DATE);
 		sensei.assertDataType(withDateTime).versions(V2_1, V3_0).run(null);
@@ -119,7 +119,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withDate).versions(V2_1, V4_0).run(dateStr);
 		sensei.assertWriteText(withDate).versions(V3_0).run(dateExtendedStr);
 		sensei.assertWriteText(withDateTime).versions(V2_1, V4_0).run(dateTimeStr);
@@ -136,7 +136,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withDate).run("<date>" + dateStr + "</date>");
 		sensei.assertWriteXml(withDateTime).run("<date-time>" + dateTimeStr + "</date-time>");
 		sensei.assertWriteXml(withPartialDate).run("<date>" + partialDate.toISO8601(false) + "</date>");
@@ -147,7 +147,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withDate).run(dateExtendedStr);
 		sensei.assertWriteJson(withDateTime).run(dateTimeExtendedStr);
 		sensei.assertWriteJson(withPartialDate).run(partialDate.toISO8601(true));
@@ -158,7 +158,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(dateExtendedStr).run(withDate);
 		sensei.assertParseText(dateTimeExtendedStr).run(withDateTime);
 		sensei.assertParseText(partialDate.toISO8601(false)).run(withPartialDate);
@@ -171,7 +171,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		String[] tags = { "date", "date-time", "date-and-or-time" };
 		for (String tag : tags) {
 			String format = "<" + tag + ">%s</" + tag + ">";
@@ -190,7 +190,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(dateExtendedStr).run(withDate);
 		sensei.assertParseJson(dateTimeExtendedStr).run(withDateTime);
 		sensei.assertParseJson(partialDate.toISO8601(true)).run(withPartialDate);
@@ -201,7 +201,7 @@ public class DateOrTimePropertyScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<time datetime=\"" + dateExtendedStr + "\">June 5, 1980</time>").run(withDate);
 		sensei.assertParseHtml("<time>" + dateExtendedStr + "</time>").run(withDate);
 		sensei.assertParseHtml("<div>" + dateExtendedStr + "</div>").run(withDate);

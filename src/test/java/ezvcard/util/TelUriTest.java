@@ -1,16 +1,17 @@
 package ezvcard.util;
 
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -44,9 +45,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class TelUriTest {
+class TelUriTest {
 	@Test
-	public void parse_number() {
+	void parse_number() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -56,7 +57,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_extension() {
+	void parse_extension() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;ext=101");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertEquals("101", uri.getExtension());
@@ -66,7 +67,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_phoneContext() {
+	void parse_phoneContext() {
 		TelUri uri = TelUri.parse("tel:0101;phone-context=example.com");
 		assertEquals("0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -76,7 +77,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_isdnSubaddress() {
+	void parse_isdnSubaddress() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;isub=value");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -86,7 +87,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_multiple_params() {
+	void parse_multiple_params() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1=value1;param2=value2");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -101,7 +102,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_param_no_value() {
+	void parse_param_no_value() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1;param2=;param3=");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -118,7 +119,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_param_multiple_semicolons() {
+	void parse_param_multiple_semicolons() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param1=value1;;param2=value2;");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -133,7 +134,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_decode_special_chars_in_param_value() {
+	void parse_decode_special_chars_in_param_value() {
 		TelUri uri = TelUri.parse("tel:+1-212-555-0101;param=with%20%3d%20special%20&%20chars");
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -143,7 +144,7 @@ public class TelUriTest {
 	}
 
 	@Test
-	public void parse_empty() {
+	void parse_empty() {
 		TelUri uri = TelUri.parse("tel:");
 		assertEquals("", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -152,13 +153,13 @@ public class TelUriTest {
 		assertTrue(uri.getParameters().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_not_tel_uri() {
-		TelUri.parse("http://www.ietf.org");
+	@Test
+	void parse_not_tel_uri() {
+		assertThrows(IllegalArgumentException.class, () -> TelUri.parse("http://www.ietf.org"));
 	}
 
 	@Test
-	public void builder_global() {
+	void builder_global() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").build();
 		assertEquals("+1-212-555-0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -167,18 +168,18 @@ public class TelUriTest {
 		assertTrue(uri.getParameters().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_global_no_plus() {
-		new TelUri.Builder("1-212-555-0101");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_global_invalid() {
-		new TelUri.Builder("abc123");
+	@Test
+	void builder_global_no_plus() {
+		assertThrows(IllegalArgumentException.class, () -> new TelUri.Builder("1-212-555-0101"));
 	}
 
 	@Test
-	public void builder_local() {
+	void builder_global_invalid() {
+		assertThrows(IllegalArgumentException.class, () -> new TelUri.Builder("abc123"));
+	}
+
+	@Test
+	void builder_local() {
 		TelUri uri = new TelUri.Builder("0101", "example.com").build();
 		assertEquals("0101", uri.getNumber());
 		assertNull(uri.getExtension());
@@ -187,18 +188,19 @@ public class TelUriTest {
 		assertTrue(uri.getParameters().isEmpty());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_local_invalid() {
-		new TelUri.Builder("abc123", "example.com");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_extension_invalid() {
-		new TelUri.Builder("+1-212-555-0101").extension("!not-valid!");
+	@Test
+	void builder_local_invalid() {
+		assertThrows(IllegalArgumentException.class, () -> new TelUri.Builder("abc123", "example.com"));
 	}
 
 	@Test
-	public void builder_parameter() {
+	void builder_extension_invalid() {
+		TelUri.Builder builder = new TelUri.Builder("+1-212-555-0101");
+		assertThrows(IllegalArgumentException.class, () -> builder.extension("!not-valid!"));
+	}
+
+	@Test
+	void builder_parameter() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("one", "1").parameter("two", "2").parameter("one", null).build();
 
 		assertNull(uri.getParameter("one")); //removed
@@ -210,50 +212,52 @@ public class TelUriTest {
 		assertEquals(expected, uri.getParameters());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void builder_parmaeter_invalid_name() {
-		new TelUri.Builder("+1-212-555-0101").parameter("!not-valid!", "the value");
+	@Test
+	void builder_parmaeter_invalid_name() {
+		TelUri.Builder builder = new TelUri.Builder("+1-212-555-0101");
+		assertThrows(IllegalArgumentException.class, () -> builder.parameter("!not-valid!", "the value"));
 	}
 
 	@Test
-	public void builder_copy_constructor() {
+	void builder_copy_constructor() {
 		TelUri orig = new TelUri.Builder("+1-212-555-0101").extension("111").isdnSubaddress("isdn").parameter("name", "value").build();
 		TelUri copy = new TelUri.Builder(orig).build();
 		assertEquals(orig, copy);
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void getParameters_unmodifiable() {
+	@Test
+	void getParameters_unmodifiable() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").build();
-		uri.getParameters().put("one", "1");
+		Map<String, String> parameters = uri.getParameters();
+		assertThrows(UnsupportedOperationException.class, () -> parameters.put("one", "1"));
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").extension("101").build();
 		assertEquals("tel:+1-212-555-0101;ext=101", uri.toString());
 	}
 
 	//see RFC 3966, bottom of p.5
 	@Test
-	public void toString_parameter_order() {
+	void toString_parameter_order() {
 		TelUri uri = new TelUri.Builder("1010", "example.com").extension("101").isdnSubaddress("isdn").parameter("zebra", "z-value").parameter("apple", "a-value").build();
 		assertEquals("tel:1010;ext=101;isub=isdn;phone-context=example.com;apple=a-value;zebra=z-value", uri.toString());
 	}
 
 	@Test
-	public void toString_special_chars_in_param_value() {
+	void toString_special_chars_in_param_value() {
 		TelUri uri = new TelUri.Builder("+1-212-555-0101").parameter("param", "with = special & chars " + (char) 128).build();
 		assertEquals("tel:+1-212-555-0101;param=with%20%3d%20special%20&%20chars%20%80", uri.toString());
 	}
 
 	@Test
-	public void equals_contract() {
+	void equals_contract() {
 		EqualsVerifier.forClass(TelUri.class).usingGetClass().verify();
 	}
 
 	@Test
-	public void equals_ignore_case() {
+	void equals_ignore_case() {
 		TelUri one = new TelUri.Builder("+18001234567").isdnSubaddress("B").parameter("NAME", "VALUE").build();
 		TelUri two = new TelUri.Builder("+18001234567").isdnSubaddress("b").parameter("name", "value").build();
 		assertEqualsAndHash(one, two);

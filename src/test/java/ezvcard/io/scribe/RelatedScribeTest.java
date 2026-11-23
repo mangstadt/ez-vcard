@@ -1,9 +1,9 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
@@ -41,7 +41,7 @@ import ezvcard.property.Related;
 /**
  * @author Michael Angstadt
  */
-public class RelatedScribeTest {
+class RelatedScribeTest {
 	private final RelatedScribe scribe = new RelatedScribe();
 	private final Sensei<Related> sensei = new Sensei<>(scribe);
 
@@ -60,42 +60,42 @@ public class RelatedScribeTest {
 	private final Related empty = new Related();
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withText).run(VCardDataType.TEXT);
 		sensei.assertDataType(withUri).run(VCardDataType.URI);
 		sensei.assertDataType(empty).run(VCardDataType.URI);
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withText).run(textEscaped);
 		sensei.assertWriteText(withUri).run(uri);
 		sensei.assertWriteText(empty).run("");
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withText).run("<text>" + text + "</text>");
 		sensei.assertWriteXml(withUri).run("<uri>" + uri + "</uri>");
 		sensei.assertWriteXml(empty).run("<uri/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withText).run(text);
 		sensei.assertWriteJson(withUri).run(uri);
 		sensei.assertWriteJson(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(textEscaped).dataType(VCardDataType.TEXT).run(hasText(text));
 		sensei.assertParseText(uri).dataType(VCardDataType.URI).run(hasUri(uri));
 		sensei.assertParseText("").run(hasUri(""));
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>" + text + "</text>").run(hasText(text));
 		sensei.assertParseXml("<uri>" + uri + "</uri>").run(hasUri(uri));
 		sensei.assertParseXml("<text>" + text + "</text><uri>" + uri + "</uri>").run(hasUri(uri));
@@ -103,7 +103,7 @@ public class RelatedScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(hasText(text));
 		sensei.assertParseJson(uri).dataType(VCardDataType.URI).run(hasUri(uri));
 

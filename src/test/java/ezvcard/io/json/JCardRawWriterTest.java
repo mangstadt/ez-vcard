@@ -1,7 +1,8 @@
 package ezvcard.io.json;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.parameter.VCardParameters;
@@ -44,9 +45,9 @@ import ezvcard.parameter.VCardParameters;
  * @author Michael Angstadt
  */
 @SuppressWarnings("resource")
-public class JCardRawWriterTest {
+class JCardRawWriterTest {
 	@Test
-	public void write_multiple() throws Throwable {
+	void write_multiple() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
 			writer.writeStartVCard();
@@ -77,7 +78,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void writeProperty() throws Throwable {
+	void writeProperty() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -97,7 +98,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void writeProperty_null_value() throws Throwable {
+	void writeProperty_null_value() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -117,7 +118,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void parameters() throws Throwable {
+	void parameters() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -141,7 +142,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void group() throws Throwable {
+	void group() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -161,7 +162,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void complex_value() throws Throwable {
+	void complex_value() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -196,7 +197,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void data_type_unknown() throws Throwable {
+	void data_type_unknown() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -216,7 +217,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void different_value_types() throws Throwable {
+	void different_value_types() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -236,7 +237,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void empty() throws Throwable {
+	void empty() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 		}
@@ -246,34 +247,36 @@ public class JCardRawWriterTest {
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void write_property_before_starting_vcard() throws Throwable {
+	@Test
+	void write_property_before_starting_vcard() throws Throwable {
 		StringWriter sw = new StringWriter();
 		JCardRawWriter writer = new JCardRawWriter(sw, false);
+		JCardValue value = JCardValue.single("value");
 
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void write_end_vcard_before_starting_vcard() throws Throwable {
-		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeEndVCard();
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void write_property_after_ending_vcard() throws Throwable {
-		StringWriter sw = new StringWriter();
-		JCardRawWriter writer = new JCardRawWriter(sw, false);
-
-		writer.writeStartVCard();
-		writer.writeEndVCard();
-		writer.writeProperty("prop", VCardDataType.TEXT, JCardValue.single("value"));
+		assertThrows(IllegalStateException.class, () -> writer.writeProperty("prop", VCardDataType.TEXT, value));
 	}
 
 	@Test
-	public void write_empty_vcard() throws Exception {
+	void write_end_vcard_before_starting_vcard() throws Throwable {
+		StringWriter sw = new StringWriter();
+		JCardRawWriter writer = new JCardRawWriter(sw, false);
+
+		assertThrows(IllegalStateException.class, writer::writeEndVCard);
+	}
+
+	@Test
+	void write_property_after_ending_vcard() throws Throwable {
+		StringWriter sw = new StringWriter();
+		JCardRawWriter writer = new JCardRawWriter(sw, false);
+		JCardValue value = JCardValue.single("value");
+
+		writer.writeStartVCard();
+		writer.writeEndVCard();
+		assertThrows(IllegalStateException.class, () -> writer.writeProperty("prop", VCardDataType.TEXT, value));
+	}
+
+	@Test
+	void write_empty_vcard() throws Exception {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, false)) {
 			writer.writeStartVCard();
@@ -291,7 +294,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void writeStartVCard_multiple_calls() throws Exception {
+	void writeStartVCard_multiple_calls() throws Exception {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
 			writer.writeStartVCard();
@@ -316,7 +319,7 @@ public class JCardRawWriterTest {
 	}
 
 	@Test
-	public void indent() throws Throwable {
+	void indent() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardRawWriter writer = new JCardRawWriter(sw, true)) {
 			writer.setPrettyPrint(true);

@@ -1,14 +1,14 @@
 package ezvcard.io.json;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -50,18 +50,18 @@ import ezvcard.VCard;
  * @author Buddy Gorven
  * @author Michael Angstadt
  */
-public class JCardSerializerTest {
+class JCardSerializerTest {
 	//TODO test setScribe()
 
 	private ObjectMapper mapper;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		mapper = new ObjectMapper();
 	}
 
 	@Test
-	public void serialize_single() throws Exception {
+	void serialize_single() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -84,7 +84,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void serialize_single_prettyPrint() throws Exception {
+	void serialize_single_prettyPrint() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -110,7 +110,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void serialize_multiple() throws Exception {
+	void serialize_multiple() throws Exception {
 		List<VCard> vcards = new ArrayList<>();
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -147,7 +147,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void serialize_multiple_prettyPrint() throws Exception {
+	void serialize_multiple_prettyPrint() throws Exception {
 		List<VCard> vcards = new ArrayList<>();
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
@@ -188,7 +188,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void container() throws Exception {
+	void container() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.setMailer("mailer");
@@ -214,7 +214,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void container_null() throws Exception {
+	void container_null() throws Exception {
 		Container container = new Container(null);
 
 		StringWriter result = new StringWriter();
@@ -231,7 +231,7 @@ public class JCardSerializerTest {
 	}
 
 	@Test
-	public void container_annotation() throws Exception {
+	void container_annotation() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.setMailer("mailer");

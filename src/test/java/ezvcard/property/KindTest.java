@@ -1,10 +1,10 @@
 package ezvcard.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -38,9 +38,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class KindTest {
+class KindTest {
 	@Test
-	public void isIndividual() {
+	void isIndividual() {
 		Kind kind = new Kind("Individual");
 		assertTrue(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -51,7 +51,7 @@ public class KindTest {
 	}
 
 	@Test
-	public void isGroup() {
+	void isGroup() {
 		Kind kind = new Kind("Group");
 		assertFalse(kind.isIndividual());
 		assertTrue(kind.isGroup());
@@ -62,7 +62,7 @@ public class KindTest {
 	}
 
 	@Test
-	public void isOrg() {
+	void isOrg() {
 		Kind kind = new Kind("Org");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -73,7 +73,7 @@ public class KindTest {
 	}
 
 	@Test
-	public void isLocation() {
+	void isLocation() {
 		Kind kind = new Kind("Location");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -84,7 +84,7 @@ public class KindTest {
 	}
 
 	@Test
-	public void isApplication() {
+	void isApplication() {
 		Kind kind = new Kind("Application");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -95,7 +95,7 @@ public class KindTest {
 	}
 
 	@Test
-	public void isDevice() {
+	void isDevice() {
 		Kind kind = new Kind("Device");
 		assertFalse(kind.isIndividual());
 		assertFalse(kind.isGroup());
@@ -106,37 +106,37 @@ public class KindTest {
 	}
 
 	@Test
-	public void individual() {
+	void individual() {
 		Kind kind = Kind.individual();
 		assertEquals("individual", kind.getValue());
 	}
 
 	@Test
-	public void group() {
+	void group() {
 		Kind kind = Kind.group();
 		assertEquals("group", kind.getValue());
 	}
 
 	@Test
-	public void org() {
+	void org() {
 		Kind kind = Kind.org();
 		assertEquals("org", kind.getValue());
 	}
 
 	@Test
-	public void location() {
+	void location() {
 		Kind kind = Kind.location();
 		assertEquals("location", kind.getValue());
 	}
 
 	@Test
-	public void application() {
+	void application() {
 		Kind kind = Kind.application();
 		assertEquals("application", kind.getValue());
 	}
 
 	@Test
-	public void device() {
+	void device() {
 		Kind kind = Kind.device();
 		assertEquals("device", kind.getValue());
 	}

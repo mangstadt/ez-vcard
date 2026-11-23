@@ -5,13 +5,13 @@ import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -45,9 +45,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class StructuredNameTest {
+class StructuredNameTest {
 	@Test
-	public void validate() {
+	void validate() {
 		//zero values
 		assertValidate(new StructuredName()).versions().run();
 
@@ -92,7 +92,7 @@ public class StructuredNameTest {
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		StructuredName original = new StructuredName();
 		original.getAdditionalNames().add("one");
 		original.getPrefixes().add("two");
@@ -107,7 +107,7 @@ public class StructuredNameTest {
 	}
 
 	@Test
-	public void sortAs_null() {
+	void sortAs_null() {
 		StructuredName n = new StructuredName();
 
 		n.setSortAs("Doe");

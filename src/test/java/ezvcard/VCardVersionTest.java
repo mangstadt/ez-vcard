@@ -1,9 +1,9 @@
 package ezvcard;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -37,25 +37,25 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class VCardVersionTest {
+class VCardVersionTest {
 	@Test
-	public void valueOfByStr() {
+	void valueOfByStr() {
 		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version, VCardVersion.valueOfByStr(version.getVersion()));
+			assertEquals(version, VCardVersion.valueOfByStr(version.getVersion()), () -> version + " failed.");
 		}
 		assertNull(VCardVersion.valueOfByStr("5.0"));
 	}
 
 	@Test
-	public void valueOfByXmlNamespace() {
+	void valueOfByXmlNamespace() {
 		assertEquals(VCardVersion.V4_0, VCardVersion.valueOfByXmlNamespace(VCardVersion.V4_0.getXmlNamespace()));
 		assertNull(VCardVersion.valueOfByXmlNamespace("urn:ietf:params:xml:ns:vcard-5.0"));
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		for (VCardVersion version : VCardVersion.values()) {
-			assertEquals(version + " failed.", version.getVersion(), version.toString());
+			assertEquals(version.getVersion(), version.toString(), () -> version + " failed.");
 		}
 	}
 }

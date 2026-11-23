@@ -4,11 +4,11 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -42,9 +42,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class SimplePropertyTest {
+class SimplePropertyTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		SimplePropertyImpl property = new SimplePropertyImpl((String) null);
 		assertNull(property.getValue());
 
@@ -53,7 +53,7 @@ public class SimplePropertyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		SimplePropertyImpl property = new SimplePropertyImpl("value");
 
 		property.setValue("value2");
@@ -61,7 +61,7 @@ public class SimplePropertyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		SimplePropertyImpl empty = new SimplePropertyImpl((String) null);
 		assertValidate(empty).run(8);
 
@@ -70,13 +70,13 @@ public class SimplePropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		SimplePropertyImpl property = new SimplePropertyImpl("value");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		SimplePropertyImpl original = new SimplePropertyImpl((String) null);
 		assertCopy(original);
 
@@ -85,7 +85,7 @@ public class SimplePropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new SimplePropertyImpl((String) null),

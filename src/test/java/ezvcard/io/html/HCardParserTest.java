@@ -5,11 +5,11 @@ import static ezvcard.util.TestUtils.assertNoMoreVCards;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.io.LuckyNumProperty;
@@ -62,9 +62,9 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class HCardParserTest {
+class HCardParserTest {
 	@Test
-	public void html_without_vcard() throws Exception {
+	void html_without_vcard() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -77,7 +77,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void empty_vcard() throws Exception {
+	void empty_vcard() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -93,7 +93,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void vcard_element_has_other_classes() throws Exception {
+	void vcard_element_has_other_classes() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -116,7 +116,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void case_insensitive_property_names() throws Exception {
+	void case_insensitive_property_names() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -139,7 +139,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void single_tag_with_multiple_properties() throws Exception {
+	void single_tag_with_multiple_properties() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -166,7 +166,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void property_tags_are_not_direct_children_of_root_tag() throws Exception {
+	void property_tags_are_not_direct_children_of_root_tag() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -207,7 +207,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void property_tags_within_other_property_tags() throws Exception {
+	void property_tags_within_other_property_tags() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -236,7 +236,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void read_multiple() throws Exception {
+	void read_multiple() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -266,7 +266,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void embedded_vcards() {
+	void embedded_vcards() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -309,7 +309,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void url_of_vcard_specified() throws Exception {
+	void url_of_vcard_specified() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -342,7 +342,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void convert_instant_messenging_urls_to_impp_types() throws Exception {
+	void convert_instant_messenging_urls_to_impp_types() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -365,7 +365,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void convert_mailto_urls_to_email_types() throws Exception {
+	void convert_mailto_urls_to_email_types() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -388,7 +388,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void convert_tel_urls_to_tel_types() throws Exception {
+	void convert_tel_urls_to_tel_types() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -411,7 +411,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void mailto_url_with_email_and_url_class_names() throws Exception {
+	void mailto_url_with_email_and_url_class_names() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -438,7 +438,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void tel_url_with_tel_and_url_class_names() throws Exception {
+	void tel_url_with_tel_and_url_class_names() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -465,7 +465,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void assign_labels_to_addresses() throws Exception {
+	void assign_labels_to_addresses() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -504,7 +504,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void anchor_in_url() throws Exception {
+	void anchor_in_url() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -538,7 +538,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void non_existant_anchor() throws Exception {
+	void non_existant_anchor() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -582,7 +582,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void add_all_nicknames_to_the_same_object() throws Exception {
+	void add_all_nicknames_to_the_same_object() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -612,7 +612,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void add_all_categories_to_the_same_object() throws Exception {
+	void add_all_categories_to_the_same_object() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -642,7 +642,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void complete_vcard() throws Exception {
+	void complete_vcard() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = readHtml(
 		"<html>" +
@@ -711,7 +711,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void registerExtendedProperty() {
+	void registerExtendedProperty() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -747,7 +747,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void registerExtendedProperty_overrides_standard_type_classes() {
+	void registerExtendedProperty_overrides_standard_type_classes() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -775,7 +775,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void skipMeException() throws Exception {
+	void skipMeException() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -803,7 +803,7 @@ public class HCardParserTest {
 	}
 
 	@Test
-	public void cannotParseException() throws Exception {
+	void cannotParseException() throws Exception {
 		//@formatter:off
 		String html =
 		"<html>" +

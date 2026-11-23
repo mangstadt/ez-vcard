@@ -1,10 +1,10 @@
 package ezvcard.io;
 
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.mangstadt.vinnie.LaciToken;
 
@@ -38,9 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @author Michael Angstadt
  */
-public class ParseWarningTest {
+class ParseWarningTest {
 	@Test
-	public void builder_empty() {
+	void builder_empty() {
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.build();
 		assertNull(warning.getLineNumber());
@@ -50,7 +50,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void builder_string_message() {
+	void builder_string_message() {
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.lineNumber(1).propertyName("PROP").message("message").build();
 		assertIntEquals(1, warning.getLineNumber());
@@ -60,7 +60,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void builder_code_message() {
+	void builder_code_message() {
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.lineNumber(1).propertyName("PROP").message(2, "arg").build();
 		assertIntEquals(1, warning.getLineNumber());
@@ -70,7 +70,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void builder_CannotParseException_reason() {
+	void builder_CannotParseException_reason() {
 		CannotParseException e = new CannotParseException("reason");
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.message(e).build();
@@ -81,7 +81,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void builder_CannotParseException_code() {
+	void builder_CannotParseException_code() {
 		CannotParseException e = new CannotParseException(2, "arg");
 		ParseWarning.Builder builder = new ParseWarning.Builder();
 		ParseWarning warning = builder.message(e).build();
@@ -92,7 +92,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void builder_ParseContext() {
+	void builder_ParseContext() {
 		ParseContext context = new ParseContext();
 		context.setLineNumber(1);
 		context.setPropertyName("PROP");
@@ -105,7 +105,7 @@ public class ParseWarningTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		//without code
 		{
 			ParseWarning.Builder builder = new ParseWarning.Builder();

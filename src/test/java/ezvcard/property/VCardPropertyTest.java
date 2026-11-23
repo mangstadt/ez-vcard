@@ -7,14 +7,14 @@ import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCard;
@@ -65,31 +65,31 @@ import ezvcard.parameter.VCardParameters;
 /**
  * @author Michael Angstadt
  */
-public class VCardPropertyTest {
+class VCardPropertyTest {
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validate_overrideable_method_called() {
+	void validate_overrideable_method_called() {
 		VCardPropertyImpl property = spy(new VCardPropertyImpl());
 		assertValidate(property).versions(V2_1).run();
 		verify(property)._validate(anyList(), eq(V2_1), any(VCard.class));
 	}
 
 	@Test
-	public void validate_unsupported_version() {
+	void validate_unsupported_version() {
 		Version3Property property = new Version3Property();
 		assertValidate(property).versions(V2_1, V4_0).run(2);
 		assertValidate(property).versions(V3_0).run();
 	}
 
 	@Test
-	public void validate_valid_group() {
+	void validate_valid_group() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		property.setGroup("Group-1");
 		assertValidate(property).run();
 	}
 
 	@Test
-	public void validate_invalid_group() {
+	void validate_invalid_group() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		property.setGroup("mr.smith");
 		assertValidate(property).versions(V2_1).run(32);
@@ -97,7 +97,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void validate_parameters() {
+	void validate_parameters() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		property.setParameter("ALTID", "1");
 		assertValidate(property).versions(V2_1, V3_0).run(6);
@@ -105,7 +105,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void getSupportedVersions() {
+	void getSupportedVersions() {
 		VCardPropertyImpl withoutSupportedVersions = new VCardPropertyImpl();
 		assertArrayEquals(VCardVersion.values(), withoutSupportedVersions.getSupportedVersions());
 
@@ -114,7 +114,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void isSupportedBy() {
+	void isSupportedBy() {
 		VCardPropertyImpl withoutSupportedVersions = new VCardPropertyImpl();
 		for (VCardVersion version : VCardVersion.values()) {
 			assertTrue(withoutSupportedVersions.isSupportedBy(version));
@@ -127,7 +127,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void group() {
+	void group() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		assertNull(property.getGroup());
 
@@ -136,7 +136,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void parameters() {
+	void parameters() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		assertEquals(new VCardParameters(), property.getParameters());
 		assertThrows(NullPointerException.class, () -> property.setParameters(null));
@@ -169,7 +169,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void compareTo() {
+	void compareTo() {
 		VCardPropertyImpl one = new VCardPropertyImpl();
 		one.getParameters().setPref(1);
 
@@ -188,7 +188,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		CopyConstructorTest property = new CopyConstructorTest("value");
 		property.setGroup("group");
 		property.getParameters().setLanguage("en-us");
@@ -203,7 +203,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void copy_constructor_throws_exception() {
+	void copy_constructor_throws_exception() {
 		RuntimeException exception = new RuntimeException();
 		CopyConstructorThrowsExceptionTest property = new CopyConstructorThrowsExceptionTest(exception);
 
@@ -213,20 +213,20 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void copy_no_copy_constructor() {
+	void copy_no_copy_constructor() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		UnsupportedOperationException e = assertThrows(UnsupportedOperationException.class, property::copy);
 		assertTrue(e.getCause() instanceof NoSuchMethodException);
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		VCardPropertyImpl property = new VCardPropertyImpl();
 		assertTrue(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		VCardProperty property = new VCardPropertyImpl();
 		assertEquals(VCardPropertyImpl.class.getName() + " [ group=null | parameters={} ]", property.toString());
 
@@ -237,7 +237,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(new CopyConstructorTest(""));
 		
@@ -247,7 +247,7 @@ public class VCardPropertyTest {
 	}
 
 	@Test
-	public void equals_group_ignore_case() {
+	void equals_group_ignore_case() {
 		VCardPropertyImpl one = new VCardPropertyImpl();
 		one.setGroup("GROUP");
 		VCardPropertyImpl two = new VCardPropertyImpl();

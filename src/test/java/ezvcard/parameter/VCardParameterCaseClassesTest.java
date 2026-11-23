@@ -1,11 +1,11 @@
 package ezvcard.parameter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -35,16 +35,16 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class VCardParameterCaseClassesTest {
+class VCardParameterCaseClassesTest {
 	private VCardParameterCaseClasses<Pet> caseClasses;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		caseClasses = new VCardParameterCaseClasses<>(Pet.class);
 	}
 
 	@Test
-	public void get() {
+	void get() {
 		assertSame(Pet.CAT, caseClasses.get("cAt"));
 
 		Pet gerbil = caseClasses.get("gerbil");
@@ -54,7 +54,7 @@ public class VCardParameterCaseClassesTest {
 	}
 
 	@Test
-	public void find() {
+	void find() {
 		assertSame(Pet.CAT, caseClasses.find("cAt"));
 		assertNull(caseClasses.find("gerbil"));
 	}

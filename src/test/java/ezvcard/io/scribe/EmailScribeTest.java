@@ -4,7 +4,7 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.parameter.EmailType;
@@ -42,12 +42,12 @@ import ezvcard.property.Email;
 /**
  * @author Michael Angstadt
  */
-public class EmailScribeTest {
+class EmailScribeTest {
 	private final EmailScribe scribe = new EmailScribe();
 	private final Sensei<Email> sensei = new Sensei<>(scribe);
 
 	@Test
-	public void prepareParameters_type_pref() {
+	void prepareParameters_type_pref() {
 		Email property = new Email("johndoe@example.com");
 		property.getTypes().add(EmailType.PREF);
 
@@ -56,7 +56,7 @@ public class EmailScribeTest {
 	}
 
 	@Test
-	public void prepareParameters_pref_parameter() {
+	void prepareParameters_pref_parameter() {
 		Email property = new Email("johndoe@example.com");
 		property.setPref(1);
 
@@ -68,13 +68,13 @@ public class EmailScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		Email expected = new Email("johndoe@example.com");
 		sensei.assertParseText("johndoe@example.com").run(expected);
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		Email expected = new Email("johndoe@example.com");
 
 		//@formatter:off
@@ -97,7 +97,7 @@ public class EmailScribeTest {
 	}
 
 	@Test
-	public void parseHtml_types() {
+	void parseHtml_types() {
 		Email expected = new Email("johndoe@example.com");
 		expected.getTypes().add(EmailType.HOME);
 

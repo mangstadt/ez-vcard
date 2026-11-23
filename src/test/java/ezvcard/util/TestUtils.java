@@ -1,11 +1,11 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -18,6 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.xml.transform.OutputKeys;
+
+import org.w3c.dom.Document;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.builder.Input;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.ElementSelectors;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -127,7 +136,7 @@ public class TestUtils {
 	 */
 	public static void assertListSize(int expectedSize, List<?> list) {
 		int actualSize = list.size();
-		assertEquals(list.toString(), expectedSize, actualSize);
+		assertEquals(expectedSize, actualSize, list::toString);
 	}
 
 	public static boolean checkCodes(List<ValidationWarning> warnings, Integer... expectedCodes) {
@@ -252,7 +261,7 @@ public class TestUtils {
 
 		Collection<T> actualCopy = new ArrayList<>(actual);
 		for (T expectedElement : expectedElements) {
-			assertTrue("Collection did not contain: " + expectedElement, actualCopy.remove(expectedElement));
+			assertTrue(actualCopy.remove(expectedElement), () -> "Collection did not contain: " + expectedElement);
 		}
 	}
 
@@ -324,10 +333,42 @@ public class TestUtils {
 		for (Object object1 : objects) {
 			for (Object object2 : objects) {
 				if (object1 != object2) {
-					assertNotEquals("Objects should not be equal:\n" + object1 + "\n" + object2, object1, object2);
+					assertNotEquals(object1, object2, () -> "Objects should not be equal:\n" + object1 + "\n" + object2);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Asserts that two XML documents are the same.
+	 * @param expected the expected document
+	 * @param actual the actual document
+	 */
+	public static void assertXMLEqual(Document expected, Document actual) {
+		//@formatter:off
+		Diff diff = DiffBuilder.compare(Input.fromDocument(expected)).withTest(Input.fromDocument(actual))
+			.checkForSimilar()
+			.withNodeMatcher(ignoreElementOrder())
+			.ignoreComments()
+			.ignoreElementContentWhitespace()
+			.ignoreWhitespace()
+		.build();
+		//@formatter:on
+
+		assertFalse(diff.hasDifferences(), () -> {
+			Map<String, String> properties = new HashMap<>();
+			properties.put(OutputKeys.INDENT, "yes");
+			properties.put("{http://xml.apache.org/xslt}indent-amount", "3");
+
+			String expectedStr = XmlUtils.toString(expected, properties);
+			String actualStr = XmlUtils.toString(actual, properties);
+
+			return "Expected:\n" + expectedStr + "\n\nActual:\n" + actualStr;
+		});
+	}
+
+	private static DefaultNodeMatcher ignoreElementOrder() {
+		return new DefaultNodeMatcher(ElementSelectors.byName);
 	}
 
 	public static <T> T[] each(T... t) {

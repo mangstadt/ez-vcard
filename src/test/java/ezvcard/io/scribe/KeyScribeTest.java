@@ -7,11 +7,11 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.StringUtils.encodeBase64;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.KeyType;
@@ -50,7 +50,7 @@ import ezvcard.util.DataUri;
 /**
  * @author Michael Angstadt
  */
-public class KeyScribeTest {
+class KeyScribeTest {
 	private final KeyScribe scribe = new KeyScribe();
 	private final Sensei<Key> sensei = new Sensei<>(scribe);
 
@@ -69,7 +69,7 @@ public class KeyScribeTest {
 	private final Key empty = new Key();
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withUrl).run(URI);
 
 		sensei.assertDataType(withData).versions(V2_1, V3_0).run(null);
@@ -83,7 +83,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void prepareParameters() {
+	void prepareParameters() {
 		sensei.assertPrepareParams(withUrl).versions(V2_1, V3_0).expected("TYPE", "gpg").run();
 		sensei.assertPrepareParams(withUrl).versions(V4_0).expected("MEDIATYPE", "application/gpg").run();
 
@@ -98,7 +98,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withUrl).run(url);
 
 		sensei.assertWriteText(withData).versions(V2_1, V3_0).run(base64Data);
@@ -110,7 +110,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withUrl).run("<uri>" + url + "</uri>");
 		sensei.assertWriteXml(withData).run("<uri>" + dataUri + "</uri>");
 		sensei.assertWriteXml(withText).run("<text>" + text + "</text>");
@@ -118,7 +118,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withUrl).run(url);
 		sensei.assertWriteJson(withData).run(dataUri);
 		sensei.assertWriteJson(withText).run(text);
@@ -126,7 +126,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(url).dataType(URL).versions(V2_1, V3_0).param("TYPE", "gpg").run(hasUrl(url, KeyType.GPG));
 		sensei.assertParseText(url).dataType(URL).versions(V2_1, V3_0).run(hasUrl(url, KeyType.PGP));
 		sensei.assertParseText(url).dataType(null).versions(V2_1, V3_0).param("TYPE", "gpg").run(hasText(url, KeyType.GPG));
@@ -135,7 +135,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<uri>" + url + "</uri>").param("MEDIATYPE", "application/gpg").run(hasUrl(url, KeyType.GPG));
 		sensei.assertParseXml("<uri>" + url + "</uri>").run(hasUrl(url, KeyType.PGP));
 		sensei.assertParseXml("<uri>" + dataUri + "</uri>").param("MEDIATYPE", "application/gpg").run(hasData(data, KeyType.GPG));
@@ -144,7 +144,7 @@ public class KeyScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(url).param("MEDIATYPE", "application/gpg").run(hasUrl(url, KeyType.GPG));
 		sensei.assertParseJson(url).run(hasUrl(url, KeyType.PGP));
 		sensei.assertParseJson(dataUri).run(hasData(data, KeyType.GPG));

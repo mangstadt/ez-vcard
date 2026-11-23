@@ -1,15 +1,15 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -43,9 +43,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class HtmlUtilsTest {
+class HtmlUtilsTest {
 	@Test
-	public void isChildOf() {
+	void isChildOf() {
 		//@formatter:off
 		String html =
 		"<html><body>" +
@@ -69,21 +69,21 @@ public class HtmlUtilsTest {
 	}
 
 	@Test
-	public void toElement_without_base_url() {
+	void toElement_without_base_url() {
 		Element element = HtmlUtils.toElement("<img src=\"image.png\" />");
 		assertEquals("img", element.tagName());
 		assertEquals("", element.absUrl("src"));
 	}
 
 	@Test
-	public void toElement_with_base_url() {
+	void toElement_with_base_url() {
 		Element element = HtmlUtils.toElement("<img src=\"image.png\" />", "http://example.com/");
 		assertEquals("img", element.tagName());
 		assertEquals("http://example.com/image.png", element.absUrl("src"));
 	}
 
 	@Test
-	public void getAnchorFromUrl() {
+	void getAnchorFromUrl() {
 		assertEquals("foo", HtmlUtils.getAnchorFromUrl("https://domain.com/page#foo"));
 		assertEquals("", HtmlUtils.getAnchorFromUrl("https://domain.com/page#"));
 		assertNull(HtmlUtils.getAnchorFromUrl("https://domain.com/page"));

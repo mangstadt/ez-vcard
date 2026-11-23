@@ -4,12 +4,12 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.each;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,8 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -65,18 +65,18 @@ import ezvcard.util.ListMultimap;
 /**
  * @author Michael Angstadt
  */
-public class StreamWriterTest {
+class StreamWriterTest {
 	private StreamWriterStub writer;
 	private VCard vcard;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		writer = new StreamWriterStub();
 		vcard = new VCard();
 	}
 
 	@Test
-	public void unregistered_property() {
+	void unregistered_property() {
 		vcard.addProperty(new TestProperty());
 
 		assertThrows(IllegalArgumentException.class, () -> writer.write(vcard));
@@ -85,7 +85,7 @@ public class StreamWriterTest {
 	}
 
 	@Test
-	public void productId() throws IOException {
+	void productId() throws IOException {
 		assertNull(vcard.getProductId());
 
 		//default value
@@ -176,7 +176,7 @@ public class StreamWriterTest {
 	 * Asserts that the PRODID property is always put at the front of the vCard.
 	 */
 	@Test
-	public void productId_order() throws IOException {
+	void productId_order() throws IOException {
 		vcard.setFormattedName("Name");
 
 		{
@@ -222,7 +222,7 @@ public class StreamWriterTest {
 	}
 
 	@Test
-	public void versionStrict() throws Exception {
+	void versionStrict() throws Exception {
 		writer.setAddProdId(false);
 		vcard.setGender(Gender.male());
 		vcard.setMailer("value");
@@ -265,7 +265,7 @@ public class StreamWriterTest {
 	}
 
 	@Test
-	public void labels() throws Throwable {
+	void labels() throws Throwable {
 		writer.setAddProdId(false);
 
 		//address with label and type

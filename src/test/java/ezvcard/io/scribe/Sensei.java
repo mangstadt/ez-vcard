@@ -1,11 +1,11 @@
 package ezvcard.io.scribe;
 
 import static ezvcard.util.TestUtils.assertParseWarnings;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static ezvcard.util.TestUtils.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import java.util.Map;
@@ -201,7 +201,7 @@ public class Sensei<T extends VCardProperty> {
 		public void run(VCardDataType expected) {
 			for (VCardVersion version : this.version) {
 				VCardDataType actual = scribe.dataType(property, version);
-				assertEquals("Version " + version, expected, actual);
+				assertEquals(expected, actual, () -> "Version " + version);
 			}
 		}
 	}
@@ -259,16 +259,16 @@ public class Sensei<T extends VCardProperty> {
 		public void run() {
 			for (VCardVersion version : versions) {
 				VCardParameters actual = scribe.prepareParameters(property, version, vcard).get();
-				assertEquals("Actual: " + actual, expected.size(), actual.size());
+				assertEquals(expected.size(), actual.size(), () -> "Actual: " + actual);
 
 				for (Map.Entry<LaciToken, List<String>> entry : expected) {
 					LaciToken expectedKey = entry.getKey();
 					List<String> expectedValues = entry.getValue();
 
 					List<String> actualValues = actual.get(expectedKey);
-					assertEquals("Actual: " + actual, expectedValues.size(), actualValues.size());
+					assertEquals(expectedValues.size(), actualValues.size(), () -> "Actual: " + actual);
 					for (String expectedValue : expectedValues) {
-						assertTrue("Actual: " + actual, actualValues.contains(expectedValue));
+						assertTrue(actualValues.contains(expectedValue), () -> "Actual: " + actual);
 					}
 				}
 			}
@@ -323,7 +323,7 @@ public class Sensei<T extends VCardProperty> {
 		public void run(String expected) {
 			for (VCardVersion version : versions) {
 				String actual = scribe.writeText(property, new WriteContext(version, null, includeTrailingSemicolons));
-				assertEquals("Version " + version, expected, actual);
+				assertEquals(expected, actual, () -> "Version " + version);
 			}
 		}
 
@@ -357,7 +357,7 @@ public class Sensei<T extends VCardProperty> {
 
 			Document expected = createXCardElement(expectedInnerXml);
 
-			assertXMLEqual(XmlUtils.toString(actual), expected, actual);
+			assertXMLEqual(expected, actual);
 		}
 	}
 
@@ -479,10 +479,10 @@ public class Sensei<T extends VCardProperty> {
 		 * Runs the test.
 		 * @param check object for asserting the parsed property object or null
 		 * not to assert the property object
-		 * @param cannotParseExceptionCode if the parse operation is expected to throw a
-		 * {@link CannotParseException}, this parameter is the expected warning
-		 * code of the exception. This should be null if the exception is not
-		 * expected to have a warning code. This should be -1 if a
+		 * @param cannotParseExceptionCode if the parse operation is expected to
+		 * throw a {@link CannotParseException}, this parameter is the expected
+		 * warning code of the exception. This should be null if the exception
+		 * is not expected to have a warning code. This should be -1 if a
 		 * {@link CannotParseException} is not expected to be thrown
 		 */
 		protected abstract void run(Check<T> check, Integer cannotParseExceptionCode);
@@ -555,7 +555,7 @@ public class Sensei<T extends VCardProperty> {
 						throw e;
 					}
 
-					assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
+					assertEquals(cannotParseExceptionCode, e.getCode(), () -> "CannotParseException's parse warning code was wrong.");
 				}
 			}
 		}
@@ -602,7 +602,7 @@ public class Sensei<T extends VCardProperty> {
 					throw e;
 				}
 
-				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
+				assertEquals(cannotParseExceptionCode, e.getCode(), () -> "CannotParseException's parse warning code was wrong.");
 			}
 		}
 	}
@@ -657,7 +657,7 @@ public class Sensei<T extends VCardProperty> {
 					throw e;
 				}
 
-				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
+				assertEquals(cannotParseExceptionCode, e.getCode(), () -> "CannotParseException's parse warning code was wrong.");
 			}
 		}
 	}
@@ -712,7 +712,7 @@ public class Sensei<T extends VCardProperty> {
 					throw e;
 				}
 
-				assertEquals("CannotParseException's parse warning code was wrong.", cannotParseExceptionCode, e.getCode());
+				assertEquals(cannotParseExceptionCode, e.getCode(), () -> "CannotParseException's parse warning code was wrong.");
 			}
 		}
 	}

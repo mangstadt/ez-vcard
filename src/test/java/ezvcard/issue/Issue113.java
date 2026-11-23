@@ -1,15 +1,6 @@
 package ezvcard.issue;
 
-import ezvcard.Ezvcard;
-import ezvcard.VCard;
-import ezvcard.VCardVersion;
-import ezvcard.property.Geo;
-import ezvcard.util.DefaultLocaleRule;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -19,18 +10,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import ezvcard.Ezvcard;
+import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.property.Geo;
+import ezvcard.util.DefaultLocaleRule;
+
 /**
  * @author Michael Angstadt
  * @see "https://github.com/mangstadt/ez-vcard/issues/113"
  */
 public class Issue113 {
-	private final Locale nonWesternLocale = new Locale("hi", "IN");
+	private static final Locale nonWesternLocale = new Locale("hi", "IN");
 
-	@Rule
-	public final DefaultLocaleRule defaultLocaleRule = new DefaultLocaleRule(nonWesternLocale);
+	@RegisterExtension
+	public static final DefaultLocaleRule defaultLocaleRule = new DefaultLocaleRule(nonWesternLocale);
 
 	@Test
-	public void submitter_unit_test() {
+	void submitter_unit_test() {
 		VCard vcard = new VCard(VCardVersion.V4_0);
 		vcard.setGeo(new Geo(1.0, 2.0));
 
@@ -47,7 +47,7 @@ public class Issue113 {
 	 * Will Java parse Western numerals if the default locale is non-Western?
 	 */
 	@Test
-	public void parseDouble_other_locales() {
+	void parseDouble_other_locales() {
 		for (Locale locale : Locale.getAvailableLocales()) {
 			Locale.setDefault(locale);
 			double actual = Double.parseDouble("1.0"); //ez-vcard uses this method when parsing numbers
@@ -57,14 +57,14 @@ public class Issue113 {
 	}
 
 	@Test
-	public void root_locale_numbers() {
+	void root_locale_numbers() {
 		double number = 1.23;
 		assertEquals("१.२३००००", String.format("%f", number));
 		assertEquals("1.230000", String.format(Locale.ROOT, "%f", number));
 	}
 
 	@Test
-	public void root_locale_dates() throws Exception {
+	void root_locale_dates() throws Exception {
 		String pattern = "yyyy-MM-dd HH:mm";
 		Date date = new SimpleDateFormat(pattern).parse("2020-10-28 12:00");
 
@@ -76,7 +76,7 @@ public class Issue113 {
 	}
 
 	@Test
-	public void decimal_format() {
+	void decimal_format() {
 		NumberFormat nf = new DecimalFormat("00");
 		assertEquals("०८", nf.format(8));
 

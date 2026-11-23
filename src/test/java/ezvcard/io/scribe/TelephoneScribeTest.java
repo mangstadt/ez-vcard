@@ -3,12 +3,12 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -49,7 +49,7 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class TelephoneScribeTest {
+class TelephoneScribeTest {
 	private final TelephoneScribe scribe = new TelephoneScribe();
 	private final Sensei<Telephone> sensei = new Sensei<>(scribe);
 
@@ -62,7 +62,7 @@ public class TelephoneScribeTest {
 	private final Telephone empty = new Telephone((String) null);
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withText).run(VCardDataType.TEXT);
 		sensei.assertDataType(withUri).versions(V2_1, V3_0).run(VCardDataType.TEXT);
 		sensei.assertDataType(withUri).versions(V4_0).run(VCardDataType.URI);
@@ -74,7 +74,7 @@ public class TelephoneScribeTest {
 	 * to 4.0, it should replace "TYPE=pref" with "PREF=1".
 	 */
 	@Test
-	public void prepareParameters_type_pref() {
+	void prepareParameters_type_pref() {
 		//TODO move test to VCardPropertyScribeTest
 
 		Telephone property = new Telephone((String) null);
@@ -93,7 +93,7 @@ public class TelephoneScribeTest {
 	 * "TYPE=pref" to it.
 	 */
 	@Test
-	public void prepareParameters_pref_parameter() {
+	void prepareParameters_pref_parameter() {
 		VCard vcard = new VCard();
 
 		Telephone tel2 = new Telephone((String) null);
@@ -119,7 +119,7 @@ public class TelephoneScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withText).run(text);
 		sensei.assertWriteText(withUri).versions(V2_1, V3_0).run(textWithExt);
 		sensei.assertWriteText(withUri).versions(V4_0).run(uri);
@@ -127,21 +127,21 @@ public class TelephoneScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withText).run("<text>" + text + "</text>");
 		sensei.assertWriteXml(withUri).run("<uri>" + uri + "</uri>");
 		sensei.assertWriteXml(empty).run("<text/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withText).run(text);
 		sensei.assertWriteJson(withUri).run(uri);
 		sensei.assertWriteJson(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(text).run(withText);
 		sensei.assertParseText(text).dataType(VCardDataType.TEXT).run(withText);
 		sensei.assertParseText(text).dataType(VCardDataType.URI).warnings(18).run(withText);
@@ -160,7 +160,7 @@ public class TelephoneScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>" + text + "</text>").run(withText);
 		sensei.assertParseXml("<uri>" + uri + "</uri>").run(withUri);
 
@@ -172,7 +172,7 @@ public class TelephoneScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -191,7 +191,7 @@ public class TelephoneScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(withText);
 		sensei.assertParseJson(text).dataType(VCardDataType.URI).warnings(18).run(withText);
 

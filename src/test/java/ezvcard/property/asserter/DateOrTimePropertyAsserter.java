@@ -1,6 +1,6 @@
 package ezvcard.property.asserter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.temporal.Temporal;
 import java.util.List;

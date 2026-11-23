@@ -1,10 +1,10 @@
 package ezvcard.util;
 
 import static ezvcard.util.PartialDate.builder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
@@ -48,9 +48,9 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 /**
  * @author Michael Angstadt
  */
-public class PartialDateTest {
+class PartialDateTest {
 	@Test
-	public void builder_month() {
+	void builder_month() {
 		PartialDate.Builder builder = builder();
 		final int start = 0, end = 13;
 
@@ -62,7 +62,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_date() {
+	void builder_date() {
 		PartialDate.Builder builder = builder();
 		final int start = 0, end = 32;
 
@@ -74,7 +74,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_hour() {
+	void builder_hour() {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 24;
 
@@ -86,7 +86,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_minute() {
+	void builder_minute() {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 60;
 
@@ -98,7 +98,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_second() {
+	void builder_second() {
 		PartialDate.Builder builder = builder();
 		final int start = -1, end = 60;
 
@@ -110,33 +110,33 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void builder_offset_null() {
+	void builder_offset_null() {
 		PartialDate d1 = builder().year(2020).month(5).date(21).offset(ZoneOffset.ofHoursMinutes(1, 30)).offset(null).build();
 		PartialDate d2 = builder().year(2020).month(5).date(21).build();
 		assertEquals(d1, d2);
 	}
 
 	@Test
-	public void builder_build_date_missing_month() {
+	void builder_build_date_missing_month() {
 		PartialDate.Builder b = builder().year(2015).date(1);
 		assertThrows(IllegalArgumentException.class, b::build);
 	}
 
 	@Test
-	public void builder_build_time_missing_minutes() {
+	void builder_build_time_missing_minutes() {
 		PartialDate.Builder b = builder().hour(16).second(1);
 		assertThrows(IllegalArgumentException.class, b::build);
 	}
 
 	@Test
-	public void builder_copy() {
+	void builder_copy() {
 		PartialDate orig = builder().year(2015).month(3).date(5).hour(12).minute(1).second(20).offset(ZoneOffset.ofHours(-5)).build();
 		PartialDate copy = builder(orig).build();
 		assertEquals(orig, copy);
 	}
 
 	@Test
-	public void toISO8601() {
+	void toISO8601() {
 		//date
 		assertToISO8601(builder().year(1980), "1980", "1980");
 		assertToISO8601(builder().month(4), "--04", "--04");
@@ -165,7 +165,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void toISO8601_different_locales() {
+	void toISO8601_different_locales() {
 		Locale defaultLocale = Locale.getDefault();
 		PartialDate partialDate = PartialDate.builder().hour(5).minute(20).second(32).build();
 		try {
@@ -173,60 +173,60 @@ public class PartialDateTest {
 				Locale.setDefault(locale);
 				String expected = "T052032";
 				String actual = partialDate.toISO8601(false);
-				assertEquals("Test failed for locale: " + locale, expected, actual);
+				assertEquals(expected, actual, () -> "Test failed for locale: " + locale);
 			}
 		} finally {
 			Locale.setDefault(defaultLocale);
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_empty() {
-		PartialDate.parse("");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid() {
-		PartialDate.parse("invalid");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_month() {
-		PartialDate.parse("19871331");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_date() {
-		PartialDate.parse("19871233");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_hour() {
-		PartialDate.parse("T24:00:00");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_minute() {
-		PartialDate.parse("T00:61:00");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_second() {
-		PartialDate.parse("T00:00:61");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_offset_hour() {
-		PartialDate.parse("T23:00:00-88:00");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_invalid_offset_minute() {
-		PartialDate.parse("T23:00:00-00:60");
+	@Test
+	void parse_empty() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse(""));
 	}
 
 	@Test
-	public void parse() {
+	void parse_invalid() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("invalid"));
+	}
+
+	@Test
+	void parse_invalid_month() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("19871331"));
+	}
+
+	@Test
+	void parse_invalid_date() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("19871233"));
+	}
+
+	@Test
+	void parse_invalid_hour() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("T24:00:00"));
+	}
+
+	@Test
+	void parse_invalid_minute() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("T00:61:00"));
+	}
+
+	@Test
+	void parse_invalid_second() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("T00:00:61"));
+	}
+
+	@Test
+	void parse_invalid_offset_hour() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("T23:00:00-88:00"));
+	}
+
+	@Test
+	void parse_invalid_offset_minute() {
+		assertThrows(IllegalArgumentException.class, () -> PartialDate.parse("T23:00:00-00:60"));
+	}
+
+	@Test
+	void parse() {
 		assertParse("1980", builder().year(1980));
 		assertParse("--04", builder().month(4));
 		assertParse("---20", builder().date(20));
@@ -261,7 +261,7 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void getUtcOffset() {
+	void getUtcOffset() {
 		//@formatter:off
 		List<ZoneOffset> offsets = Arrays.asList(
 			ZoneOffset.ofHoursMinutes(-5, 0),
@@ -280,19 +280,19 @@ public class PartialDateTest {
 	}
 
 	@Test
-	public void hasDateComponent() {
+	void hasDateComponent() {
 		assertTrue(builder().year(1980).build().hasDateComponent());
 		assertFalse(builder().hour(5).build().hasDateComponent());
 	}
 
 	@Test
-	public void hasTimeComponent() {
+	void hasTimeComponent() {
 		assertFalse(builder().year(1980).build().hasTimeComponent());
 		assertTrue(builder().hour(5).build().hasTimeComponent());
 	}
 
 	@Test
-	public void equals_contract() {
+	void equals_contract() {
 		EqualsVerifier.forClass(PartialDate.class).usingGetClass().verify();
 	}
 

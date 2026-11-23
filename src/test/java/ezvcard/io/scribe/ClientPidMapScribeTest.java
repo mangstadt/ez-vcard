@@ -1,8 +1,8 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.io.scribe.Sensei.Check;
@@ -40,7 +40,7 @@ import ezvcard.property.ClientPidMap;
 /**
  * @author Michael Angstadt
  */
-public class ClientPidMapScribeTest {
+class ClientPidMapScribeTest {
 	private final ClientPidMapScribe scribe = new ClientPidMapScribe();
 	private final Sensei<ClientPidMap> sensei = new Sensei<>(scribe);
 
@@ -51,26 +51,26 @@ public class ClientPidMapScribeTest {
 	private final ClientPidMap empty = new ClientPidMap(null, null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withValue).run(pid + ";" + uri);
 		sensei.assertWriteText(empty).run("");
 		sensei.assertWriteText(empty).includeTrailingSemicolons(true).run(";");
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withValue).run("<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>");
 		sensei.assertWriteXml(empty).run("<sourceid/><uri/>");
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withValue).run(JCardValue.structured(1, "urn:uuid:1234"));
 		sensei.assertWriteJson(empty).run(JCardValue.structured("", ""));
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(pid + ";" + uri).run(withValue);
 		sensei.assertParseText(pid + ";" + uri + ";foo").run(has(pid, uri + ";foo"));
 		sensei.assertParseText(";").cannotParse(3);
@@ -79,7 +79,7 @@ public class ClientPidMapScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<uri>" + uri + "</uri><sourceid>" + pid + "</sourceid>").run(withValue);
 
 		sensei.assertParseXml("<uri>" + uri + "</uri><sourceid>not-a-number</sourceid>").cannotParse(4);
@@ -89,7 +89,7 @@ public class ClientPidMapScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		JCardValue value = JCardValue.structured(pid + "", uri);
 		sensei.assertParseJson(value).run(withValue);
 

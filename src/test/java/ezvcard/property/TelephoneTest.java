@@ -4,15 +4,15 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.parameter.TelephoneType;
@@ -50,9 +50,9 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class TelephoneTest {
+class TelephoneTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		Telephone property = new Telephone((String) null);
 		assertNull(property.getText());
 		assertNull(property.getUri());
@@ -70,7 +70,7 @@ public class TelephoneTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		Telephone property = new Telephone((String) null);
 
 		property.setText("text");
@@ -105,7 +105,7 @@ public class TelephoneTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Telephone empty = new Telephone((String) null);
 		assertValidate(empty).run(8);
 
@@ -125,13 +125,13 @@ public class TelephoneTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Telephone property = new Telephone("text");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Telephone original = new Telephone((String) null);
 		assertCopy(original);
 
@@ -147,7 +147,7 @@ public class TelephoneTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		Telephone property = new Telephone((String) null);

@@ -1,11 +1,12 @@
 package ezvcard.issue;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Michael Angstadt
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class Issue112 {
 	@Test
-	public void test() {
+	void test() {
 		String vcardStr = //@formatter:off
 		"BEGIN:VCARD\r\n" +
 		"VERSION:2.1\r\n" +

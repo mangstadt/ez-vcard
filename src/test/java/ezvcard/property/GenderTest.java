@@ -4,15 +4,15 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.mangstadt.vinnie.LaciToken;
 
@@ -50,9 +50,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class GenderTest {
+class GenderTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		Gender property = new Gender((String) null);
 		assertNull(property.getGender());
 		assertNull(property.getText());
@@ -63,7 +63,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		Gender property = new Gender("male");
 
 		property.setText("text");
@@ -76,7 +76,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void isMale() {
+	void isMale() {
 		Gender gender = new Gender("M");
 		assertTrue(gender.isMale());
 		assertFalse(gender.isFemale());
@@ -86,7 +86,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void isFemale() {
+	void isFemale() {
 		Gender gender = new Gender("F");
 		assertFalse(gender.isMale());
 		assertTrue(gender.isFemale());
@@ -96,7 +96,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void isOther() {
+	void isOther() {
 		Gender gender = new Gender("O");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
@@ -106,7 +106,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void isNone() {
+	void isNone() {
 		Gender gender = new Gender("N");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
@@ -116,7 +116,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void isUnknown() {
+	void isUnknown() {
 		Gender gender = new Gender("U");
 		assertFalse(gender.isMale());
 		assertFalse(gender.isFemale());
@@ -126,37 +126,37 @@ public class GenderTest {
 	}
 
 	@Test
-	public void male() {
+	void male() {
 		Gender gender = Gender.male();
 		assertEquals(Gender.MALE, gender.getGender());
 	}
 
 	@Test
-	public void female() {
+	void female() {
 		Gender gender = Gender.female();
 		assertEquals(Gender.FEMALE, gender.getGender());
 	}
 
 	@Test
-	public void other() {
+	void other() {
 		Gender gender = Gender.other();
 		assertEquals(Gender.OTHER, gender.getGender());
 	}
 
 	@Test
-	public void none() {
+	void none() {
 		Gender gender = Gender.none();
 		assertEquals(Gender.NONE, gender.getGender());
 	}
 
 	@Test
-	public void unknown() {
+	void unknown() {
 		Gender gender = Gender.unknown();
 		assertEquals(Gender.UNKNOWN, gender.getGender());
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Gender empty = new Gender((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8);
@@ -167,13 +167,13 @@ public class GenderTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Gender property = new Gender("male");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Gender original = new Gender((String) null);
 		assertCopy(original);
 
@@ -183,7 +183,7 @@ public class GenderTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		Gender property = new Gender((String) null);

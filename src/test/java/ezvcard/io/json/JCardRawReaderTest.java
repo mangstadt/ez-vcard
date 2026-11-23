@@ -1,7 +1,7 @@
 package ezvcard.io.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonToken;
 
@@ -51,9 +51,9 @@ import ezvcard.parameter.VCardParameters;
 /**
  * @author Michael Angstadt
  */
-public class JCardRawReaderTest {
+class JCardRawReaderTest {
 	@Test
-	public void basic() throws Throwable {
+	void basic() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -76,7 +76,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void read_multiple() throws Throwable {
+	void read_multiple() throws Throwable {
 		//@formatter:off
 		String json =
 		"[" +
@@ -110,7 +110,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void ignore_other_json() throws Throwable {
+	void ignore_other_json() throws Throwable {
 		//@formatter:off
 		String json =
 		"{" +
@@ -135,7 +135,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void bad_snytax() throws Throwable {
+	void bad_snytax() throws Throwable {
 		//@formatter:off
 		String json =
 		"[" +
@@ -170,7 +170,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void empty_properties_array() throws Throwable {
+	void empty_properties_array() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -189,7 +189,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void structured_value() throws Throwable {
+	void structured_value() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -212,7 +212,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void multi_value() throws Throwable {
+	void multi_value() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -235,7 +235,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void different_data_types() throws Throwable {
+	void different_data_types() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -256,7 +256,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void complex_value() throws Throwable {
+	void complex_value() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -308,7 +308,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void data_type_unknown() throws Throwable {
+	void data_type_unknown() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -329,7 +329,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void data_type_unrecognized() throws Throwable {
+	void data_type_unrecognized() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -350,7 +350,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void empty() throws Throwable {
+	void empty() throws Throwable {
 		//@formatter:off
 		String json =
 		"";
@@ -366,7 +366,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void no_vcard() throws Throwable {
+	void no_vcard() throws Throwable {
 		//@formatter:off
 		String json =
 		"{" +
@@ -384,7 +384,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void parameters() throws Throwable {
+	void parameters() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +
@@ -411,7 +411,7 @@ public class JCardRawReaderTest {
 	}
 
 	@Test
-	public void group() throws Throwable {
+	void group() throws Throwable {
 		//@formatter:off
 		String json =
 		"[\"vcard\"," +

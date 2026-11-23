@@ -2,7 +2,9 @@ package ezvcard.util;
 
 import java.util.Locale;
 
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -33,7 +35,7 @@ import org.junit.rules.ExternalResource;
  * Changes the JVM's default locale for the duration of a test.
  * @author Michael Angstadt
  */
-public class DefaultLocaleRule extends ExternalResource {
+public class DefaultLocaleRule implements BeforeEachCallback, AfterEachCallback {
 	private final Locale locale;
 	private Locale defaultLocale;
 
@@ -42,16 +44,16 @@ public class DefaultLocaleRule extends ExternalResource {
 	 */
 	public DefaultLocaleRule(Locale locale) {
 		this.locale = locale;
+		defaultLocale = Locale.getDefault();
 	}
 
 	@Override
-	protected void before() {
-		defaultLocale = Locale.getDefault();
+	public void beforeEach(ExtensionContext context) {
 		Locale.setDefault(locale);
 	}
 
 	@Override
-	protected void after() {
+	public void afterEach(ExtensionContext context) {
 		Locale.setDefault(defaultLocale);
 	}
 }

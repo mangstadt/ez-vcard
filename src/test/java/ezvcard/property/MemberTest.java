@@ -2,7 +2,7 @@ package ezvcard.property;
 
 import static ezvcard.property.PropertySensei.assertValidate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -39,9 +39,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class MemberTest {
+class MemberTest {
 	@Test
-	public void validate() {
+	void validate() {
 		Member empty = new Member((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(2, 8, 17);
 		assertValidate(empty).versions(VCardVersion.V4_0).run(8, 17);

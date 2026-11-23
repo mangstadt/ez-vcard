@@ -4,12 +4,13 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 
@@ -45,9 +46,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class ImppTest {
+class ImppTest {
 	@Test
-	public void validate() {
+	void validate() {
 		Impp empty = new Impp((String) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(8);
@@ -59,13 +60,13 @@ public class ImppTest {
 		assertValidate(withValue).versions(VCardVersion.V4_0).run();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void bad_uri() {
-		new Impp(":::");
+	@Test
+	void bad_uri() {
+		assertThrows(IllegalArgumentException.class, () -> new Impp(":::"));
 	}
 
 	@Test
-	public void aim() {
+	void aim() {
 		Impp impp = Impp.aim("handle");
 		assertEquals("aim:handle", impp.getUri().toString());
 		assertTrue(impp.isAim());
@@ -79,7 +80,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void irc() {
+	void irc() {
 		Impp impp = Impp.irc("handle");
 		assertEquals("irc:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -93,7 +94,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void msn() {
+	void msn() {
 		Impp impp = Impp.msn("handle");
 		assertEquals("msnim:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -107,7 +108,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void sip() {
+	void sip() {
 		Impp impp = Impp.sip("handle");
 		assertEquals("sip:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -121,7 +122,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void xmpp() {
+	void xmpp() {
 		Impp impp = Impp.xmpp("handle");
 		assertEquals("xmpp:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -135,7 +136,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void yahoo() {
+	void yahoo() {
 		Impp impp = Impp.yahoo("handle");
 		assertEquals("ymsgr:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -149,7 +150,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void skype() {
+	void skype() {
 		Impp impp = Impp.skype("handle");
 		assertEquals("skype:handle", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -163,7 +164,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void icq() {
+	void icq() {
 		Impp impp = Impp.icq("123456789");
 		assertEquals("icq:123456789", impp.getUri().toString());
 		assertFalse(impp.isAim());
@@ -177,43 +178,43 @@ public class ImppTest {
 	}
 
 	@Test
-	public void getProtocol() {
+	void getProtocol() {
 		Impp impp = Impp.aim("theuser");
 		assertEquals("aim", impp.getProtocol());
 	}
 
 	@Test
-	public void getProtocol_no_uri() {
+	void getProtocol_no_uri() {
 		Impp impp = new Impp((String) null);
 		assertNull(impp.getProtocol());
 	}
 
 	@Test
-	public void getHandle() {
+	void getHandle() {
 		Impp impp = Impp.aim("theuser");
 		assertEquals("theuser", impp.getHandle());
 	}
 
 	@Test
-	public void getHandle_no_uri() {
+	void getHandle_no_uri() {
 		Impp impp = new Impp((String) null);
 		assertNull(impp.getHandle());
 	}
 	
 	@Test
-	public void case_insensitive_protocol_comparison() {
+	void case_insensitive_protocol_comparison() {
 		Impp impp = new Impp("AIM:theuser");
 		assertTrue(impp.isAim());
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Impp property = new Impp("protocol", "uri");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Impp original = new Impp((String) null);
 		assertCopy(original);
 
@@ -222,7 +223,7 @@ public class ImppTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new Impp((String) null),

@@ -1,14 +1,15 @@
 package ezvcard.io.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.transform.OutputKeys;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -42,11 +43,11 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class XCardOutputPropertiesTest {
+class XCardOutputPropertiesTest {
 	private static final String INDENT_AMT = "{http://xml.apache.org/xslt}indent-amount";
 
 	@Test
-	public void constructor_empty() {
+	void constructor_empty() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 
 		Map<String, String> expected = new HashMap<>();
@@ -56,7 +57,7 @@ public class XCardOutputPropertiesTest {
 	}
 
 	@Test
-	public void constructor() {
+	void constructor() {
 		XCardOutputProperties properties = new XCardOutputProperties(1, "1.1");
 
 		Map<String, String> expected = new HashMap<>();
@@ -68,13 +69,13 @@ public class XCardOutputPropertiesTest {
 		assertEquals(expected, properties);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void constructor_negative_indent() {
-		new XCardOutputProperties(-1, "1.1");
+	@Test
+	void constructor_negative_indent() {
+		assertThrows(IllegalArgumentException.class, () -> new XCardOutputProperties(-1, "1.1"));
 	}
 
 	@Test
-	public void setIndent() {
+	void setIndent() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setIndent(1);
 
@@ -87,7 +88,7 @@ public class XCardOutputPropertiesTest {
 	}
 
 	@Test
-	public void setIndent_remove() {
+	void setIndent_remove() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setIndent(1);
 		properties.setIndent(null);
@@ -98,14 +99,14 @@ public class XCardOutputPropertiesTest {
 		assertEquals(expected, properties);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void setIndent_negative() {
+	@Test
+	void setIndent_negative() {
 		XCardOutputProperties properties = new XCardOutputProperties();
-		properties.setIndent(-1);
+		assertThrows(IllegalArgumentException.class, () -> properties.setIndent(-1));
 	}
 
 	@Test
-	public void getIndent() {
+	void getIndent() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 
 		assertNull(properties.getIndent());
@@ -129,16 +130,17 @@ public class XCardOutputPropertiesTest {
 		assertNull(properties.getIndent());
 	}
 
-	@Test(expected = NumberFormatException.class)
-	public void getIndent_not_an_integer() {
+	@Test
+	void getIndent_not_an_integer() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.put(OutputKeys.INDENT, "yes");
 		properties.put(INDENT_AMT, "foo");
-		properties.getIndent();
+
+		assertThrows(NumberFormatException.class, properties::getIndent);
 	}
 
 	@Test
-	public void setXmlVersion() {
+	void setXmlVersion() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setXmlVersion("1.1");
 
@@ -150,7 +152,7 @@ public class XCardOutputPropertiesTest {
 	}
 
 	@Test
-	public void setXmlVersion_remove() {
+	void setXmlVersion_remove() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		properties.setXmlVersion("1.1");
 		properties.setXmlVersion(null);
@@ -162,7 +164,7 @@ public class XCardOutputPropertiesTest {
 	}
 
 	@Test
-	public void getXmlVersion() {
+	void getXmlVersion() {
 		XCardOutputProperties properties = new XCardOutputProperties();
 		assertNull(properties.getXmlVersion());
 

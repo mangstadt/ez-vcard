@@ -2,23 +2,21 @@ package ezvcard.io.xml;
 
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static ezvcard.util.TestUtils.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -96,28 +94,19 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class XCardWriterTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+class XCardWriterTest {
 	private StringWriter sw;
 	private XCardWriter writer;
 
-	@BeforeClass
-	public static void beforeClass() {
-		XMLUnit.setIgnoreAttributeOrder(true);
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		sw = new StringWriter();
 		writer = new XCardWriter(sw);
 		writer.setAddProdId(false);
 	}
 
 	@Test
-	public void write_single() throws Exception {
+	void write_single() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
@@ -137,7 +126,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_multiple() throws Exception {
+	void write_multiple() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
@@ -164,7 +153,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_empty() throws Exception {
+	void write_empty() throws Exception {
 		writer.close();
 
 		//@formatter:off
@@ -176,7 +165,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_xml_property() throws Exception {
+	void write_xml_property() throws Exception {
 		VCard vcard = new VCard();
 		Xml xml = new Xml("<foo xmlns=\"http://example.com\" a=\"b\">bar<car/></foo>");
 		xml.setParameter("x-foo", "bar");
@@ -203,7 +192,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_xml_property_null_value() throws Exception {
+	void write_xml_property_null_value() throws Exception {
 		VCard vcard = new VCard();
 		vcard.addXml(new Xml((Document) null));
 		writer.write(vcard);
@@ -221,7 +210,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_existing_dom_document() throws Exception {
+	void write_existing_dom_document() throws Exception {
 		Document document = XmlUtils.toDocument("<root><a /><b /></root>");
 		XCardWriter writer = new XCardWriter(document);
 		writer.setAddProdId(false);
@@ -250,7 +239,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_existing_dom_element() throws Exception {
+	void write_existing_dom_element() throws Exception {
 		Document document = XmlUtils.toDocument("<root><a /><b /></root>");
 		Node element = document.getFirstChild().getFirstChild();
 		XCardWriter writer = new XCardWriter(element);
@@ -281,7 +270,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_existing_vcards_document() throws Exception {
+	void write_existing_vcards_document() throws Exception {
 		Document document = XmlUtils.toDocument("<vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" />");
 		XCardWriter writer = new XCardWriter(document);
 		writer.setAddProdId(false);
@@ -306,7 +295,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_existing_vcards_element() throws Exception {
+	void write_existing_vcards_element() throws Exception {
 		Document document = XmlUtils.toDocument("<root><a><vcards xmlns=\"" + V4_0.getXmlNamespace() + "\" /></a><b /></root>");
 		Node element = document.getFirstChild().getFirstChild().getFirstChild();
 		XCardWriter writer = new XCardWriter(element);
@@ -337,7 +326,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_parameters() throws Exception {
+	void write_parameters() throws Exception {
 		writer.registerParameterDataType("X-INT", VCardDataType.INTEGER);
 
 		VCard vcard = new VCard();
@@ -390,7 +379,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_group() throws Exception {
+	void write_group() throws Exception {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("John Doe");
@@ -440,7 +429,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_prodId() throws Exception {
+	void write_prodId() throws Exception {
 		//default
 		{
 			StringWriter sw = new StringWriter();
@@ -490,7 +479,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void skipMeException() throws Exception {
+	void skipMeException() throws Exception {
 		writer.registerScribe(new SkipMeScribe());
 
 		VCard vcard = new VCard();
@@ -512,7 +501,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_no_scribe_registered() throws Exception {
+	void write_no_scribe_registered() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		writer.write(vcard);
@@ -539,7 +528,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_extended_properties() throws Exception {
+	void write_extended_properties() throws Exception {
 		writer.registerScribe(new LuckyNumScribe());
 		writer.registerScribe(new SalaryScribe());
 		writer.registerScribe(new AgeScribe());
@@ -576,7 +565,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_prettyPrint() throws Exception {
+	void write_prettyPrint() throws Exception {
 		StringWriter sw = new StringWriter();
 		XCardWriter writer = new XCardWriter(sw, 2);
 		writer.setAddProdId(false);
@@ -618,7 +607,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_xmlVersion_default() throws Exception {
+	void write_xmlVersion_default() throws Exception {
 		StringWriter sw = new StringWriter();
 		XCardWriter writer = new XCardWriter(sw);
 		VCard vcard = new VCard();
@@ -630,7 +619,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_xmlVersion_1_1() throws Exception {
+	void write_xmlVersion_1_1() throws Exception {
 		StringWriter sw = new StringWriter();
 		XCardWriter writer = new XCardWriter(sw, null, "1.1");
 		VCard vcard = new VCard();
@@ -642,7 +631,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_xmlVersion_invalid() throws Exception {
+	void write_xmlVersion_invalid() throws Exception {
 		StringWriter sw = new StringWriter();
 		XCardWriter writer = new XCardWriter(sw, null, "10.17");
 		VCard vcard = new VCard();
@@ -654,8 +643,8 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_utf8() throws Exception {
-		Path file = tempFolder.newFile().toPath();
+	void write_utf8(@TempDir Path tempDir) throws Exception {
+		Path file = tempDir.resolve("test.xml");
 		XCardWriter writer = new XCardWriter(file);
 		writer.setAddProdId(false);
 
@@ -671,7 +660,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_embedded_vcards_not_supported() throws Exception {
+	void write_embedded_vcards_not_supported() throws Exception {
 		writer.registerScribe(new EmbeddedScribe());
 
 		VCard vcard = new VCard();
@@ -691,7 +680,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_quoted_printable_encoding_not_supported() throws Exception {
+	void write_quoted_printable_encoding_not_supported() throws Exception {
 		VCard vcard = new VCard();
 		FormattedName fn = vcard.setFormattedName("Ömür Öde");
 		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
@@ -711,7 +700,7 @@ public class XCardWriterTest {
 	}
 
 	@Test
-	public void write_rfc6351_example() throws Exception {
+	void write_rfc6351_example() throws Exception {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Simon Perreault");
@@ -780,18 +769,23 @@ public class XCardWriterTest {
 	}
 
 	private void assertOutput(String expected) throws SAXException, IOException {
-		String actual = sw.toString();
-		assertXMLEqual(expected, actual);
+		assertOutput(XmlUtils.toDocument(expected));
 	}
 
-	private void assertExample(VCard vcard, String exampleFileName) throws IOException, SAXException {
+	private void assertOutput(Document expected) throws SAXException, IOException {
+		String actual = sw.toString();
+		assertXMLEqual(expected, XmlUtils.toDocument(actual));
+	}
+
+	private void assertExample(VCard vcard, String exampleFileName) throws SAXException, IOException {
 		writer.write(vcard);
 		writer.close();
 
-		String expected = new Gobble(getClass().getResourceAsStream(exampleFileName)).asString();
-		String actual = sw.toString();
-
-		assertXMLEqual(expected, actual);
+		Document expected;
+		try (InputStream in = getClass().getResourceAsStream(exampleFileName)) {
+			expected = XmlUtils.toDocument(in);
+		}
+		assertOutput(expected);
 	}
 
 	private static class EmbeddedProperty extends VCardProperty {

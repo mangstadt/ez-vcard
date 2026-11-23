@@ -4,11 +4,11 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.VCardVersion.values;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -49,7 +49,7 @@ import ezvcard.property.Agent;
 /**
  * @author Michael Angstadt
  */
-public class AgentScribeTest {
+class AgentScribeTest {
 	private final AgentScribe scribe = new AgentScribe();
 	private final Sensei<Agent> sensei = new Sensei<>(scribe);
 
@@ -60,7 +60,7 @@ public class AgentScribeTest {
 	private final Agent empty = new Agent();
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withUrl).versions(V2_1).run(VCardDataType.URL);
 		sensei.assertDataType(withUrl).versions(V3_0, V4_0).run(VCardDataType.URI);
 
@@ -69,7 +69,7 @@ public class AgentScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withUrl).run(url);
 
 		for (VCardVersion version : values()) {
@@ -82,13 +82,13 @@ public class AgentScribeTest {
 	}
 
 	@Test
-	public void parseText_url() {
+	void parseText_url() {
 		sensei.assertParseText(url).dataType(VCardDataType.URL).run(withUrl);
 		sensei.assertParseText(url).dataType(VCardDataType.URI).run(withUrl);
 	}
 
 	@Test
-	public void parseText_vcard_2_1() {
+	void parseText_vcard_2_1() {
 		Sensei<Agent>.ParseTextTest test = sensei.assertParseText("").versions(V2_1);
 		EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, test::run);
 
@@ -102,7 +102,7 @@ public class AgentScribeTest {
 	}
 
 	@Test
-	public void parseText_vcard_3_0() {
+	void parseText_vcard_3_0() {
 		Sensei<Agent>.ParseTextTest test = sensei.assertParseText("BEGIN:VCARD\\nEND:VCARD").versions(V3_0);
 		EmbeddedVCardException e = assertThrows(EmbeddedVCardException.class, test::run);
 
@@ -116,7 +116,7 @@ public class AgentScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		Sensei<Agent>.ParseHtmlTest test = sensei.assertParseHtml(
 		"<div class=\"agent vcard\">" +
@@ -139,7 +139,7 @@ public class AgentScribeTest {
 	}
 
 	@Test
-	public void parseHtml_url() {
+	void parseHtml_url() {
 		sensei.assertParseHtml("<a href=\"" + url + "\"></a>").run(withUrl);
 		sensei.assertParseHtml("<div>" + url + "</div>").run(withUrl);
 	}

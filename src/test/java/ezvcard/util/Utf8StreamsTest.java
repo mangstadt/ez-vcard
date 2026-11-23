@@ -1,6 +1,6 @@
 package ezvcard.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,9 +9,8 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /*
 Copyright (c) 2012-2026, Michael Angstadt
@@ -41,12 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * @author Michael Angstadt
  */
-public class Utf8StreamsTest {
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-	
+class Utf8StreamsTest {
 	@Test
-	public void inputStream() throws Exception {
+	void inputStream() throws Exception {
 		String data = "one two three";
 		byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
 
@@ -58,10 +54,10 @@ public class Utf8StreamsTest {
 	}
 
 	@Test
-	public void read_file() throws Exception {
+	void read_file(@TempDir Path tempDir) throws Exception {
 		String data = "one two three";
 
-		Path file = folder.newFile().toPath();
+		Path file = tempDir.resolve("test.txt");
 		Writer writer = Utf8Streams.writer(file);
 		writer.write(data);
 		writer.close();
@@ -74,7 +70,7 @@ public class Utf8StreamsTest {
 	}
 
 	@Test
-	public void outputStream() throws Exception {
+	void outputStream() throws Exception {
 		String data = "one two three";
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -88,10 +84,10 @@ public class Utf8StreamsTest {
 	}
 
 	@Test
-	public void write_file() throws Exception {
+	void write_file(@TempDir Path tempDir) throws Exception {
 		String data = "one two three";
 
-		Path file = folder.newFile().toPath();
+		Path file = tempDir.resolve("test.txt");
 		Writer writer = Utf8Streams.writer(file);
 		writer.write(data);
 		writer.close();
@@ -102,8 +98,8 @@ public class Utf8StreamsTest {
 	}
 
 	@Test
-	public void write_file_append() throws Exception {
-		Path file = folder.newFile().toPath();
+	void write_file_append(@TempDir Path tempDir) throws Exception {
+		Path file = tempDir.resolve("test.txt");
 		Writer writer = Utf8Streams.writer(file);
 		writer.write("one");
 		writer.close();

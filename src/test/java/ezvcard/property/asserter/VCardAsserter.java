@@ -2,8 +2,8 @@ package ezvcard.property.asserter;
 
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
@@ -88,7 +88,7 @@ public class VCardAsserter {
 			}
 
 			int total = vcard.getProperties().size();
-			assertEquals("The vCard has " + total + " properties, but only " + propertiesChecked + " were checked.", propertiesChecked, total);
+			assertEquals(propertiesChecked, total, () -> "The vCard has " + total + " properties, but only " + propertiesChecked + " were checked.");
 		}
 
 		vcard = reader.readNext();

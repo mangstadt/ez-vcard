@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.parameter.AddressType;
@@ -79,9 +79,9 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class SampleVCardsTest {
+class SampleVCardsTest {
 	@Test
-	public void androidVCard() throws Throwable {
+	void androidVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_ANDROID.vcf");
 
 		{
@@ -332,7 +332,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void blackBerryVCard() throws Throwable {
+	void blackBerryVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_BLACK_BERRY.vcf");
 		asserter.next(V2_1);
 
@@ -370,7 +370,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void evolutionVCard() throws Throwable {
+	void evolutionVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_EVOLUTION.vcf");
 		asserter.next(V3_0);
 
@@ -490,7 +490,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void fullcontact() throws Throwable {
+	void fullcontact() throws Throwable {
 		VCardAsserter asserter = read("fullcontact.vcf");
 		asserter.next(V4_0);
 
@@ -762,7 +762,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void gmailVCard() throws Throwable {
+	void gmailVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_GMAIL.vcf");
 		asserter.next(V3_0);
 
@@ -854,7 +854,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void gmailList() throws Throwable {
+	void gmailList() throws Throwable {
 		VCardAsserter asserter = read("gmail-list.vcf");
 
 		{
@@ -927,7 +927,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void gmailSingle() throws Throwable {
+	void gmailSingle() throws Throwable {
 		VCardAsserter asserter = read("gmail-single.vcf");
 		asserter.next(V3_0);
 
@@ -1045,7 +1045,7 @@ public class SampleVCardsTest {
 	 * File generated on 5/7/2016.
 	 */
 	@Test
-	public void gmailSingle2() throws Throwable {
+	void gmailSingle2() throws Throwable {
 		VCardAsserter asserter = read("gmail-single2.vcf");
 		asserter.next(V3_0);
 
@@ -1358,7 +1358,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void iPhoneVCard() throws Throwable {
+	void iPhoneVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_IPHONE.vcf");
 		asserter.next(V3_0);
 
@@ -1476,7 +1476,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void lotusNotesVCard() throws Throwable {
+	void lotusNotesVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_LOTUS_NOTES.vcf");
 		asserter.next(V3_0);
 
@@ -1632,7 +1632,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void msOutlookVCard() throws Throwable {
+	void msOutlookVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_MS_OUTLOOK.vcf");
 		asserter.next(V2_1);
 
@@ -1756,7 +1756,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void outlook2007VCard() throws Throwable {
+	void outlook2007VCard() throws Throwable {
 		VCardAsserter asserter = read("outlook-2007.vcf");
 		asserter.next(V2_1);
 
@@ -1905,7 +1905,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void macAddressBookVCard() throws Throwable {
+	void macAddressBookVCard() throws Throwable {
 		VCardAsserter asserter = read("John_Doe_MAC_ADDRESS_BOOK.vcf");
 		asserter.next(V3_0);
 
@@ -2046,7 +2046,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void outlook2003VCard() throws Throwable {
+	void outlook2003VCard() throws Throwable {
 		VCardAsserter asserter = read("outlook-2003.vcf");
 		asserter.next(V2_1);
 
@@ -2153,7 +2153,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void thunderbird() throws Throwable {
+	void thunderbird() throws Throwable {
 		VCardAsserter asserter = read("thunderbird-MoreFunctionsForAddressBook-extension.vcf");
 		asserter.next(V3_0);
 
@@ -2293,7 +2293,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void rfc6350_example() throws Throwable {
+	void rfc6350_example() throws Throwable {
 		VCardAsserter asserter = read("rfc6350-example.vcf");
 		asserter.next(V4_0);
 
@@ -2383,7 +2383,7 @@ public class SampleVCardsTest {
 	}
 
 	@Test
-	public void rfc2426_example() throws Throwable {
+	void rfc2426_example() throws Throwable {
 		VCardAsserter asserter = read("rfc2426-example.vcf");
 
 		{

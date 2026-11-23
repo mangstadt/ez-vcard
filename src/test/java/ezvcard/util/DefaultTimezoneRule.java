@@ -4,7 +4,9 @@ import java.time.Duration;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -35,7 +37,7 @@ import org.junit.rules.ExternalResource;
  * Changes the JVM's default timezone for the duration of a test.
  * @author Michael Angstadt
  */
-public class DefaultTimezoneRule extends ExternalResource {
+public class DefaultTimezoneRule implements BeforeAllCallback, AfterAllCallback {
 	private final TimeZone defaultTz;
 	private final TimeZone tz;
 
@@ -63,12 +65,12 @@ public class DefaultTimezoneRule extends ExternalResource {
 	}
 
 	@Override
-	protected void before() {
+	public void beforeAll(ExtensionContext context) {
 		TimeZone.setDefault(tz);
 	}
 
 	@Override
-	protected void after() {
+	public void afterAll(ExtensionContext context) {
 		TimeZone.setDefault(defaultTz);
 	}
 }

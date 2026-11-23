@@ -5,12 +5,12 @@ import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -44,9 +44,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class ListPropertyTest {
+class ListPropertyTest {
 	@Test
-	public void validate() {
+	void validate() {
 		ListPropertyImpl zeroItems = new ListPropertyImpl();
 		assertValidate(zeroItems).run(8);
 
@@ -56,13 +56,13 @@ public class ListPropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		ListPropertyImpl property = new ListPropertyImpl();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		ListPropertyImpl original = new ListPropertyImpl();
 		assertCopy(original);
 
@@ -72,7 +72,7 @@ public class ListPropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		ListPropertyImpl property = new ListPropertyImpl();

@@ -95,8 +95,8 @@ public final class Utf8Streams {
 	 * @throws IOException if there's a problem opening the file
 	 */
 	public static Writer writer(Path file, boolean append) throws IOException {
-		StandardOpenOption option = append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING;
-		return Files.newBufferedWriter(file, option);
+		StandardOpenOption[] options = append ? new StandardOpenOption[] { StandardOpenOption.APPEND } : new StandardOpenOption[] {};
+		return Files.newBufferedWriter(file, options);
 	}
 
 	private Utf8Streams() {

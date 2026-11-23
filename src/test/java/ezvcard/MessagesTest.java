@@ -1,8 +1,8 @@
 package ezvcard;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -42,71 +42,71 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class MessagesTest {
+class MessagesTest {
 	private final Messages messages = Messages.INSTANCE;
 
 	@Test
-	public void getValidationWarning() {
+	void getValidationWarning() {
 		String actual = messages.getValidationWarning(0);
 		String expected = messages.getMessage("validate.0");
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getValidationWarning_does_not_exist() {
+	void getValidationWarning_does_not_exist() {
 		assertNull(messages.getValidationWarning(5000));
 	}
 
 	@Test
-	public void getParseMessage() {
+	void getParseMessage() {
 		String actual = messages.getParseMessage(0);
 		String expected = messages.getMessage("parse.0");
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getParseMessage_does_not_exist() {
+	void getParseMessage_does_not_exist() {
 		assertNull(messages.getParseMessage(5000));
 	}
 
 	@Test
-	public void getExceptionMessage() {
+	void getExceptionMessage() {
 		String actual = messages.getExceptionMessage(1);
 		String expected = messages.getMessage("exception.0", 1, messages.getMessage("exception.1"));
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getExceptionMessage_does_not_exist() {
+	void getExceptionMessage_does_not_exist() {
 		assertNull(messages.getExceptionMessage(5000));
 	}
 
 	@Test
-	public void getIllegalArgumentException() {
+	void getIllegalArgumentException() {
 		String actual = messages.getIllegalArgumentException(1).getMessage();
 		String expected = messages.getMessage("exception.0", 1, messages.getMessage("exception.1"));
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getIllegalArgumentException_does_not_exist() {
+	void getIllegalArgumentException_does_not_exist() {
 		assertNull(messages.getIllegalArgumentException(5000));
 	}
 
 	@Test
-	public void getMessage() throws Exception {
+	void getMessage() throws Exception {
 		String expected = load().getProperty("parse.0");
 		String actual = messages.getMessage("parse.0");
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getMessage_does_not_exist() {
+	void getMessage_does_not_exist() {
 		assertNull(messages.getMessage("does-not-exist"));
 	}
 
 	@Test
-	public void duplicate_keys() throws Exception {
+	void duplicate_keys() throws Exception {
 		Set<String> keys = new HashSet<>();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream()))) {
 			String line;

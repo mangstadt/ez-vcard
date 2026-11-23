@@ -1,13 +1,13 @@
 package ezvcard.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.parameter.Pid;
 import ezvcard.parameter.VCardParameters;
@@ -40,9 +40,9 @@ import ezvcard.parameter.VCardParameters;
 /**
  * @author Michael Angstadt
  */
-public class PidParameterListTest {
+class PidParameterListTest {
 	@Test
-	public void get_set() {
+	void get_set() {
 		PidParameterListProperty property = new PidParameterListProperty();
 		VCardParameters parameters = property.getParameters();
 		List<Pid> pids = property.getPids();
@@ -54,7 +54,7 @@ public class PidParameterListTest {
 	}
 
 	@Test
-	public void invalid_value() {
+	void invalid_value() {
 		PidParameterListProperty property = new PidParameterListProperty();
 		VCardParameters parameters = property.getParameters();
 		List<Pid> pids = property.getPids();

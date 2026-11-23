@@ -11,9 +11,9 @@ import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertPropertyCount;
 import static ezvcard.util.TestUtils.assertVersion;
 import static ezvcard.util.TestUtils.each;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -23,9 +23,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.github.mangstadt.vinnie.codec.QuotedPrintableCodec;
 
@@ -82,16 +81,13 @@ import ezvcard.property.asserter.VCardAsserter;
 /**
  * @author Michael Angstadt
  */
-public class VCardReaderTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+class VCardReaderTest {
 	/**
 	 * Account for an error in the 4.0 specification, which places multi-valued
 	 * TYPE parameters in double quotes.
 	 */
 	@Test
-	public void type_parameter_enclosed_in_double_quotes() throws Exception {
+	void type_parameter_enclosed_in_double_quotes() throws Exception {
 		VCardVersion version = V2_1;
 		{
 			//@formatter:off
@@ -139,7 +135,7 @@ public class VCardReaderTest {
 	 * All nameless parameters should be assigned a name.
 	 */
 	@Test
-	public void nameless_parameters() throws Exception {
+	void nameless_parameters() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -164,7 +160,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void quoted_printable_encoding_invalid_value() throws Exception {
+	void quoted_printable_encoding_invalid_value() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -188,7 +184,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void quoted_printable_invalid_charset() throws Exception {
+	void quoted_printable_invalid_charset() throws Exception {
 		String decoded = "one=two";
 
 		for (VCardVersion version : VCardVersion.values()) {
@@ -252,7 +248,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void extended_properties() throws Exception {
+	void extended_properties() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -288,7 +284,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void extended_properties_override_standard_property_scribes() throws Exception {
+	void extended_properties_override_standard_property_scribes() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -314,7 +310,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void read_multiple() throws Exception {
+	void read_multiple() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = read(
 		"BEGIN:VCARD\r\n" +
@@ -342,7 +338,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void nested_vcard() throws Exception {
+	void nested_vcard() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			/*
 			 * Test against all versions, even though nested vCards are only
@@ -392,7 +388,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void nested_vcard_missing_vcard() throws Exception {
+	void nested_vcard_missing_vcard() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			/*
 			 * Test against all versions, even though nested vCards are only
@@ -423,7 +419,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void nested_vcard_with_labels() throws Exception {
+	void nested_vcard_with_labels() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			/*
 			 * Test against all versions, even though nested vCards are only
@@ -496,7 +492,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void embedded_vcard() throws Exception {
+	void embedded_vcard() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			/*
 			 * Test against all versions, even though embedded vCards are only
@@ -550,7 +546,7 @@ public class VCardReaderTest {
 	 * should go in "VCard.getOrphanedLabels()".
 	 */
 	@Test
-	public void label_properties() throws Exception {
+	void label_properties() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -597,7 +593,7 @@ public class VCardReaderTest {
 	 * properties.
 	 */
 	@Test
-	public void label_parameters() throws Exception {
+	void label_parameters() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -626,7 +622,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void skipMeException() throws Exception {
+	void skipMeException() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -653,7 +649,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void cannotParseException() throws Exception {
+	void cannotParseException() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -687,7 +683,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void invalid_line() throws Exception {
+	void invalid_line() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -705,7 +701,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void property_warning() throws Exception {
+	void property_warning() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -726,7 +722,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void warnings_list_cleared() throws Exception {
+	void warnings_list_cleared() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -750,7 +746,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void warnings_in_nested_vcard() throws Exception {
+	void warnings_in_nested_vcard() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -774,7 +770,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void warnings_in_embedded_vcard() throws Exception {
+	void warnings_in_embedded_vcard() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -794,7 +790,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void value_parameter() throws Exception {
+	void value_parameter() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String str =
@@ -845,7 +841,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void missing_version() throws Exception {
+	void missing_version() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = read(
 		"BEGIN:VCARD\r\n" +
@@ -859,7 +855,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void invalid_version() throws Exception {
+	void invalid_version() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = read(
 		"BEGIN:VCARD\r\n" +
@@ -877,7 +873,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void missing_end_vcard_component() throws Exception {
+	void missing_end_vcard_component() throws Exception {
 		//@formatter:off
 		VCardAsserter asserter = read(
 		"BEGIN:VCARD\r\n" +
@@ -905,7 +901,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void skip_non_vcard_components() throws Exception {
+	void skip_non_vcard_components() throws Exception {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			VCardAsserter asserter = read(
@@ -933,7 +929,7 @@ public class VCardReaderTest {
 	}
 
 	@Test
-	public void utf8() throws Throwable {
+	void utf8(@TempDir Path tempDir) throws Throwable {
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
 			String content = 
@@ -943,7 +939,7 @@ public class VCardReaderTest {
 			"END:VCARD\r\n";
 			//@formatter:on
 
-			Path file = tempFolder.newFile().toPath();
+			Path file = tempDir.resolve(version + ".vcf");
 			Files.write(file, content.getBytes(StandardCharsets.UTF_8));
 
 			try (VCardReader reader = new VCardReader(file)) {

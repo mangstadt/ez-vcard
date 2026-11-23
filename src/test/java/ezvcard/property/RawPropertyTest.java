@@ -7,11 +7,11 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.mangstadt.vinnie.LaciToken;
 
@@ -49,9 +49,9 @@ import ezvcard.VCardDataType;
 /**
  * @author Michael Angstadt
  */
-public class RawPropertyTest {
+class RawPropertyTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		RawProperty property = new RawProperty("name", "value");
 		assertEquals(new LaciToken("name"), property.getPropertyName());
 		assertEquals("value", property.getValue());
@@ -64,7 +64,7 @@ public class RawPropertyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		RawProperty property = new RawProperty("name", "value");
 
 		property.setPropertyName("name2");
@@ -84,7 +84,7 @@ public class RawPropertyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		RawProperty property = new RawProperty("foo.bar", "value");
 		assertValidate(property).versions(V2_1).run(33);
 		assertValidate(property).versions(V3_0, V4_0).run(24);
@@ -94,19 +94,19 @@ public class RawPropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		RawProperty property = new RawProperty("name", "value");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		RawProperty original = new RawProperty("name", "value", VCardDataType.TEXT);
 		assertCopy(original);
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new RawProperty((String) null, null),

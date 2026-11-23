@@ -1,7 +1,7 @@
 package ezvcard.io.text;
 
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -9,9 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -79,12 +78,9 @@ import ezvcard.util.TelUri;
  * @author Michael Angstadt
  */
 @SuppressWarnings("resource")
-public class VCardWriterTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+class VCardWriterTest {
 	@Test
-	public void generalStructure() throws Throwable {
+	void generalStructure() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 		vcard.setProductId("ez-vcard");
@@ -108,7 +104,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void nestedVCard() throws Throwable {
+	void nestedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Michael Angstadt");
@@ -158,7 +154,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void embeddedVCard() throws Throwable {
+	void embeddedVCard() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Michael Angstadt");
@@ -208,7 +204,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void skipMeException() throws Throwable {
+	void skipMeException() throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addProperty(new SkipMeProperty());
 		vcard.addExtendedProperty("X-FOO", "value");
@@ -233,7 +229,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setVersionStrict_nested() throws Throwable {
+	void setVersionStrict_nested() throws Throwable {
 		VCard vcard = new VCard();
 
 		VCard agentVCard = new VCard();
@@ -265,7 +261,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setVersionStrict_embedded() throws Throwable {
+	void setVersionStrict_embedded() throws Throwable {
 		VCard vcard = new VCard();
 
 		VCard agentVCard = new VCard();
@@ -293,11 +289,11 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void utf8() throws Throwable {
+	void utf8(@TempDir Path tempDir) throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addNote("\u019dote");
 
-		Path file = tempFolder.newFile().toPath();
+		Path file = tempDir.resolve("test.vcf");
 
 		for (VCardVersion version : VCardVersion.values()) {
 			//@formatter:off
@@ -331,7 +327,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void date_time_properties_should_not_have_a_VALUE_parameter() throws Throwable {
+	void date_time_properties_should_not_have_a_VALUE_parameter() throws Throwable {
 		class DateTestScribe<T extends VCardProperty> extends VCardPropertyScribe<T> {
 			private final VCardDataType dataType;
 
@@ -406,7 +402,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setIncludeTrailingSemicolons() throws Throwable {
+	void setIncludeTrailingSemicolons() throws Throwable {
 		VCard vcard = new VCard();
 		StructuredName n = new StructuredName();
 		n.setFamily("Family");
@@ -510,7 +506,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void setTargetApplication_outlook() throws Throwable {
+	void setTargetApplication_outlook() throws Throwable {
 		VCard vcard = new VCard();
 		byte[] data = "foobar".getBytes();
 		vcard.addKey(new Key(data, KeyType.X509));
@@ -617,7 +613,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void quoted_printable_encoding() throws Throwable {
+	void quoted_printable_encoding() throws Throwable {
 		VCard vcard = new VCard();
 		FormattedName fn = vcard.setFormattedName("Ömür Öde");
 		fn.getParameters().setEncoding(Encoding.QUOTED_PRINTABLE);
@@ -679,7 +675,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void rfc6350_example() throws Throwable {
+	void rfc6350_example() throws Throwable {
 		VCard vcard = new VCard();
 
 		vcard.setFormattedName("Simon Perreault");
@@ -780,7 +776,7 @@ public class VCardWriterTest {
 	}
 
 	@Test
-	public void rfc2426_example() throws Throwable {
+	void rfc2426_example() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (VCardWriter writer = VCardWriter.withoutLineFolding(sw, VCardVersion.V3_0)) {
 			writer.setAddProdId(false);

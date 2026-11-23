@@ -2,7 +2,7 @@ package ezvcard.property;
 
 import static ezvcard.property.PropertySensei.assertValidate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.parameter.EmailType;
@@ -39,9 +39,9 @@ import ezvcard.parameter.EmailType;
 /**
  * @author Michael Angstadt
  */
-public class EmailTest {
+class EmailTest {
 	@Test
-	public void validate() {
+	void validate() {
 		Email property = new Email((String) null);
 		assertValidate(property).run(8);
 

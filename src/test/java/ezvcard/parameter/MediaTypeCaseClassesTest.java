@@ -1,9 +1,9 @@
 package ezvcard.parameter;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -33,16 +33,16 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class MediaTypeCaseClassesTest {
+class MediaTypeCaseClassesTest {
 	private MediaTypeCaseClasses<TextMediaType> caseClasses;
 
-	@Before
-	public void before() {
+	@BeforeEach
+	public void beforeEach() {
 		caseClasses = new MediaTypeCaseClasses<>(TextMediaType.class);
 	}
 
 	@Test
-	public void get() {
+	void get() {
 		assertSame(TextMediaType.XML, caseClasses.get(new String[] { "xml", null, null }));
 
 		TextMediaType rtf = caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" });
@@ -53,7 +53,7 @@ public class MediaTypeCaseClassesTest {
 	}
 
 	@Test
-	public void find() {
+	void find() {
 		//find() does not include runtime-created objects
 		caseClasses.get(new String[] { "rtf", "text/rtf", "rtf" });
 
@@ -75,7 +75,7 @@ public class MediaTypeCaseClassesTest {
 
 	private void assertFind(String type, String mediaType, String extension, TextMediaType expected) {
 		TextMediaType actual = caseClasses.find(new String[] { type, mediaType, extension });
-		assertSame("Expected = " + expected + ", Actual = " + actual, expected, actual);
+		assertSame(expected, actual, () -> "Expected = " + expected + ", Actual = " + actual);
 	}
 
 	public static class TextMediaType extends MediaTypeParameter {

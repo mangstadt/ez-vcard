@@ -4,15 +4,15 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 
@@ -48,9 +48,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class TimezoneTest {
+class TimezoneTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		Timezone property = new Timezone((String) null);
 		assertNull(property.getOffset());
 		assertNull(property.getText());
@@ -73,7 +73,7 @@ public class TimezoneTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		Timezone property = new Timezone((String) null);
 
 		property.setOffset(ZoneOffset.ofHours(1));
@@ -86,7 +86,7 @@ public class TimezoneTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Timezone empty = new Timezone((ZoneOffset) null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(8, 20);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(8);
@@ -102,28 +102,28 @@ public class TimezoneTest {
 	}
 
 	@Test
-	public void toTimeZone_offset() {
+	void toTimeZone_offset() {
 		Timezone t = new Timezone(ZoneOffset.ofHoursMinutes(-5, -30));
 		ZoneId actual = t.toTimeZone();
 		assertEquals(ZoneOffset.ofHoursMinutes(-5, -30), actual);
 	}
 
 	@Test
-	public void toTimeZone_timezone_id() {
+	void toTimeZone_timezone_id() {
 		Timezone t = new Timezone("America/New_York");
 		ZoneId actual = t.toTimeZone();
 		assertEquals(ZoneId.of("America/New_York"), actual);
 	}
 
 	@Test
-	public void toTimeZone_text() {
+	void toTimeZone_text() {
 		Timezone t = new Timezone("text");
 		ZoneId actual = t.toTimeZone();
 		assertNull(actual);
 	}
 
 	@Test
-	public void toTimeZone_text_and_offset() {
+	void toTimeZone_text_and_offset() {
 		Timezone t = new Timezone(ZoneOffset.ofHoursMinutes(-5, -30), "text");
 		ZoneId actual = t.toTimeZone();
 		
@@ -132,13 +132,13 @@ public class TimezoneTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Timezone property = new Timezone("text");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Timezone original = new Timezone((String) null);
 		assertCopy(original);
 
@@ -150,7 +150,7 @@ public class TimezoneTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new Timezone((String) null),

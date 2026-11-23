@@ -4,11 +4,11 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -45,9 +45,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class AgentTest {
+class AgentTest {
 	@Test
-	public void set_value() {
+	void set_value() {
 		VCard vcard = new VCard();
 		Agent agent = new Agent();
 
@@ -65,7 +65,7 @@ public class AgentTest {
 	}
 
 	@Test
-	public void constructors() {
+	void constructors() {
 		VCard vcard = new VCard();
 		Agent agent = new Agent();
 		assertNull(agent.getUrl());
@@ -81,7 +81,7 @@ public class AgentTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		Agent property = new Agent();
 		assertValidate(property).versions(VCardVersion.V2_1, VCardVersion.V3_0).run(8);
 		assertValidate(property).versions(VCardVersion.V4_0).run(8, 2);
@@ -98,13 +98,13 @@ public class AgentTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		Agent property = new Agent();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		Agent original = new Agent();
 		assertCopy(original);
 
@@ -116,7 +116,7 @@ public class AgentTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		VCard vcard = new VCard();
 		VCard vcard2 = new VCard();
 		vcard2.setVersion(VCardVersion.V4_0);

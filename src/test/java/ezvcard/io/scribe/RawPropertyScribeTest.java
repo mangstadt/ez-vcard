@@ -1,10 +1,10 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.mangstadt.vinnie.LaciToken;
 
@@ -41,7 +41,7 @@ import ezvcard.property.RawProperty;
 /**
  * @author Michael Angstadt
  */
-public class RawPropertyScribeTest {
+class RawPropertyScribeTest {
 	private final RawPropertyScribe scribe = new RawPropertyScribe("RAW");
 	private final Sensei<RawProperty> sensei = new Sensei<>(scribe);
 
@@ -50,14 +50,14 @@ public class RawPropertyScribeTest {
 	private final RawProperty empty = new RawProperty("RAW", null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withValue).run("value");
 		sensei.assertWriteText(withEscapedChar).run("one\\,two");
 		sensei.assertWriteText(empty).run("");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText("value").run(has("RAW", "value", null));
 		sensei.assertParseText("value").dataType(VCardDataType.TEXT).run(has("RAW", "value", VCardDataType.TEXT));
 		sensei.assertParseText("one\\,two").run(has("RAW", "one\\,two", null));
@@ -67,12 +67,12 @@ public class RawPropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>one\\,two</text>").run(has("RAW", "one\\,two", VCardDataType.TEXT));
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		JCardValue value = JCardValue.single("one\\,two");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).run(has("RAW", "one\\,two", VCardDataType.TEXT));
 
@@ -84,7 +84,7 @@ public class RawPropertyScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<div>one\\,two</div>").run(has("RAW", "one\\,two", null));
 	}
 

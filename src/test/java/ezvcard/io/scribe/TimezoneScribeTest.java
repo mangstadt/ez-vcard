@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.property.Timezone;
@@ -45,7 +45,7 @@ import ezvcard.property.Timezone;
 /**
  * @author Michael Angstadt
  */
-public class TimezoneScribeTest {
+class TimezoneScribeTest {
 	private final TimezoneScribe scribe = new TimezoneScribe();
 	private final Sensei<Timezone> sensei = new Sensei<>(scribe);
 
@@ -66,7 +66,7 @@ public class TimezoneScribeTest {
 	private final Timezone empty = new Timezone((String) null);
 
 	@Test
-	public void prepareParameters() {
+	void prepareParameters() {
 		sensei.assertDataType(withOffset).run(VCardDataType.UTC_OFFSET);
 
 		sensei.assertDataType(withTimezoneId).versions(V2_1).run(VCardDataType.UTC_OFFSET);
@@ -83,7 +83,7 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withOffset).versions(V2_1, V4_0).run(offsetStrBasic);
 		sensei.assertWriteText(withOffset).versions(V3_0).run(offsetStrExtended);
 
@@ -102,7 +102,7 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withOffset).run("<utc-offset>" + offsetStrBasic + "</utc-offset>");
 		sensei.assertWriteXml(withTimezoneId).run("<text>" + timezoneIdStr + "</text>");
 		sensei.assertWriteXml(withOffsetAndTimezoneId).run("<text>" + timezoneIdStr + "</text>");
@@ -110,7 +110,7 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withOffset).run(offsetStrExtended);
 		sensei.assertWriteJson(withTimezoneId).run(timezoneIdStr);
 		sensei.assertWriteJson(withOffsetAndTimezoneId).run(timezoneIdStr);
@@ -118,7 +118,7 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(offsetStrExtended).run(withOffset);
 		sensei.assertParseText(offsetStrLotusNotes).run(withOffsetPositive);
 		sensei.assertParseText(offsetStrExtended).dataType(VCardDataType.UTC_OFFSET).run(withOffset);
@@ -136,7 +136,7 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<utc-offset>" + offsetStrBasic + "</utc-offset>").run(withOffset);
 		sensei.assertParseXml("<text>" + timezoneIdStr + "</text>").run(withTimezoneId);
 		sensei.assertParseXml("<utc-offset>" + offsetStrBasic + "</utc-offset><text>" + timezoneIdStr + "</text>").run(withTimezoneId);
@@ -145,14 +145,14 @@ public class TimezoneScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<div>" + offsetStrExtended + "</div>").run(withOffset);
 		sensei.assertParseHtml("<div>" + timezoneIdStr + "</div>").run(withTimezoneId);
 		sensei.assertParseHtml("<div></div>").run(empty);
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(offsetStrExtended).run(withOffset);
 		sensei.assertParseJson(offsetStrExtended).dataType(VCardDataType.UTC_OFFSET).run(withOffset);
 		sensei.assertParseJson(offsetStrExtended).dataType(VCardDataType.TEXT).run(withOffset);

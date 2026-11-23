@@ -1,10 +1,10 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.util.HtmlUtils;
 
@@ -49,14 +49,14 @@ import ezvcard.util.HtmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class HCardElementTest {
+class HCardElementTest {
 	@Test
-	public void value_text_content() {
+	void value_text_content() {
 		assertValue("<div>The text</div>", "The text");
 	}
 
 	@Test
-	public void value_line_breaks() {
+	void value_line_breaks() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -89,7 +89,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_ignore_child_tags() {
+	void value_ignore_child_tags() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -100,7 +100,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_ignore_type_text() {
+	void value_ignore_type_text() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -122,7 +122,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_value_tag() {
+	void value_value_tag() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -135,7 +135,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_multiple_value_tags() {
+	void value_multiple_value_tags() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -152,7 +152,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_multiple_value_tags_not_direct_child() {
+	void value_multiple_value_tags_not_direct_child() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -170,7 +170,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_nested_value_tags() {
+	void value_nested_value_tags() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -184,7 +184,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_abbr_value() {
+	void value_abbr_value() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -197,17 +197,17 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_abbr_tag_with_title() {
+	void value_abbr_tag_with_title() {
 		assertValue("<abbr class=\"latitude\" title=\"48.816667\">N 48� 81.6667</abbr>", "48.816667");
 	}
 
 	@Test
-	public void value_abbr_tag_without_title() {
+	void value_abbr_tag_without_title() {
 		assertValue("<abbr class=\"latitude\">N 48� 81.6667</abbr>", "N 48� 81.6667");
 	}
 
 	@Test
-	public void value_skip_del_tags() {
+	void value_skip_del_tags() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -220,7 +220,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void value_skip_del_tags_in_value() {
+	void value_skip_del_tags_in_value() {
 		//@formatter:off
 		assertValue(
 		"<div>" +
@@ -236,7 +236,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void firstValue() {
+	void firstValue() {
 		//@formatter:off
 		String html =
 		"<div class=\"n\">" +
@@ -253,7 +253,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void allValues() {
+	void allValues() {
 		//@formatter:off
 		String html =
 		"<div class=\"n\">" +
@@ -277,12 +277,12 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void types_none() {
+	void types_none() {
 		assertTypes("<div class=\"adr\"></div>");
 	}
 
 	@Test
-	public void types_multiple() {
+	void types_multiple() {
 		//@formatter:off
 		assertTypes(
 		"<div class=\"adr\">" +
@@ -294,7 +294,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void types_convert_to_lower_case() {
+	void types_convert_to_lower_case() {
 		//@formatter:off
 		assertTypes(
 		"<div class=\"adr\">" +
@@ -306,7 +306,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void types_not_direct_descendant() {
+	void types_not_direct_descendant() {
 		//@formatter:off
 		assertTypes(
 		"<div class=\"adr\">" +
@@ -320,7 +320,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void absUrl() {
+	void absUrl() {
 		HCardElement element = build("<a href=\"data:foo\" />", "http://example.com");
 		assertEquals("data:foo", element.absUrl("href"));
 		assertEquals("", element.absUrl("non-existant"));
@@ -336,7 +336,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void append_with_newlines() {
+	void append_with_newlines() {
 		HCardElement element = build("<div />");
 		element.append("Append\rthis\n\ntext\r\nplease.");
 
@@ -353,7 +353,7 @@ public class HCardElementTest {
 	}
 
 	@Test
-	public void append_without_newlines() {
+	void append_without_newlines() {
 		HCardElement element = build("<div />");
 		element.append("Without newlines.");
 

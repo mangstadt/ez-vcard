@@ -5,12 +5,12 @@ import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
 import static ezvcard.util.TestUtils.assertIntEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 
@@ -46,9 +46,9 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class ClientPidMapTest {
+class ClientPidMapTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		ClientPidMap property = new ClientPidMap(null, null);
 		assertNull(property.getPid());
 		assertNull(property.getUri());
@@ -59,7 +59,7 @@ public class ClientPidMapTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		ClientPidMap property = new ClientPidMap(1, "uri");
 
 		property.setPid(2);
@@ -80,14 +80,14 @@ public class ClientPidMapTest {
 	}
 
 	@Test
-	public void random() {
+	void random() {
 		ClientPidMap clientpidmap = ClientPidMap.random(2);
 		assertIntEquals(2, clientpidmap.getPid());
 		assertTrue(clientpidmap.getUri().matches("urn:uuid:[-\\da-f]+"));
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		ClientPidMap empty = new ClientPidMap(null, null);
 		assertValidate(empty).versions(VCardVersion.V2_1).run(2, 8);
 		assertValidate(empty).versions(VCardVersion.V3_0).run(2, 8);
@@ -100,19 +100,19 @@ public class ClientPidMapTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		ClientPidMap property = new ClientPidMap(1, "uri");
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		ClientPidMap original = new ClientPidMap(1, "uri");
 		assertCopy(original);
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		//@formatter:off
 		assertNothingIsEqual(
 			new ClientPidMap(null, null),

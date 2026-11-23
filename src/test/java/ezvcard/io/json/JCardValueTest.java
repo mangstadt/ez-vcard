@@ -1,13 +1,13 @@
 package ezvcard.io.json;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -37,9 +37,9 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class JCardValueTest {
+class JCardValueTest {
 	@Test
-	public void single() {
+	void single() {
 		JCardValue value = JCardValue.single("value");
 
 		//@formatter:off
@@ -52,7 +52,7 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void single_null() {
+	void single_null() {
 		JCardValue value = JCardValue.single(null);
 
 		//@formatter:off
@@ -65,31 +65,31 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void asSingle() {
+	void asSingle() {
 		JCardValue value = new JCardValue(new JsonValue("value1"), new JsonValue("value2"));
 		assertEquals("value1", value.asSingle());
 	}
 
 	@Test
-	public void asSingle_non_string() {
+	void asSingle_non_string() {
 		JCardValue value = new JCardValue(new JsonValue(false));
 		assertEquals("false", value.asSingle());
 	}
 
 	@Test
-	public void asSingle_null() {
+	void asSingle_null() {
 		JCardValue value = new JCardValue(new JsonValue((Object) null));
 		assertEquals("", value.asSingle());
 	}
 
 	@Test
-	public void asSingle_array() {
+	void asSingle_array() {
 		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue("value1"))));
 		assertEquals("value1", value.asSingle());
 	}
 
 	@Test
-	public void asSingle_object() {
+	void asSingle_object() {
 		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));
@@ -97,7 +97,7 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void multi() {
+	void multi() {
 		JCardValue value = JCardValue.multi("value", 42, false, null);
 
 		//@formatter:off
@@ -113,19 +113,19 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void asMulti() {
+	void asMulti() {
 		JCardValue value = new JCardValue(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null));
 		assertEquals(Arrays.asList("value1", "false", ""), value.asMulti());
 	}
 
 	@Test
-	public void asMulti_array() {
+	void asMulti_array() {
 		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false))));
 		assertEquals(Arrays.asList(), value.asMulti());
 	}
 
 	@Test
-	public void asMulti_object() {
+	void asMulti_object() {
 		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));
@@ -133,7 +133,7 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void structured() {
+	void structured() {
 		JCardValue value = JCardValue.structured("value", 42, false, null, Arrays.asList("one", "two"));
 
 		//@formatter:off
@@ -155,19 +155,19 @@ public class JCardValueTest {
 	}
 
 	@Test
-	public void asStructured() {
+	void asStructured() {
 		JCardValue value = new JCardValue(new JsonValue(Arrays.asList(new JsonValue("value1"), new JsonValue(false), new JsonValue((Object) null))));
 		assertEquals(Arrays.asList(Arrays.asList("value1"), Arrays.asList("false"), Arrays.asList()), value.asStructured());
 	}
 
 	@Test
-	public void asStructured_single_value() {
+	void asStructured_single_value() {
 		JCardValue value = new JCardValue(new JsonValue("value1"));
 		assertEquals(Arrays.asList(Arrays.asList("value1")), value.asStructured());
 	}
 
 	@Test
-	public void asStructured_object() {
+	void asStructured_object() {
 		Map<String, JsonValue> object = new HashMap<>();
 		object.put("a", new JsonValue("one"));
 		JCardValue value = new JCardValue(new JsonValue(object));

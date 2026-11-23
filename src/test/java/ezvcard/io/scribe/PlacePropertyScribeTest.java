@@ -1,9 +1,9 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardDataType;
 import ezvcard.io.scribe.Sensei.Check;
@@ -42,7 +42,7 @@ import ezvcard.util.GeoUri;
 /**
  * @author Michael Angstadt
  */
-public class PlacePropertyScribeTest {
+class PlacePropertyScribeTest {
 	private final PlacePropertyScribeImpl scribe = new PlacePropertyScribeImpl();
 	private final Sensei<PlaceProperty> sensei = new Sensei<>(scribe);
 
@@ -62,7 +62,7 @@ public class PlacePropertyScribeTest {
 	private final PlaceProperty empty = new PlaceProperty();
 
 	@Test
-	public void dataType() {
+	void dataType() {
 		sensei.assertDataType(withText).run(VCardDataType.TEXT);
 		sensei.assertDataType(withUri).run(VCardDataType.URI);
 		sensei.assertDataType(withGeoUri).run(VCardDataType.URI);
@@ -70,7 +70,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withText).run(textEscaped);
 		sensei.assertWriteText(withUri).run(uri);
 		sensei.assertWriteText(withGeoUri).run(geoUri);
@@ -78,7 +78,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withText).run("<text>" + text + "</text>");
 		sensei.assertWriteXml(withUri).run("<uri>" + uri + "</uri>");
 		sensei.assertWriteXml(withGeoUri).run("<uri>" + geoUri + "</uri>");
@@ -86,7 +86,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withText).run(text);
 		sensei.assertWriteJson(withUri).run(uri);
 		sensei.assertWriteJson(withGeoUri).run(geoUri);
@@ -94,7 +94,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(uri).run(hasText(uri));
 		sensei.assertParseText(textEscaped).dataType(VCardDataType.TEXT).run(hasText(text));
 		sensei.assertParseText(uri).dataType(VCardDataType.URI).run(hasUri(uri));
@@ -104,7 +104,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<text>" + text + "</text>").run(hasText(text));
 		sensei.assertParseXml("<uri>" + uri + "</uri>").run(hasUri(uri));
 		sensei.assertParseXml("<uri>" + geoUri + "</uri>").run(hasGeoUri(geoUriObj));
@@ -114,7 +114,7 @@ public class PlacePropertyScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(text).dataType(VCardDataType.TEXT).run(hasText(text));
 		sensei.assertParseJson(uri).dataType(VCardDataType.URI).run(hasUri(uri));
 		sensei.assertParseJson(geoUri).dataType(VCardDataType.URI).run(hasGeoUri(geoUriObj));

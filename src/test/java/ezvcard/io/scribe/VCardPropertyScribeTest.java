@@ -5,10 +5,10 @@ import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.each;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,8 +19,8 @@ import java.util.Arrays;
 
 import javax.xml.namespace.QName;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -61,15 +61,15 @@ import ezvcard.util.DefaultTimezoneRule;
 /**
  * @author Michael Angstadt
  */
-public class VCardPropertyScribeTest {
-	@ClassRule
+class VCardPropertyScribeTest {
+	@RegisterExtension
 	public static final DefaultTimezoneRule tzRule = new DefaultTimezoneRule(1, 0);
 
 	private final VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl();
 	private final Sensei<TestProperty> sensei = new Sensei<>(scribe);
 
 	@Test
-	public void date_parse_utc() {
+	void date_parse_utc() {
 		String value = "20130611T134302Z";
 		Temporal expected = LocalDateTime.of(2013, 6, 11, 13, 43, 2).toInstant(ZoneOffset.UTC);
 		Temporal actual = VCardPropertyScribe.date(value);
@@ -78,7 +78,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void date_parse_offset() {
+	void date_parse_offset() {
 		String value = "20130611T134302+0100";
 		Temporal expected = OffsetDateTime.of(2013, 6, 11, 13, 43, 2, 0, ZoneOffset.ofHours(1));
 		Temporal actual = VCardPropertyScribe.date(value);
@@ -87,7 +87,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void date_parse_local() {
+	void date_parse_local() {
 		String value = "20130611T134302";
 		Temporal expected = LocalDateTime.of(2013, 6, 11, 13, 43, 2);
 		Temporal actual = VCardPropertyScribe.date(value);
@@ -96,7 +96,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void date_write() {
+	void date_write() {
 		LocalDate date = LocalDate.of(2013, 6, 11);
 		assert_date_write(date, "20130611", false);
 		assert_date_write(date, "2013-06-11", true);
@@ -108,13 +108,13 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void dataType_default() {
+	void dataType_default() {
 		TestProperty property = new TestProperty("value");
 		sensei.assertDataType(property).run(VCardDataType.TEXT);
 	}
 
 	@Test
-	public void dataType_custom() {
+	void dataType_custom() {
 		VCardPropertyScribeImpl scribe = new VCardPropertyScribeImpl() {
 			@Override
 			protected VCardDataType _dataType(TestProperty property, VCardVersion version) {
@@ -126,7 +126,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void prepareParameters() {
+	void prepareParameters() {
 		VCardPropertyScribeImpl m = new VCardPropertyScribeImpl() {
 			@Override
 			protected void _prepareParameters(TestProperty property, CopyOnModify<VCardParameters> copy, VCardVersion version, VCard vcard) {
@@ -142,7 +142,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void handlePrefParam_to_4() {
+	void handlePrefParam_to_4() {
 		VCard vcard = new VCard();
 
 		TestProperty two = new TestProperty("");
@@ -182,7 +182,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void handlePrefParam_from_4() {
+	void handlePrefParam_from_4() {
 		VCard vcard = new VCard();
 
 		TestProperty two = new TestProperty("");
@@ -230,13 +230,13 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		TestProperty property = new TestProperty("value");
 		sensei.assertWriteText(property).run("value");
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		final VCardParameters params = new VCardParameters();
 		sensei.assertParseText("value").dataType(VCardDataType.TEXT).warnings((Integer) null).params(params).run(property -> {
 			assertEquals("value", property.value);
@@ -246,13 +246,13 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		TestProperty prop = new TestProperty("value");
 		sensei.assertWriteXml(prop).run("<text>value</text>");
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		final VCardParameters params = new VCardParameters();
 
 		//@formatter:off
@@ -268,7 +268,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml_no_xcard_element() {
+	void parseXml_no_xcard_element() {
 		sensei.assertParseXml("<one xmlns=\"http://example.com\">1</one><two xmlns=\"http://example.com\">2</two>").warnings((Integer) null).run(property -> {
 			assertEquals("12", property.value);
 			assertNull(property.parsedDataType);
@@ -276,7 +276,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml_no_child_elements() {
+	void parseXml_no_child_elements() {
 		sensei.assertParseXml("value").warnings((Integer) null).run(property -> {
 			assertEquals("value", property.value);
 			assertNull(property.parsedDataType);
@@ -284,7 +284,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseXml_unknown() {
+	void parseXml_unknown() {
 		sensei.assertParseXml("<unknown>value</unknown>").warnings((Integer) null).run(property -> {
 			assertEquals("value", property.value);
 			assertEquals(null, property.parsedDataType);
@@ -300,14 +300,14 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void getQName_default() {
+	void getQName_default() {
 		QName expected = new QName(V4_0.getXmlNamespace(), "test");
 		QName actual = scribe.getQName();
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void getQName_custom() {
+	void getQName_custom() {
 		QName expected = new QName("http://example.com", "foo");
 		VCardPropertyScribeImpl m = new VCardPropertyScribeImpl(expected);
 		QName actual = m.getQName();
@@ -315,7 +315,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<div>value<del>ignore</del>value</div>").warnings((Integer) null).run(property -> {
 			assertEquals("valuevalue", property.value);
 			assertNull(property.parsedDataType);
@@ -323,13 +323,13 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		TestProperty property = new TestProperty("value");
 		sensei.assertWriteJson(property).run("value");
 	}
 
 	@Test
-	public void parseJson_single() {
+	void parseJson_single() {
 		final VCardParameters params = new VCardParameters();
 		JCardValue value = JCardValue.single("value");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).params(params).warnings((Integer) null).run(property -> {
@@ -339,7 +339,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseJson_list() {
+	void parseJson_list() {
 		JCardValue value = JCardValue.multi("value1", "val,;ue2");
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(property -> {
 			assertEquals("value1,val\\,\\;ue2", property.value);
@@ -347,7 +347,7 @@ public class VCardPropertyScribeTest {
 	}
 
 	@Test
-	public void parseJson_structured() {
+	void parseJson_structured() {
 		JCardValue value = JCardValue.structured(null, "value1", "val,;ue2", Arrays.asList("value3", "value4"));
 		sensei.assertParseJson(value).dataType(VCardDataType.TEXT).warnings((Integer) null).run(property -> {
 			assertEquals(";value1;val\\,\\;ue2;value3,value4", property.value);

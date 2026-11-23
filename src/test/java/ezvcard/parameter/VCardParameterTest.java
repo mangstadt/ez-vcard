@@ -1,16 +1,16 @@
 package ezvcard.parameter;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import nl.jqno.equalsverifier.EqualsVerifier;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.SupportedVersions;
 import ezvcard.VCardVersion;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -40,16 +40,16 @@ import ezvcard.VCardVersion;
 /**
  * @author Michael Angstadt
  */
-public class VCardParameterTest {
+class VCardParameterTest {
 	@Test
-	public void getSupportedVersions() {
+	void getSupportedVersions() {
 		assertArrayEquals(new VCardVersion[] { VCardVersion.V2_1 }, VCardParameterImpl.ONE.getSupportedVersions());
 		assertArrayEquals(VCardVersion.values(), VCardParameterImpl.TWO.getSupportedVersions());
 		assertArrayEquals(VCardVersion.values(), new VCardParameterImpl("three").getSupportedVersions());
 	}
 
 	@Test
-	public void isSupportedBy() {
+	void isSupportedBy() {
 		assertTrue(VCardParameterImpl.ONE.isSupportedBy(VCardVersion.V2_1));
 		assertFalse(VCardParameterImpl.ONE.isSupportedBy(VCardVersion.V3_0));
 		assertFalse(VCardParameterImpl.ONE.isSupportedBy(VCardVersion.V4_0));
@@ -65,19 +65,19 @@ public class VCardParameterTest {
 	}
 
 	@Test
-	public void value_to_lowercase() {
+	void value_to_lowercase() {
 		VCardParameterImpl three = new VCardParameterImpl("THREE");
 		assertEquals("three", three.getValue());
 	}
 
 	@Test
-	public void value_null() {
+	void value_null() {
 		VCardParameterImpl parameter = new VCardParameterImpl(null);
 		assertNull(parameter.getValue());
 	}
 
 	@Test
-	public void equals_contract() {
+	void equals_contract() {
 		EqualsVerifier.forClass(VCardParameter.class).usingGetClass().verify();
 	}
 

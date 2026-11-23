@@ -4,10 +4,11 @@ import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertIntEquals;
 import static ezvcard.util.TestUtils.assertNothingIsEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -37,14 +38,14 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class PidTest {
-	@Test(expected = NullPointerException.class)
-	public void null_local_id() {
-		new Pid(null);
+class PidTest {
+	@Test
+	void null_local_id() {
+		assertThrows(NullPointerException.class, () -> new Pid(null));
 	}
 
 	@Test
-	public void constructor() {
+	void constructor() {
 		Pid pid = new Pid(1);
 		assertIntEquals(1, pid.getLocalId());
 		assertNull(pid.getClientPidMapReference());
@@ -55,7 +56,7 @@ public class PidTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		Pid pid = new Pid(1, 2);
 		assertEquals("1.2", pid.toString());
 
@@ -64,7 +65,7 @@ public class PidTest {
 	}
 
 	@Test
-	public void valueOf() {
+	void valueOf() {
 		Pid expected = new Pid(1, 2);
 		Pid actual = Pid.valueOf("1.2");
 		assertEquals(expected, actual);
@@ -78,18 +79,18 @@ public class PidTest {
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = NumberFormatException.class)
-	public void valueOf_invalid() {
-		Pid.valueOf("1.foo");
-	}
-
-	@Test(expected = NumberFormatException.class)
-	public void valueOf_more_than_one_dot() {
-		Pid.valueOf("1.2.2");
+	@Test
+	void valueOf_invalid() {
+		assertThrows(NumberFormatException.class, () -> Pid.valueOf("1.foo"));
 	}
 
 	@Test
-	public void equals() {
+	void valueOf_more_than_one_dot() {
+		assertThrows(NumberFormatException.class, () -> Pid.valueOf("1.2.2"));
+	}
+
+	@Test
+	void equals() {
 		Pid pid = new Pid(1, 2);
 		assertEqualsMethodEssentials(pid);
 

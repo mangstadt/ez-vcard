@@ -1,8 +1,8 @@
 package ezvcard.io.html;
 
 import static ezvcard.util.StringUtils.NEWLINE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ import java.util.Locale;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -77,35 +77,35 @@ import freemarker.template.TemplateException;
 /**
  * @author Michael Angstadt
  */
-public class HCardPageTest {
+class HCardPageTest {
 	private byte[] mockData = "data".getBytes();
 
 	@Test
-	public void zero_vcards() throws Exception {
+	void zero_vcards() throws Exception {
 		Document document = generate();
 		assertTrue(document.getElementsByClass("vcard").isEmpty());
 	}
 
 	@Test
-	public void one_vcard() throws Exception {
+	void one_vcard() throws Exception {
 		Document document = generate(new VCard());
 		assertEquals(1, document.getElementsByClass("vcard").size());
 	}
 
 	@Test
-	public void multiple_vcards() throws Exception {
+	void multiple_vcards() throws Exception {
 		Document document = generate(new VCard(), new VCard());
 		assertEquals(2, document.getElementsByClass("vcard").size());
 	}
 
 	@Test
-	public void prodId() throws Exception {
+	void prodId() throws Exception {
 		Document document = generate(new VCard());
 		assertEquals(1, document.select(".vcard .prodid").size());
 	}
 
 	@Test
-	public void logic_for_displaying_a_photo() throws Exception {
+	void logic_for_displaying_a_photo() throws Exception {
 		VCard vcard = new VCard();
 		Document document = generate(vcard);
 		assertTrue(document.select(".vcard .photo").isEmpty());
@@ -136,7 +136,7 @@ public class HCardPageTest {
 	}
 
 	@Test
-	public void sort_string_logic() throws Exception {
+	void sort_string_logic() throws Exception {
 		SortStringScribe scribe = new SortStringScribe();
 
 		//N;SORT-AS, ORG;SORT-AS, SORT_STRING
@@ -187,7 +187,7 @@ public class HCardPageTest {
 	}
 
 	@Test
-	public void org() throws Exception {
+	void org() throws Exception {
 		//1 value
 		{
 			VCard vcard = new VCard();
@@ -215,7 +215,7 @@ public class HCardPageTest {
 	}
 
 	@Test
-	public void note() throws Exception {
+	void note() throws Exception {
 		VCard vcard = new VCard();
 		vcard.addNote("one\rtwo\nthree\r\nfour");
 
@@ -233,7 +233,7 @@ public class HCardPageTest {
 	 * Test round-tripping for locales that don't use a period for decimals.
 	 */
 	@Test
-	public void geo() throws Exception {
+	void geo() throws Exception {
 		Locale defaultLocale = Locale.getDefault();
 
 		try {
@@ -259,7 +259,7 @@ public class HCardPageTest {
 	}
 
 	@Test
-	public void create_then_parse() throws Exception {
+	void create_then_parse() throws Exception {
 		//create template
 		VCard input = createFullVCard();
 		HCardPage template = new HCardPage();

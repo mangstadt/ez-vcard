@@ -2,7 +2,7 @@ package ezvcard.io.json;
 
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertValidate;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,9 +11,8 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import ezvcard.VCard;
 import ezvcard.VCardDataType;
@@ -75,12 +74,9 @@ import ezvcard.util.TelUri;
 /**
  * @author Michael Angstadt
  */
-public class JCardWriterTest {
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
-
+class JCardWriterTest {
 	@Test
-	public void write_single_vcard() throws Throwable {
+	void write_single_vcard() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 			writer.setAddProdId(false);
@@ -103,7 +99,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void write_multiple_vcards() throws Throwable {
+	void write_multiple_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw, true)) {
 			writer.setAddProdId(false);
@@ -138,7 +134,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void setPrettyPrint() throws Throwable {
+	void setPrettyPrint() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw, true)) {
 			writer.setAddProdId(false);
@@ -176,7 +172,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void setPrettyPrinter() throws Throwable {
+	void setPrettyPrinter() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw, true)) {
 			writer.setAddProdId(false);
@@ -214,7 +210,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void write_no_vcards() throws Throwable {
+	void write_no_vcards() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 		}
@@ -222,7 +218,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void write_raw_property() throws Throwable {
+	void write_raw_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 			writer.setAddProdId(false);
@@ -247,7 +243,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void write_extended_property() throws Throwable {
+	void write_extended_property() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 			writer.registerScribe(new TestScribe());
@@ -273,7 +269,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void write_quoted_printable_encoding_not_supported() throws Exception {
+	void write_quoted_printable_encoding_not_supported() throws Exception {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 			writer.setAddProdId(false);
@@ -298,7 +294,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void skipMeException() throws Throwable {
+	void skipMeException() throws Throwable {
 		StringWriter sw = new StringWriter();
 		try (JCardWriter writer = new JCardWriter(sw)) {
 			writer.registerScribe(new SkipMeScribe());
@@ -323,11 +319,11 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void utf8() throws Throwable {
+	void utf8(@TempDir Path tempDir) throws Throwable {
 		VCard vcard = new VCard();
 		vcard.addNote("\u019dote");
 
-		Path file = tempFolder.newFile().toPath();
+		Path file = tempDir.resolve("test.json");
 		try (JCardWriter writer = new JCardWriter(file)) {
 			writer.setAddProdId(false);
 			writer.write(vcard);
@@ -347,7 +343,7 @@ public class JCardWriterTest {
 	}
 
 	@Test
-	public void jcard_example() throws Throwable {
+	void jcard_example() throws Throwable {
 		VCard vcard = createExample();
 
 		assertValidate(vcard).versions(VCardVersion.V4_0).run();

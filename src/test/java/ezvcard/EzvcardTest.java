@@ -3,12 +3,12 @@ package ezvcard;
 import static ezvcard.util.StringUtils.NEWLINE;
 import static ezvcard.util.TestUtils.assertParseWarnings;
 import static ezvcard.util.TestUtils.assertVersion;
+import static ezvcard.util.TestUtils.assertXMLEqual;
 import static java.util.stream.Collectors.toList;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Writer;
 import java.nio.file.Files;
@@ -23,9 +23,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.jsoup.Jsoup;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -73,17 +72,14 @@ import ezvcard.util.XmlUtils;
 /**
  * @author Michael Angstadt
  */
-public class EzvcardTest {
+class EzvcardTest {
 	private final XPath xpath = XPathFactory.newInstance().newXPath();
 	{
 		xpath.setNamespaceContext(new XCardNamespaceContext(VCardVersion.V4_0, "v"));
 	}
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-
 	@Test
-	public void parse_first() {
+	void parse_first() {
 		//@formatter:off
 		String str = 
 		"BEGIN:VCARD\r\n" +
@@ -102,7 +98,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parse_iterator() {
+	void parse_iterator() {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -120,7 +116,7 @@ public class EzvcardTest {
 	 * Calling "hasNext()" yields different iterator state.
 	 */
 	@Test
-	public void parse_iterator_hasNext() {
+	void parse_iterator_hasNext() {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -138,7 +134,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parse_all() {
+	void parse_all() {
 		//@formatter:off
 		String str = 
 		"BEGIN:VCARD\r\n" +
@@ -171,7 +167,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parse_stream() {
+	void parse_stream() {
 		//@formatter:off
 		String str =
 		"BEGIN:VCARD\r\n" +
@@ -190,7 +186,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parse_register() {
+	void parse_register() {
 		//@formatter:off
 		String str = 
 		"BEGIN:VCARD\r\n" +
@@ -207,7 +203,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parse_caretDecoding() {
+	void parse_caretDecoding() {
 		//@formatter:off
 		String str = 
 		"BEGIN:VCARD\r\n" +
@@ -228,7 +224,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseXml_first() {
+	void parseXml_first() {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("fn", "<text>John Doe</text>");
 		List<List<ParseWarning>> warnings = new ArrayList<>();
@@ -242,7 +238,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseXml_all() {
+	void parseXml_all() {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("fn", "<text>John Doe</text>");
 		xb.begin();
@@ -268,7 +264,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseXml_register() {
+	void parseXml_register() {
 		XCardBuilder xb = new XCardBuilder();
 		xb.prop("http://luckynum.com", "lucky-num", "<num>22</num>");
 
@@ -280,7 +276,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseHtml_first() {
+	void parseHtml_first() {
 		//@formatter:off
 		String html =
 		"<div class=\"vcard\">" +
@@ -299,7 +295,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseHtml_all() {
+	void parseHtml_all() {
 		//@formatter:off
 		String html =
 		"<html>" +
@@ -332,7 +328,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseHtml_register() {
+	void parseHtml_register() {
 		//@formatter:off
 		String html =
 		"<div class=\"vcard\">" +
@@ -348,7 +344,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseHtml_pageUrl() {
+	void parseHtml_pageUrl() {
 		//@formatter:off
 		String html =
 		"<div class=\"vcard\">" +
@@ -372,7 +368,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseJson_first() {
+	void parseJson_first() {
 		//@formatter:off
 		String json =
 		  "[\"vcard\"," +
@@ -394,7 +390,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseJson_all() {
+	void parseJson_all() {
 		//@formatter:off
 		String json =
 		"[\"vcardstream\"," +
@@ -434,7 +430,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void parseJson_register() {
+	void parseJson_register() {
 		//@formatter:off
 		String json =
 		  "[\"vcard\"," +
@@ -453,7 +449,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_one() {
+	void write_one() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V2_1);
 		vcard.setFormattedName(new FormattedName("John Doe"));
@@ -464,7 +460,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_multiple() {
+	void write_multiple() {
 		VCard vcard1 = new VCard();
 		vcard1.setVersion(VCardVersion.V2_1);
 		vcard1.setFormattedName(new FormattedName("John Doe"));
@@ -480,7 +476,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_version() {
+	void write_version() {
 		VCard vcard1 = new VCard();
 		vcard1.setVersion(VCardVersion.V2_1);
 		VCard vcard2 = new VCard();
@@ -493,7 +489,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_prodId() {
+	void write_prodId() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V3_0);
 
@@ -508,7 +504,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_caretEncoding() {
+	void write_caretEncoding() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
 		FormattedName fn = vcard.setFormattedName("test");
@@ -526,7 +522,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_foldLines() {
+	void write_foldLines() {
 		VCard vcard = new VCard();
 		vcard.addNote("In the beginning God created the heavens and the earth. Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.");
 
@@ -542,7 +538,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_versionStrict() {
+	void write_versionStrict() {
 		VCard vcard = new VCard();
 		vcard.setVersion(VCardVersion.V4_0);
 		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
@@ -558,7 +554,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_targetApplication() {
+	void write_targetApplication() {
 		byte[] data = "data".getBytes();
 		VCard vcard = new VCard();
 		vcard.addPhoto(new Photo(data, ImageType.JPEG));
@@ -596,15 +592,15 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void write_file() throws Exception {
+	void write_file(@TempDir Path tempDir) throws Exception {
 		VCard vcard = new VCard();
-		Path file = folder.newFile().toPath();
+		Path file = tempDir.resolve("test.vcf");
 		Ezvcard.write(vcard).go(file);
 		assertTrue(Files.size(file) > 0);
 	}
 
 	@Test
-	public void writeXml_go() {
+	void writeXml_go() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -613,7 +609,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_dom() throws Exception {
+	void writeXml_dom() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedName("John Doe"));
 
@@ -633,7 +629,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_one() throws Exception {
+	void writeXml_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -643,7 +639,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_multiple() throws Exception {
+	void writeXml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName("John Doe");
 		VCard vcard2 = new VCard();
@@ -660,7 +656,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_prodId() throws Exception {
+	void writeXml_prodId() throws Exception {
 		VCard vcard = new VCard();
 
 		Document dom = Ezvcard.writeXml(vcard).dom();
@@ -677,7 +673,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_versionStrict() throws Exception {
+	void writeXml_versionStrict() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
 
@@ -695,7 +691,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeXml_indent() {
+	void writeXml_indent() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedName("John Doe"));
 
@@ -704,7 +700,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeHtml_one() throws Exception {
+	void writeHtml_one() throws Exception {
 		VCard vcard = new VCard();
 		vcard.setFormattedName(new FormattedName("John Doe"));
 
@@ -715,7 +711,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeHtml_multiple() throws Exception {
+	void writeHtml_multiple() throws Exception {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
@@ -730,7 +726,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_one() {
+	void writeJson_one() {
 		VCard vcard = new VCard();
 		vcard.setFormattedName("John Doe");
 
@@ -748,7 +744,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_multiple() {
+	void writeJson_multiple() {
 		VCard vcard1 = new VCard();
 		vcard1.setFormattedName(new FormattedName("John Doe"));
 		VCard vcard2 = new VCard();
@@ -784,7 +780,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_prodId() {
+	void writeJson_prodId() {
 		VCard vcard = new VCard();
 
 		String actual = Ezvcard.writeJson(vcard).go();
@@ -798,7 +794,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_versionStrict() {
+	void writeJson_versionStrict() {
 		VCard vcard = new VCard();
 		vcard.setMailer("mailer"); //only supported by 2.1 and 3.0
 
@@ -813,7 +809,7 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_indent() {
+	void writeJson_indent() {
 		VCard vcard = new VCard();
 
 		//defaults to "false"
@@ -828,10 +824,10 @@ public class EzvcardTest {
 	}
 
 	@Test
-	public void writeJson_does_not_close_stream() throws Exception {
+	void writeJson_does_not_close_stream(@TempDir Path tempDir) throws Exception {
 		VCard vcard = new VCard();
 
-		Path file = folder.newFile().toPath();
+		Path file = tempDir.resolve("test.json");
 		try (Writer writer = Files.newBufferedWriter(file)) {
 			Ezvcard.writeJson(vcard).go(writer);
 

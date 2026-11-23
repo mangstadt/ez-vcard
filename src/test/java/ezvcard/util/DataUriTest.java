@@ -4,16 +4,17 @@ import static ezvcard.util.StringUtils.encodeBase64;
 import static ezvcard.util.TestUtils.assertEqualsAndHash;
 import static ezvcard.util.TestUtils.assertEqualsMethodEssentials;
 import static ezvcard.util.TestUtils.assertNothingIsEqual;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -47,13 +48,13 @@ import org.junit.Test;
 /**
  * @author Michael Angstadt
  */
-public class DataUriTest {
+class DataUriTest {
 	private final String dataString = "test-data";
 	private final byte[] dataBytes = dataString.getBytes(StandardCharsets.UTF_8);
 	private final String dataBase64 = encodeBase64(dataBytes);
 
 	@Test
-	public void constructor() {
+	void constructor() {
 		DataUri uri = new DataUri("text");
 		assertEquals("text/plain", uri.getContentType());
 		assertNull(uri.getData());
@@ -81,7 +82,7 @@ public class DataUriTest {
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		DataUri uri = new DataUri("text/html", "text");
 		DataUri copy = new DataUri(uri);
 		assertEquals("text/html", copy.getContentType());
@@ -99,7 +100,7 @@ public class DataUriTest {
 	}
 
 	@Test
-	public void parse() {
+	void parse() {
 		DataUri expected = new DataUri("image/png", dataBytes);
 		DataUri actual = DataUri.parse("data:image/png;base64," + dataBase64);
 		assertEquals(expected, actual);
@@ -132,39 +133,39 @@ public class DataUriTest {
 	}
 
 	@Test
-	public void parse_comma_in_content_type() {
+	void parse_comma_in_content_type() {
 		DataUri expected = new DataUri("text/pla", "in;base64," + dataBase64);
 		DataUri actual = DataUri.parse("data:text/pla,in;base64," + dataBase64);
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_short_string() {
-		DataUri.parse("a");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_not_a_uri() {
-		DataUri.parse("not-valid");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_wrong_scheme() {
-		DataUri.parse("mailto:johndoe@gmail.com");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_no_comma() {
-		DataUri.parse("data:text/plain;base64");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void parse_bad_charset() {
-		DataUri.parse("data:text/plain;charset=foobar;base64," + dataBase64);
+	@Test
+	void parse_short_string() {
+		assertThrows(IllegalArgumentException.class, () -> DataUri.parse("a"));
 	}
 
 	@Test
-	public void hasDataScheme() {
+	void parse_not_a_uri() {
+		assertThrows(IllegalArgumentException.class, () -> DataUri.parse("not-valid"));
+	}
+
+	@Test
+	void parse_wrong_scheme() {
+		assertThrows(IllegalArgumentException.class, () -> DataUri.parse("mailto:johndoe@gmail.com"));
+	}
+
+	@Test
+	void parse_no_comma() {
+		assertThrows(IllegalArgumentException.class, () -> DataUri.parse("data:text/plain;base64"));
+	}
+
+	@Test
+	void parse_bad_charset() {
+		assertThrows(IllegalArgumentException.class, () -> DataUri.parse("data:text/plain;charset=foobar;base64," + dataBase64));
+	}
+
+	@Test
+	void hasDataScheme() {
 		assertTrue(DataUri.hasDataScheme("data:foo"));
 		assertTrue(DataUri.hasDataScheme("data:"));
 		assertTrue(DataUri.hasDataScheme("DATA:foo"));
@@ -173,7 +174,7 @@ public class DataUriTest {
 	}
 
 	@Test
-	public void toString_() {
+	void toString_() {
 		DataUri uri = new DataUri("text/plain", dataBytes);
 		assertEquals("data:text/plain;base64," + dataBase64, uri.toString());
 
@@ -191,7 +192,7 @@ public class DataUriTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		assertEqualsMethodEssentials(new DataUri(""));
 
 		//@formatter:off

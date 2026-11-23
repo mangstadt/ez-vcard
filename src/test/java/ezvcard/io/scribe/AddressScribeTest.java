@@ -3,12 +3,12 @@ package ezvcard.io.scribe;
 import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCard;
 import ezvcard.io.json.JCardValue;
@@ -47,7 +47,7 @@ import ezvcard.property.Address;
 /**
  * @author Michael Angstadt
  */
-public class AddressScribeTest {
+class AddressScribeTest {
 	private final AddressScribe scribe = new AddressScribe();
 	private final Sensei<Address> sensei = new Sensei<>(scribe);
 
@@ -84,7 +84,7 @@ public class AddressScribeTest {
 	private final Address empty = new Address();
 
 	@Test
-	public void prepareParameters_label() {
+	void prepareParameters_label() {
 		Address property = new Address();
 		property.setLabel("label");
 
@@ -100,7 +100,7 @@ public class AddressScribeTest {
 	 * to 4.0, it should replace "TYPE=pref" with "PREF=1".
 	 */
 	@Test
-	public void prepareParameters_type_pref() {
+	void prepareParameters_type_pref() {
 		Address property = new Address();
 		property.getTypes().add(AddressType.PREF);
 
@@ -117,7 +117,7 @@ public class AddressScribeTest {
 	 * "TYPE=pref" to it.
 	 */
 	@Test
-	public void prepareParameters_pref_parameter() {
+	void prepareParameters_pref_parameter() {
 		//TODO move this test to VCardPropertyScribeTest (except for the "label" part)
 		VCard vcard = new VCard();
 
@@ -144,7 +144,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withAllFields).versions(V2_1).run("P.O. Box 1234\\;;Apt, 11;123 Main St;Austin;TX;12345;USA");
 		sensei.assertWriteText(withAllFields).versions(V3_0, V4_0).run("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA");
 
@@ -159,7 +159,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		//@formatter:off
 		sensei.assertWriteXml(withAllFields).run(
 		"<pobox>P.O. Box 1234;</pobox>" +
@@ -202,7 +202,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withAllFields).run(JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA"));
 		sensei.assertWriteJson(withMultipleValuesFields).run(JCardValue.structured("P.O. Box 1234;", Arrays.asList("Apt, 11", "P.O. Box 12"), Arrays.asList("123 Main St", "555 Main St"), "Austin", "TX", "12345", "USA"));
 		sensei.assertWriteJson(withSomeFields).run(JCardValue.structured("P.O. Box 1234;", "", "", "Austin", "TX", "12345", ""));
@@ -210,7 +210,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText("P.O. Box 1234\\;;Apt\\, 11;123 Main St;Austin;TX;12345;USA").run(withAllFields);
 
 		Address multipleValuesUnderV2_1 = new Address(withAllFields);
@@ -225,7 +225,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		//@formatter:off
 		sensei.assertParseXml(
 		"<pobox>P.O. Box 1234;</pobox>" +
@@ -259,7 +259,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -298,7 +298,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void parseHtml_type_parameters() {
+	void parseHtml_type_parameters() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -326,7 +326,7 @@ public class AddressScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		JCardValue value = JCardValue.structured("P.O. Box 1234;", "Apt, 11", "123 Main St", "Austin", "TX", "12345", "USA");
 		sensei.assertParseJson(value).run(withAllFields);
 

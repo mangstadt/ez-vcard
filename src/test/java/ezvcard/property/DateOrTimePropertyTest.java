@@ -4,16 +4,16 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.VCardVersion;
 import ezvcard.util.PartialDate;
@@ -50,9 +50,9 @@ import ezvcard.util.PartialDate;
 /**
  * @author Michael Angstadt
  */
-public class DateOrTimePropertyTest {
+class DateOrTimePropertyTest {
 	@Test
-	public void constructors() {
+	void constructors() {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 		assertNull(property.getDate());
 		assertNull(property.getPartialDate());
@@ -78,7 +78,7 @@ public class DateOrTimePropertyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 
 		LocalDate date = LocalDate.of(2016, 1, 14);
@@ -116,7 +116,7 @@ public class DateOrTimePropertyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		DateOrTimePropertyImpl empty = new DateOrTimePropertyImpl();
 		assertValidate(empty).run(8);
 
@@ -137,13 +137,13 @@ public class DateOrTimePropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		DateOrTimePropertyImpl property = new DateOrTimePropertyImpl();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		DateOrTimePropertyImpl original = new DateOrTimePropertyImpl();
 		assertCopy(original);
 
@@ -157,7 +157,7 @@ public class DateOrTimePropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		LocalDate date1 = LocalDate.of(2016, 1, 14);
 		LocalDate date2 = LocalDate.of(2016, 1, 15);
 		List<VCardProperty> properties = new ArrayList<>();

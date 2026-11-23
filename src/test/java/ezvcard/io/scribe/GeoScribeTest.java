@@ -4,7 +4,7 @@ import static ezvcard.VCardVersion.V2_1;
 import static ezvcard.VCardVersion.V3_0;
 import static ezvcard.VCardVersion.V4_0;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.property.Geo;
 import ezvcard.util.GeoUri;
@@ -41,7 +41,7 @@ import ezvcard.util.GeoUri;
 /**
  * @author Michael Angstadt
  */
-public class GeoScribeTest {
+class GeoScribeTest {
 	private final GeoScribe scribe = new GeoScribe();
 	private final Sensei<Geo> sensei = new Sensei<>(scribe);
 
@@ -52,7 +52,7 @@ public class GeoScribeTest {
 	private final Geo empty = new Geo((GeoUri) null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withBoth).versions(V2_1, V3_0).run("-12.34;56.78");
 		sensei.assertWriteText(withBoth).versions(V4_0).run("geo:-12.34,56.78");
 
@@ -70,7 +70,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withBoth).run("<uri>geo:-12.34,56.78</uri>");
 		sensei.assertWriteXml(withLatitude).run("<uri>geo:-12.34,0.0</uri>");
 		sensei.assertWriteXml(withLongitude).run("<uri>geo:0.0,56.78</uri>");
@@ -79,7 +79,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withBoth).run("geo:-12.34,56.78");
 		sensei.assertWriteJson(withLatitude).run("geo:-12.34,0.0");
 		sensei.assertWriteJson(withLongitude).run("geo:0.0,56.78");
@@ -88,7 +88,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText("-12.34;56.78").versions(V2_1, V3_0).run(withBoth);
 		sensei.assertParseText("-12.34;56.78").versions(V4_0).cannotParse(12);
 
@@ -114,7 +114,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<uri>geo:-12.34,56.78</uri>").run(withBoth);
 		sensei.assertParseXml("<uri>geo:invalid,56.78</uri>").cannotParse(12);
 		sensei.assertParseXml("<uri>geo:-12.34,invalid</uri>").cannotParse(12);
@@ -127,7 +127,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		//@formatter:off
 		sensei.assertParseHtml(
 		"<div>" +
@@ -195,7 +195,7 @@ public class GeoScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson("geo:-12.34,56.78").run(withBoth);
 		sensei.assertParseJson("geo:invalid,56.78").cannotParse(12);
 		sensei.assertParseJson("geo:-12.34,invalid").cannotParse(12);

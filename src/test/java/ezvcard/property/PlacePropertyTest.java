@@ -4,14 +4,14 @@ import static ezvcard.property.PropertySensei.assertCopy;
 import static ezvcard.property.PropertySensei.assertEqualsMethod;
 import static ezvcard.property.PropertySensei.assertNothingIsEqual;
 import static ezvcard.property.PropertySensei.assertValidate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.util.GeoUri;
 
@@ -47,13 +47,13 @@ import ezvcard.util.GeoUri;
 /**
  * @author Michael Angstadt
  */
-public class PlacePropertyTest {
+class PlacePropertyTest {
 	private final String text = "New York, NY";
 	private final String uri = "http://newyork.gov";
 	private final GeoUri geoUriObj = new GeoUri.Builder(40.71448, -74.00598).build();
 
 	@Test
-	public void constructors() {
+	void constructors() {
 		PlaceProperty property = new PlaceProperty();
 		assertNull(property.getText());
 		assertNull(property.getUri());
@@ -77,7 +77,7 @@ public class PlacePropertyTest {
 	}
 
 	@Test
-	public void set_value() {
+	void set_value() {
 		PlaceProperty property = new PlaceProperty();
 
 		property.setText("text");
@@ -124,7 +124,7 @@ public class PlacePropertyTest {
 	}
 
 	@Test
-	public void validate() {
+	void validate() {
 		PlaceProperty empty = new PlaceProperty();
 		assertValidate(empty).run(8);
 
@@ -142,13 +142,13 @@ public class PlacePropertyTest {
 	}
 
 	@Test
-	public void toStringValues() {
+	void toStringValues() {
 		PlaceProperty property = new PlaceProperty();
 		assertFalse(property.toStringValues().isEmpty());
 	}
 
 	@Test
-	public void copy() {
+	void copy() {
 		PlaceProperty original = new PlaceProperty();
 		assertCopy(original);
 
@@ -164,7 +164,7 @@ public class PlacePropertyTest {
 	}
 
 	@Test
-	public void equals() {
+	void equals() {
 		List<VCardProperty> properties = new ArrayList<>();
 
 		PlaceProperty property = new PlaceProperty();

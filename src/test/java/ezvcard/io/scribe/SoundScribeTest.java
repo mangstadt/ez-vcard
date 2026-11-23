@@ -1,10 +1,10 @@
 package ezvcard.io.scribe;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.scribe.Sensei.Check;
 import ezvcard.parameter.SoundType;
@@ -43,7 +43,7 @@ import ezvcard.util.DataUri;
 /**
  * @author Michael Angstadt
  */
-public class SoundScribeTest {
+class SoundScribeTest {
 	private final SoundScribe scribe = new SoundScribe();
 	private final Sensei<Sound> sensei = new Sensei<>(scribe);
 
@@ -54,7 +54,7 @@ public class SoundScribeTest {
 	private final String dataUri = new DataUri("audio/mp3", data).toString();
 
 	@Test
-	public void parseHtml() {
+	void parseHtml() {
 		sensei.assertParseHtml("<audio />").cannotParse(16);
 		sensei.assertParseHtml("<audio><source /></audio>").cannotParse(17);
 		sensei.assertParseHtml("<audio><source src=\"" + url + "\" /></audio>").run(hasUrl(url, SoundType.MP3));

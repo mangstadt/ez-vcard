@@ -1,6 +1,6 @@
 package ezvcard.io.scribe;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ezvcard.io.json.JCardValue;
 import ezvcard.property.Gender;
@@ -37,7 +37,7 @@ import ezvcard.property.Gender;
 /**
  * @author Michael Angstadt
  */
-public class GenderScribeTest {
+class GenderScribeTest {
 	private final GenderScribe scribe = new GenderScribe();
 	private final Sensei<Gender> sensei = new Sensei<>(scribe);
 
@@ -57,7 +57,7 @@ public class GenderScribeTest {
 	private final Gender empty = new Gender((String) null);
 
 	@Test
-	public void writeText() {
+	void writeText() {
 		sensei.assertWriteText(withGenderAndText).run(gender + ";" + textEscaped);
 		sensei.assertWriteText(withGender).run(gender);
 		sensei.assertWriteText(withText).run(";" + textEscaped);
@@ -65,7 +65,7 @@ public class GenderScribeTest {
 	}
 
 	@Test
-	public void writeXml() {
+	void writeXml() {
 		sensei.assertWriteXml(withGenderAndText).run("<sex>" + gender + "</sex><identity>" + text + "</identity>");
 		sensei.assertWriteXml(withGender).run("<sex>" + gender + "</sex>");
 		sensei.assertWriteXml(withText).run("<sex/><identity>" + text + "</identity>");
@@ -73,7 +73,7 @@ public class GenderScribeTest {
 	}
 
 	@Test
-	public void writeJson() {
+	void writeJson() {
 		sensei.assertWriteJson(withGenderAndText).run(JCardValue.structured(gender, text));
 		sensei.assertWriteJson(withGender).run(gender);
 		sensei.assertWriteJson(withText).run(JCardValue.structured(null, text));
@@ -81,7 +81,7 @@ public class GenderScribeTest {
 	}
 
 	@Test
-	public void parseText() {
+	void parseText() {
 		sensei.assertParseText(gender + ";" + textEscaped).run(withGenderAndText);
 		sensei.assertParseText(gender).run(withGender);
 		sensei.assertParseText(";" + textEscaped).run(withText);
@@ -90,7 +90,7 @@ public class GenderScribeTest {
 	}
 
 	@Test
-	public void parseXml() {
+	void parseXml() {
 		sensei.assertParseXml("<sex>" + gender + "</sex><identity>" + text + "</identity>").run(withGenderAndText);
 		sensei.assertParseXml("<sex>" + gender + "</sex>").run(withGender);
 		sensei.assertParseXml("<identity>" + text + "</identity>").cannotParse(0);
@@ -98,7 +98,7 @@ public class GenderScribeTest {
 	}
 
 	@Test
-	public void parseJson() {
+	void parseJson() {
 		sensei.assertParseJson(JCardValue.structured(gender, text)).run(withGenderAndText);
 
 		//single-valued array
