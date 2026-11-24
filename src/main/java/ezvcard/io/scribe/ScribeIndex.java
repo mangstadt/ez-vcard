@@ -58,7 +58,7 @@ import ezvcard.property.Xml;
  * //inject the ScribeIndex into a plain-text vCard reader class and read the vCard data stream
  * try (VCardReader vcardReader = new VCardReader(...)) {
  *   vcardReader.setScribeIndex(index);
- *   List&lt;VCard&gt; vcards = new ArrayList&lt;VCard&gt;();
+ *   List&lt;VCard&gt; vcards = new ArrayList&lt;&gt;();
  *   VCard vcard;
  *   while ((vcards = vcardReader.readNext()) != null) {
  *     vcards.add(vcard);
