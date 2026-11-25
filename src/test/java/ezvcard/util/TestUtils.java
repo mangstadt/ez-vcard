@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -109,14 +110,11 @@ public class TestUtils {
 	 * use "null" for warnings that do not have a code)
 	 */
 	public static void assertParseWarnings(List<ParseWarning> warnings, Integer... expectedCodes) {
-		List<Integer> expectedWarnings = new ArrayList<>(Arrays.asList(expectedCodes));
-		List<Integer> actualWarnings = warnings.stream().map(ParseWarning::getCode).collect(Collectors.toList());
+		Comparator<Integer> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
+		List<Integer> expectedWarnings = Arrays.stream(expectedCodes).sorted(nullsFirst).collect(Collectors.toList());
+		List<Integer> actualWarnings = warnings.stream().map(ParseWarning::getCode).sorted(nullsFirst).collect(Collectors.toList());
 
-		for (Integer actualWarning : actualWarnings) {
-			if (!expectedWarnings.remove(actualWarning)) {
-				fail("Expected these warnings " + expectedWarnings + ", but was this: " + actualWarnings + ".  Actual warnings: " + warnings);
-			}
-		}
+		assertEquals(expectedWarnings, actualWarnings, () -> "Actual warnings: " + warnings);
 	}
 
 	/**
