@@ -138,23 +138,11 @@ public class TestUtils {
 	}
 
 	public static boolean checkCodes(List<ValidationWarning> warnings, Integer... expectedCodes) {
-		if (warnings.size() != expectedCodes.length) {
-			return false;
-		}
+		Comparator<Integer> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
+		List<Integer> expectedWarnings = Arrays.stream(expectedCodes).sorted(nullsFirst).collect(Collectors.toList());
+		List<Integer> actualWarnings = warnings.stream().map(ValidationWarning::getCode).sorted(nullsFirst).collect(Collectors.toList());
 
-		/*
-		 * Don't use a Set because there can be multiple warnings with the same
-		 * code.
-		 */
-		List<Integer> expected = new ArrayList<>(Arrays.asList(expectedCodes));
-
-		//@formatter:off
-		boolean unexpectedWarningFound = warnings.stream()
-			.map(ValidationWarning::getCode)
-		.anyMatch(code -> !expected.remove((Object) code));
-		//@formatter:on
-
-		return !unexpectedWarningFound;
+		return expectedWarnings.equals(actualWarnings);
 	}
 
 	public static void assertValidate(List<ValidationWarning> warnings, Integer... expectedCodes) {
@@ -336,7 +324,7 @@ public class TestUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Asserts that two XML documents are the same.
 	 * @param expected the expected document
