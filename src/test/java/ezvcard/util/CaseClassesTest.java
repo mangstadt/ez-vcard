@@ -43,7 +43,7 @@ class CaseClassesTest {
 	private CaseClassesImpl cc;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		cc = new CaseClassesImpl();
 	}
 

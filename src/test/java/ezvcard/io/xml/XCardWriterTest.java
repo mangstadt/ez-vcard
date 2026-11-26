@@ -99,7 +99,7 @@ class XCardWriterTest {
 	private XCardWriter writer;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		sw = new StringWriter();
 		writer = new XCardWriter(sw);
 		writer.setAddProdId(false);

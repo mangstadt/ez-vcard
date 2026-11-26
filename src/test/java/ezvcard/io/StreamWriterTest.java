@@ -70,7 +70,7 @@ class StreamWriterTest {
 	private VCard vcard;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		writer = new StreamWriterStub();
 		vcard = new VCard();
 	}

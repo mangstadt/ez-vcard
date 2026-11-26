@@ -39,7 +39,7 @@ class VCardParameterCaseClassesTest {
 	private VCardParameterCaseClasses<Pet> caseClasses;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		caseClasses = new VCardParameterCaseClasses<>(Pet.class);
 	}
 

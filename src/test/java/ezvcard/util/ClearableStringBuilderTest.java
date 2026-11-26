@@ -41,7 +41,7 @@ class ClearableStringBuilderTest {
 	private ClearableStringBuilder sb;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		sb = new ClearableStringBuilder();
 	}
 

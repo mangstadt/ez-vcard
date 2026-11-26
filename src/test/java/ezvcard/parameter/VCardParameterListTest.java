@@ -43,7 +43,7 @@ class VCardParameterListTest {
 	private List<Integer> list;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		parameters = new VCardParameters();
 		list = parameters.new VCardParameterList<Integer>(NAME) {
 			@Override

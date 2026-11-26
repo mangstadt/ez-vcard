@@ -37,7 +37,7 @@ class MediaTypeCaseClassesTest {
 	private MediaTypeCaseClasses<TextMediaType> caseClasses;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		caseClasses = new MediaTypeCaseClasses<>(TextMediaType.class);
 	}
 

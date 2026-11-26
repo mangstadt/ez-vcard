@@ -55,7 +55,7 @@ class JCardDeserializerTest {
 	private ObjectMapper mapper;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		mapper = new ObjectMapper();
 	}
 

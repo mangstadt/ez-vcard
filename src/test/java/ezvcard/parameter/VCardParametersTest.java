@@ -72,7 +72,7 @@ class VCardParametersTest {
 	private VCardParameters parameters;
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		parameters = new VCardParameters();
 	}
 
