@@ -3,6 +3,7 @@ package ezvcard.property;
 import java.util.List;
 
 import ezvcard.parameter.Pid;
+import ezvcard.parameter.UrlType;
 
 /*
  Copyright (c) 2012-2026, Michael Angstadt
@@ -46,6 +47,7 @@ import ezvcard.parameter.Pid;
  * VCard vcard = new VCard();
  * 
  * Url url = new Url("http://www.company.com");
+ * url.getTypes().add(UrlType.WORK);
  * vcard.addUrl(url);
  * </pre>
  * 
@@ -125,7 +127,20 @@ public class Url extends UriProperty implements HasAltId {
 	}
 
 	/**
-	 * Gets the TYPE parameter.
+	 * Gets the list of TYPE parameters for this URL.
+	 * @return the URL types (this list is mutable)
+	 */
+	public List<UrlType> getTypes() {
+		return parameters.new TypeParameterList<UrlType>() {
+			@Override
+			protected UrlType _asObject(String value) {
+				return UrlType.get(value);
+			}
+		};
+	}
+
+	/**
+	 * Gets the first TYPE parameter value.
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0*}
 	 * </p>
@@ -143,7 +158,7 @@ public class Url extends UriProperty implements HasAltId {
 	}
 
 	/**
-	 * Sets the TYPE parameter.
+	 * Replaces all TYPE parameter values with one value.
 	 * <p>
 	 * <b>Supported versions:</b> {@code 4.0*}
 	 * </p>
